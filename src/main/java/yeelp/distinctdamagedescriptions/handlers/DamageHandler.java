@@ -27,7 +27,9 @@ public class DamageHandler extends Handler
 		Item weapon = attacker.getHeldItemMainhand().getItem();
 		if(weapon instanceof ItemSword)
 		{
-			MinecraftForge.EVENT_BUS.post(new DamageDescriptionEvent.SlashingDamage(evt, evt.getAmount()));
+			DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, evt.getAmount());
+			MinecraftForge.EVENT_BUS.post(slashEvent);
+			
 		}
 	}
 	
