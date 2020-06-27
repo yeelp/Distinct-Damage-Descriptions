@@ -27,17 +27,29 @@ public class DamageHandler extends Handler
 		Item weapon = attacker.getHeldItemMainhand().getItem();
 		if(weapon instanceof ItemSword)
 		{
-			MinecraftForge.EVENT_BUS.post(new DamageDescriptionEvent.SlashingDamage(evt));
+			MinecraftForge.EVENT_BUS.post(new DamageDescriptionEvent.SlashingDamage(evt, evt.getAmount()));
 		}
 	}
 	
 	@SubscribeEvent
-	public void killem(DamageDescriptionEvent.SlashingDamage evt)
+	public void onSlash(DamageDescriptionEvent.SlashingDamage evt)
 	{
 		LivingAttackEvent atkevt = evt.getLivingAttackEvent();
 		DistinctDamageDescriptions.info("is null: "+(atkevt == null));
 		EntityLivingBase entity = atkevt.getEntityLiving();
 		DistinctDamageDescriptions.info("entity null?: "+ (entity == null));
 		entity.setDead();
+	}
+	
+	@SubscribeEvent
+	public void onPierce(DamageDescriptionEvent.PiercingDamage evt)
+	{
+		
+	}
+	
+	@SubscribeEvent
+	public void onSmack(DamageDescriptionEvent.BludgeoningDamage evt)
+	{
+		
 	}
 }

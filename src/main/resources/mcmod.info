@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "distinctdamagedescriptions",
+  "name": "Distinct Damage Descriptions",
+  "description": "Bringing D&D style distinctions for physical damage to Minecraft!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Yeelp"],
+  "credits": "The Rebirth of the Night team for this awesome opportunity",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
