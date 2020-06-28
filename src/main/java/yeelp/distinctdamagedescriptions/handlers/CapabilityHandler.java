@@ -12,6 +12,13 @@ public class CapabilityHandler extends Handler
 	@SubscribeEvent
 	public void onAddCapabilities(AttachCapabilitiesEvent<ItemStack> evt)
 	{
-		evt.addCapability(new ResourceLocation(ModConsts.MODID, "DamageCategories"), new DamageCategories(0, 0, 1));
+		if(evt.getObject().getItem().getRegistryName().toString().equals("minecraft:wooden_sword"))
+		{
+			evt.addCapability(new ResourceLocation(ModConsts.MODID, "DamageCategories"), new DamageCategories(0, 0, 4));
+		}
+		else
+		{
+			evt.addCapability(new ResourceLocation(ModConsts.MODID, "DamageCategories"), new DamageCategories(0, 0, 1));
+		}
 	}
 }

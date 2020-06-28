@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.event;
 
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import yeelp.distinctdamagedescriptions.util.DamageType;
@@ -15,15 +15,15 @@ import yeelp.distinctdamagedescriptions.util.DamageType;
 public abstract class DamageDescriptionEvent extends Event
 {
 	private final DamageType type;
-	private final LivingAttackEvent evt;
+	private final LivingHurtEvent evt;
 	private float amount;
 	/**
 	 * Create a new DamageDescriptionEvent
 	 * @param type the DamageType of this event
-	 * @param evt the underlying LivingAttackEvent
+	 * @param evt the underlying LivingHurtEvent
 	 * @param amount the amount of damage of {@code type} damage being inflicted.
 	 */
-	public DamageDescriptionEvent(DamageType type, LivingAttackEvent evt, float amount)
+	public DamageDescriptionEvent(DamageType type, LivingHurtEvent evt, float amount)
 	{
 		super();
 		this.evt = evt;
@@ -41,10 +41,10 @@ public abstract class DamageDescriptionEvent extends Event
 	}
 	
 	/**
-	 * Get the underlying LivingAttackEvent that fired this DamageDescriptionEvent
-	 * @return the underlying LivingAttackEvent.
+	 * Get the underlying LivingHurtEvent that fired this DamageDescriptionEvent
+	 * @return the underlying LivingHurtEvent.
 	 */
-	public LivingAttackEvent getLivingAttackEvent()
+	public LivingHurtEvent getLivingHurtEvent()
 	{
 		return this.evt;
 	}
@@ -67,7 +67,7 @@ public abstract class DamageDescriptionEvent extends Event
 		this.amount = amount;
 	}
 	/**
-	 * This override cancels this event, which also cancels the underlying LivingAttackEvent, thus preventing damage. <br>
+	 * This override cancels this event, which also cancels the underlying LivingHurtEvent, thus preventing damage. <br>
 	 * <br>
 	 * {@inheritDoc}
 	 */
@@ -79,45 +79,45 @@ public abstract class DamageDescriptionEvent extends Event
 	}
 	
 	/**
-	 * Fired as soon as possible during a LivingAttackEvent, if the attacking weapon inflicts a non-zero amount of slashing damage, to allow control over its value.
+	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of slashing damage, to allow control over its value.
 	 * <br>
-	 * This event is {@link Cancelable}. When canceled, the underlying LivingAttackEvent is also canceled, thus preventing damage. <br>
+	 * This event is {@link Cancelable}. When canceled, the underlying LivingHurtEvent is also canceled, thus preventing damage. <br>
 	 * <br>
 	 * This event does not have a result {@link HasResult}
 	 */
 	public static class SlashingDamage extends DamageDescriptionEvent
 	{
-		public SlashingDamage(LivingAttackEvent evt, float amount)
+		public SlashingDamage(LivingHurtEvent evt, float amount)
 		{
 			super(DamageType.SLASHING, evt, amount);
 		}
 	}
 	
 	/**
-	 * Fired as soon as possible during a LivingAttackEvent, if the attacking weapon inflicts a non-zero amount of bludgeoning damage, to allow control over its value.
+	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of bludgeoning damage, to allow control over its value.
 	 * <br>
-	 * This event is {@link Cancelable}. When canceled, the underlying LivingAttackEvent is also canceled, thus preventing damage. <br>
+	 * This event is {@link Cancelable}. When canceled, the underlying LivingHurtEvent is also canceled, thus preventing damage. <br>
 	 * <br>
 	 * This event does not have a result {@link HasResult}
 	 */
 	public static class BludgeoningDamage extends DamageDescriptionEvent
 	{
-		public BludgeoningDamage(LivingAttackEvent evt, float amount)
+		public BludgeoningDamage(LivingHurtEvent evt, float amount)
 		{
 			super(DamageType.BLUDGEONING, evt, amount);
 		}
 	}
 	
 	/**
-	 * Fired as soon as possible during a LivingAttackEvent, if the attacking weapon inflicts a non-zero amount of piercing damage, to allow control over its value.
+	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of piercing damage, to allow control over its value.
 	 * <br>
-	 * This event is {@link Cancelable}. When canceled, the underlying LivingAttackEvent is also canceled, thus preventing damage. <br>
+	 * This event is {@link Cancelable}. When canceled, the underlying LivingHurtEvent is also canceled, thus preventing damage. <br>
 	 * <br>
 	 * This event does not have a result {@link HasResult}
 	 */
 	public static class PiercingDamage extends DamageDescriptionEvent
 	{
-		public PiercingDamage(LivingAttackEvent evt, float amount)
+		public PiercingDamage(LivingHurtEvent evt, float amount)
 		{
 			super(DamageType.PIERCING, evt, amount);
 		}
