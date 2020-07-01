@@ -3,18 +3,29 @@ package yeelp.distinctdamagedescriptions.api;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import yeelp.distinctdamagedescriptions.util.IDamageCategories;
 
 public interface IDistinctDamageDescriptionsAccessor
 {
 	/**
-	 * Get the damage categories for an ItemStack
-	 * @param stack
-	 * @return IDamageCategories, or null if the stack doesn't have it.
+	 * Get the slashing damage this entity does
+	 * @param entity
+	 * @return that entity's slashing damage
 	 */
-	@Nullable
-	IDamageCategories getDamageCategories(ItemStack stack);
+	double getSlashingDamage(EntityLivingBase entity);
+	
+	/**
+	 * Get the piercing damage this entity does
+	 * @param entity
+	 * @return that entity's piercing damage
+	 */
+	double getPiercingDamage(EntityLivingBase entity);
+	
+	/**
+	 * Get the bludgeoning damage this entity does
+	 * @param entity
+	 * @return that entity's bludgeoning damage
+	 */
+	double getBludgeoningDamage(EntityLivingBase entity);
 	
 	/**
 	 * Get an entity's slashing resistance

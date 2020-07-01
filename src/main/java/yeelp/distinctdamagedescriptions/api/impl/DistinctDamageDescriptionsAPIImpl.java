@@ -7,9 +7,7 @@ import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
-import yeelp.distinctdamagedescriptions.util.DamageCategoriesProvider;
-import yeelp.distinctdamagedescriptions.util.IDamageCategories;
-import yeelp.distinctdamagedescriptions.util.ResistancesAttributes;
+import yeelp.distinctdamagedescriptions.util.DDDAttributes;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
 {
@@ -25,27 +23,38 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	 * ACCESSOR *
 	 ************/
 	@Override
-	@Nullable
-	public IDamageCategories getDamageCategories(ItemStack stack)
+	public double getSlashingDamage(EntityLivingBase entity)
 	{
-		return DamageCategoriesProvider.getDamageCategories(stack);
+		return entity.getAttributeMap().getAttributeInstance(DDDAttributes.SLASHING_DMG).getAttributeValue();
+	}
+	
+	@Override
+	public double getPiercingDamage(EntityLivingBase entity)
+	{
+		return entity.getAttributeMap().getAttributeInstance(DDDAttributes.PIERCING_DMG).getAttributeValue();
+	}
+	
+	@Override
+	public double getBludgeoningDamage(EntityLivingBase entity)
+	{
+		return entity.getAttributeMap().getAttributeInstance(DDDAttributes.BLUDGEONING_DMG).getAttributeValue();
 	}
 
 	@Override
 	public double getSlashingResistance(EntityLivingBase entity)
 	{
-		return entity.getAttributeMap().getAttributeInstance(ResistancesAttributes.SLASHING).getAttributeValue();
+		return entity.getAttributeMap().getAttributeInstance(DDDAttributes.SLASHING).getAttributeValue();
 	}
 	
 	@Override
 	public double getPiercingResistance(EntityLivingBase entity)
 	{
-		return entity.getAttributeMap().getAttributeInstance(ResistancesAttributes.PIERCING).getAttributeValue();
+		return entity.getAttributeMap().getAttributeInstance(DDDAttributes.PIERCING).getAttributeValue();
 	}
 
 	@Override
 	public double getBludgeoningResistance(EntityLivingBase entity)
 	{
-		return entity.getAttributeMap().getAttributeInstance(ResistancesAttributes.BLUDGEONING).getAttributeValue();
+		return entity.getAttributeMap().getAttributeInstance(DDDAttributes.BLUDGEONING).getAttributeValue();
 	}
 }

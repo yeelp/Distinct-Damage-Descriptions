@@ -7,9 +7,7 @@ package yeelp.distinctdamagedescriptions.util;
  */
 public class BaseResistances
 {
-	private float slashing;
-	private float piercing;
-	private float bludgeoning;
+	private ComparableTriple<Float, Float, Float> resistances;
 	/**
 	 * Create a new base resistances
 	 * @param slashing slashing resistance. Ideally in range (-infty, 1]
@@ -18,9 +16,7 @@ public class BaseResistances
 	 */
 	public BaseResistances(float slashing, float piercing, float bludgeoning)
 	{
-		this.slashing = slashing;
-		this.piercing = piercing;
-		this.bludgeoning = bludgeoning;
+		this.resistances = new ComparableTriple<Float, Float, Float>(slashing, piercing, bludgeoning);
 	}
 	
 	/**
@@ -29,7 +25,7 @@ public class BaseResistances
 	 */
 	public float getSlashingResistance()
 	{
-		return this.slashing;
+		return this.resistances.getLeft();
 	}
 	
 	/**
@@ -38,7 +34,7 @@ public class BaseResistances
 	 */
 	public float getPiercingResistance()
 	{
-		return this.piercing;
+		return this.resistances.getMiddle();
 	}
 	
 	/**
@@ -47,6 +43,6 @@ public class BaseResistances
 	 */
 	public float getBludgeoningResistance()
 	{
-		return this.bludgeoning;
+		return this.resistances.getRight();
 	}
 }

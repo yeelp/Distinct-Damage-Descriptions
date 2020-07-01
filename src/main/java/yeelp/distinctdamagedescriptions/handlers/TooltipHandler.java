@@ -9,7 +9,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.util.DamageType;
-import yeelp.distinctdamagedescriptions.util.IDamageCategories;
 
 public class TooltipHandler extends Handler
 {
@@ -17,7 +16,7 @@ public class TooltipHandler extends Handler
 	@SideOnly(value = Side.CLIENT)
 	public void onTooltip(ItemTooltipEvent evt)
 	{
-		IDamageCategories damages = DDDAPI.accessor.getDamageCategories(evt.getItemStack());
+		/*IDamageCategories damages = DDDAPI.accessor.getDamageCategories(evt.getItemStack());
 		if(damages != null)
 		{
 			float slashing = damages.getDamage(DamageType.SLASHING);
@@ -44,6 +43,6 @@ public class TooltipHandler extends Handler
 				}
 				//DistinctDamageDescriptions.info(s);
 			}
-		}
+		}*/
 	}
 }

@@ -16,9 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
-import yeelp.distinctdamagedescriptions.util.DamageType;
-import yeelp.distinctdamagedescriptions.util.IDamageCategories;
-import yeelp.distinctdamagedescriptions.util.ResistancesAttributes;
+import yeelp.distinctdamagedescriptions.util.DDDAttributes;
 
 public class DamageHandler extends Handler
 {
@@ -31,37 +29,44 @@ public class DamageHandler extends Handler
 			return;
 		}
 		EntityLivingBase attacker = (EntityLivingBase) source;
-		DistinctDamageDescriptions.info("entity null?: "+(attacker == null));
-		IDamageCategories damage = DDDAPI.accessor.getDamageCategories(attacker.getHeldItemMainhand());
-		DistinctDamageDescriptions.info("damage null?: "+(damage == null));
-		if(damage != null)
+		double slashing = DDDAPI.accessor.getSlashingDamage(attacker);
+		double piercing = DDDAPI.accessor.getPiercingDamage(attacker);
+		double bludgeoning = DDDAPI.accessor.getBludgeoningDamage(attacker);
+		boolean classified = false;
+		float totalDamage = 0;
+		if(slashing > 0)
 		{
-			float slashing = damage.getDamage(DamageType.SLASHING);
-			float piercing = damage.getDamage(DamageType.PIERCING);
-			float bludgeoning = damage.getDamage(DamageType.BLUDGEONING);
-			float totalDamage = damage.getTotalDamage() == 0 ? evt.getAmount() : 0;
-			if(slashing > 0)
-			{
-				DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, slashing);
-				MinecraftForge.EVENT_BUS.post(slashEvent);
-				double resist = DDDAPI.accessor.getSlashingResistance(evt.getEntityLiving());
-				totalDamage += slashEvent.getAmount()/resist;
-			}
-			if(piercing > 0)
-			{
-				DamageDescriptionEvent.PiercingDamage pierceEvent = new DamageDescriptionEvent.PiercingDamage(evt, piercing);
-				MinecraftForge.EVENT_BUS.post(pierceEvent);
-				double resist = DDDAPI.accessor.getPiercingResistance(evt.getEntityLiving());
-				totalDamage += pierceEvent.getAmount()/resist;
-			}
-			if(bludgeoning > 0)
-			{
-				DamageDescriptionEvent.BludgeoningDamage bludgeoningEvent = new DamageDescriptionEvent.BludgeoningDamage(evt, bludgeoning);
-				MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
-				double resist = DDDAPI.accessor.getBludgeoningResistance(evt.getEntityLiving());
-				totalDamage += bludgeoningEvent.getAmount()/resist;
-			}
-			DistinctDamageDescriptions.info("new damage: "+totalDamage);
+			DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, (float) slashing);
+			MinecraftForge.EVENT_BUS.post(slashEvent);
+			double resist = DDDAPI.accessor.getSlashingResistance(evt.getEntityLiving());
+			float dmg = slashEvent.getAmount();
+			dmg -= dmg*resist;
+			totalDamage += dmg;
+			classified = true;
+		}
+		if(piercing > 0)
+		{
+			DamageDescriptionEvent.PiercingDamage pierceEvent = new DamageDescriptionEvent.PiercingDamage(evt, (float) piercing);
+			MinecraftForge.EVENT_BUS.post(pierceEvent);
+			double resist = DDDAPI.accessor.getPiercingResistance(evt.getEntityLiving());
+			float dmg = pierceEvent.getAmount();
+			dmg -= dmg*resist;
+			totalDamage += dmg;
+			classified = true;
+		}
+		if(bludgeoning > 0)
+		{
+			DamageDescriptionEvent.BludgeoningDamage bludgeoningEvent = new DamageDescriptionEvent.BludgeoningDamage(evt, (float) bludgeoning);
+			MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
+			double resist = DDDAPI.accessor.getBludgeoningResistance(evt.getEntityLiving());
+			float dmg = bludgeoningEvent.getAmount();
+			dmg -= dmg*resist;
+			totalDamage += dmg;
+			classified = true;
+		}
+		DistinctDamageDescriptions.info("new damage: "+totalDamage);
+		if(classified)
+		{
 			evt.setAmount(totalDamage);
 		}
 	}
