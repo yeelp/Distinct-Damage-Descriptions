@@ -30,7 +30,7 @@ public class ModConfig
 				  "   p is the base piercing damage this mob does.",
 				  "   b is the base bludgeoning damage this mob does.",
 				  "Mobs that aren't listed here will inflict full bludgeoning damage.",
-				  "Malformed entries in this list will be silently ignored."})
+				  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] mobBaseDmg = {};
 		
@@ -42,7 +42,7 @@ public class ModConfig
 			  "   p is the base piercing damage this item does.",
 			  "   b is the base bludgeoning damage this item does.",
 			  "Items that aren't listed here will inflict 1.0 bludgeoning damage, no matter the item.",
-			  "Malformed entries in this list will be silently ignored."})
+			  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] itemBaseDamage = {};
 		
@@ -52,8 +52,8 @@ public class ModConfig
 				  "   id is the namespaced id of the projectile ENTITY (e.g. minecraft:arrow)",
 				  "   damage is a string with the only the characters \"b\", \"s\", or \"p\", indicating if the projectile does bludgeoning, slashing, or piercing damage respectively",
 				  "          The order of the characters doesn't matter, and multiple damage types can be listed ",
-				  "Items that aren't listed here will inflict 1.0 bludgeoning damage, no matter the item.",
-				  "Malformed entries in this list will be silently ignored."})
+				  "Projectiles that aren't listed here will inflict piercing damage, no matter the projectile.",
+				  "Malformed entries in this list will be ignored."})
 	    @RequiresMcRestart
 	    public String[] projectileDamageTypes = {};
 	}
@@ -69,7 +69,7 @@ public class ModConfig
 				  "   b is the base bludgeoning resistance of this mob.",
 				  "Mobs that aren't listed here will have no resistances. Positive values indicate a resistance, negative values indicate a weakness.",
 				  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type",
-		          "Malformed entries in this list will be silently ignored."})
+		          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] mobBaseResist = {};
 		
@@ -82,7 +82,7 @@ public class ModConfig
 			  "   b is the base bludgeoning resistance of this armor.",
 			  "armors that aren't listed here will have no resistances (this doesn't mean the armor does nothing). Positive values indicate a resistance, negative values indicate a weakness.",
 			  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that armor blocks 50% of damage from that type BEFORE regular armor calculations, and a value of -0.5 means that armor increases damage of that type by 50% BEFORE regular armor calculations.",
-	          "Malformed entries in this list will be silently ignored."})
+	          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] armorResist = {};
 	}
