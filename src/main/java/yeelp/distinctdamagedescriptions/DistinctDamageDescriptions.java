@@ -21,12 +21,16 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
+import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.ResistanceCategories;
-import yeelp.distinctdamagedescriptions.util.DDDAttributes;
+import yeelp.distinctdamagedescriptions.util.ArmorResistances;
 import yeelp.distinctdamagedescriptions.util.DamageType;
+import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.MobResistances;
 import yeelp.distinctdamagedescriptions.util.NonNullMap;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)
@@ -34,30 +38,32 @@ public class DistinctDamageDescriptions
 {
     private static Logger logger;
     
-    private static Map<String, ResistanceCategories> resistMap = new NonNullMap<String, ResistanceCategories>(new ResistanceCategories(0.0f, 0.0f, 0.0f));
+    private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, false));
     private static Map<String, DamageCategories> damageMap = new HashMap<String, DamageCategories>();
-    private static Map<String, ResistanceCategories> armorMap = new NonNullMap<String, ResistanceCategories>(new ResistanceCategories(0.0f, 0.0f, 0.0f));
+    private static Map<String, ArmorResistanceCategories> armorMap = new NonNullMap<String, ArmorResistanceCategories>(new ArmorResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f));
     private static Map<String, DamageCategories> weaponMap = new NonNullMap<String, DamageCategories>(new DamageCategories(0.0f, 0.0f, 0.0f));
     private static Map<String, Set<DamageType>> projectileMap = new NonNullMap<String, Set<DamageType>>(new HashSet<DamageType>(Lists.asList(DamageType.PIERCING, new DamageType[] {})));
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         logger = event.getModLog(); 
         DDDAPI.init();
-        populateMaps();
+        //populateMaps();
     }
-
-    
 
 	@EventHandler
     public void init(FMLInitializationEvent event)
     {
         new DamageHandler().register();
         new TooltipHandler().register();
-        new DDDAttributes().register();
+        new CapabilityHandler().register();
+        MobResistances.register();
+        ArmorResistances.register();
+        DamageDistribution.register();
     }
 	
-    private void populateMaps()
+    /*private void populateMaps()
 	{
     	//Mob Resistances
 		for(String s : ModConfig.resist.mobBaseResist)
@@ -98,10 +104,10 @@ public class DistinctDamageDescriptions
 				warn(s+" isn't a valid projectile entry! Ignoring...");
 			}
 		}
-	}
+	}*/
     
     @Nonnull
-    public static ResistanceCategories getMobResistances(String key)
+    public static MobResistanceCategories getMobResistances(String key)
     {
     	return resistMap.get(key);
     }
@@ -113,7 +119,7 @@ public class DistinctDamageDescriptions
     }
     
     @Nonnull
-    public static ResistanceCategories getArmorResist(String key)
+    public static ArmorResistanceCategories getArmorResist(String key)
     {
     	return armorMap.get(key);
     }

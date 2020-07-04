@@ -17,14 +17,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
-import yeelp.distinctdamagedescriptions.util.DDDAttributes;
 
 public class DamageHandler extends Handler
 {
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void classifyDamage(LivingHurtEvent evt)
 	{
-		Entity source = evt.getSource().getTrueSource();
+		/*Entity source = evt.getSource().getTrueSource();
 		if(!(source instanceof EntityLivingBase))
 		{
 			return;
@@ -75,7 +74,7 @@ public class DamageHandler extends Handler
 		if(classified)
 		{
 			evt.setAmount(totalDamage);
-		}
+		}*/
 	}
 	
 	@SubscribeEvent

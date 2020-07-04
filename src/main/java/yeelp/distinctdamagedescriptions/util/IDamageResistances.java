@@ -48,7 +48,7 @@ public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompou
 	 * @param resist new resistance level
 	 * @throws InvariantViolationException if resist > 1
 	 */
-	void setBludegoningResistance(float resist) throws InvariantViolationException;
+	void setBludgeoningResistance(float resist) throws InvariantViolationException;
 	
 	/**
 	 * Set Slashing immunity
@@ -84,7 +84,7 @@ public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompou
 	 * Get bludgeoning immunity status
 	 * @return true if bludgeoning immune, false otherwise.
 	 */
-	boolean isBludegoningImmune();
+	boolean isBludgeoningImmune();
 	
 	/**
 	 * Convenience method for setting or removing full immunity.
