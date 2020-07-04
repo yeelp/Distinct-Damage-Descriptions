@@ -1,3 +1,6 @@
 attribute.name.distinctdamagedescriptions.slashingResistance=Slashing Resistance
 attribute.name.distinctdamagedescriptions.piercingResistance=Piercing Resistance
 attribute.name.distinctdamagedescriptions.bludgeoningResistance=Bludgeoning Resistance
+attribute.name.distinctdamagedescriptions.slashingDmg=Slashing Damage
+attribute.name.distinctdamagedescriptions.piercingDmg=Piercing Damage
+attribute.name.distinctdamagedescriptions.bludgeoningDmg=Bludgeoning Damage

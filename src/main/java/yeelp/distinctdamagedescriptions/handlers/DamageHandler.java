@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,6 +33,12 @@ public class DamageHandler extends Handler
 		double slashing = DDDAPI.accessor.getSlashingDamage(attacker);
 		double piercing = DDDAPI.accessor.getPiercingDamage(attacker);
 		double bludgeoning = DDDAPI.accessor.getBludgeoningDamage(attacker);
+		//Players are set to have a base hand damage of 0. Thus, if the total damage they inflict is zero before resists
+		//set bludgeoning to 1 (which is their basic punch attack). This makes configs easier to interpret
+		if(attacker instanceof EntityPlayer && slashing + bludgeoning + piercing == 0)
+		{
+			bludgeoning = 1;
+		}
 		boolean classified = false;
 		float totalDamage = 0;
 		if(slashing > 0)
