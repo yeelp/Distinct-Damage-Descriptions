@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import yeelp.distinctdamagedescriptions.ArmorResistanceCategories;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.util.ArmorResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorResistances;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
@@ -31,6 +31,7 @@ public class CapabilityHandler extends Handler
 		if(entity instanceof EntityPlayer)
 		{
 			evt.addCapability(dmg, new DamageDistribution());
+			evt.addCapability(mobs, new MobResistances(0, 0, 0, false, false, false, false));
 		}
 		else if(entity instanceof EntityLivingBase)
 		{
@@ -38,7 +39,7 @@ public class CapabilityHandler extends Handler
 			DamageCategories dmges = DistinctDamageDescriptions.getMobDamage(key);
 			MobResistanceCategories resists = DistinctDamageDescriptions.getMobResistances(key);
 			evt.addCapability(dmg, new DamageDistribution(dmges.getSlashingDamage(), dmges.getPiercingDamage(), dmges.getBludgeoningDamage()));
-			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), resists.isAdaptive()));
+			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance()));
 		}
 		else
 		{
@@ -56,7 +57,7 @@ public class CapabilityHandler extends Handler
 		if(item instanceof ItemArmor)
 		{
 			ArmorResistanceCategories resists = DistinctDamageDescriptions.getArmorResist(key);
-			evt.addCapability(armor, new ArmorResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), resists.getToughnessRating()));
+			evt.addCapability(armor, new ArmorResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getToughnessRating()));
 		}
 	}
 }

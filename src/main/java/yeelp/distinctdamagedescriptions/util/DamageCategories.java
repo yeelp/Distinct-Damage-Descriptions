@@ -1,5 +1,8 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DamageCategories
 {
 	private ComparableTriple<Float, Float, Float> damage;
@@ -39,5 +42,35 @@ public class DamageCategories
 	public float getBludgeoningDamage()
 	{
 		return this.damage.getRight();
+	}
+	
+	/**
+	 * Get the DamageTypes inflicted by a collection of DamageCategories
+	 * @param damageCategories
+	 * @return Set of DamageType enums.
+	 */
+	public static Set<DamageType> getDamageTypes(DamageCategories...damageCategories)
+	{
+		HashSet<DamageType> set = new HashSet<DamageType>();
+		for(DamageCategories cat : damageCategories)
+		{
+			if(cat.getSlashingDamage() > 0)
+			{
+				set.add(DamageType.SLASHING);
+			}
+			if(cat.getPiercingDamage() > 0)
+			{
+				set.add(DamageType.PIERCING);
+			}
+			if(cat.getBludgeoningDamage() > 0)
+			{
+				set.add(DamageType.BLUDGEONING);
+			}
+			if(set.size() == DamageType.values().length)
+			{
+				return set;
+			}
+		}
+		return set;
 	}
 }

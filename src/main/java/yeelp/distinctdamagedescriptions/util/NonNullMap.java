@@ -57,6 +57,10 @@ public class NonNullMap<Key, Value> extends AbstractMap<Key, Value> implements M
 		}
 	}
 	
+	/**
+	 * Get the default value the map uses
+	 * @return the default value
+	 */
 	public Value getDefaultValue()
 	{
 		return this.defaultVal;

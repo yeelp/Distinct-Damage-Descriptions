@@ -15,12 +15,12 @@ public class ArmorResistances extends DamageResistances implements IArmorResista
 	
 	public ArmorResistances()
 	{
-		this(0, 0, 0, false, false, false, 0);
+		this(0, 0, 0, 0);
 	}
 	
-	public ArmorResistances(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, float toughness)
+	public ArmorResistances(float slashing, float piercing, float bludgeoning, float toughness)
 	{
-		super(slashing, piercing, bludgeoning, slashImmune, pierceImmune, bludgeImmune);
+		super(slashing, piercing, bludgeoning, false, false, false);
 		this.toughness = toughness;
 	}
 	

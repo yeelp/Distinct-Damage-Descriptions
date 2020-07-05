@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -11,7 +13,8 @@ public class ArmorResistancesProvider
 	
 	private IArmorResistances instance = armorResist.getDefaultInstance();
 	
-	public static IArmorResistances getArmorResiatances(ItemStack stack)
+	@Nullable
+	public static IArmorResistances getArmorResistances(ItemStack stack)
 	{
 		return stack.getCapability(armorResist, null);
 	}

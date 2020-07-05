@@ -7,7 +7,7 @@ package yeelp.distinctdamagedescriptions.util;
  */
 public class MobResistanceCategories extends ResistanceCategories
 {
-	private boolean adaptive;
+	private float adaptive;
 	/**
 	 * Construct a new MobResistanceCategories
 	 * @param slashing slashing resistance
@@ -16,9 +16,9 @@ public class MobResistanceCategories extends ResistanceCategories
 	 * @param slashImmune slashing immunity
 	 * @param pierceImmune piercing immunity
 	 * @param bludgeImmune bludgeoning immunity
-	 * @param adaptive adaptability status
+	 * @param adaptive adaptability chance
 	 */
-	public MobResistanceCategories(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, boolean adaptive)
+	public MobResistanceCategories(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, float adaptive)
 	{
 		super(slashing, piercing, bludgeoning, slashImmune, pierceImmune, bludgeImmune);
 		this.adaptive = adaptive;
@@ -28,7 +28,7 @@ public class MobResistanceCategories extends ResistanceCategories
 	 * Get adaptability status
 	 * @return adaptability status
 	 */
-	public boolean isAdaptive()
+	public float adaptiveChance()
 	{
 		return adaptive;
 	}

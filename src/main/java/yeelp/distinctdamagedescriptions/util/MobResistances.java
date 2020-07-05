@@ -56,7 +56,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		{
 			setImmunity(damageType, true);
 		}
-		if(damageTypes.length == 3)
+		if(damageTypes.length == DamageType.values().length)
 		{
 			int rand = (int) (3*Math.random());
 			setImmunity(damageTypes[rand], false);

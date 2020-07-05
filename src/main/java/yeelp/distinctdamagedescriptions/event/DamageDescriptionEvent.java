@@ -12,6 +12,7 @@ import yeelp.distinctdamagedescriptions.util.DamageType;
  * @author Yeelp
  *
  */
+@Cancelable
 public abstract class DamageDescriptionEvent extends Event
 {
 	private final DamageType type;

@@ -27,6 +27,7 @@ import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.ResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.ArmorResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorResistances;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
@@ -38,10 +39,10 @@ public class DistinctDamageDescriptions
 {
     private static Logger logger;
     
-    private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, false));
-    private static Map<String, DamageCategories> damageMap = new HashMap<String, DamageCategories>();
-    private static Map<String, ArmorResistanceCategories> armorMap = new NonNullMap<String, ArmorResistanceCategories>(new ArmorResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f));
-    private static Map<String, DamageCategories> weaponMap = new NonNullMap<String, DamageCategories>(new DamageCategories(0.0f, 0.0f, 0.0f));
+    private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f));
+    private static Map<String, DamageCategories> damageMap = new NonNullMap<String, DamageCategories>(new DamageCategories(0.0f, 0.0f, 1.0f));
+    private static Map<String, ArmorResistanceCategories> armorMap = new NonNullMap<String, ArmorResistanceCategories>(new ArmorResistanceCategories(0.0f, 0.0f, 0.0f, 0.0f));
+    private static Map<String, DamageCategories> weaponMap = new NonNullMap<String, DamageCategories>(new DamageCategories(0.0f, 0.0f, 1.0f));
     private static Map<String, Set<DamageType>> projectileMap = new NonNullMap<String, Set<DamageType>>(new HashSet<DamageType>(Lists.asList(DamageType.PIERCING, new DamageType[] {})));
     
     @EventHandler
@@ -49,7 +50,7 @@ public class DistinctDamageDescriptions
     {
         logger = event.getModLog(); 
         DDDAPI.init();
-        //populateMaps();
+        populateMaps();
     }
 
 	@EventHandler
@@ -63,28 +64,48 @@ public class DistinctDamageDescriptions
         DamageDistribution.register();
     }
 	
-    /*private void populateMaps()
+    private void populateMaps()
 	{
     	//Mob Resistances
 		for(String s : ModConfig.resist.mobBaseResist)
 		{
-			tryPut(resistMap, s, ResistanceCategories.class);
+			try
+			{
+				String[] contents = s.split(";");
+				resistMap.put(contents[0], new MobResistanceCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]), contents[4].contains("s"), contents[4].contains("p"), contents[4].contains("b"), Float.valueOf(contents[5])));
+			}
+			catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
+			{
+				warn(s+" isn't a valid entry! Ignoring...");
+			}
 		}
+		info("Mob resistances loaded!");
 		//Mob Damage
 		for(String s : ModConfig.dmg.mobBaseDmg)
 		{
-			tryPut(damageMap, s, DamageCategories.class);
+			tryPutDamageCategories(damageMap, s);
 		}
+		info("Mob damage loaded!");
 		//Armor Resistances
 		for(String s : ModConfig.resist.armorResist)
 		{
-			tryPut(armorMap, s, ResistanceCategories.class);
+			try
+			{
+				String[] contents = s.split(";");
+				armorMap.put(contents[0], new ArmorResistanceCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]), Float.valueOf(contents[4])));
+			}
+			catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
+			{
+				warn(s+" isn't a valid entry! Ignoring...");
+			}
 		}
+		info("Armor resistances loaded!");
 		//Weapon Damage
 		for(String s : ModConfig.dmg.itemBaseDamage)
 		{
-			tryPut(weaponMap, s, DamageCategories.class);
+			tryPutDamageCategories(weaponMap, s);
 		}
+		info("Weapon damage loaded!");
 		//Projectile Damage Types
 		//We don't use the tryPut method, ad this was only for convenience for the first four
 		//projectile damage types are handled a little differently.
@@ -104,7 +125,8 @@ public class DistinctDamageDescriptions
 				warn(s+" isn't a valid projectile entry! Ignoring...");
 			}
 		}
-	}*/
+		info("Projectile damage loaded!");
+	}
     
     @Nonnull
     public static MobResistanceCategories getMobResistances(String key)
@@ -112,7 +134,7 @@ public class DistinctDamageDescriptions
     	return resistMap.get(key);
     }
     
-    @Nullable
+    @Nonnull
     public static DamageCategories getMobDamage(String key)
     {
     	return damageMap.get(key);
@@ -136,24 +158,17 @@ public class DistinctDamageDescriptions
     	return projectileMap.get(key);
     }
     
-    private static<T> void tryPut(Map<String, T> map, String s, Class<T> clazz)
+    private static void tryPutDamageCategories(Map<String, DamageCategories> map, String s)
     {
     	String[] contents = s.split(";");
     	try
 		{
-    		Constructor<T> construct = clazz.getConstructor(float.class, float.class, float.class);
-    		T val = construct.newInstance(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]));
-			map.put(contents[0], val);
+			map.put(contents[0], new DamageCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3])));
 		}
 		catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
 		{
 			warn(s+" isn't a valid entry! Ignoring...");
 		}
-    	catch(InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException f)
-    	{
-    		err("Encountered a problem reading: "+s+", this doesn't make sense! Report to the mod author on GitHub! Provide this stack trace:");
-    		err(Arrays.toString(f.getStackTrace()));
-    	}
     }
     
     public static void info(String msg)

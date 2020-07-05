@@ -21,7 +21,7 @@ public interface IMobResistances extends IDamageResistances
 	
 	/**
 	 * Update adaptive immunity.
-	 * @param damageTypes new types this mob should be immune to. If all three are specified, then one DamageType is randomly chosen, and this mob is susceptible to that DamageType.
+	 * @param damageTypes new types this mob should be immune to. If all DamageTypes are specified, then one DamageType is randomly chosen, and this mob is susceptible to that DamageType.
 	 */
 	void updateAdaptiveImmunity(DamageType...damageTypes);
 }

@@ -12,6 +12,9 @@ public abstract class DDDAPI
 	public static IDistinctDamageDescriptionsAccessor accessor;
 	public static IDistinctDamageDescriptionsMutator mutator;
 	
+	/**
+	 * Initialize the API. Only needed to be called once. DistinctDamageDescriptions does this during startup in preinit.
+	 */
 	public static void init()
 	{
 		DistinctDamageDescriptionsAPIImpl.values();

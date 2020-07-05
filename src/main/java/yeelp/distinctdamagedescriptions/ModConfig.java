@@ -23,28 +23,28 @@ public class ModConfig
 	public static class DamageCategory
 	{
 		@Name("Mob Base Damage")
-		@Comment({"Modify the base damage and damage type mobs do.",
+		@Comment({"Modify the base damage type distribution of mobs.",
 				  "Each entry is of the form id;s;p;b where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
-				  "   s is the base slashing damage this mob does.",
-				  "   p is the base piercing damage this mob does.",
-				  "   b is the base bludgeoning damage this mob does.",
+				  "   s is the percent of slashing damage this mob does.",
+				  "   p is the percent of piercing damage this mob does.",
+				  "   b is the percent of bludgeoning damage this mob does.",
 				  "Mobs that aren't listed here will inflict full bludgeoning damage.",
 				  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseDmg = {};
+		public String[] mobBaseDmg = {"minecraft:spider;0;1;0"};
 		
 		@Name("Weapon Base Damage")
-		@Comment({"Modify the base damage and damage type weapons/items do.",
+		@Comment({"Modify the base damage type distribution of weapons/items.",
 			  "Each entry is of the form id;s;p;b where:",
 			  "   id is the namespaced id of the item (e.g. minecraft:diamond_sword)",
-			  "   s is the base slashing damage this item does.",
-			  "   p is the base piercing damage this item does.",
-			  "   b is the base bludgeoning damage this item does.",
+			  "   s is the base percent of slashing damage this item does.",
+			  "   p is the base percent of piercing damage this item does.",
+			  "   b is the base percent of bludgeoning damage this item does.",
 			  "Items that aren't listed here will inflict 1.0 bludgeoning damage, no matter the item.",
 			  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] itemBaseDamage = {};
+		public String[] itemBaseDamage = {"minecraft:wooden_pickaxe;0;0.5;0.5", "minecraft:diamond_sword;1;0;0", "minecraft:iron_sword;0.8;0.2;0"};
 		
 		@Name("Projectile Damage Type")
 		@Comment({"Modify the damage type of projectiles",
@@ -62,29 +62,32 @@ public class ModConfig
 	{
 		@Name("Mob Base Resistance/Weakness")
 		@Comment({"Modify the base resistance/weakness of mobs",
-				  "Each entry is of the form id;s;p;b where:",
+				  "Each entry is of the form id;s;p;b;immunities;adaptive where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
 				  "   s is the base slashing resistance of this mob.",
 				  "   p is the base piercing resistance of this mob.",
 				  "   b is the base bludgeoning resistance of this mob.",
+				  "   immunities is a string with the only the characters \"b\", \"s\", or \"p\" indicating what damage types (bludgeoning, slashing, piercing respectively) this mob is immune to. Multiple damage types, or no damage types can be listed. Order doesn't matter.",
+				  "   adaptive is a decimal in the range [0,1] indicating the percent chance that this mob has adaptive immunity, with 0 being never, and 1 being always.",
 				  "Mobs that aren't listed here will have no resistances. Positive values indicate a resistance, negative values indicate a weakness.",
 				  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type",
 		          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseResist = {};
+		public String[] mobBaseResist = {"minecraft:spider;0;0;-0.25;;0.3", "minecraft:enderman;0;0;0;;0.7"};
 		
 		@Name("Armor Resistance/Weakness")
 		@Comment({"Modify the base resistance/weakness of armor",
-			  "Each entry is of the form id;s;p;b where:",
+			  "Each entry is of the form id;s;p;b;t where:",
 			  "   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
 			  "   s is the base slashing resistance of this armor.",
 			  "   p is the base piercing resistance of this armor.",
 			  "   b is the base bludgeoning resistance of this armor.",
+			  "   t is the toughness rating of the armor. Armors with higher toughness rating are more effective at reducing high damage attacks.",
 			  "armors that aren't listed here will have no resistances (this doesn't mean the armor does nothing). Positive values indicate a resistance, negative values indicate a weakness.",
 			  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that armor blocks 50% of damage from that type BEFORE regular armor calculations, and a value of -0.5 means that armor increases damage of that type by 50% BEFORE regular armor calculations.",
 	          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] armorResist = {};
+		public String[] armorResist = {"minecraft:diamond_chestplate;-0.3;0.8;0.5;2", "minecraft:iron_chestplate;0.4;0.4;0.3;0", "minecraft:chain_chestplate;0.3;-0.2;0.2;0"};
 	}
 	
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)

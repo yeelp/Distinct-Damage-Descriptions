@@ -1,6 +1,4 @@
-package yeelp.distinctdamagedescriptions;
-
-import yeelp.distinctdamagedescriptions.util.ResistanceCategories;
+package yeelp.distinctdamagedescriptions.util;
 
 public class ArmorResistanceCategories extends ResistanceCategories
 {
@@ -16,9 +14,9 @@ public class ArmorResistanceCategories extends ResistanceCategories
 	 * @param bludgeImmune bludgeoning immunity
 	 * @param toughness toughness rating
 	 */
-	public ArmorResistanceCategories(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, float toughness)
+	public ArmorResistanceCategories(float slashing, float piercing, float bludgeoning, float toughness)
 	{
-		super(slashing, piercing, bludgeoning, slashImmune, pierceImmune, bludgeImmune);
+		super(slashing, piercing, bludgeoning, false, false, false);
 		this.toughness = toughness;
 	}
 
