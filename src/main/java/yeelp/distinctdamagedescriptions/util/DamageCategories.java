@@ -73,4 +73,10 @@ public class DamageCategories
 		}
 		return set;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("(slashing: %f, piercing: %f, bludgeoning: %f)", getSlashingDamage(), getPiercingDamage(), getBludgeoningDamage());
+	}
 }

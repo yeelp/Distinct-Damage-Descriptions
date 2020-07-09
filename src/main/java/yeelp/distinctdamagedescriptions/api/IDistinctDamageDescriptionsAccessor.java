@@ -2,12 +2,16 @@ package yeelp.distinctdamagedescriptions.api;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import yeelp.distinctdamagedescriptions.util.DamageCategories;
+import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorResistances;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
@@ -40,7 +44,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	/**
 	 * Get the mob resistances for an ItemStack - an instance of {@link IMobResistances}
 	 * @param entity
-	 * @return
+	 * @return the IMobResistances for that entity
 	 */
 	IMobResistances getMobResistances(EntityLivingBase entity);
 	
@@ -52,9 +56,18 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	Map<EntityEquipmentSlot, IArmorResistances> getArmorResistancesForEntity(EntityLivingBase entity);
 	
 	/**
-	 * Get the actual armor resistance values for an entity. This calls {@link #getArmorResistancesForEntity(EntityLivingBase)} then sums the values in the map accordingly.
+	 * Get the actual resistance values for an entity. This calls {@link #getArmorResistancesForEntity(EntityLivingBase)} then sums the values in the map accordingly.
 	 * @param entity
 	 * @return a float array containing {slashingResistance, piercingResistance, bludgeoningResistance, toughness} which are the total values provided by the armor worn by the entity.
 	 */
-	float[] getArmorResistanceValuesForEntity(EntityLivingBase entity);
+	float[] getResistanceValuesForEntity(EntityLivingBase entity);
+	
+	/**
+	 * classify and categorize damage.
+	 * @param resistances the attacked mob's IMobResistances capability
+	 * @param src DamageSource 
+	 * @param damage total damage dealt
+	 * @return a map that categorizes damage based on damage type. A mob with immunities will have those damage types removed from the map; this map contains only entries that do damage.
+	 */
+	Map<DamageType, Float> classifyDamage(@Nonnull IMobResistances resistances, @Nonnull DamageSource src, float damage);
 }

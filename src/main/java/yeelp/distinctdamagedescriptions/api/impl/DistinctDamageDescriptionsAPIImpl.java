@@ -3,16 +3,23 @@ package yeelp.distinctdamagedescriptions.api.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.util.ArmorResistancesProvider;
+import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorResistances;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
@@ -71,7 +78,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public float[] getArmorResistanceValuesForEntity(EntityLivingBase entity)
+	public float[] getResistanceValuesForEntity(EntityLivingBase entity)
 	{
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(entity);
 		float[] vals = new float[] {mobResists.getSlashingResistance(), mobResists.getPiercingResistance(), mobResists.getBludgeoningResistance(), 0};
@@ -87,5 +94,46 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			vals[3] += armorResists.getToughness();
 		}
 		return vals;
+	}
+	
+	@Override
+	public Map<DamageType, Float> classifyDamage(@Nonnull IMobResistances resistances, @Nonnull DamageSource src, float damage)
+	{
+		HashMap<DamageType, Float> map = new HashMap<DamageType, Float>();
+		if(src.getImmediateSource() instanceof EntityLivingBase)
+		{
+			EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
+			ItemStack heldItem = attacker.getHeldItemMainhand();
+			boolean hasEmptyHand = heldItem.isEmpty();
+			DamageCategories damageCat;
+			if(!hasEmptyHand)
+			{
+				IDamageDistribution weaponDist = DDDAPI.accessor.getDamageDistribution(heldItem);
+				damageCat = weaponDist.distributeDamage(damage);
+			}
+			else
+			{
+				IDamageDistribution mobDist = DDDAPI.accessor.getDamageDistribution(attacker);
+				damageCat = mobDist.distributeDamage(damage);
+			}
+			
+			DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
+			float slashing = damageCat.getSlashingDamage();
+			float piercing = damageCat.getPiercingDamage();
+			float bludgeoning = damageCat.getBludgeoningDamage();
+			if(!resistances.isSlashingImmune() || slashing > 0)
+			{
+				map.put(DamageType.SLASHING, slashing);
+			}
+			if(!resistances.isPiercingImmune() || piercing > 0)
+			{
+				map.put(DamageType.PIERCING, piercing);
+			}
+			if(!resistances.isBludgeoningImmune() || bludgeoning > 0)
+			{
+				map.put(DamageType.BLUDGEONING, bludgeoning);
+			}
+		}
+		return map;
 	}
 }

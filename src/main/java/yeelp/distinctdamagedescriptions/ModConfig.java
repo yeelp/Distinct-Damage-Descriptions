@@ -20,6 +20,10 @@ public class ModConfig
 	@Comment("Alter the base resistances of armor and mobs")
 	public static final ResistanceCategory resist = new ResistanceCategory();
 	
+	@Name("Debug Mode")
+	@Comment("Enable debug mode. Console will be filled with debug messages. The frequency/content of the messages may vary across versions. Only enable if troubleshooting or developing.")
+	public static boolean showDotsOn = false;
+	
 	public static class DamageCategory
 	{
 		@Name("Mob Base Damage")
@@ -41,10 +45,40 @@ public class ModConfig
 			  "   s is the base percent of slashing damage this item does.",
 			  "   p is the base percent of piercing damage this item does.",
 			  "   b is the base percent of bludgeoning damage this item does.",
-			  "Items that aren't listed here will inflict 1.0 bludgeoning damage, no matter the item.",
+			  "Items that aren't listed here will inflict 100% bludgeoning damage, no matter the item.",
 			  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] itemBaseDamage = {"minecraft:wooden_pickaxe;0;0.5;0.5", "minecraft:diamond_sword;1;0;0", "minecraft:iron_sword;0.8;0.2;0"};
+		public String[] itemBaseDamage = 
+		{
+			"minecraft:arrow;0;1;0",
+			"minecraft:tipped_arrow;0;1;0",
+			"minecraft:spectral_arrow;0;1;0",
+			"minecraft:wooden_sword;0.5;0;0.5",
+			"minecraft:wooden_axe;0.3;0;0.7",
+			"minecraft:wooden_pickaxe;0;0.5;0.5",
+			"minecraft:wooden_shovel;0;0;1",
+			"minecraft:wooden_hoe;0;0.5;0.5",
+			"minecraft:stone_sword;0;0;1",
+			"minecraft:stone_axe;0;0;1",
+			"minecraft:stone_pickaxe;0;0.2;0.8",
+			"minecraft:stone_shovel;0;0;1",
+			"minecraft:stone_hoe;0;0.2;0.8",
+			"minecraft:iron_sword;0.8;0.2;0",
+			"minecraft:iron_axe;0.6;0;0.4",
+			"minecraft:iron_pickaxe;0;0.9;0.1",
+			"minecraft:iron_shovel;0;0.1;0.9",
+			"minecraft:iron_hoe;0;1;0",
+			"minecraft:golden_sword;1;0;0",
+			"minecraft:golden_axe;1;0;0",
+			"minecraft:golden_pickaxe;0;1;0",
+			"minecraft:golden_shovel;0;0;1",
+			"minecraft:golden_hoe;0;1;0",
+			"minecraft:diamond_sword;1;0;0",
+			"minecraft:diamond_axe;0.8;0;0.2",
+			"minecraft:diamond_pickaxe;0;1;0",
+			"minecraft:diamond_shovel;0;0;1",
+			"minecraft:diamond_hoe;0;1;0"
+		};
 		
 		@Name("Projectile Damage Type")
 		@Comment({"Modify the damage type of projectiles",
@@ -84,10 +118,33 @@ public class ModConfig
 			  "   b is the base bludgeoning resistance of this armor.",
 			  "   t is the toughness rating of the armor. Armors with higher toughness rating are more effective at reducing high damage attacks.",
 			  "armors that aren't listed here will have no resistances (this doesn't mean the armor does nothing). Positive values indicate a resistance, negative values indicate a weakness.",
-			  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that armor blocks 50% of damage from that type BEFORE regular armor calculations, and a value of -0.5 means that armor increases damage of that type by 50% BEFORE regular armor calculations.",
+			  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that armor blocks 50% of damage from that type, and a value of -0.5 means that armor increases damage of that type by 50%.",
+			  "These resistances happen IN PLACE of regular armor calculations, and resistances/weaknesses from multiple armor pieces worn at the same stack additively.",
 	          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] armorResist = {"minecraft:diamond_chestplate;-0.3;0.8;0.5;2", "minecraft:iron_chestplate;0.4;0.4;0.3;0", "minecraft:chain_chestplate;0.3;-0.2;0.2;0"};
+		public String[] armorResist = 
+		{
+			"minecraft:leather_helmet;0.05;-0.1;0.1;0",
+			"minecraft:leather_chestplate;0.1;-0.15;0.1;0",
+			"minecraft:leather_leggings;0.1;-0.1;0.1;0",
+			"minecraft:leather_boots;0.05;-0.05;0;0",
+			"minecraft:chainmail_helmet;0.15;-0.15;0.15;0",
+			"minecraft:chainmail_chestplate;0.2;-0.2;0.2;0",
+			"minecraft:chainmail_leggings;0.2;-0.15;0.15;0",
+			"minecraft:chainmail_boots;0.15;-0.1;0.15;0",
+			"minecraft:iron_helmet;0.15;0.25;0.15;1",
+			"minecraft:iron_chestplate;0.2;0.35;0.3;1",
+			"minecraft:iron_leggings;0.2;0.25;0.25;1",
+			"minecraft:iron_boots;0.15;0.15;0.15;1",
+			"minecraft:golden_helmet;0.1;0.1;-0.1;0.5",
+			"minecraft:golden_chestplate;0.2;0.15;-0.15;0.5",
+			"minecraft:golden_leggings;0.15;0.15;-0.1;0.5",
+			"minecraft:golden_boots;0.1;0.1;-0.05;0.5",
+			"minecraft:diamond_helmet;-0.15;0.25;0.15;2",
+			"minecraft:diamond_chestplate;-0.3;0.4;0.3;2",
+			"minecraft:diamond_leggings;-0.25;0.3;0.2;2",
+			"minecraft:diamond_boots;-0.1;0.2;0.2;2"
+		};
 	}
 	
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)

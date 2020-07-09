@@ -185,4 +185,12 @@ public class DistinctDamageDescriptions
     {
     	logger.error("[DISTINCT DAMAGE DESCRIPTIONS] "+msg);
     }
+
+	public static void debug(String msg)
+	{
+		if(ModConfig.showDotsOn)
+		{
+			logger.info("[DISTINCT DAMAGE DESCRIPTIONS (DEBUG)]" + msg);
+		}
+	}
 }
