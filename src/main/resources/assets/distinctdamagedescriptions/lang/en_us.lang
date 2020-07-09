@@ -1,6 +1,12 @@
-attribute.name.distinctdamagedescriptions.slashingResistance=Slashing Resistance
-attribute.name.distinctdamagedescriptions.piercingResistance=Piercing Resistance
-attribute.name.distinctdamagedescriptions.bludgeoningResistance=Bludgeoning Resistance
-attribute.name.distinctdamagedescriptions.slashingDmg=Slashing Damage
-attribute.name.distinctdamagedescriptions.piercingDmg=Piercing Damage
-attribute.name.distinctdamagedescriptions.bludgeoningDmg=Bludgeoning Damage
+damagetypes.distinctdamagedescriptions.slashing=Slashing
+damagetypes.distinctdamagedescriptions.piercing=Piercing
+damagetypes.distinctdamagedescriptions.bludgeoning=Bludgeoning
+
+keys.distinctdamagedescriptions.shift=<SHIFT>
+keys.distinctdamagedescriptions.ctrl=<CTRL>
+
+tooltips.distinctdamagedescriptions.damage=Damage
+tooltips.distinctdamagedescriptions.resistance=Resistance
+tooltips.distinctdamagedescriptions.weakness=Weakness
+tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
+tooltips.distinctdamagedescriptions.armorresistances=When worn:
