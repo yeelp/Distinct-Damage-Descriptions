@@ -1,16 +1,10 @@
 package yeelp.distinctdamagedescriptions;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Logger;
 
@@ -24,11 +18,9 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
-import yeelp.distinctdamagedescriptions.util.DamageCategories;
-import yeelp.distinctdamagedescriptions.util.DamageDistribution;
-import yeelp.distinctdamagedescriptions.util.ResistanceCategories;
-import yeelp.distinctdamagedescriptions.util.ArmorResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorResistances;
+import yeelp.distinctdamagedescriptions.util.ComparableTriple;
+import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
@@ -40,9 +32,9 @@ public class DistinctDamageDescriptions
     private static Logger logger;
     
     private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f));
-    private static Map<String, DamageCategories> damageMap = new NonNullMap<String, DamageCategories>(new DamageCategories(0.0f, 0.0f, 1.0f));
-    private static Map<String, ArmorResistanceCategories> armorMap = new NonNullMap<String, ArmorResistanceCategories>(new ArmorResistanceCategories(0.0f, 0.0f, 0.0f, 0.0f));
-    private static Map<String, DamageCategories> weaponMap = new NonNullMap<String, DamageCategories>(new DamageCategories(0.0f, 0.0f, 1.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> damageMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> armorMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 0.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> weaponMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
     private static Map<String, Set<DamageType>> projectileMap = new NonNullMap<String, Set<DamageType>>(new HashSet<DamageType>(Lists.asList(DamageType.PIERCING, new DamageType[] {})));
     
     @EventHandler
@@ -83,27 +75,19 @@ public class DistinctDamageDescriptions
 		//Mob Damage
 		for(String s : ModConfig.dmg.mobBaseDmg)
 		{
-			tryPutDamageCategories(damageMap, s);
+			tryPut(damageMap, s);
 		}
 		info("Mob damage loaded!");
 		//Armor Resistances
 		for(String s : ModConfig.resist.armorResist)
 		{
-			try
-			{
-				String[] contents = s.split(";");
-				armorMap.put(contents[0], new ArmorResistanceCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]), Float.valueOf(contents[4])));
-			}
-			catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
-			{
-				warn(s+" isn't a valid entry! Ignoring...");
-			}
+			tryPut(armorMap, s);
 		}
 		info("Armor resistances loaded!");
 		//Weapon Damage
 		for(String s : ModConfig.dmg.itemBaseDamage)
 		{
-			tryPutDamageCategories(weaponMap, s);
+			tryPut(weaponMap, s);
 		}
 		info("Weapon damage loaded!");
 		//Projectile Damage Types
@@ -135,19 +119,19 @@ public class DistinctDamageDescriptions
     }
     
     @Nonnull
-    public static DamageCategories getMobDamage(String key)
+    public static ComparableTriple<Float, Float, Float> getMobDamage(String key)
     {
     	return damageMap.get(key);
     }
     
     @Nonnull
-    public static ArmorResistanceCategories getArmorResist(String key)
+    public static ComparableTriple<Float, Float, Float> getArmorResist(String key)
     {
     	return armorMap.get(key);
     }
     
     @Nonnull
-    public static DamageCategories getWeaponDamage(String key)
+    public static ComparableTriple<Float, Float, Float> getWeaponDamage(String key)
     {
     	return weaponMap.get(key);
     }
@@ -158,12 +142,12 @@ public class DistinctDamageDescriptions
     	return projectileMap.get(key);
     }
     
-    private static void tryPutDamageCategories(Map<String, DamageCategories> map, String s)
+    private static void tryPut(Map<String, ComparableTriple<Float, Float, Float>> map, String s)
     {
     	String[] contents = s.split(";");
     	try
 		{
-			map.put(contents[0], new DamageCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3])));
+			map.put(contents[0], new ComparableTriple<Float, Float, Float>(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3])));
 		}
 		catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
 		{

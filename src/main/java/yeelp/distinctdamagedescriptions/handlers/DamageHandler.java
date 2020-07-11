@@ -16,6 +16,8 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Tuple;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -51,42 +53,41 @@ public class DamageHandler extends Handler
 		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
 		Map<DamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(mobResists, dmgSource, evt.getAmount());
-		Map<EntityEquipmentSlot, IArmorResistances> armors = DDDAPI.accessor.getArmorResistancesForEntity(defender);
-		float[] resists = DDDAPI.accessor.getResistanceValuesForEntity(defender);
-		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+"), Mob Resistances: ("+resists[0]+", "+resists[1]+", "+resists[2]+")");
+		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender);
+		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
 		float[] absorb = new float[3];
 		shouldKnockback.put(defender.getUniqueID(), dmgMap.size() == 0);
 		boolean classified = false;
 		float totalDamage = 0;
-		if(dmgMap.containsKey(DamageType.SLASHING))
+		for(DamageType type : DamageType.values())
 		{
-			DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, dmgMap.get(DamageType.SLASHING));
-			MinecraftForge.EVENT_BUS.post(slashEvent);
-			float dmg = slashEvent.getAmount();
-			float newDmg = modDmg(dmg, resists[0], resists[3]);
-			absorb[0] = dmg - newDmg; 
-			totalDamage += newDmg;
-			classified = true;
-		}
-		if(dmgMap.containsKey(DamageType.PIERCING))
-		{
-			DamageDescriptionEvent.PiercingDamage pierceEvent = new DamageDescriptionEvent.PiercingDamage(evt, dmgMap.get(DamageType.PIERCING));
-			MinecraftForge.EVENT_BUS.post(pierceEvent);
-			float dmg = pierceEvent.getAmount();
-			float newDmg = modDmg(dmg, resists[1], resists[3]);
-			absorb[1] = dmg - newDmg; 
-			totalDamage += newDmg;
-			classified = true;
-		}
-		if(dmgMap.containsKey(DamageType.BLUDGEONING))
-		{
-			DamageDescriptionEvent.BludgeoningDamage bludgeoningEvent = new DamageDescriptionEvent.BludgeoningDamage(evt, dmgMap.get(DamageType.BLUDGEONING));
-			MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
-			float dmg = bludgeoningEvent.getAmount();
-			float newDmg = modDmg(dmg, resists[2], resists[3]);
-			absorb[2] = dmg - newDmg; 
-			totalDamage += newDmg;
-			classified = true;
+			if(dmgMap.containsKey(type))
+			{
+				float dmg = dmgMap.get(type);
+				switch(type)
+				{
+					case SLASHING:
+						DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, dmgMap.get(type));
+						MinecraftForge.EVENT_BUS.post(slashEvent);
+						dmg = slashEvent.getAmount();
+						break;
+					case PIERCING:
+						DamageDescriptionEvent.PiercingDamage pierceEvent = new DamageDescriptionEvent.PiercingDamage(evt, dmgMap.get(type));
+						MinecraftForge.EVENT_BUS.post(pierceEvent);
+						dmg = pierceEvent.getAmount();
+						break;
+					case BLUDGEONING:
+						DamageDescriptionEvent.BludgeoningDamage bludgeoningEvent = new DamageDescriptionEvent.BludgeoningDamage(evt, dmgMap.get(type));
+						MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
+						dmg = bludgeoningEvent.getAmount();
+						break;
+				}
+				Tuple<Float, Float> resists = armors.get(type);
+				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond());
+				absorb[type.ordinal()] = dmg - newDmg; 
+				totalDamage += newDmg;
+				classified = true;
+			}
 		}
 		DistinctDamageDescriptions.debug("new damage: "+totalDamage);
 		if(classified)
@@ -105,11 +106,7 @@ public class DamageHandler extends Handler
 					continue;
 				}
 				ItemArmor armorItem = (ItemArmor) item;
-				IArmorResistances armorResist = armors.get(armorItem.armorType);
-				float damageAmount = 0;
-				damageAmount += armorResist.getBludgeoningResistance() <= 0 && dmgMap.containsKey(DamageType.BLUDGEONING) ? 1 : armorResist.getBludgeoningResistance()/resists[2]*absorb[2];
-				damageAmount += armorResist.getPiercingResistance() <= 0 && dmgMap.containsKey(DamageType.PIERCING) ? 1 : armorResist.getPiercingResistance()/resists[1]*absorb[1];
-				damageAmount += armorResist.getSlashingResistance() <= 0 && dmgMap.containsKey(DamageType.SLASHING) ? 1 : armorResist.getSlashingResistance()/resists[0]*absorb[0];
+				int damageAmount = (int) MathHelper.clamp(Math.floor((absorb[0] + absorb[1] + absorb[2])/4.0f), 1.0f, Float.MAX_VALUE);
 				if(item instanceof ISpecialArmor)
 				{
 					ISpecialArmor armor = (ISpecialArmor) item;
@@ -119,13 +116,13 @@ public class DamageHandler extends Handler
 					}
 					else
 					{
-						DistinctDamageDescriptions.debug("Damaging ISpecialArmor by: "+(int) damageAmount);
-						armor.damageArmor(defender, stack, dmgSource, (int) damageAmount, armorItem.getEquipmentSlot().ordinal());
+						DistinctDamageDescriptions.debug("Damaging ISpecialArmor by: "+damageAmount);
+						armor.damageArmor(defender, stack, dmgSource, damageAmount, armorItem.getEquipmentSlot().ordinal());
 					}
 				}
 				else
 				{
-					DistinctDamageDescriptions.debug("Damaging ItemArmor by: "+(int) damageAmount);
+					DistinctDamageDescriptions.debug("Damaging ItemArmor by: "+damageAmount);
 					stack.damageItem((int) damageAmount, defender);
 				}
 			}
@@ -145,18 +142,7 @@ public class DamageHandler extends Handler
 	
 	private float modDmg(float damage, float armor, float toughness)
 	{
-		if(armor > 0)
-		{
-			return (float) Math.max(0, damage - damage*(Math.max(0, armor - 0.1*damage/(2+toughness/4))));
-		}
-		else if (armor < 0) 
-		{
-			return damage - damage*armor;
-		}
-		else
-		{
-			return damage;
-		}
+		return damage*(1-Math.min(20, Math.max(armor/5.0f, armor - damage/(2+toughness/4.0f)))/25.0f);
 	}
 	
 	@SubscribeEvent

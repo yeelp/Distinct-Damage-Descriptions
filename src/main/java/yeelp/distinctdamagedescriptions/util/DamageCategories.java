@@ -3,7 +3,7 @@ package yeelp.distinctdamagedescriptions.util;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DamageCategories
+public final class DamageCategories
 {
 	private ComparableTriple<Float, Float, Float> damage;
 	/**
@@ -15,6 +15,15 @@ public class DamageCategories
 	public DamageCategories(float slashing, float piercing, float bludgeoning)
 	{
 		this.damage = new ComparableTriple<Float, Float, Float>(slashing, piercing, bludgeoning);
+	}
+	
+	/**
+	 * Create a new DamageCategories from a triple
+	 * @param triple
+	 */
+	public DamageCategories(ComparableTriple<Float, Float, Float> triple)
+	{
+		this.damage = triple;
 	}
 	
 	/**

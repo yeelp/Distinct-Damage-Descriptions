@@ -1,21 +1,17 @@
 package yeelp.distinctdamagedescriptions.util;
 
 /**
- * Wrapped DamageResistances with toughness. An armor with a higher toughness rating is more effective at blocking stronger attacks.
+ * Armor resistances
  * @author Yeelp
  *
  */
-public interface IArmorResistances extends IDamageResistances
+public interface IArmorResistances extends IDistribution
 {
 	/**
-	 * Get the toughness value of this armor
-	 * @return the toughness value.
+	 * Distribute armor points into three categories
+	 * @param armor
+	 * @param toughness
+	 * @return an ArmorCategories with the distributed armor and toughness
 	 */
-	float getToughness();
-	
-	/**
-	 * Set the toughness value of this armor.
-	 * @param toughness new toughness value.
-	 */
-	void setToughness(float toughness);
+	ArmorCategories distributeArmor(float armor, float toughness);
 }

@@ -10,8 +10,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
@@ -78,22 +80,35 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public float[] getResistanceValuesForEntity(EntityLivingBase entity)
+	public Map<DamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity)
 	{
-		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(entity);
-		float[] vals = new float[] {mobResists.getSlashingResistance(), mobResists.getPiercingResistance(), mobResists.getBludgeoningResistance(), 0};
-		for(IArmorResistances armorResists : getArmorResistancesForEntity(entity).values())
+		HashMap<DamageType, Tuple<Float, Float>> map = new HashMap<DamageType, Tuple<Float, Float>>();
+		float slashArmor = 0, pierceArmor = 0, bludgeArmor = 0, slashTough = 0, pierceTough = 0, bludgeTough = 0;
+		for(EntityEquipmentSlot slot : armorSlots)
 		{
-			if(armorResists == null)
+			ItemStack stack = entity.getItemStackFromSlot(slot);
+			if(stack.isEmpty())
 			{
 				continue;
 			}
-			vals[0] += armorResists.getSlashingResistance();
-			vals[1] += armorResists.getPiercingResistance();
-			vals[2] += armorResists.getBludgeoningResistance();
-			vals[3] += armorResists.getToughness();
+			ItemArmor armorItem = (ItemArmor) stack.getItem();
+			IArmorResistances armorResists = getArmorResistances(stack);
+			float armor = armorItem.damageReduceAmount;
+			float toughness = armorItem.toughness;
+			float slashWeight = armorResists.getSlashingWeight();
+			float pierceWeight = armorResists.getPiercingWeight();
+			float bludgeWeight = armorResists.getBludgeoningWeight();
+			slashArmor += armor*slashWeight;
+			pierceArmor += armor*pierceWeight;
+			bludgeArmor += armor*bludgeWeight;
+			slashTough += toughness*slashWeight;
+			pierceTough += toughness*pierceWeight;
+			bludgeTough += toughness*bludgeWeight;
 		}
-		return vals;
+		map.put(DamageType.SLASHING, new Tuple<Float, Float>(slashArmor, slashTough));
+		map.put(DamageType.PIERCING, new Tuple<Float, Float>(pierceArmor, pierceTough));
+		map.put(DamageType.BLUDGEONING, new Tuple<Float, Float>(bludgeArmor, bludgeTough));
+		return map;
 	}
 	
 	@Override

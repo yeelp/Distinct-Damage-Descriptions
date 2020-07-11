@@ -79,9 +79,9 @@ public class TooltipHandler extends Handler
 			boolean ctrlHeld = KeyHelper.isCtrlHeld();
 			if(KeyHelper.isCtrlHeld())
 			{
-				float slashResist = armors.getSlashingResistance()*100;
-				float pierceResist = armors.getPiercingResistance()*100;
-				float bludgeResist = armors.getBludgeoningResistance()*100;
+				float slashResist = armors.getSlashingWeight()*100;
+				float pierceResist = armors.getPiercingWeight()*100;
+				float bludgeResist = armors.getBludgeoningWeight()*100;
 				if(slashResist != 0)
 				{
 					tooltips.add(index, makeArmorTooltip(slashResist, slashTooltip));

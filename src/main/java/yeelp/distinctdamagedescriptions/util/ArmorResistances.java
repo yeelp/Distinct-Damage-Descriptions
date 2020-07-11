@@ -9,19 +9,16 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class ArmorResistances extends DamageResistances implements IArmorResistances
+public class ArmorResistances extends Distribution implements IArmorResistances
 {
-	private float toughness;
-	
 	public ArmorResistances()
 	{
-		this(0, 0, 0, 0);
+		this(0, 0, 0);
 	}
 	
-	public ArmorResistances(float slashing, float piercing, float bludgeoning, float toughness)
+	public ArmorResistances(float slashing, float piercing, float bludgeoning)
 	{
-		super(slashing, piercing, bludgeoning, false, false, false);
-		this.toughness = toughness;
+		super(slashing, piercing, bludgeoning);
 	}
 	
 	@Override
@@ -37,35 +34,14 @@ public class ArmorResistances extends DamageResistances implements IArmorResista
 	}
 
 	@Override
-	public float getToughness()
+	public ArmorCategories distributeArmor(float armor, float toughness)
 	{
-		return toughness;
-	}
-
-	@Override
-	public void setToughness(float toughness)
-	{
-		this.toughness = toughness;
+		return new ArmorCategories(super.distribute(armor), super.distribute(toughness));
 	}
 
 	public static void register()
 	{
 		CapabilityManager.INSTANCE.register(IArmorResistances.class, new ArmorResistancesStorage(), new ArmorResistancesFactory());
-	}
-	
-	@Override
-	public NBTTagCompound serializeNBT()
-	{
-		NBTTagCompound tag = super.serializeNBT();
-		tag.setFloat("toughness", toughness);
-		return tag;
-	}
-	
-	@Override 
-	public void deserializeNBT(NBTTagCompound tag)
-	{
-		super.deserializeNBT(tag);
-		toughness = tag.getFloat("toughness");
 	}
 	
 	private static class ArmorResistancesFactory implements Callable<IArmorResistances>

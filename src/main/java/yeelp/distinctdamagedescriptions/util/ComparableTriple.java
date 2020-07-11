@@ -166,7 +166,7 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 			}
 			else
 			{
-				throw new NoSuchElementException("Iteration tried to iterate ovcer more elements after already iterating over them all!");
+				throw new NoSuchElementException("Iteration tried to iterate over more elements after already iterating over them all!");
 			}
 		}
 	}

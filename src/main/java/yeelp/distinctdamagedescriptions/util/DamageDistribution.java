@@ -9,12 +9,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class DamageDistribution implements IDamageDistribution
-{
-	private float slash;
-	private float pierce;
-	private float bludge;
-	
+public class DamageDistribution extends Distribution implements IDamageDistribution
+{	
 	private boolean invariantViolated(float slash, float pierce, float bludge)
 	{
 		return slash + pierce + bludge > 1;
@@ -27,9 +23,7 @@ public class DamageDistribution implements IDamageDistribution
 	
 	public DamageDistribution(float slash, float pierce, float bludge) 
 	{
-		this.slash = slash;
-		this.pierce = pierce;
-		this.bludge = bludge;
+		super(slash, pierce, bludge);
 	}
 	
 	@Override
@@ -45,59 +39,21 @@ public class DamageDistribution implements IDamageDistribution
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT()
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setFloat("slashing", slash);
-		tag.setFloat("piercing", pierce);
-		tag.setFloat("bludgeoning", bludge);
-		return tag;
-	}
-
-	@Override
-	public void deserializeNBT(NBTTagCompound nbt)
-	{
-		slash = nbt.getFloat("slashing");
-		pierce = nbt.getFloat("piercing");
-		bludge = nbt.getFloat("bludgeoning");
-	}
-
-	@Override
 	public DamageCategories distributeDamage(float dmg)
 	{
-		return new DamageCategories(dmg*slash, dmg*pierce, dmg*bludge);
+		return new DamageCategories(super.distribute(dmg));
 	}
-
+	
 	@Override
-	public float getSlashingWeight()
+	public void setNewWeights(float slashing, float piercing, float bludgeoning) throws InvariantViolationException
 	{
-		return slash;
-	}
-
-	@Override
-	public float getPiercingWeight()
-	{
-		return pierce;
-	}
-
-	@Override
-	public float getBludgeoningWeight()
-	{
-		return bludge;
-	}
-
-	@Override
-	public void setNewWeights(float slash, float pierce, float bludgeoning) throws InvariantViolationException
-	{
-		if(invariantViolated(slash, pierce, bludgeoning))
+		if(invariantViolated(slashing, piercing, bludgeoning))
 		{
 			throw new InvariantViolationException("New damage weights do not add to 1!");
 		}
 		else
 		{
-			this.slash = slash;
-			this.pierce = pierce;
-			this.bludge = bludgeoning;
+			super.setNewWeights(slashing, piercing, bludgeoning);
 		}
 	}
 	

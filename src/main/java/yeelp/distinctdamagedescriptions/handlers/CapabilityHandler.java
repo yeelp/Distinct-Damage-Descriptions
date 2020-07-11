@@ -12,9 +12,8 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.util.ArmorResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorResistances;
-import yeelp.distinctdamagedescriptions.util.DamageCategories;
+import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
@@ -36,9 +35,9 @@ public class CapabilityHandler extends Handler
 		else if(entity instanceof EntityLivingBase)
 		{
 			String key = EntityList.getKey(entity).toString();
-			DamageCategories dmges = DistinctDamageDescriptions.getMobDamage(key);
+			ComparableTriple<Float, Float, Float> dmges = DistinctDamageDescriptions.getMobDamage(key);
 			MobResistanceCategories resists = DistinctDamageDescriptions.getMobResistances(key);
-			evt.addCapability(dmg, new DamageDistribution(dmges.getSlashingDamage(), dmges.getPiercingDamage(), dmges.getBludgeoningDamage()));
+			evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
 			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance()));
 		}
 		else
@@ -52,12 +51,12 @@ public class CapabilityHandler extends Handler
 	{
 		Item item = evt.getObject().getItem();
 		String key = item.getRegistryName().toString();
-		DamageCategories dmges = DistinctDamageDescriptions.getWeaponDamage(key);
-		evt.addCapability(dmg, new DamageDistribution(dmges.getSlashingDamage(), dmges.getPiercingDamage(), dmges.getBludgeoningDamage()));
+		ComparableTriple<Float, Float, Float> dmges = DistinctDamageDescriptions.getWeaponDamage(key);
+		evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
 		if(item instanceof ItemArmor)
 		{
-			ArmorResistanceCategories resists = DistinctDamageDescriptions.getArmorResist(key);
-			evt.addCapability(armor, new ArmorResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getToughnessRating()));
+			ComparableTriple<Float, Float, Float> resists = DistinctDamageDescriptions.getArmorResist(key);
+			evt.addCapability(armor, new ArmorResistances(resists.getLeft(), resists.getMiddle(), resists.getRight()));
 		}
 	}
 }

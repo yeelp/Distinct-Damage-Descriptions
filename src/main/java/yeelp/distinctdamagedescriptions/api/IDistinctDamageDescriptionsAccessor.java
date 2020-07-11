@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorResistances;
@@ -56,11 +57,11 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	Map<EntityEquipmentSlot, IArmorResistances> getArmorResistancesForEntity(EntityLivingBase entity);
 	
 	/**
-	 * Get the actual resistance values for an entity. This calls {@link #getArmorResistancesForEntity(EntityLivingBase)} then sums the values in the map accordingly.
+	 * Get a map of damage types to armor values for that damage type.
 	 * @param entity
-	 * @return a float array containing {slashingResistance, piercingResistance, bludgeoningResistance, toughness} which are the total values provided by the armor worn by the entity.
+	 * @return A Map mapping damage types to a tuple (armor, toughness).
 	 */
-	float[] getResistanceValuesForEntity(EntityLivingBase entity);
+	Map<DamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity);
 	
 	/**
 	 * classify and categorize damage.
