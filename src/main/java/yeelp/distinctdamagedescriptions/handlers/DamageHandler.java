@@ -32,7 +32,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageType;
-import yeelp.distinctdamagedescriptions.util.IArmorResistances;
+import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.NonNullMap;
@@ -57,74 +57,77 @@ public class DamageHandler extends Handler
 		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
 		float[] absorb = new float[3];
 		shouldKnockback.put(defender.getUniqueID(), dmgMap.size() == 0);
-		boolean classified = false;
 		float totalDamage = 0;
 		for(DamageType type : DamageType.values())
 		{
 			if(dmgMap.containsKey(type))
 			{
 				float dmg = dmgMap.get(type);
+				float mobMod = 0.0f;
 				switch(type)
 				{
 					case SLASHING:
 						DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, dmgMap.get(type));
 						MinecraftForge.EVENT_BUS.post(slashEvent);
 						dmg = slashEvent.getAmount();
+						mobMod = mobResists.getSlashingResistance();
 						break;
 					case PIERCING:
 						DamageDescriptionEvent.PiercingDamage pierceEvent = new DamageDescriptionEvent.PiercingDamage(evt, dmgMap.get(type));
 						MinecraftForge.EVENT_BUS.post(pierceEvent);
 						dmg = pierceEvent.getAmount();
+						mobMod = mobResists.getPiercingResistance();
 						break;
 					case BLUDGEONING:
 						DamageDescriptionEvent.BludgeoningDamage bludgeoningEvent = new DamageDescriptionEvent.BludgeoningDamage(evt, dmgMap.get(type));
 						MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
 						dmg = bludgeoningEvent.getAmount();
+						mobMod = mobResists.getBludgeoningResistance();
 						break;
 				}
 				Tuple<Float, Float> resists = armors.get(type);
 				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond());
+				newDmg -= newDmg*mobMod;
 				absorb[type.ordinal()] = dmg - newDmg; 
 				totalDamage += newDmg;
-				classified = true;
 			}
 		}
 		DistinctDamageDescriptions.debug("new damage: "+totalDamage);
-		if(classified)
+		evt.setAmount(totalDamage);
+		dmgSource.setDamageBypassesArmor();
+		if(mobResists.hasAdaptiveImmunity())
 		{
-			evt.setAmount(totalDamage);
-			dmgSource.setDamageBypassesArmor();
-			if(mobResists.hasAdaptiveImmunity())
+			DistinctDamageDescriptions.debug("Updating mob's adaptive immunity, since it is present...");
+			mobResists.updateAdaptiveImmunity(dmgMap.keySet().toArray(new DamageType[0]));
+		}
+		Map<EntityEquipmentSlot, IArmorDistribution> armorMap = DDDAPI.accessor.getArmorDistributionsForEntity(defender);
+		for(ItemStack stack : defender.getArmorInventoryList())
+		{
+			Item item = stack.getItem();
+			if(!(item instanceof ItemArmor || item instanceof ISpecialArmor))
 			{
-				mobResists.updateAdaptiveImmunity(dmgMap.keySet().toArray(new DamageType[0]));
+				continue;
 			}
-			for(ItemStack stack : defender.getArmorInventoryList())
+			ItemArmor armorItem = (ItemArmor) item;
+			IArmorDistribution armorDist = armorMap.get(armorItem.armorType);
+			int damageAmount = (int) MathHelper.clamp(Math.floor(absorb[0]*armorDist.getSlashingWeight() + absorb[1]*armorDist.getPiercingWeight() + absorb[2]*armorDist.getBludgeoningWeight()), 1.0f, Float.MAX_VALUE);
+			if(item instanceof ISpecialArmor)
 			{
-				Item item = stack.getItem();
-				if(!(item instanceof ItemArmor || item instanceof ISpecialArmor))
+				ISpecialArmor armor = (ISpecialArmor) item;
+				if(armor.handleUnblockableDamage(defender, stack, dmgSource, totalDamage, armorItem.getEquipmentSlot().ordinal()))
 				{
 					continue;
 				}
-				ItemArmor armorItem = (ItemArmor) item;
-				int damageAmount = (int) MathHelper.clamp(Math.floor((absorb[0] + absorb[1] + absorb[2])/4.0f), 1.0f, Float.MAX_VALUE);
-				if(item instanceof ISpecialArmor)
-				{
-					ISpecialArmor armor = (ISpecialArmor) item;
-					if(armor.handleUnblockableDamage(defender, stack, dmgSource, totalDamage, armorItem.getEquipmentSlot().ordinal()))
-					{
-						continue;
-					}
-					else
-					{
-						DistinctDamageDescriptions.debug("Damaging ISpecialArmor by: "+damageAmount);
-						armor.damageArmor(defender, stack, dmgSource, damageAmount, armorItem.getEquipmentSlot().ordinal());
-					}
-				}
 				else
 				{
-					DistinctDamageDescriptions.debug("Damaging ItemArmor by: "+damageAmount);
-					stack.damageItem((int) damageAmount, defender);
+					DistinctDamageDescriptions.debug("Damaging ISpecialArmor by: "+damageAmount);
+					armor.damageArmor(defender, stack, dmgSource, damageAmount, armorItem.getEquipmentSlot().ordinal());
 				}
+			}
+			else
+			{
+				DistinctDamageDescriptions.debug("Damaging ItemArmor by: "+damageAmount);
+				stack.damageItem((int) damageAmount, defender);
 			}
 		}
 	}
@@ -142,7 +145,7 @@ public class DamageHandler extends Handler
 	
 	private float modDmg(float damage, float armor, float toughness)
 	{
-		return damage*(1-Math.min(20, Math.max(armor/5.0f, armor - damage/(2+toughness/4.0f)))/25.0f);
+		return damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f);
 	}
 	
 	@SubscribeEvent

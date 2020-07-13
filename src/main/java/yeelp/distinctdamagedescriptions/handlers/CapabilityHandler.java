@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,9 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.util.ArmorResistances;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
+import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
@@ -55,8 +58,13 @@ public class CapabilityHandler extends Handler
 		evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
 		if(item instanceof ItemArmor)
 		{
-			ComparableTriple<Float, Float, Float> resists = DistinctDamageDescriptions.getArmorResist(key);
-			evt.addCapability(armor, new ArmorResistances(resists.getLeft(), resists.getMiddle(), resists.getRight()));
+			ComparableTriple<Float, Float, Float> resists = DistinctDamageDescriptions.getArmorDistribution(key);
+			evt.addCapability(armor, new ArmorDistribution(resists.getLeft(), resists.getMiddle(), resists.getRight()));
 		}
+	}
+	
+	public static void syncResistances(EntityPlayer player)
+	{
+		PacketHandler.INSTANCE.sendTo(new MobResistancesMessage(DDDAPI.accessor.getMobResistances(player)), (EntityPlayerMP) player);
 	}
 }

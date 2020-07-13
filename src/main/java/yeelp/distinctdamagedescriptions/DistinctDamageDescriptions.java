@@ -17,8 +17,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
+import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
-import yeelp.distinctdamagedescriptions.util.ArmorResistances;
+import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageType;
@@ -52,8 +53,9 @@ public class DistinctDamageDescriptions
         new TooltipHandler().register();
         new CapabilityHandler().register();
         MobResistances.register();
-        ArmorResistances.register();
+        ArmorDistribution.register();
         DamageDistribution.register();
+        PacketHandler.init();
     }
 	
     private void populateMaps()
@@ -125,7 +127,7 @@ public class DistinctDamageDescriptions
     }
     
     @Nonnull
-    public static ComparableTriple<Float, Float, Float> getArmorResist(String key)
+    public static ComparableTriple<Float, Float, Float> getArmorDistribution(String key)
     {
     	return armorMap.get(key);
     }

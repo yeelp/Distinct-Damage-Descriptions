@@ -9,14 +9,14 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class ArmorResistances extends Distribution implements IArmorResistances
+public class ArmorDistribution extends Distribution implements IArmorDistribution
 {
-	public ArmorResistances()
+	public ArmorDistribution()
 	{
 		this(0, 0, 0);
 	}
 	
-	public ArmorResistances(float slashing, float piercing, float bludgeoning)
+	public ArmorDistribution(float slashing, float piercing, float bludgeoning)
 	{
 		super(slashing, piercing, bludgeoning);
 	}
@@ -24,13 +24,13 @@ public class ArmorResistances extends Distribution implements IArmorResistances
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		return capability == ArmorResistancesProvider.armorResist;
+		return capability == ArmorDistributionProvider.armorResist;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		return capability == ArmorResistancesProvider.armorResist ? ArmorResistancesProvider.armorResist.<T> cast(this) : null;
+		return capability == ArmorDistributionProvider.armorResist ? ArmorDistributionProvider.armorResist.<T> cast(this) : null;
 	}
 
 	@Override
@@ -41,28 +41,28 @@ public class ArmorResistances extends Distribution implements IArmorResistances
 
 	public static void register()
 	{
-		CapabilityManager.INSTANCE.register(IArmorResistances.class, new ArmorResistancesStorage(), new ArmorResistancesFactory());
+		CapabilityManager.INSTANCE.register(IArmorDistribution.class, new ArmorResistancesStorage(), new ArmorResistancesFactory());
 	}
 	
-	private static class ArmorResistancesFactory implements Callable<IArmorResistances>
+	private static class ArmorResistancesFactory implements Callable<IArmorDistribution>
 	{
 		@Override
-		public IArmorResistances call() throws Exception
+		public IArmorDistribution call() throws Exception
 		{
-			return new ArmorResistances();
+			return new ArmorDistribution();
 		}
 	}
 	
-	private static class ArmorResistancesStorage implements IStorage<IArmorResistances>
+	private static class ArmorResistancesStorage implements IStorage<IArmorDistribution>
 	{
 		@Override
-		public NBTBase writeNBT(Capability<IArmorResistances> capability, IArmorResistances instance, EnumFacing side)
+		public NBTBase writeNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side)
 		{
 			return instance.serializeNBT();
 		}
 
 		@Override
-		public void readNBT(Capability<IArmorResistances> capability, IArmorResistances instance, EnumFacing side, NBTBase nbt)
+		public void readNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side, NBTBase nbt)
 		{
 			instance.deserializeNBT((NBTTagCompound) nbt);
 		}

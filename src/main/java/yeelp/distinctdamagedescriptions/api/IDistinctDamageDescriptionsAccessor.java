@@ -13,7 +13,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageType;
-import yeelp.distinctdamagedescriptions.util.IArmorResistances;
+import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 
@@ -35,12 +35,12 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	IDamageDistribution getDamageDistribution(EntityLivingBase entity);
 	
 	/**
-	 * Get the armor resistances for an ItemStack - an instance of {@link IArmorResistances}
+	 * Get the armor resistances for an ItemStack - an instance of {@link IArmorDistribution}
 	 * @param stack
 	 * @return the IArmorResistances capability for this ItemStack, or null if it doesn't have it.
 	 */
 	@Nullable
-	IArmorResistances getArmorResistances(ItemStack stack);
+	IArmorDistribution getArmorResistances(ItemStack stack);
 	
 	/**
 	 * Get the mob resistances for an ItemStack - an instance of {@link IMobResistances}
@@ -54,7 +54,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @param entity
 	 * @return a Map that maps equipment slots to specific IArmorReistances present in that slot
 	 */
-	Map<EntityEquipmentSlot, IArmorResistances> getArmorResistancesForEntity(EntityLivingBase entity);
+	Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity);
 	
 	/**
 	 * Get a map of damage types to armor values for that damage type.

@@ -18,11 +18,12 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
-import yeelp.distinctdamagedescriptions.util.ArmorResistancesProvider;
+import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
+import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageType;
-import yeelp.distinctdamagedescriptions.util.IArmorResistances;
+import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistancesProvider;
@@ -57,9 +58,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	@Nullable
-	public IArmorResistances getArmorResistances(ItemStack stack)
+	public IArmorDistribution getArmorResistances(ItemStack stack)
 	{
-		return ArmorResistancesProvider.getArmorResistances(stack);
+		return ArmorDistributionProvider.getArmorResistances(stack);
 	}
 
 	@Override
@@ -69,9 +70,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<EntityEquipmentSlot, IArmorResistances> getArmorResistancesForEntity(EntityLivingBase entity)
+	public Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity)
 	{
-		HashMap<EntityEquipmentSlot, IArmorResistances> map = new HashMap<EntityEquipmentSlot, IArmorResistances>();
+		HashMap<EntityEquipmentSlot, IArmorDistribution> map = new HashMap<EntityEquipmentSlot, IArmorDistribution>();
 		for(EntityEquipmentSlot slot : armorSlots)
 		{
 			map.put(slot, DDDAPI.accessor.getArmorResistances(entity.getItemStackFromSlot(slot)));
@@ -92,7 +93,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 				continue;
 			}
 			ItemArmor armorItem = (ItemArmor) stack.getItem();
-			IArmorResistances armorResists = getArmorResistances(stack);
+			IArmorDistribution armorResists = getArmorResistances(stack);
 			float armor = armorItem.damageReduceAmount;
 			float toughness = armorItem.toughness;
 			float slashWeight = armorResists.getSlashingWeight();
@@ -136,19 +137,36 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			float slashing = damageCat.getSlashingDamage();
 			float piercing = damageCat.getPiercingDamage();
 			float bludgeoning = damageCat.getBludgeoningDamage();
-			if(!resistances.isSlashingImmune() || slashing > 0)
+			if(!resistances.isSlashingImmune() && slashing > 0)
 			{
 				map.put(DamageType.SLASHING, slashing);
 			}
-			if(!resistances.isPiercingImmune() || piercing > 0)
+			if(!resistances.isPiercingImmune() && piercing > 0)
 			{
 				map.put(DamageType.PIERCING, piercing);
 			}
-			if(!resistances.isBludgeoningImmune() || bludgeoning > 0)
+			if(!resistances.isBludgeoningImmune() && bludgeoning > 0)
 			{
 				map.put(DamageType.BLUDGEONING, bludgeoning);
 			}
 		}
 		return map;
+	}
+	
+	/***********
+	 * MUTATOR *
+	 ***********/
+	@Override
+	public void setPlayerResistances(EntityPlayer player, float slash, float pierce, float bludge, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, boolean adaptive)
+	{
+		IMobResistances mobResists = getMobResistances(player);
+		mobResists.setSlashingResistance(slash);
+		mobResists.setPiercingResistance(pierce);
+		mobResists.setBludgeoningResistance(bludge);
+		mobResists.setSlashingImmunity(slashImmune);
+		mobResists.setPiercingImmunity(pierceImmune);
+		mobResists.setBludgeoningImmunity(bludgeImmune);
+		mobResists.setAdaptiveImmunity(adaptive);
+		CapabilityHandler.syncResistances(player);
 	}
 }

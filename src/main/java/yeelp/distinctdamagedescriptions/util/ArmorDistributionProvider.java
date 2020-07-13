@@ -6,15 +6,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
-public class ArmorResistancesProvider
+public class ArmorDistributionProvider
 {
-	@CapabilityInject(IArmorResistances.class)
-	public static Capability<IArmorResistances> armorResist = null;
+	@CapabilityInject(IArmorDistribution.class)
+	public static Capability<IArmorDistribution> armorResist = null;
 	
-	private IArmorResistances instance = armorResist.getDefaultInstance();
+	private IArmorDistribution instance = armorResist.getDefaultInstance();
 	
 	@Nullable
-	public static IArmorResistances getArmorResistances(ItemStack stack)
+	public static IArmorDistribution getArmorResistances(ItemStack stack)
 	{
 		return stack.getCapability(armorResist, null);
 	}

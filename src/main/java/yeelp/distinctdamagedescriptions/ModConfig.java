@@ -110,40 +110,38 @@ public class ModConfig
 		public String[] mobBaseResist = {"minecraft:spider;0;0;-0.25;;0.3", "minecraft:enderman;0;0;0;;0.7"};
 		
 		@Name("Armor Resistance/Weakness")
-		@Comment({"Modify the base resistance/weakness of armor",
-			  "Each entry is of the form id;s;p;b;t where:",
+		@Comment({"Modify the base resistance effectiveness of armor",
+			  "Each entry is of the form id;s;p;b where:",
 			  "   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
-			  "   s is the base slashing resistance of this armor.",
-			  "   p is the base piercing resistance of this armor.",
-			  "   b is the base bludgeoning resistance of this armor.",
-			  "   t is the toughness rating of the armor. Armors with higher toughness rating are more effective at reducing high damage attacks.",
-			  "armors that aren't listed here will have no resistances (this doesn't mean the armor does nothing). Positive values indicate a resistance, negative values indicate a weakness.",
-			  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that armor blocks 50% of damage from that type, and a value of -0.5 means that armor increases damage of that type by 50%.",
-			  "These resistances happen IN PLACE of regular armor calculations, and resistances/weaknesses from multiple armor pieces worn at the same stack additively.",
+			  "   s is the base slashing effectiveness of this armor.",
+			  "   p is the base piercing effectiveness of this armor.",
+			  "   b is the base bludgeoning effectiveness of this armor.",
+			  "Armors that aren't listed here will have no effectiveness (this doesn't mean the armor does nothing).",
+			  "Resistances effectiveness determines how armor points are distributed. That is, an value of 0.5 means that armor only uses 50% of its usual armor points when defending against that type",
 	          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] armorResist = 
 		{
-			"minecraft:leather_helmet;0.05;-0.1;0.1;0",
-			"minecraft:leather_chestplate;0.1;-0.15;0.1;0",
-			"minecraft:leather_leggings;0.1;-0.1;0.1;0",
-			"minecraft:leather_boots;0.05;-0.05;0;0",
-			"minecraft:chainmail_helmet;0.15;-0.15;0.15;0",
-			"minecraft:chainmail_chestplate;0.2;-0.2;0.2;0",
-			"minecraft:chainmail_leggings;0.2;-0.15;0.15;0",
-			"minecraft:chainmail_boots;0.15;-0.1;0.15;0",
-			"minecraft:iron_helmet;0.15;0.25;0.15;1",
-			"minecraft:iron_chestplate;0.2;0.35;0.3;1",
-			"minecraft:iron_leggings;0.2;0.25;0.25;1",
-			"minecraft:iron_boots;0.15;0.15;0.15;1",
-			"minecraft:golden_helmet;0.1;0.1;-0.1;0.5",
-			"minecraft:golden_chestplate;0.2;0.15;-0.15;0.5",
-			"minecraft:golden_leggings;0.15;0.15;-0.1;0.5",
-			"minecraft:golden_boots;0.1;0.1;-0.05;0.5",
-			"minecraft:diamond_helmet;-0.15;0.25;0.15;2",
-			"minecraft:diamond_chestplate;-0.3;0.4;0.3;2",
-			"minecraft:diamond_leggings;-0.25;0.3;0.2;2",
-			"minecraft:diamond_boots;-0.1;0.2;0.2;2"
+			"minecraft:leather_helmet;0.3;0.05;1.0",
+			"minecraft:leather_chestplate;0.3;0.05;1.0",
+			"minecraft:leather_leggings;0.3;0.05;1.0",
+			"minecraft:leather_boots;0.3;0.05;1.0",
+			"minecraft:chainmail_helmet;0.6;0;0.8",
+			"minecraft:chainmail_chestplate;0.6;0;0.8",
+			"minecraft:chainmail_leggings;0.6;0;0.8",
+			"minecraft:chainmail_boots;0.6;0;0.8",
+			"minecraft:iron_helmet;1.0;0.7;0.3",
+			"minecraft:iron_chestplate;1.0;0.7;0.30",
+			"minecraft:iron_leggings;1.0;0.7;0.3",
+			"minecraft:iron_boots;1.0;0.7;0.3",
+			"minecraft:golden_helmet;1.0;0.6;0.25",
+			"minecraft:golden_chestplate;1.0;0.6;0.25",
+			"minecraft:golden_leggings;1.0;0.6;0.25",
+			"minecraft:golden_boots;1.0;0.6;0.25",
+			"minecraft:diamond_helmet;0.15;1.0;0.7",
+			"minecraft:diamond_chestplate;0.15;1.0;0.7",
+			"minecraft:diamond_leggings;0.15;1.0;0.7",
+			"minecraft:diamond_boots;0.15;1.0;0.7"
 		};
 	}
 	

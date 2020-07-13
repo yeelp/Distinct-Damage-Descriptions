@@ -11,9 +11,10 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
-	private boolean invariantViolated(float slash, float pierce, float bludge)
+	@Override
+	protected boolean invariantViolated(float slash, float pierce, float bludge)
 	{
-		return slash + pierce + bludge > 1;
+		return slash + pierce + bludge > 1 && super.invariantViolated(slash, pierce, bludge);
 	}
 	
 	public DamageDistribution()
@@ -42,19 +43,6 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	public DamageCategories distributeDamage(float dmg)
 	{
 		return new DamageCategories(super.distribute(dmg));
-	}
-	
-	@Override
-	public void setNewWeights(float slashing, float piercing, float bludgeoning) throws InvariantViolationException
-	{
-		if(invariantViolated(slashing, piercing, bludgeoning))
-		{
-			throw new InvariantViolationException("New damage weights do not add to 1!");
-		}
-		else
-		{
-			super.setNewWeights(slashing, piercing, bludgeoning);
-		}
 	}
 	
 	public static void register()

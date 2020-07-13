@@ -5,7 +5,7 @@ package yeelp.distinctdamagedescriptions.util;
  * @author Yeelp
  *
  */
-public interface IArmorResistances extends IDistribution
+public interface IArmorDistribution extends IDistribution
 {
 	/**
 	 * Distribute armor points into three categories
