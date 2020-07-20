@@ -14,7 +14,7 @@ import java.util.Stack;
  * @param <V> The middle object of the triple. Must be a Comparable
  * @param <W> The right object of the triple. Must be a Comparable
  */
-public class ComparableTriple<U extends Comparable, V extends Comparable, W extends Comparable> implements Iterable<Comparable>, Comparable<ComparableTriple>
+public class ComparableTriple<U extends Comparable<U>, V extends Comparable<V>, W extends Comparable<W>> implements Iterable<Comparable<?>>, Comparable<ComparableTriple<U,V,W>>
 {
 	private U left;
 	private V middle;
@@ -66,7 +66,8 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 	 * @param i "index" to get at. 0 is left, 1 is middle, 2 is right.
 	 * @return the object stored at that index in this ComparableTriple.
 	 */
-	public <T extends Comparable> T get(int i)
+	@SuppressWarnings("unchecked")
+	public <T extends Comparable<T>> T get(int i)
 	{
 		switch(i)
 		{
@@ -87,7 +88,8 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 	 * @param obj object to set
 	 * @param i index to set at.
 	 */
-	public <T extends Comparable> void set(Comparable<T> obj, int i)
+	@SuppressWarnings("unchecked")
+	public <T extends Comparable<T>> void set(Comparable<T> obj, int i)
 	{
 		switch(i)
 		{
@@ -146,7 +148,7 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int compareTo(ComparableTriple otherTriple)
+	public int compareTo(ComparableTriple<U,V,W> otherTriple)
 	{
 		int compareU = this.left.compareTo(otherTriple.left);
 		if(compareU == 0)
@@ -168,9 +170,9 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 	}
 
 	@Override
-	public Iterator<Comparable> iterator()
+	public Iterator<Comparable<?>> iterator()
 	{
-		return new TripleIterator(this);
+		return new <U,V,W>TripleIterator(this);
 	}
 	
 	@Override
@@ -178,7 +180,8 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 	{
 		if(o instanceof ComparableTriple)
 		{
-			ComparableTriple other = (ComparableTriple) o;
+			@SuppressWarnings("unchecked")
+			ComparableTriple<U,V,W> other = (ComparableTriple<U,V,W>) o;
 			return this.left.equals(other.left) && this.middle.equals(other.middle) && this.right.equals(other.right);
 		}
 		else
@@ -187,12 +190,12 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 		}
 	}
 
-	private static class TripleIterator implements Iterator<Comparable>
+	private static class TripleIterator implements Iterator<Comparable<?>>
 	{
-		Stack<Comparable> elements;
-		TripleIterator(ComparableTriple triple)
+		Stack<Comparable<?>> elements;
+		<U extends Comparable<U>,V extends Comparable<V>,W extends Comparable<W>> TripleIterator(ComparableTriple<U,V,W> triple)
 		{
-			elements = new Stack<Comparable>();
+			elements = new Stack<Comparable<?>>();
 			elements.push(triple.right);
 			elements.push(triple.middle);
 			elements.push(triple.left);
@@ -203,7 +206,7 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 			return !elements.isEmpty();
 		}
 		@Override
-		public Comparable next()
+		public Comparable<?> next()
 		{
 			if(hasNext())
 			{

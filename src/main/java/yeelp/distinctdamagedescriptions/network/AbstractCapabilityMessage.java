@@ -30,6 +30,7 @@ public abstract class AbstractCapabilityMessage<T extends NBTBase> implements IM
 		return this.nbt;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void deserializeNBT(T nbt)
 	{
 		this.nbt = (T) nbt.copy();

@@ -40,10 +40,10 @@ public class DistinctDamageDescriptions
     private static Logger logger;
     
     private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f));
-    private static Map<String, ComparableTriple<Float, Float, Float>> damageMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
-    private static Map<String, ComparableTriple<Float, Float, Float>> armorMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 0.0f));
-    private static Map<String, ComparableTriple<Float, Float, Float>> weaponMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
-    private static Map<String, ComparableTriple<Float, Float, Float>> projectileMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> damageMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> armorMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 0.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> weaponMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
+    private static Map<String, ComparableTriple<Float, Float, Float>> projectileMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
     private static Map<String, String> itemIDToProjIDMap = new HashMap<String, String>();
     
     @EventHandler
@@ -106,7 +106,7 @@ public class DistinctDamageDescriptions
 			String[] entry = tryPut(projectileMap, s);
 			if(entry.length == 5)
 			{
-				if(!entry[4].isBlank())
+				if(!entry[4].trim().isEmpty())
 				{
 					for(String i : entry[4].split(","))
 					{

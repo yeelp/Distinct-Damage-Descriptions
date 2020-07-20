@@ -109,19 +109,22 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			{
 				continue;
 			}
-			ItemArmor armorItem = (ItemArmor) stack.getItem();
-			IArmorDistribution armorResists = getArmorResistances(stack);
-			float armor = armorItem.damageReduceAmount;
-			float toughness = armorItem.toughness;
-			float slashWeight = armorResists.getSlashingWeight();
-			float pierceWeight = armorResists.getPiercingWeight();
-			float bludgeWeight = armorResists.getBludgeoningWeight();
-			slashArmor += armor*slashWeight;
-			pierceArmor += armor*pierceWeight;
-			bludgeArmor += armor*bludgeWeight;
-			slashTough += toughness*slashWeight;
-			pierceTough += toughness*pierceWeight;
-			bludgeTough += toughness*bludgeWeight;
+			if(stack.getItem() instanceof ItemArmor)
+			{
+				ItemArmor armorItem = (ItemArmor) stack.getItem();
+				IArmorDistribution armorResists = getArmorResistances(stack);
+				float armor = armorItem.damageReduceAmount;
+				float toughness = armorItem.toughness;
+				float slashWeight = armorResists.getSlashingWeight();
+				float pierceWeight = armorResists.getPiercingWeight();
+				float bludgeWeight = armorResists.getBludgeoningWeight();
+				slashArmor += armor*slashWeight;
+				pierceArmor += armor*pierceWeight;
+				bludgeArmor += armor*bludgeWeight;
+				slashTough += toughness*slashWeight;
+				pierceTough += toughness*pierceWeight;
+				bludgeTough += toughness*bludgeWeight;
+			}
 		}
 		map.put(DamageType.SLASHING, new Tuple<Float, Float>(slashArmor, slashTough));
 		map.put(DamageType.PIERCING, new Tuple<Float, Float>(pierceArmor, pierceTough));
@@ -194,7 +197,6 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	
 	private HashMap<DamageType, Float> populateMap(HashMap<DamageType, Float> map, DamageCategories damageCat, IMobResistances resistances)
 	{
-		DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
 		float slashing = damageCat.getSlashingDamage();
 		float piercing = damageCat.getPiercingDamage();
 		float bludgeoning = damageCat.getBludgeoningDamage();

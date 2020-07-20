@@ -36,7 +36,13 @@ public class ModConfig
 				  "Mobs that aren't listed here will inflict full bludgeoning damage.",
 				  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseDmg = {"minecraft:spider;0;1;0"};
+		public String[] mobBaseDmg = 
+		{
+				"minecraft:cave_spider;0;1;0",
+				"minecraft:polar_bear;0.25;0;0.75",
+				"minecraft:spider;0;1;0",
+				"minecraft:wolf;0;1;0"
+		};
 		
 		@Name("Weapon Base Damage")
 		@Comment({"Modify the base damage type distribution of weapons/items.",
@@ -136,16 +142,63 @@ public class ModConfig
 		@Comment({"Modify the base resistance/weakness of mobs",
 				  "Each entry is of the form id;s;p;b;immunities;adaptive where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
-				  "   s is the base slashing resistance of this mob.",
-				  "   p is the base piercing resistance of this mob.",
-				  "   b is the base bludgeoning resistance of this mob.",
+				  "   s is the base slashing resistance percent of this mob.",
+				  "   p is the base piercing resistance percent of this mob.",
+				  "   b is the base bludgeoning resistance percent of this mob.",
 				  "   immunities is a string with the only the characters \"b\", \"s\", or \"p\" indicating what damage types (bludgeoning, slashing, piercing respectively) this mob is immune to. Multiple damage types, or no damage types can be listed. Order doesn't matter.",
 				  "   adaptive is a decimal in the range [0,1] indicating the percent chance that this mob has adaptive immunity, with 0 being never, and 1 being always.",
 				  "Mobs that aren't listed here will have no resistances. Positive values indicate a resistance, negative values indicate a weakness.",
 				  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type",
 		          "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseResist = {"minecraft:spider;0;0;-0.25;;0.3", "minecraft:enderman;0;0;0;;0.7"};
+		public String[] mobBaseResist = 
+		{
+				"minecraft:bat;0;0;-0.5;;0",
+				"minecraft:blaze;0;0;0;;0",
+				"minecraft:cave_spider;0;0.25;-0.25;;0.3",
+				"minecraft:chicken;0;0;-0.25;;0",
+				"minecraft:cow;0;0;0;;0",
+				"minecraft:creeper;0;0;0;;0",
+				"minecraft:donkey;0;0;0;;0",
+				"minecraft:elder_guardian;0.25;0.25;0.25;;1.0",
+				"minecraft:enderman;0;0;0;;0.7",
+				"minecraft:endermite;0;0;0;;0.9",
+				"minecraft:evoker;0;0;0;;0",
+				"minecraft:ghast;0;0;0.5;;0",
+				"minecraft:guardian;0;0;0;;0.25",
+				"minecraft:horse;0;0;0;;0",
+				"minecraft:husk;0;0;0.25;;0",
+				"minecraft:llama;0;0;0;;0",
+				"minecraft:magma_cube;0.25;0.25;0.25;b;0",
+				"minecraft:mooshroom;0;0;0;;0",
+				"minecraft:mule;0;0;0;;0",
+				"minecraft:ocelot;0;0;0;;0",
+				"minecraft:parrot;0;0;-0.5;;0",
+				"minecraft:pig;0;0;0;;0",
+				"minecraft:polar_bear;0;0;0.25;;0",
+				"minecraft:rabbit;0;0;0;;0",
+				"minecraft:sheep;0;0;0;;0",
+				"minecraft:shulker;0.5;-0.5;0.75;;0.25",
+				"minecraft:silverfish;0;0;-0.25;;0.95",
+				"minecraft:skeleton;0.25;0;0;;0",
+				"minecraft:skeleton_horse;0.25;0;0;;0",
+				"minecraft:slime;-0.25;0;0.25;b;0",
+				"minecraft:spider;0;0.25;-0.25;;0.3",
+				"minecraft:squid;0;0;0;;0",
+				"minecraft:stray;0.25;0;0;;0",
+				"minecraft:vex;0;0;0;;0",
+				"minecraft:villager;0;0;0;;0",
+				"minecraft:vindicator;0;0;0;;0",
+				"minecraft:witch;0;0;0;;0.1",
+				"minecraft:wither_skeleton;0.25;0;0;;0",
+				"minecraft:wolf;0;0;0;;0",
+				"minecraft:zombie;0;0;0.25;;0",
+				"minecraft:zombie_horse;0;0;0.25;;0",
+				"minecraft:zombie_pigman;0;0;0.25;;0",
+				"minecraft:zombie_villager;0;0;0.25;;0",
+				"minecraft:iron_golem;0.5;0.75;1.0;;0",
+				"minecraft:wither;0.25;0;0;;0"
+		};
 		
 		@Name("Armor Resistance/Weakness")
 		@Comment({"Modify the base resistance effectiveness of armor",

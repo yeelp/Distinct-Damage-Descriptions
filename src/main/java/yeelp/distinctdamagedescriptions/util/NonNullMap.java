@@ -47,6 +47,7 @@ public class NonNullMap<Key, Value> extends AbstractMap<Key, Value> implements M
 	 * @param keys the keys to use when initializing the map
 	 * @param defaultVal the default value to initialize the map with. The NonNullMap will use this whenever it encounters null.
 	 */
+	@SafeVarargs
 	public NonNullMap(Value defaultVal, Key...keys)
 	{
 		this(defaultVal);
@@ -212,7 +213,7 @@ public class NonNullMap<Key, Value> extends AbstractMap<Key, Value> implements M
 		Set<Entry<Key, Value>> es = new HashSet<Entry<Key, Value>>();
 		for(Key k : keys)
 		{
-			es.add(new SimpleEntry(k, get(k)));
+			es.add(new SimpleEntry<Key, Value>(k, get(k)));
 		}
 		return es;
 	}
