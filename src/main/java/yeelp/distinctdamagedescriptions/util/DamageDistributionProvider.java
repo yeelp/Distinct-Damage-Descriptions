@@ -1,6 +1,8 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -20,5 +22,17 @@ public class DamageDistributionProvider
 	public static IDamageDistribution getDamageDistribution(EntityLivingBase entity)
 	{
 		return entity.getCapability(damageDist, null);
+	}
+	
+	public static IDamageDistribution getDamageDistribution(IProjectile projectile)
+	{
+		if(projectile instanceof Entity)
+		{
+			return ((Entity) projectile).getCapability(damageDist, null);
+		}
+		else
+		{
+			return null;
+		}
 	}
 }

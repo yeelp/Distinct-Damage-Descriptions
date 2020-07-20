@@ -11,6 +11,9 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
+	public static final IDamageDistribution PIERCING_DISTRIBUTION = new DamageDistribution(0, 1, 0);
+	public static final IDamageDistribution BLUDGEONING_DISTRIBUTION = new DamageDistribution(0, 0, 1);
+	public static final IDamageDistribution SLASHING_DISTRIBUTION = new DamageDistribution(1, 0, 0);
 	@Override
 	protected boolean invariantViolated(float slash, float pierce, float bludge)
 	{

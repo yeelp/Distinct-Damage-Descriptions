@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.handlers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -18,6 +19,7 @@ import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
+import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
 
@@ -26,6 +28,8 @@ public class CapabilityHandler extends Handler
 	private static final ResourceLocation dmg = new ResourceLocation(ModConsts.MODID, "dmgDistribution");
 	private static final ResourceLocation armor = new ResourceLocation(ModConsts.MODID, "armorResists");
 	private static final ResourceLocation mobs = new ResourceLocation(ModConsts.MODID, "mobResists");
+	private static final ResourceLocation projDmg = new ResourceLocation(ModConsts.MODID, "projectileDmgDistribution");
+	
 	@SubscribeEvent
 	public void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> evt)
 	{
@@ -43,9 +47,11 @@ public class CapabilityHandler extends Handler
 			evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
 			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance()));
 		}
-		else
+		else if(entity instanceof IProjectile)
 		{
-			//projectile stuff
+			String key = EntityList.getKey(entity).toString();
+			ComparableTriple<Float, Float, Float> dmges = DistinctDamageDescriptions.getProjectileDamageTypes(key);
+			evt.addCapability(projDmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
 		}
 	}
 	

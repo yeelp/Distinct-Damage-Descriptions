@@ -43,17 +43,32 @@ public class DamageHandler extends Handler
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void classifyDamage(LivingHurtEvent evt)
 	{
-		Entity source = evt.getSource().getTrueSource();
-		if(!(source instanceof EntityLivingBase))
+		EntityLivingBase defender = evt.getEntityLiving();
+		DamageSource dmgSource = evt.getSource();
+		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
+		Map<DamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(mobResists, dmgSource, evt.getAmount());
+		if(dmgMap == null)
 		{
 			return;
 		}
-		EntityLivingBase defender = evt.getEntityLiving();
-		DamageSource dmgSource = evt.getSource();
 		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
-		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
-		Map<DamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(mobResists, dmgSource, evt.getAmount());
-		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender);
+		boolean bootsOnly = false;
+		boolean helmetOnly = false;
+		boolean applyAnvilReductionCap = false;
+		if(dmgSource == DamageSource.FALL)
+		{
+			bootsOnly = true;
+		}
+		else if(dmgSource == DamageSource.ANVIL)
+		{
+			helmetOnly = true;
+			applyAnvilReductionCap = true;
+		}
+		else if(dmgSource == DamageSource.FALLING_BLOCK)
+		{
+			helmetOnly = true;
+		}
+		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender, bootsOnly, helmetOnly);
 		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
 		float[] absorb = new float[3];
 		shouldKnockback.put(defender.getUniqueID(), dmgMap.size() == 0);
@@ -86,7 +101,7 @@ public class DamageHandler extends Handler
 						break;
 				}
 				Tuple<Float, Float> resists = armors.get(type);
-				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond());
+				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond(), applyAnvilReductionCap);
 				newDmg -= newDmg*mobMod;
 				absorb[type.ordinal()] = dmg - newDmg; 
 				totalDamage += newDmg;
@@ -109,6 +124,14 @@ public class DamageHandler extends Handler
 				continue;
 			}
 			ItemArmor armorItem = (ItemArmor) item;
+			if(helmetOnly && armorItem.armorType != EntityEquipmentSlot.HEAD)
+			{
+				continue;
+			}
+			else if(bootsOnly && armorItem.armorType != EntityEquipmentSlot.FEET)
+			{
+				continue;
+			}
 			IArmorDistribution armorDist = armorMap.get(armorItem.armorType);
 			int damageAmount = (int) MathHelper.clamp(Math.floor(absorb[0]*armorDist.getSlashingWeight() + absorb[1]*armorDist.getPiercingWeight() + absorb[2]*armorDist.getBludgeoningWeight()), 1.0f, Float.MAX_VALUE);
 			if(item instanceof ISpecialArmor)
@@ -143,9 +166,9 @@ public class DamageHandler extends Handler
 		}
 	}
 	
-	private float modDmg(float damage, float armor, float toughness)
+	private float modDmg(float damage, float armor, float toughness, boolean applyAnvilReductionCap)
 	{
-		return damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f);
+		return (float) MathHelper.clamp(damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f), 0.0f, applyAnvilReductionCap ? 0.75*damage : Float.MAX_VALUE);
 	}
 	
 	@SubscribeEvent

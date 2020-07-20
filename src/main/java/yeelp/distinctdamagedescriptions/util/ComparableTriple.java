@@ -61,6 +61,51 @@ public class ComparableTriple<U extends Comparable, V extends Comparable, W exte
 	}
 	
 	/**
+	 * Get the entry using an indexed based argument
+	 * @param <T> type retrieved.
+	 * @param i "index" to get at. 0 is left, 1 is middle, 2 is right.
+	 * @return the object stored at that index in this ComparableTriple.
+	 */
+	public <T extends Comparable> T get(int i)
+	{
+		switch(i)
+		{
+			case 0:
+				return (T)this.getLeft();
+			case 1:
+				return (T)this.getMiddle();
+			case 2:
+				return (T)this.getRight();
+			default:
+				throw new IllegalArgumentException("Only values 0, 1, 2 valid for get(int)!");
+		}
+	}
+	
+	/**
+	 * Set at a certain index. Will attempt to type cast to the right type. Use safe type checking!
+	 * @param <T> Type of the object begin set
+	 * @param obj object to set
+	 * @param i index to set at.
+	 */
+	public <T extends Comparable> void set(Comparable<T> obj, int i)
+	{
+		switch(i)
+		{
+			case 0:
+				this.left = (U) obj;
+				break;
+			case 1:
+				this.middle = (V) obj;
+				break;
+			case 2:
+				this.right = (W) obj;
+				break;
+			default:
+				throw new IllegalArgumentException("Only values 0, 1, 2 valid for <T>set(T, int)!");
+		}
+	}
+	
+	/**
 	 * Set the left element of this ComparableTriple
 	 * @param left element to set
 	 */

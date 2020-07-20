@@ -1,15 +1,22 @@
 package yeelp.distinctdamagedescriptions;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -36,7 +43,8 @@ public class DistinctDamageDescriptions
     private static Map<String, ComparableTriple<Float, Float, Float>> damageMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
     private static Map<String, ComparableTriple<Float, Float, Float>> armorMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 0.0f));
     private static Map<String, ComparableTriple<Float, Float, Float>> weaponMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
-    private static Map<String, Set<DamageType>> projectileMap = new NonNullMap<String, Set<DamageType>>(new HashSet<DamageType>(Lists.asList(DamageType.PIERCING, new DamageType[] {})));
+    private static Map<String, ComparableTriple<Float, Float, Float>> projectileMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple(0.0f, 0.0f, 1.0f));
+    private static Map<String, String> itemIDToProjIDMap = new HashMap<String, String>();
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -93,22 +101,22 @@ public class DistinctDamageDescriptions
 		}
 		info("Weapon damage loaded!");
 		//Projectile Damage Types
-		//We don't use the tryPut method, ad this was only for convenience for the first four
-		//projectile damage types are handled a little differently.
 		for(String s : ModConfig.dmg.projectileDamageTypes)
 		{
-			String[] contents = s.split(";");
-			HashSet<DamageType> set = new HashSet<DamageType>();
-			try
+			String[] entry = tryPut(projectileMap, s);
+			if(entry.length == 5)
 			{
-				for(char c : contents[1].toCharArray())
+				if(!entry[4].isBlank())
 				{
-					set.add(DamageType.parseDamageType(c));
+					for(String i : entry[4].split(","))
+					{
+						itemIDToProjIDMap.put(i, entry[0]);
+					}
 				}
-			}
-			catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e)
-			{
-				warn(s+" isn't a valid projectile entry! Ignoring...");
+				else
+				{
+					warn("Expected projectile item forms for "+entry[0]+" but found none! Either remove the trailing semicolon from this entry, or add item id's!");
+				}
 			}
 		}
 		info("Projectile damage loaded!");
@@ -139,22 +147,37 @@ public class DistinctDamageDescriptions
     }
     
     @Nonnull
-    public static Set<DamageType> getProjectileDamageTypes(String key)
+    public static ComparableTriple<Float, Float, Float> getProjectileDamageTypes(String key)
     {
     	return projectileMap.get(key);
     }
     
-    private static void tryPut(Map<String, ComparableTriple<Float, Float, Float>> map, String s)
+    @Nullable
+    public static ComparableTriple<Float, Float, Float> getProjectileDamageTypesFromItemID(String itemID)
+    {
+    	String str = itemIDToProjIDMap.get(itemID);
+    	if(str != null)
+    	{
+    		return projectileMap.get(str);
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    }
+    private static String[] tryPut(Map<String, ComparableTriple<Float, Float, Float>> map, String s)
     {
     	String[] contents = s.split(";");
     	try
 		{
 			map.put(contents[0], new ComparableTriple<Float, Float, Float>(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3])));
+			return contents;
 		}
 		catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
 		{
 			warn(s+" isn't a valid entry! Ignoring...");
 		}
+    	return null;
     }
     
     public static void info(String msg)

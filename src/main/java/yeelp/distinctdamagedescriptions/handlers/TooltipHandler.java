@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
@@ -36,6 +37,7 @@ public class TooltipHandler extends Handler
 	private static ITextComponent weaknessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.weakness").setStyle(new Style().setColor(TextFormatting.DARK_RED)); 
 	private static ITextComponent effectivenessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ITextComponent damageDistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damagedistribution").setStyle(new Style().setColor(TextFormatting.GRAY));
+	private static ITextComponent projDistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.projectiledistribution").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ITextComponent armorResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.armorresistances").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ITextComponent mobResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobresistances").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ITextComponent mobImmunityTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.immunities").setStyle(new Style().setColor(TextFormatting.AQUA));
@@ -53,10 +55,28 @@ public class TooltipHandler extends Handler
 		List<String> tooltips = evt.getToolTip();
 		boolean advanced = evt.getFlags().isAdvanced();
 		Item item = evt.getItemStack().getItem();
+		ComparableTriple<Float, Float, Float> projDist = DistinctDamageDescriptions.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
+		boolean shiftHeld = KeyHelper.isShiftHeld();
+		boolean ctrlHeld = KeyHelper.isCtrlHeld();
 		if(damages != null)
 		{
 			int index = 1;
-			boolean shiftHeld = KeyHelper.isShiftHeld();
+			if(projDist != null)
+			{
+				if(ctrlHeld)
+				{
+					for(DamageType type : DamageType.values())
+					{
+						int i = type.ordinal();
+						float percent = projDist.<Float>get(i);
+						if(percent > 0)
+						{
+							tooltips.add(index, makeDamagePercentTooltip(percent, damageTypeTooltips[i]));
+						}
+					}
+				}
+				tooltips.add(index, projDistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));
+			}
 			if(shiftHeld)
 			{
 				float slashPercent = damages.getSlashingWeight();
@@ -87,7 +107,6 @@ public class TooltipHandler extends Handler
 				index = tooltips.size()-2;
 			}
 			int startingIndex = index;
-			boolean ctrlHeld = KeyHelper.isCtrlHeld();
 			if(ctrlHeld)
 			{
 				float[] resistsPercents = {mobCats.getSlashingResistance(), mobCats.getPiercingResistance(), mobCats.getBludgeoningResistance()};
@@ -123,8 +142,7 @@ public class TooltipHandler extends Handler
 		if(armors != null)
 		{
 			int index = 1;
-			boolean ctrlHeld = KeyHelper.isCtrlHeld();
-			if(KeyHelper.isCtrlHeld())
+			if(ctrlHeld)
 			{
 				float slashResist = armors.getSlashingWeight();
 				float pierceResist = armors.getPiercingWeight();

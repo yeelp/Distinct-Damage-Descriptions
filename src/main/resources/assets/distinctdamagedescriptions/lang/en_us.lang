@@ -12,5 +12,6 @@ tooltips.distinctdamagedescriptions.adaptivechance=Adaptability Chance:
 tooltips.distinctdamagedescriptions.effectiveness=Effectiveness
 tooltips.distinctdamagedescriptions.weakness=Weakness
 tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
+tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distribution:
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:

@@ -82,14 +82,52 @@ public class ModConfig
 		
 		@Name("Projectile Damage Type")
 		@Comment({"Modify the damage type of projectiles",
-				  "Each entry is of the form id;damage where:",
+				  "Each entry is of the form id;s;p;b;items where:",
 				  "   id is the namespaced id of the projectile ENTITY (e.g. minecraft:arrow)",
-				  "   damage is a string with the only the characters \"b\", \"s\", or \"p\", indicating if the projectile does bludgeoning, slashing, or piercing damage respectively",
-				  "          The order of the characters doesn't matter, and multiple damage types can be listed ",
+				  "   s is the base percent of slashing damage this projectile does.",
+				  "   p is the base percent of piercing damage this projectile does.",
+				  "   b is the base percent of bludgeoning damage this projectile does.",
+				  "   items are the item ids associated with this projectile, separated by a comma (For example, arrow entities are associated with the item ids minecraft:arrow and minecraft:tipped_arrow). This is used for tooltips.",
+				  "       If the projectile has no item form, omit this part, including the semicolon (so the entry looks like id;s;p;b)",
 				  "Projectiles that aren't listed here will inflict piercing damage, no matter the projectile.",
 				  "Malformed entries in this list will be ignored."})
 	    @RequiresMcRestart
-	    public String[] projectileDamageTypes = {};
+	    public String[] projectileDamageTypes = 
+		{
+				"minecraft:arrow;0;1;0;minecraft:arrow,minecraft:tipped_arrow",
+				"minecraft:spectral_arrow;0;1;0;minecraft:spectral_arrow",
+				"minecraft:llama_spit;0;0;1"
+		};
+		
+		@Name("Extra Damage Classification")
+		@Comment("Enable/disable damage distributions for certain vanilla damage sources.")
+		public ExtraDamageDistsCategory extraDamage = new ExtraDamageDistsCategory();
+		public static class ExtraDamageDistsCategory
+		{
+			@Name("Cactus Distribution")
+			@Comment("Enable/disable the cactus damage distribution. Cacti inflict piercing damage with this enabled. If disabled, vanilla handles it normally.")
+			public boolean enableCactusDamage = true;
+			
+			@Name("Explosion Distribution")
+			@Comment("Enable/disable the explosion damage distribution. This applies to player made explosions (TNT, etc.), non-player made explosions (Creepers, etc.) and Firework Rockets (while using Elytra), at least in vanilla. Explosions inflict bludgeoning damage if enabled. If disabled, vanilla handles it normally.")
+			public boolean enableExplosionDamage = true;
+			
+			@Name("Falling Distribution")
+			@Comment("Enable/disable the fall damage distribution. This applies to any fall damage (falling, ender pearls). Falling inflicts bludgeoning damage with this enabled, can only be reduced by boots, and WILL damage boots. If disabled, vanilla handles it normally.")
+			public boolean enableFallDamage = true;
+			
+			@Name("Fly Into Wall Distribution")
+			@Comment("Enable/disable the fly-into-wall damage distribution. This occurs when a player flys into a wall with Elytra. Flying into a wall inflicts bludgeoning damage with this enabled. If disabled, vanilla handles it normally.")
+			public boolean enableFlyIntoWallDamage = true;
+			
+			@Name("Anvil Distribution")
+			@Comment("Enable/disable the anvil damage distribution. Anvils inflict bludgeoning damage with this enabled, however this damage can only be reduced by helmets, and is capped at a 25% damage reduction. If disabled, vanilla handles it normally.")
+			public boolean enableAnvilDamage = true;
+			
+			@Name("Falling Block Distribution")
+			@Comment("Enable/disable the falling block damage distribution. Falling Blocks inflict bludgeoning damage with this enabled, however this damage can only be reduced by helmets. Vanilla's falling blocks inflict no damage without other mods or unless they are summoned with altered NBT data. If disabled, vanilla handles it normally.")
+			public boolean enableFallingBlockDamage = true;
+		}
 	}
 	
 	public static class ResistanceCategory

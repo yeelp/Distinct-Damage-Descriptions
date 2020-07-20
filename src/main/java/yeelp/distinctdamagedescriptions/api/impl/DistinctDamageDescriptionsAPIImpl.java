@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -15,12 +16,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
+import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
@@ -57,6 +60,12 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 
 	@Override
+	public IDamageDistribution getDamageDistribution(IProjectile projectile)
+	{
+		return DamageDistributionProvider.getDamageDistribution(projectile);
+	}
+	
+	@Override
 	@Nullable
 	public IArmorDistribution getArmorResistances(ItemStack stack)
 	{
@@ -81,7 +90,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<DamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity)
+	public Map<DamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, boolean bootsOnly, boolean helmetOnly)
 	{
 		HashMap<DamageType, Tuple<Float, Float>> map = new HashMap<DamageType, Tuple<Float, Float>>();
 		float slashArmor = 0, pierceArmor = 0, bludgeArmor = 0, slashTough = 0, pierceTough = 0, bludgeTough = 0;
@@ -89,6 +98,14 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		{
 			ItemStack stack = entity.getItemStackFromSlot(slot);
 			if(stack.isEmpty())
+			{
+				continue;
+			}
+			else if(bootsOnly && slot != EntityEquipmentSlot.FEET)
+			{
+				continue;
+			}
+			else if(helmetOnly && slot != EntityEquipmentSlot.HEAD)
 			{
 				continue;
 			}
@@ -113,42 +130,85 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
+	@Nullable
 	public Map<DamageType, Float> classifyDamage(@Nonnull IMobResistances resistances, @Nonnull DamageSource src, float damage)
 	{
 		HashMap<DamageType, Float> map = new HashMap<DamageType, Float>();
+		DamageCategories damageCat = null;
 		if(src.getImmediateSource() instanceof EntityLivingBase)
 		{
 			EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
 			ItemStack heldItem = attacker.getHeldItemMainhand();
 			boolean hasEmptyHand = heldItem.isEmpty();
-			DamageCategories damageCat;
 			if(!hasEmptyHand)
 			{
-				IDamageDistribution weaponDist = DDDAPI.accessor.getDamageDistribution(heldItem);
+				IDamageDistribution weaponDist = getDamageDistribution(heldItem);
 				damageCat = weaponDist.distributeDamage(damage);
 			}
 			else
 			{
-				IDamageDistribution mobDist = DDDAPI.accessor.getDamageDistribution(attacker);
+				IDamageDistribution mobDist = getDamageDistribution(attacker);
 				damageCat = mobDist.distributeDamage(damage);
 			}
-			
-			DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
-			float slashing = damageCat.getSlashingDamage();
-			float piercing = damageCat.getPiercingDamage();
-			float bludgeoning = damageCat.getBludgeoningDamage();
-			if(!resistances.isSlashingImmune() && slashing > 0)
+		}
+		else if(src.getImmediateSource() instanceof IProjectile)
+		{
+			IProjectile projectile = (IProjectile) src.getImmediateSource();
+			IDamageDistribution dist = getDamageDistribution(projectile);
+			damageCat = dist.distributeDamage(damage);
+		}
+		else
+		{
+			if(src.isExplosion() && ModConfig.dmg.extraDamage.enableExplosionDamage)
 			{
-				map.put(DamageType.SLASHING, slashing);
+				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
 			}
-			if(!resistances.isPiercingImmune() && piercing > 0)
+			else if(src == DamageSource.CACTUS && ModConfig.dmg.extraDamage.enableCactusDamage)
 			{
-				map.put(DamageType.PIERCING, piercing);
+				damageCat = DamageDistribution.PIERCING_DISTRIBUTION.distributeDamage(damage);
 			}
-			if(!resistances.isBludgeoningImmune() && bludgeoning > 0)
+			else if(src == DamageSource.ANVIL && ModConfig.dmg.extraDamage.enableAnvilDamage)
 			{
-				map.put(DamageType.BLUDGEONING, bludgeoning);
+				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
 			}
+			else if(src == DamageSource.FALLING_BLOCK && ModConfig.dmg.extraDamage.enableFallingBlockDamage)
+			{
+				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
+			}
+			else if(src == DamageSource.FALL && ModConfig.dmg.extraDamage.enableFallDamage)
+			{
+				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
+			}
+			else if(src == DamageSource.FLY_INTO_WALL && ModConfig.dmg.extraDamage.enableFlyIntoWallDamage)
+			{
+				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
+			}
+			else
+			{
+				return null;
+			}
+		}
+		DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
+		return populateMap(map,damageCat, resistances);
+	}
+	
+	private HashMap<DamageType, Float> populateMap(HashMap<DamageType, Float> map, DamageCategories damageCat, IMobResistances resistances)
+	{
+		DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
+		float slashing = damageCat.getSlashingDamage();
+		float piercing = damageCat.getPiercingDamage();
+		float bludgeoning = damageCat.getBludgeoningDamage();
+		if(!resistances.isSlashingImmune() && slashing > 0)
+		{
+			map.put(DamageType.SLASHING, slashing);
+		}
+		if(!resistances.isPiercingImmune() && piercing > 0)
+		{
+			map.put(DamageType.PIERCING, piercing);
+		}
+		if(!resistances.isBludgeoningImmune() && bludgeoning > 0)
+		{
+			map.put(DamageType.BLUDGEONING, bludgeoning);
 		}
 		return map;
 	}
