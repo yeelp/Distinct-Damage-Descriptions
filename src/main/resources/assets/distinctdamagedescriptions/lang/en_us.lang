@@ -21,4 +21,8 @@ enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force
 
 enchantment.distinctdamagedescriptions.slystrike.desc=A tool or weapon enchanted with this enchantment bypasses immunities!
-enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses upto 10% (per level) of mob resistances!
+enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses up to 10% (per level) of mob resistances!
+
+distinctdamagedescriptions.subtitle.resist_ding=Attack reduced by resistance
+distinctdamagedescriptions.subtitle.weakness_hit=Attack increased by weakness
+distinctdamagedescriptions.subtitle.immunity_hit=Attack blocked by immunity
