@@ -26,6 +26,8 @@ import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
+import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
@@ -39,7 +41,7 @@ public class DistinctDamageDescriptions
 {
     private static Logger logger;
     
-    private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f));
+    private static Map<String, MobResistanceCategories> resistMap = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0.0f, 0.0f, 0.0f, false, false, false, 0.0f, 0.0f));
     private static Map<String, ComparableTriple<Float, Float, Float>> damageMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
     private static Map<String, ComparableTriple<Float, Float, Float>> armorMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 0.0f));
     private static Map<String, ComparableTriple<Float, Float, Float>> weaponMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
@@ -64,6 +66,11 @@ public class DistinctDamageDescriptions
         ArmorDistribution.register();
         DamageDistribution.register();
         PacketHandler.init();
+        DDDSounds.init();
+        if(ModConfig.enableEnchants)
+        {
+        	DDDEnchantments.init();
+        }
     }
 	
     private void populateMaps()
@@ -74,7 +81,7 @@ public class DistinctDamageDescriptions
 			try
 			{
 				String[] contents = s.split(";");
-				resistMap.put(contents[0], new MobResistanceCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]), contents[4].contains("s"), contents[4].contains("p"), contents[4].contains("b"), Float.valueOf(contents[5])));
+				resistMap.put(contents[0], new MobResistanceCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]), contents[4].contains("s"), contents[4].contains("p"), contents[4].contains("b"), Float.valueOf(contents[5]), Float.valueOf(contents[6])));
 			}
 			catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
 			{

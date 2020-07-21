@@ -15,7 +15,7 @@ public abstract class AbstractCapabilityMessage<T extends NBTBase> implements IM
 {
 	private T nbt;
 	
-	AbstractCapabilityMessage()
+	public AbstractCapabilityMessage()
 	{
 		
 	}

@@ -9,9 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public abstract class DamageResistances implements IDamageResistances
 {
-	private float slashing;
-	private float piercing;
-	private float bludgeoning;
+	protected float slashing;
+	protected float piercing;
+	protected float bludgeoning;
 	private boolean slashImmune;
 	private boolean pierceImmune;
 	private boolean bludgeImmune;

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -21,6 +22,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
+import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
@@ -137,6 +139,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	public Map<DamageType, Float> classifyDamage(@Nonnull IMobResistances resistances, @Nonnull DamageSource src, float damage)
 	{
 		HashMap<DamageType, Float> map = new HashMap<DamageType, Float>();
+		boolean slyStrike = false;
 		DamageCategories damageCat = null;
 		if(src.getImmediateSource() instanceof EntityLivingBase)
 		{
@@ -192,25 +195,20 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			}
 		}
 		DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
-		return populateMap(map,damageCat, resistances);
-	}
-	
-	private HashMap<DamageType, Float> populateMap(HashMap<DamageType, Float> map, DamageCategories damageCat, IMobResistances resistances)
-	{
 		float slashing = damageCat.getSlashingDamage();
 		float piercing = damageCat.getPiercingDamage();
 		float bludgeoning = damageCat.getBludgeoningDamage();
 		if(slashing > 0)
 		{
-			map.put(DamageType.SLASHING, resistances.isSlashingImmune() ? -1 : slashing);
+			map.put(DamageType.SLASHING, resistances.isSlashingImmune() && !slyStrike ? -1 : slashing);
 		}
 		if(piercing > 0)
 		{
-			map.put(DamageType.PIERCING, resistances.isPiercingImmune() ? -1 : piercing);
+			map.put(DamageType.PIERCING, resistances.isPiercingImmune() && !slyStrike ? -1 : piercing);
 		}
 		if(bludgeoning > 0)
 		{
-			map.put(DamageType.BLUDGEONING, resistances.isBludgeoningImmune() ? -1 : bludgeoning);
+			map.put(DamageType.BLUDGEONING, resistances.isBludgeoningImmune() && !slyStrike ? -1 : bludgeoning);
 		}
 		return map;
 	}
@@ -228,7 +226,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		mobResists.setSlashingImmunity(slashImmune);
 		mobResists.setPiercingImmunity(pierceImmune);
 		mobResists.setBludgeoningImmunity(bludgeImmune);
-		mobResists.setAdaptiveImmunity(adaptive);
+		mobResists.setAdaptiveResistance(adaptive);
 		CapabilityHandler.syncResistances(player);
 	}
 }

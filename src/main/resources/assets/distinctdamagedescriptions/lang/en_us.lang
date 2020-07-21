@@ -9,9 +9,16 @@ tooltips.distinctdamagedescriptions.damage=Damage
 tooltips.distinctdamagedescriptions.resistance=Resistance
 tooltips.distinctdamagedescriptions.immunities=Starting Immunities:
 tooltips.distinctdamagedescriptions.adaptivechance=Adaptability Chance:
+tooltips.distinctdamagedescriptions.adaptabilityamount=Adaptability Amount:
 tooltips.distinctdamagedescriptions.effectiveness=Effectiveness
 tooltips.distinctdamagedescriptions.weakness=Weakness
 tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
 tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distribution:
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:
+
+enchantment.distinctdamagedescriptions.slystrike=Sly Strike
+enchantment.distinctdamagedescriptions.bruteforce=Brute Force
+
+enchantment.distinctdamagedescriptions.slystrike.desc=A tool or weapon enchanted with this enchantment bypasses immunities!
+enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses upto 10% (per level) of mob resistances!

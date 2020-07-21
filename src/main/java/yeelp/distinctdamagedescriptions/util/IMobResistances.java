@@ -8,20 +8,27 @@ package yeelp.distinctdamagedescriptions.util;
 public interface IMobResistances extends IDamageResistances
 {
 	/**
-	 * Does this mob have adaptive immunity?
+	 * Does this mob have adaptive resistance?
 	 * @return true if they do, false if they don't.
 	 */
-	boolean hasAdaptiveImmunity();
+	boolean hasAdaptiveResistance();
 	
 	/**
-	 * Set the adaptive immunity status.
-	 * @param status true if this mob should be adaptive immune, false if not.
+	 * Get the amount of bonus resistance applied when adaptability triggers.
+	 * @return the bonus resistance for adaptability.
 	 */
-	void setAdaptiveImmunity(boolean status);
+	float getAdaptiveAmount();
 	
 	/**
-	 * Update adaptive immunity.
-	 * @param damageTypes new types this mob should be immune to. If all DamageTypes are specified, then one DamageType is randomly chosen, and this mob is susceptible to that DamageType.
+	 * Set the adaptive resistance status.
+	 * @param status true if this mob should be adaptive resistant, false if not.
 	 */
-	void updateAdaptiveImmunity(DamageType...damageTypes);
+	void setAdaptiveResistance(boolean status);
+	
+	/**
+	 * Update adaptive resistance.
+	 * @param damageTypes new types this mob should be more resistant to.
+	 * @return true if there was a net change in any resistances
+	 */
+	boolean updateAdaptiveResistance(DamageType...damageTypes);
 }

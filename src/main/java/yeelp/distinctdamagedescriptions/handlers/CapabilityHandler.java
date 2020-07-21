@@ -37,7 +37,7 @@ public class CapabilityHandler extends Handler
 		if(entity instanceof EntityPlayer)
 		{
 			evt.addCapability(dmg, new DamageDistribution());
-			evt.addCapability(mobs, new MobResistances(0, 0, 0, false, false, false, false));
+			evt.addCapability(mobs, new MobResistances(0, 0, 0, false, false, false, false, 0.0f));
 		}
 		else if(entity instanceof EntityLivingBase)
 		{
@@ -45,7 +45,7 @@ public class CapabilityHandler extends Handler
 			ComparableTriple<Float, Float, Float> dmges = DistinctDamageDescriptions.getMobDamage(key);
 			MobResistanceCategories resists = DistinctDamageDescriptions.getMobResistances(key);
 			evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
-			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance()));
+			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount()));
 		}
 		else if(entity instanceof IProjectile)
 		{

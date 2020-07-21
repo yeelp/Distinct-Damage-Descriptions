@@ -1,0 +1,23 @@
+{
+    "resist_ding": {
+        "category": "player",
+        "subtitle": "distinctdamagedescriptions.subtitle.resist_ding",
+        "sounds": [
+            "distinctdamagedescriptions:resist_ding"
+        ]
+    },
+    "weakness_hit": {
+        "category": "player",
+        "subtitle": "distinctdamagedescriptions.subtitle.weakness_hit",
+        "sounds": [
+            "distinctdamagedescriptions:effective_squish"
+        ]
+    },
+    "immunity_hit": {
+        "category": "player",
+        "subtitle": "distinctdamagedescriptions.subtitle.immunity_hit",
+        "sounds": [
+            "distinctdamagedescriptions:immunity_tock"
+        ]
+    }
+}

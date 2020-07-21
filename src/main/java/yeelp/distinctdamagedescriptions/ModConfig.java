@@ -24,6 +24,11 @@ public class ModConfig
 	@Comment("Enable debug mode. Console will be filled with debug messages. The frequency/content of the messages may vary across versions. Only enable if troubleshooting or developing.")
 	public static boolean showDotsOn = false;
 	
+	@Name("Enable Enchantments")
+	@Comment("Enable the Brute Force and Sly Strike enchantments. If disabled, the enchantments won't even be registered on startup, so be wary when loading worlds that had these enchantments previously enabled!")
+	@RequiresMcRestart
+	public static boolean enableEnchants = true;
+	
 	public static class DamageCategory
 	{
 		@Name("Mob Base Damage")
@@ -153,51 +158,51 @@ public class ModConfig
 		@RequiresMcRestart
 		public String[] mobBaseResist = 
 		{
-				"minecraft:bat;0;0;-0.5;;0",
-				"minecraft:blaze;0;0;0;;0",
-				"minecraft:cave_spider;0;0.25;-0.25;;0.3",
-				"minecraft:chicken;0;0;-0.25;;0",
-				"minecraft:cow;0;0;0;;0",
-				"minecraft:creeper;0;0;0;;0",
-				"minecraft:donkey;0;0;0;;0",
-				"minecraft:elder_guardian;0.25;0.25;0.25;;1.0",
-				"minecraft:enderman;0;0;0;;0.7",
-				"minecraft:endermite;0;0;0;;0.9",
-				"minecraft:evoker;0;0;0;;0",
-				"minecraft:ghast;0;0;0.5;;0",
-				"minecraft:guardian;0;0;0;;0.25",
-				"minecraft:horse;0;0;0;;0",
-				"minecraft:husk;0;0;0.25;;0",
-				"minecraft:llama;0;0;0;;0",
-				"minecraft:magma_cube;0.25;0.25;0.25;b;0",
-				"minecraft:mooshroom;0;0;0;;0",
-				"minecraft:mule;0;0;0;;0",
-				"minecraft:ocelot;0;0;0;;0",
-				"minecraft:parrot;0;0;-0.5;;0",
-				"minecraft:pig;0;0;0;;0",
-				"minecraft:polar_bear;0;0;0.25;;0",
-				"minecraft:rabbit;0;0;0;;0",
-				"minecraft:sheep;0;0;0;;0",
-				"minecraft:shulker;0.5;-0.5;0.75;;0.25",
-				"minecraft:silverfish;0;0;-0.25;;0.95",
-				"minecraft:skeleton;0.25;0;0;;0",
-				"minecraft:skeleton_horse;0.25;0;0;;0",
-				"minecraft:slime;-0.25;0;0.25;b;0",
-				"minecraft:spider;0;0.25;-0.25;;0.3",
-				"minecraft:squid;0;0;0;;0",
-				"minecraft:stray;0.25;0;0;;0",
-				"minecraft:vex;0;0;0;;0",
-				"minecraft:villager;0;0;0;;0",
-				"minecraft:vindicator;0;0;0;;0",
-				"minecraft:witch;0;0;0;;0.1",
-				"minecraft:wither_skeleton;0.25;0;0;;0",
-				"minecraft:wolf;0;0;0;;0",
-				"minecraft:zombie;0;0;0.25;;0",
-				"minecraft:zombie_horse;0;0;0.25;;0",
-				"minecraft:zombie_pigman;0;0;0.25;;0",
-				"minecraft:zombie_villager;0;0;0.25;;0",
-				"minecraft:iron_golem;0.5;0.75;1.0;;0",
-				"minecraft:wither;0.25;0;0;;0"
+				"minecraft:bat;0;0;-0.5;;0;0",
+				"minecraft:blaze;0;0;0;;0;0",
+				"minecraft:cave_spider;0;0.25;-0.25;;0.3;0.25",
+				"minecraft:chicken;0;0;-0.25;;0;0",
+				"minecraft:cow;0;0;0;;0;0",
+				"minecraft:creeper;0;0;0;;0;0",
+				"minecraft:donkey;0;0;0;;0;0",
+				"minecraft:elder_guardian;0.25;0.25;0.25;;1.0;0.75",
+				"minecraft:enderman;0;0;0;;0.7;0.5",
+				"minecraft:endermite;0;0;0;;0.9;0.75",
+				"minecraft:evoker;0;0;0;;0;0",
+				"minecraft:ghast;0;0;0.5;;0;0",
+				"minecraft:guardian;0;0;0;;0.25;0.25",
+				"minecraft:horse;0;0;0;;0;0",
+				"minecraft:husk;0;0;0.25;;0;0",
+				"minecraft:llama;0;0;0;;0;0",
+				"minecraft:magma_cube;0.25;0.25;0.25;b;0;0",
+				"minecraft:mooshroom;0;0;0;;0;0",
+				"minecraft:mule;0;0;0;;0;0",
+				"minecraft:ocelot;0;0;0;;0;0",
+				"minecraft:parrot;0;0;-0.5;;0;0",
+				"minecraft:pig;0;0;0;;0;0",
+				"minecraft:polar_bear;0;0;0.25;;0;0",
+				"minecraft:rabbit;0;0;0;;0;0",
+				"minecraft:sheep;0;0;0;;0;0",
+				"minecraft:shulker;0.5;-0.5;0.75;;0.25;0.5",
+				"minecraft:silverfish;0;0;-0.25;;0.95;1.0",
+				"minecraft:skeleton;0.25;0;0;;0;0",
+				"minecraft:skeleton_horse;0.25;0;0;;0;0",
+				"minecraft:slime;-0.25;0;0.25;b;0;0",
+				"minecraft:spider;0;0.25;-0.25;;0.3;0.25",
+				"minecraft:squid;0;0;0;;0;0",
+				"minecraft:stray;0.25;0;0;;0;0",
+				"minecraft:vex;0;0;0;;0;0",
+				"minecraft:villager;0;0;0;;0;0",
+				"minecraft:vindicator;0;0;0;;0;0",
+				"minecraft:witch;0;0;0;;0.1;0.25",
+				"minecraft:wither_skeleton;0.25;0;0;;0;0",
+				"minecraft:wolf;0;0;0;;0;0",
+				"minecraft:zombie;0;0;0.25;;0;0",
+				"minecraft:zombie_horse;0;0;0.25;;0;0",
+				"minecraft:zombie_pigman;0;0;0.25;;0;0",
+				"minecraft:zombie_villager;0;0;0.25;;0;0",
+				"minecraft:iron_golem;0.5;0.75;1.0;;0;0",
+				"minecraft:wither;0.25;0;0;;0;0"
 		};
 		
 		@Name("Armor Resistance/Weakness")

@@ -1,45 +1,44 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.client.render.patricle.DDDParticle;
+import yeelp.distinctdamagedescriptions.client.render.patricle.DDDParticleType;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
-import yeelp.distinctdamagedescriptions.util.DamageCategories;
+import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.NonNullMap;
 
 public class DamageHandler extends Handler
 {
-	private Map<UUID, Boolean> shouldKnockback = new NonNullMap<UUID, Boolean>(false);
+	private static Map<UUID, Boolean> shouldKnockback = new NonNullMap<UUID, Boolean>(false);
+	private static Random particleDisplacement = new Random();
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void classifyDamage(LivingHurtEvent evt)
 	{
@@ -55,6 +54,7 @@ public class DamageHandler extends Handler
 		boolean bootsOnly = false;
 		boolean helmetOnly = false;
 		boolean applyAnvilReductionCap = false;
+		float bruteForceAmount = 0;
 		if(dmgSource == DamageSource.FALL)
 		{
 			bootsOnly = true;
@@ -68,10 +68,17 @@ public class DamageHandler extends Handler
 		{
 			helmetOnly = true;
 		}
+		else if(dmgSource.getImmediateSource() instanceof EntityLivingBase)
+		{
+			bruteForceAmount = 0.1f*EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.bruteForce, (EntityLivingBase) dmgSource.getImmediateSource());
+		}
 		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender, bootsOnly, helmetOnly);
 		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
 		float[] absorb = new float[3];
 		boolean shouldKnockbackFlag = true;
+		boolean immunityResisted = false;
+		boolean resisted = false;
+		boolean weakness = false;
 		for(Float f : dmgMap.values())
 		{
 			if(f != null && f.floatValue() > 0)
@@ -89,6 +96,7 @@ public class DamageHandler extends Handler
 				float dmg = dmgMap.get(type);
 				if(dmg < 0)
 				{
+					immunityResisted = true;
 					continue;
 				}
 				float mobMod = 0.0f;
@@ -113,20 +121,63 @@ public class DamageHandler extends Handler
 						mobMod = mobResists.getBludgeoningResistance();
 						break;
 				}
+				if(mobMod > 0)
+				{
+					mobMod = MathHelper.clamp(mobMod - bruteForceAmount, 0, Float.MAX_VALUE);
+				}
 				Tuple<Float, Float> resists = armors.get(type);
 				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond(), applyAnvilReductionCap);
 				newDmg -= newDmg*mobMod;
+				if(!resisted && newDmg < dmg)
+				{
+					resisted = true;
+				}
+				if(!weakness && newDmg > dmg)
+				{
+					weakness = true;
+				}
 				absorb[type.ordinal()] = dmg - newDmg; 
 				totalDamage += newDmg;
 			}
 		}
 		DistinctDamageDescriptions.debug("new damage: "+totalDamage);
+		float ratio = totalDamage/evt.getAmount();
 		evt.setAmount(totalDamage);
 		dmgSource.setDamageBypassesArmor();
-		if(mobResists.hasAdaptiveImmunity())
+		//Only spawn particles and play sounds for players.
+		if(dmgSource.getTrueSource() instanceof EntityPlayer)
+		{
+			EntityPlayer attacker = (EntityPlayer) dmgSource.getTrueSource();
+			if(resisted)
+			{
+				spawnRandomAmountOfParticles(defender, DDDParticleType.RESISTANCE);
+			}
+			if(weakness)
+			{
+				spawnRandomAmountOfParticles(defender, DDDParticleType.WEAKNESS);
+			}
+			if(immunityResisted)
+			{
+				spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
+				DDDSounds.playSound(attacker, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
+			}
+			else if(ratio != 0)
+			{
+				if(ratio > 1)
+				{
+					DDDSounds.playSound(attacker, DDDSounds.WEAKNESS_HIT, 0.7f, 1.0f);
+				}
+				else if(ratio < 1)
+				{
+					DDDSounds.playSound(attacker, DDDSounds.RESIST_DING, 1.6f, 1.0f);
+				}
+			}
+		}
+		if(mobResists.hasAdaptiveResistance())
 		{
 			DistinctDamageDescriptions.debug("Updating mob's adaptive immunity, since it is present...");
-			mobResists.updateAdaptiveImmunity(dmgMap.keySet().toArray(new DamageType[0]));
+			//TODO add sfx
+			mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new DamageType[0]));
 		}
 		Map<EntityEquipmentSlot, IArmorDistribution> armorMap = DDDAPI.accessor.getArmorDistributionsForEntity(defender);
 		for(ItemStack stack : defender.getArmorInventoryList())
@@ -179,9 +230,19 @@ public class DamageHandler extends Handler
 		}
 	}
 	
-	private float modDmg(float damage, float armor, float toughness, boolean applyAnvilReductionCap)
+	private static float modDmg(float damage, float armor, float toughness, boolean applyAnvilReductionCap)
 	{
 		return (float) MathHelper.clamp(damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f), 0.0f, applyAnvilReductionCap ? 0.75*damage : Float.MAX_VALUE);
+	}
+	
+	private static void spawnRandomAmountOfParticles(Entity origin, DDDParticleType type)
+	{
+		ParticleManager manager = Minecraft.getMinecraft().effectRenderer;
+		int amount = (int)(3*Math.random()+2);
+		for(int i = 0; i <= amount; i++)
+		{
+			manager.addEffect(new DDDParticle(origin, 0, 4, 0, type, particleDisplacement));
+		}
 	}
 	
 	@SubscribeEvent
