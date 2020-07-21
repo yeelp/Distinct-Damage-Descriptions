@@ -200,17 +200,17 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		float slashing = damageCat.getSlashingDamage();
 		float piercing = damageCat.getPiercingDamage();
 		float bludgeoning = damageCat.getBludgeoningDamage();
-		if(!resistances.isSlashingImmune() && slashing > 0)
+		if(slashing > 0)
 		{
-			map.put(DamageType.SLASHING, slashing);
+			map.put(DamageType.SLASHING, resistances.isSlashingImmune() ? -1 : slashing);
 		}
-		if(!resistances.isPiercingImmune() && piercing > 0)
+		if(piercing > 0)
 		{
-			map.put(DamageType.PIERCING, piercing);
+			map.put(DamageType.PIERCING, resistances.isPiercingImmune() ? -1 : piercing);
 		}
-		if(!resistances.isBludgeoningImmune() && bludgeoning > 0)
+		if(bludgeoning > 0)
 		{
-			map.put(DamageType.BLUDGEONING, bludgeoning);
+			map.put(DamageType.BLUDGEONING, resistances.isBludgeoningImmune() ? -1 : bludgeoning);
 		}
 		return map;
 	}

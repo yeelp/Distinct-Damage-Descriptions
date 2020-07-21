@@ -71,13 +71,26 @@ public class DamageHandler extends Handler
 		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender, bootsOnly, helmetOnly);
 		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
 		float[] absorb = new float[3];
-		shouldKnockback.put(defender.getUniqueID(), dmgMap.size() == 0);
+		boolean shouldKnockbackFlag = true;
+		for(Float f : dmgMap.values())
+		{
+			if(f != null && f.floatValue() > 0)
+			{
+				shouldKnockbackFlag = true;
+				break;
+			}
+		}
+		shouldKnockback.put(defender.getUniqueID(), shouldKnockbackFlag);
 		float totalDamage = 0;
 		for(DamageType type : DamageType.values())
 		{
 			if(dmgMap.containsKey(type))
 			{
 				float dmg = dmgMap.get(type);
+				if(dmg < 0)
+				{
+					continue;
+				}
 				float mobMod = 0.0f;
 				switch(type)
 				{
