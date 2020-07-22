@@ -149,6 +149,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			if(!hasEmptyHand)
 			{
 				IDamageDistribution weaponDist = getDamageDistribution(heldItem);
+				slyStrike = EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.slyStrike, attacker) > 0;
 				damageCat = weaponDist.distributeDamage(damage);
 			}
 			else

@@ -39,7 +39,7 @@ public class DDDParticle extends Particle
 	
 	public DDDParticle(Entity origin, double dx, double dy, double dz, DDDParticleType type, Random displacementSeed)
 	{
-		this(origin.getEntityWorld(), origin.posX + origin.width*displacementSeed.nextDouble() - origin.width/2, origin.getEyeHeight() + origin.height*displacementSeed.nextDouble() - origin.height/2, origin.posZ + origin.width*displacementSeed.nextDouble() - origin.width/2, dx, dy, dx, type);
+		this(origin.getEntityWorld(), origin.posX + origin.width*displacementSeed.nextDouble() - origin.width/2, origin.posY + origin.getEyeHeight() + origin.height*displacementSeed.nextDouble() - origin.height/2, origin.posZ + origin.width*displacementSeed.nextDouble() - origin.width/2, dx, dy, dx, type);
 	}
 	
 	@Override 
