@@ -23,6 +23,7 @@ public class MobResistanceCategories extends ResistanceCategories
 	{
 		super(slashing, piercing, bludgeoning, slashImmune, pierceImmune, bludgeImmune);
 		this.adaptive = adaptive;
+		this.adaptiveAmount = adaptiveAmount;
 	}
 	
 	/**

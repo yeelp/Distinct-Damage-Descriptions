@@ -19,5 +19,19 @@
         "sounds": [
             "distinctdamagedescriptions:immunity_tock"
         ]
+    },
+    "high_resist_hit": {
+        "category": "player",
+        "subtitle": "distinctdamagedescriptions.subtitle.high_resist_hit",
+        "sounds": [
+            "distinctdamagedescriptions:high_resist_bong"
+        ]
+    },
+    "adaptability_change": {
+        "category": "player",
+        "subtitle": "distinctdamagedescriptions.subtitle.adaptability_change",
+        "sounds": [
+            "distinctdamagedescriptions:adaptability_zip"
+        ]
     }
 }

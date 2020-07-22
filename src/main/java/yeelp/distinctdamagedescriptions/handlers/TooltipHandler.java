@@ -49,7 +49,7 @@ public class TooltipHandler extends Handler
 	private static final ITextComponent mobResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobresistances").setStyle(GRAY);
 	private static final ITextComponent mobImmunityTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.immunities").setStyle(AQUA);
 	private static final ITextComponent mobAdaptiveTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptivechance").setStyle(LIGHT_PURPLE);
-	private static final ITextComponent mobAdaptiveAmountTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptiveAmount").setStyle(LIGHT_PURPLE);
+	private static final ITextComponent mobAdaptiveAmountTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptiveamount").setStyle(LIGHT_PURPLE);
 	private static final ITextComponent[] damageTypeTooltips = {slashTooltip, pierceTooltip, bludgeTooltip};
 	private static final String resistanceColor = TextFormatting.GRAY.toString();
 	private static final String weaknessColor = TextFormatting.DARK_RED.toString();
@@ -145,8 +145,8 @@ public class TooltipHandler extends Handler
 						index = tooltips.size()-2;
 					}
 					Tuple<String, String> adaptiveTooltips = makeMobAdaptiveTooltip(adaptiveInfo);
-					tooltips.add(index, adaptiveTooltips.getFirst());
 					tooltips.add(index, adaptiveTooltips.getSecond());
+					tooltips.add(index, adaptiveTooltips.getFirst());
 				}
 			}
 			tooltips.add(startingIndex, mobResistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));

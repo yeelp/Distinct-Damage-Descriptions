@@ -80,7 +80,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		super.slashing += netChange[0];
 		super.piercing += netChange[1];
 		super.bludgeoning += netChange[2];
-		return netChange[0] == 0 && netChange[1] == 0 && netChange[2] == 0;
+		return netChange[0] != 0 || netChange[1] != 0 || netChange[2] != 0;
 	}
 
 	private void setImmunity(DamageType damageType, boolean status)

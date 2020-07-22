@@ -75,7 +75,7 @@ public class DamageHandler extends Handler
 		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender, bootsOnly, helmetOnly);
 		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
 		float[] absorb = new float[3];
-		boolean shouldKnockbackFlag = true;
+		boolean blockKnockbackFlag = true;
 		boolean immunityResisted = false;
 		boolean resisted = false;
 		boolean weakness = false;
@@ -83,11 +83,11 @@ public class DamageHandler extends Handler
 		{
 			if(f != null && f.floatValue() > 0)
 			{
-				shouldKnockbackFlag = true;
+				blockKnockbackFlag = false;
 				break;
 			}
 		}
-		shouldKnockback.put(defender.getUniqueID(), shouldKnockbackFlag);
+		shouldKnockback.put(defender.getUniqueID(), blockKnockbackFlag);
 		float totalDamage = 0;
 		for(DamageType type : DamageType.values())
 		{
@@ -128,11 +128,14 @@ public class DamageHandler extends Handler
 				Tuple<Float, Float> resists = armors.get(type);
 				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond(), applyAnvilReductionCap);
 				newDmg -= newDmg*mobMod;
-				if(!resisted && newDmg < dmg)
+				//We use an error tolerance to avoid floating point precision errors playing wrong sound effects.
+				//If newDmg and dmg are within a small neighbourhood of eachother, then we can ignore the exact difference in size and call them "equal"
+				boolean isVeryClose = Math.abs(newDmg - dmg) < 0.0000001D;
+				if(!resisted && newDmg < dmg && !isVeryClose)
 				{
 					resisted = true;
 				}
-				if(!weakness && newDmg > dmg)
+				if(!weakness && newDmg > dmg && !isVeryClose)
 				{
 					weakness = true;
 				}
@@ -142,12 +145,13 @@ public class DamageHandler extends Handler
 		}
 		DistinctDamageDescriptions.debug("new damage: "+totalDamage);
 		float ratio = totalDamage/evt.getAmount();
-		evt.setAmount(totalDamage);
+		evt.setAmount(totalDamage < 0 ? 0 : totalDamage);
 		dmgSource.setDamageBypassesArmor();
 		//Only spawn particles and play sounds for players.
+		EntityPlayer attackerPlayer = null;
 		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{
-			EntityPlayer attacker = (EntityPlayer) dmgSource.getTrueSource();
+			attackerPlayer = (EntityPlayer) dmgSource.getTrueSource();
 			if(resisted)
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.RESISTANCE);
@@ -159,25 +163,31 @@ public class DamageHandler extends Handler
 			if(immunityResisted)
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
-				DDDSounds.playSound(attacker, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
+				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.8f, 1.0f);
 			}
 			else if(ratio != 0)
 			{
 				if(ratio > 1)
 				{
-					DDDSounds.playSound(attacker, DDDSounds.WEAKNESS_HIT, 0.7f, 1.0f);
+					DDDSounds.playSound(attackerPlayer, DDDSounds.WEAKNESS_HIT, 0.9f, 1.0f);
 				}
 				else if(ratio < 1)
 				{
-					DDDSounds.playSound(attacker, DDDSounds.RESIST_DING, 1.6f, 1.0f);
+					DDDSounds.playSound(attackerPlayer, DDDSounds.RESIST_DING, 1.8f, 1.0f);
 				}
+			}
+			else if(ratio == 0)
+			{
+				DDDSounds.playSound(attackerPlayer, DDDSounds.HIGH_RESIST_HIT, 1.8f, 1.0f);
 			}
 		}
 		if(mobResists.hasAdaptiveResistance())
 		{
-			DistinctDamageDescriptions.debug("Updating mob's adaptive immunity, since it is present...");
-			//TODO add sfx
-			mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new DamageType[0]));
+			DistinctDamageDescriptions.debug("Updating mob's adaptive resistance, since it is present...");
+			if(mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new DamageType[0])) && attackerPlayer != null)
+			{
+				DDDSounds.playSound(attackerPlayer, DDDSounds.ADAPTABILITY_CHANGE, 2.0f, 1.0f);
+			}
 		}
 		Map<EntityEquipmentSlot, IArmorDistribution> armorMap = DDDAPI.accessor.getArmorDistributionsForEntity(defender);
 		for(ItemStack stack : defender.getArmorInventoryList())
@@ -238,8 +248,8 @@ public class DamageHandler extends Handler
 	private static void spawnRandomAmountOfParticles(Entity origin, DDDParticleType type)
 	{
 		ParticleManager manager = Minecraft.getMinecraft().effectRenderer;
-		int amount = (int)(3*Math.random()+2);
-		for(int i = 0; i <= amount; i++)
+		int amount = (int)(2*Math.random())+2;
+		for(int i = 0; i < amount; i++)
 		{
 			manager.addEffect(new DDDParticle(origin, 0, 4, 0, type, particleDisplacement));
 		}

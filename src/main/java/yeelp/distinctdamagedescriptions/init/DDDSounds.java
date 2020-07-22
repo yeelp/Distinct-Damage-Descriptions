@@ -20,6 +20,8 @@ public final class DDDSounds
 	public static final SoundEvent RESIST_DING = createSoundEvent("resist_ding");
 	public static final SoundEvent WEAKNESS_HIT = createSoundEvent("weakness_hit");
 	public static final SoundEvent IMMUNITY_HIT = createSoundEvent("immunity_hit");
+	public static final SoundEvent HIGH_RESIST_HIT = createSoundEvent("high_resist_hit");
+	public static final SoundEvent ADAPTABILITY_CHANGE = createSoundEvent("adaptability_change");
 	
 	public static void init()
 	{
