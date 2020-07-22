@@ -26,3 +26,5 @@ enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchante
 distinctdamagedescriptions.subtitle.resist_ding=Attack reduced by resistance
 distinctdamagedescriptions.subtitle.weakness_hit=Attack increased by weakness
 distinctdamagedescriptions.subtitle.immunity_hit=Attack blocked by immunity
+distinctdamagedescriptions.subtitle.adaptability_change=Adaptability changed
+distinctdamagedescriptions.subtitle.high_resist_hit=Attack nullified by resistances

@@ -163,22 +163,22 @@ public class DamageHandler extends Handler
 			if(immunityResisted)
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
-				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.8f, 1.0f);
+				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
 			}
 			else if(ratio != 0)
 			{
 				if(ratio > 1)
 				{
-					DDDSounds.playSound(attackerPlayer, DDDSounds.WEAKNESS_HIT, 0.9f, 1.0f);
+					DDDSounds.playSound(attackerPlayer, DDDSounds.WEAKNESS_HIT, 0.6f, 1.0f);
 				}
 				else if(ratio < 1)
 				{
-					DDDSounds.playSound(attackerPlayer, DDDSounds.RESIST_DING, 1.8f, 1.0f);
+					DDDSounds.playSound(attackerPlayer, DDDSounds.RESIST_DING, 1.7f, 1.0f);
 				}
 			}
 			else if(ratio == 0)
 			{
-				DDDSounds.playSound(attackerPlayer, DDDSounds.HIGH_RESIST_HIT, 1.8f, 1.0f);
+				DDDSounds.playSound(attackerPlayer, DDDSounds.HIGH_RESIST_HIT, 1.7f, 1.0f);
 			}
 		}
 		if(mobResists.hasAdaptiveResistance())
