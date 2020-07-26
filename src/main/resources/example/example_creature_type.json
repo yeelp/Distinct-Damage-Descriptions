@@ -1,0 +1,41 @@
+// Mod Version: 1.0.0-alpha
+{
+    //Name of the creature type. Will be converted to lowercase internally. "unknown" is not allowed (as it is used internally)
+    "name": "example",
+    //The base slashing resistance of this creature type. This is a float that represents a percent. So, a value of 0.5 is 50% resistance.
+    //Negative values indicate a weakness. Dual typed mobs only get 75% of this value when used as a main type and 25% of this value when used as a sub type.
+    "slashing_resistance": 0.0,
+    //The base piercing resistance of this creature type. This is a float that represents a percent. So, a value of 0.5 is 50% resistance.
+    //Negative values indicate a weakness. Dual typed mobs only get 75% of this value when used as a main type and 25% of this value when used as a sub type.
+    "piercing_resistance": 0.5,
+    //The base bludgeoning resistance of this creature type. This is a float that represents a percent. So, a value of 0.5 is 50% resistance.
+    //Negative values indicate a weakness. Dual typed mobs only get 75% of this value when used as a main type and 25% of this value when used as a sub type.
+    "bludgeoning_resistance": -0.5,
+    //Immunities for mobs with this as a main type, defined in the same way as the individual overrides. This is a string with characters "s", "p", "b" denoting if this type should
+    //have a slashing, piercing or bludgeoning resistance, respectively. Any combination of these characters are valid, and having no characters (an empty string)
+    //will give the type no resistances. Order does not matter."
+    "immunities": "ps",
+    //Percent chance a mob with this as a main type gets adaptive resistance. This is a float that represents a percent. In this case,
+    //a value of 0.0314159 is a 3.14159% chance the mob gets adaptive resistance. 
+    "adaptability_chance": 0.0314159,
+    //Change in adaptive resistance when adaptability kicks in. This is a float that represents a percent. In this case,
+    //a value of 0.0271828 means mob resistances change by 2.71828% when adaptability activates.
+    "adaptability_amount": 0.0271828,
+    //A list of potion effects of the form <modid>:<effect_name> that mobs of this type should be immune to. Works for main and sub types (dual typed mobs inherit all potion immunities from both types).
+    //As you'd expect, modded potion effects work.
+    "potion_immunities": [
+        "minecraft:poison",
+        "potioncore:weight",
+        "scalingfeast:softstomach"
+    ],
+    //A list of mobs of the form <modid>:<mobid> of mobs that get this type as a main type. Works with modded mobs, as you'd expect.
+    "main_type_mobs": [
+        "minecraft:creeper",
+        "quark:dweller"
+    ],
+    //A list of mobs of the form <modid>:<mobid> of mobs that get this type as a sub type. Works with modded mobs, as you'd expect.
+    //A mob shouldn't have this type as both a main type and a sub type. Mono typed mobs only need to be listed in the main type list.
+    "sub_type_mobs": [
+        "minecraft:silverfish"
+    ]
+}

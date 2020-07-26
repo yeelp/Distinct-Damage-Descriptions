@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +20,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
@@ -28,8 +30,10 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
+import yeelp.distinctdamagedescriptions.registries.DDDCreatureTypeRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
+import yeelp.distinctdamagedescriptions.util.CreatureType;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
@@ -47,12 +51,20 @@ public class DistinctDamageDescriptions
     private static Map<String, ComparableTriple<Float, Float, Float>> weaponMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
     private static Map<String, ComparableTriple<Float, Float, Float>> projectileMap = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
     private static Map<String, String> itemIDToProjIDMap = new HashMap<String, String>();
+    private static File configDirectory;
+    
+    @Instance(ModConsts.MODID)
+    public static DistinctDamageDescriptions instance;
+    public static File srcFile;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        logger = event.getModLog(); 
+        logger = event.getModLog();
+        configDirectory = event.getModConfigurationDirectory();
+        srcFile = event.getSourceFile();
         DDDAPI.init();
+        DDDCreatureTypeRegistries.init();
         populateMaps();
     }
 
@@ -65,6 +77,7 @@ public class DistinctDamageDescriptions
         MobResistances.register();
         ArmorDistribution.register();
         DamageDistribution.register();
+        CreatureType.register();
         PacketHandler.init();
         DDDSounds.init();
         if(ModConfig.enableEnchants)
@@ -208,5 +221,10 @@ public class DistinctDamageDescriptions
 		{
 			logger.info("[DISTINCT DAMAGE DESCRIPTIONS (DEBUG)]" + msg);
 		}
+	}
+	
+	public static File getModConfigDirectory()
+	{
+		return new File(configDirectory, ModConsts.MODID);
 	}
 }
