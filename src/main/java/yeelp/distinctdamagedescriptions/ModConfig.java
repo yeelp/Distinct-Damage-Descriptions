@@ -144,7 +144,7 @@ public class ModConfig
 	public static class ResistanceCategory
 	{
 		@Name("Mob Base Resistance/Weakness")
-		@Comment({"Modify the base resistance/weakness of mobs",
+		@Comment({"Modify the base resistance/weakness of mobs. This overrides any resistances provided by creature types JSON files.",
 				  "Each entry is of the form id;s;p;b;immunities;adaptive where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
 				  "   s is the base slashing resistance percent of this mob.",
@@ -239,6 +239,14 @@ public class ModConfig
 			"minecraft:diamond_leggings;0.15;1.0;0.7",
 			"minecraft:diamond_boots;0.15;1.0;0.7"
 		};
+		
+		@Name("Use Creature Types")
+		@Comment({"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions.",
+				  "These JSON files can be used to apply potion immunities, along with applying the same resistances to large amounts of mobs at once.",
+				  "Remember that entries in the \"Mob Base Resistances/Weaknesses\" config will override any mob resistances provided by these JSON files.",
+				  "This is done to allow end users to still have granular control over resistances while still providing potion immunities to large swaths of mobs at once."})
+		@RequiresMcRestart
+		public boolean useCreatureTypes = false;
 	}
 	
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)

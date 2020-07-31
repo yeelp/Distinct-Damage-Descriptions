@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.util;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound>
@@ -16,4 +17,11 @@ public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound>
 	 * @return the sub CreatureTypeData
 	 */
 	CreatureTypeData getSubCreatureTypeData();
+	
+	/**
+	 * Is this creature type immune to a PotionEffect?
+	 * @param effect the Potion effect
+	 * @return true if immune, false if not.
+	 */
+	boolean isImmuneToPotionEffect(PotionEffect effect);
 }

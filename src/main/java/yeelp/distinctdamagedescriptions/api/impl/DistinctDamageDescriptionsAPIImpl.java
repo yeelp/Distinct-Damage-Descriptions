@@ -24,11 +24,13 @@ import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistancesProvider;
@@ -78,6 +80,12 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	public IMobResistances getMobResistances(EntityLivingBase entity)
 	{
 		return MobResistancesProvider.getMobResistances(entity);
+	}
+	
+	@Override
+	public ICreatureType getMobCreatureType(EntityLivingBase entity)
+	{
+		return CreatureTypeProvider.getCreatureType(entity);
 	}
 	
 	@Override

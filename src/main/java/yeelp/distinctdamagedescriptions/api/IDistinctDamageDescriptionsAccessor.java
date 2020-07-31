@@ -15,6 +15,7 @@ import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 
@@ -56,6 +57,13 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @return the IMobResistances for that entity
 	 */
 	IMobResistances getMobResistances(EntityLivingBase entity);
+	
+	/**
+	 * Get the mob's creature type - an instance of {@link ICreatureType}
+	 * @param entity
+	 * @return the ICreatureType the mob has. Always returns {@link CreatureType.UNKNOWN} for mobs that are instances of EntityPlayer
+	 */
+	ICreatureType getMobCreatureType(EntityLivingBase entity);
 	
 	/**
 	 * Get a map of armor resistance for an entity

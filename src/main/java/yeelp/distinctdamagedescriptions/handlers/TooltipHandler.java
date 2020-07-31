@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.handlers;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.util.Tuple;
@@ -16,8 +15,8 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
@@ -63,7 +62,7 @@ public class TooltipHandler extends Handler
 		List<String> tooltips = evt.getToolTip();
 		boolean advanced = evt.getFlags().isAdvanced();
 		Item item = evt.getItemStack().getItem();
-		ComparableTriple<Float, Float, Float> projDist = DistinctDamageDescriptions.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
+		ComparableTriple<Float, Float, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
 		if(damages != null)
@@ -108,7 +107,7 @@ public class TooltipHandler extends Handler
 		if(item instanceof ItemMonsterPlacer)
 		{
 			ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
-			MobResistanceCategories mobCats = DistinctDamageDescriptions.getMobResistances(ItemMonsterPlacer.getNamedIdFrom(evt.getItemStack()).toString());
+			MobResistanceCategories mobCats = DDDRegistries.mobResists.getResistancesForMob(ItemMonsterPlacer.getNamedIdFrom(evt.getItemStack()).toString());
 			int index = tooltips.size();
 			if(advanced)
 			{

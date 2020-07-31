@@ -11,7 +11,7 @@ public class CreatureTypeProvider
 	
 	private ICreatureType instance = creatureType.getDefaultInstance();
 	
-	public ICreatureType getCreatureType(EntityLivingBase entity)
+	public static ICreatureType getCreatureType(EntityLivingBase entity)
 	{
 		return entity.getCapability(creatureType, null);
 	}

@@ -4,11 +4,12 @@ import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import yeelp.distinctdamagedescriptions.registries.DDDCreatureTypeRegistries;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class CreatureType implements ICreatureType
 {
@@ -51,13 +52,19 @@ public class CreatureType implements ICreatureType
 	@Override
 	public CreatureTypeData getMainCreatureTypeData()
 	{
-		return DDDCreatureTypeRegistries.getCreatureTypeData(mainType);
+		return DDDRegistries.creatureTypes.getCreatureTypeData(mainType);
 	}
 
 	@Override
 	public CreatureTypeData getSubCreatureTypeData()
 	{
-		return DDDCreatureTypeRegistries.getCreatureTypeData(subType);
+		return DDDRegistries.creatureTypes.getCreatureTypeData(subType);
+	}
+	
+	@Override
+	public boolean isImmuneToPotionEffect(PotionEffect effect)
+	{
+		return getMainCreatureTypeData().isImmuneToPotionEffect(effect) || getSubCreatureTypeData().isImmuneToPotionEffect(effect);
 	}
 	
 	public static void register()
