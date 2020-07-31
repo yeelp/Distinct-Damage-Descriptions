@@ -117,6 +117,14 @@ public class NonNullMap<Key, Value> extends AbstractMap<Key, Value> implements M
 	@Override
 	public Value put(Key key, Value value) 
 	{
+		if(value == null)
+		{
+			throw new NullPointerException("Null values disallowed for NonNullMap");
+		}
+		else if(key == null)
+		{
+			throw new NullPointerException("Null keys disallowed for NonNullMap");
+		}
 		int index = keys.indexOf(key);
 		if(index == -1)
 		{
