@@ -76,7 +76,12 @@ public class DistinctDamageDescriptions
     {
     	logger.error("[DISTINCT DAMAGE DESCRIPTIONS] "+msg);
     }
-
+    
+    public static void fatal(String msg)
+	{
+		logger.fatal("[DISTINCT DAMAGE DESCRIPTIONS] "+msg);
+	}
+    
 	public static void debug(String msg)
 	{
 		if(ModConfig.showDotsOn)
@@ -89,4 +94,6 @@ public class DistinctDamageDescriptions
 	{
 		return new File(configDirectory, ModConsts.MODID);
 	}
+
+	
 }

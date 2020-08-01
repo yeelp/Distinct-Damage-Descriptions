@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -54,7 +55,16 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		DDDRegistries.mobDamage = this;
 		DDDRegistries.itemProperties = this;
 		DDDRegistries.projectileProperties = this;
-		init();
+		try
+		{
+			init();
+		}
+		catch(Exception e)
+		{
+			DistinctDamageDescriptions.fatal("Encountered severe error loading registries!");
+			DistinctDamageDescriptions.fatal("Exception type: "+e.getClass().getSimpleName());
+			DistinctDamageDescriptions.fatal("Trace: "+Arrays.toString(e.getStackTrace()));
+		}
 	}
 	
 	@Override
