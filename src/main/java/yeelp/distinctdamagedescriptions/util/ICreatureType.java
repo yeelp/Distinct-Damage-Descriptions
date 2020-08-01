@@ -24,4 +24,10 @@ public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound>
 	 * @return true if immune, false if not.
 	 */
 	boolean isImmuneToPotionEffect(PotionEffect effect);
+
+	/**
+	 * Is this creature type immune to critical hits?
+	 * @return true if immune, false if not.
+	 */
+	boolean isImmuneToCriticalHits();
 }

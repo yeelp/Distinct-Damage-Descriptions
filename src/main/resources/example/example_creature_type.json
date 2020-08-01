@@ -1,4 +1,4 @@
-// Mod Version: 1.0.0-alpha
+// Mod Version: "${version}"
 {
     //Name of the creature type. Will be converted to lowercase internally. "unknown" is not allowed (as it is used internally)
     "name": "example",
@@ -21,6 +21,8 @@
     //Change in adaptive resistance when adaptability kicks in. This is a float that represents a percent. In this case,
     //a value of 0.0271828 means mob resistances change by 2.71828% when adaptability activates.
     "adaptability_amount": 0.0271828,
+    //Whether or not creature with this as a main type are immune to critical hits.
+    "critical_hit_immunity": true,
     //A list of potion effects of the form <modid>:<effect_name> that mobs of this type should be immune to. Works for main and sub types (dual typed mobs inherit all potion immunities from both types).
     //As you'd expect, modded potion effects work.
     "potion_immunities": [

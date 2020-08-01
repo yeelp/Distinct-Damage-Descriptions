@@ -67,6 +67,12 @@ public class CreatureType implements ICreatureType
 		return getMainCreatureTypeData().isImmuneToPotionEffect(effect) || getSubCreatureTypeData().isImmuneToPotionEffect(effect);
 	}
 	
+	@Override
+	public boolean isImmuneToCriticalHits()
+	{
+		return getMainCreatureTypeData().isImmuneToCriticals();
+	}
+	
 	public static void register()
 	{
 		CapabilityManager.INSTANCE.register(ICreatureType.class, new CreatureTypeStorage(), new CreatureTypeFactory());

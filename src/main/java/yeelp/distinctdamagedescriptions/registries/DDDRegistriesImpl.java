@@ -254,6 +254,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 						boolean bludgeImmune = immunities.contains("b");
 						float adaptiveChance = getJsonFloat(obj, "adaptability_chance", f);
 						float adaptiveAmount = getJsonFloat(obj, "adaptability_amount", f);
+						boolean critImmunity = getJsonBoolean(obj, "critical_hit_immunity", f);
 						//We use a HashSet as that most likely guarantees a fast containment check.
 						HashSet<String> potionImmunities = new HashSet<String>();
 						for(JsonElement j : getJsonArray(obj, "potion_immunities", f))
@@ -291,7 +292,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 							}
 						}
 						MobResistanceCategories cats = new MobResistanceCategories(slash, pierce, bludge, slashImmune, pierceImmune, bludgeImmune, adaptiveChance, adaptiveAmount);
-						creatureTypes.put(type, new CreatureTypeData(type, cats, potionImmunities));
+						creatureTypes.put(type, new CreatureTypeData(type, cats, potionImmunities, critImmunity));
 					}
 				}
 				catch(FileNotFoundException e)
@@ -389,6 +390,11 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	private static String getJsonString(JsonObject obj, String memberName, File f)
 	{
 		return getJsonElement(obj, memberName, f).getAsString();
+	}
+	
+	private static boolean getJsonBoolean(JsonObject obj, String memberName, File f)
+	{
+		return getJsonElement(obj, memberName, f).getAsBoolean();
 	}
 	
 	private static JsonArray getJsonArray(JsonObject obj, String memberName, File f)
