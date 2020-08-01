@@ -202,10 +202,11 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	private static boolean shouldOverwriteExampleJSON(File json)
 	{
 		boolean b = jsonFiles.length >= 1;
+		boolean j = json.exists();
 		try(FileInputStream inStream = new FileInputStream(json); BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "UTF8")))
 		{
 			String firstLine = reader.readLine();
-			return !("// Mod Version: "+ModConsts.VERSION).equals(firstLine);
+			return (j && !("// Mod Version: "+ModConsts.VERSION).equals(firstLine)) || (!j && !b);
 		}
 		catch (FileNotFoundException e)
 		{
