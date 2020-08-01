@@ -37,6 +37,6 @@ public final class CreatureTypeData
 	
 	public boolean isImmuneToPotionEffect(PotionEffect effect)
 	{
-		return potionImmunities.contains(effect.getEffectName());
+		return potionImmunities.contains(effect.getPotion().getRegistryName().toString());
 	}
 }
