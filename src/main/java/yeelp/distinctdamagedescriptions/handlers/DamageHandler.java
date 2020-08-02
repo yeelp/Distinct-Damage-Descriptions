@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -15,6 +16,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ISpecialArmor;
@@ -52,8 +54,14 @@ public class DamageHandler extends Handler
 		EntityLivingBase defender = evt.getEntityLiving();
 		DamageSource dmgSource = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
 		Entity attacker = dmgSource.getImmediateSource();
-		String[] damageTypes = null;
-		if(ModConfig.resist.useCreatureTypes)
+		if(ModConfig.showDotsOn)
+		{
+			ResourceLocation attackerLoc = attacker == null || attacker instanceof EntityPlayer ? null : EntityList.getKey(attacker), defendLoc = EntityList.getKey(defender);
+			String s1 = attackerLoc != null ? attackerLoc.toString() : "null", s2 = defendLoc != null ? defendLoc.toString() : "null";
+			DistinctDamageDescriptions.debug("Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", Defender: "+s2);
+		}
+		String[] damageTypes = new String[0];
+		if(ModConfig.resist.useCreatureTypes && ModConfig.dmg.useCustomDamageTypes)
 		{
 			ICreatureType type = DDDAPI.accessor.getMobCreatureType(defender);
 			if(dmgSource instanceof DDDDamageType)
@@ -75,10 +83,13 @@ public class DamageHandler extends Handler
 		Map<DamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(mobResists, dmgSource, evt.getAmount());
 		if(dmgMap == null)
 		{
-			float amount = evt.getAmount();
-			CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, amount, finalModifier, damageTypes);
-			MinecraftForge.EVENT_BUS.post(custEvt);
-			evt.setAmount(custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance());
+			if(ModConfig.dmg.useCustomDamageTypes && ModConfig.resist.useCreatureTypes)
+			{
+				float amount = evt.getAmount();
+				CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, amount, finalModifier, damageTypes);
+				MinecraftForge.EVENT_BUS.post(custEvt);
+				evt.setAmount(custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance());
+			}
 			return;
 		}
 		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
