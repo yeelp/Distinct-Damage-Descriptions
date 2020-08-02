@@ -14,7 +14,7 @@
     //Immunities for mobs with this as a main type, defined in the same way as the individual overrides. This is a string with characters "s", "p", "b" denoting if this type should
     //have a slashing, piercing or bludgeoning resistance, respectively. Any combination of these characters are valid, and having no characters (an empty string)
     //will give the type no resistances. Order does not matter."
-    "physcialImmunities": "ps",
+    "physicalImmunities": "ps",
     //Percent chance a mob with this as a main type gets adaptive resistance. This is a float that represents a percent. In this case,
     //a value of 0.0314159 is a 3.14159% chance the mob gets adaptive resistance. 
     "adaptability_chance": 0.0314159,
