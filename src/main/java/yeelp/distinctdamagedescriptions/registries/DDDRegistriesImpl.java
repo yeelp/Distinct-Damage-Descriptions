@@ -91,7 +91,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		{
 			creatureJsonFiles = creatureDirectory.listFiles();
 			damageTypeJsonFiles = damageTypeDirectory.listFiles();
-			if(writeExampleJSON("exmaple_creature_type.json", creatureDirectory))
+			if(writeExampleJSON("example_creature_type.json", creatureDirectory))
 			{
 				creatureJsonFiles = creatureDirectory.listFiles();
 			}

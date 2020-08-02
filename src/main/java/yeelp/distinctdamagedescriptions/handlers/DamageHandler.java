@@ -179,7 +179,9 @@ public class DamageHandler extends Handler
 		{
 			CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, totalDamage, finalModifier, damageTypes);
 			MinecraftForge.EVENT_BUS.post(custEvt);
-			totalDamage = custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance();
+			totalDamage = custEvt.getDamage();
+			finalModifier = custEvt.getResistance();
+			totalDamage -= totalDamage*finalModifier;
 			DistinctDamageDescriptions.debug("new damage after additional reductions: "+totalDamage);
 		}
 		float ratio = totalDamage/evt.getAmount();
