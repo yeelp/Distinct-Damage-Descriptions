@@ -75,7 +75,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		catch(Exception e)
 		{
 			DistinctDamageDescriptions.fatal("Encountered severe error loading registries!");
-			DistinctDamageDescriptions.fatal("Exception type: "+e.getClass().getSimpleName());
+			DistinctDamageDescriptions.fatal("Exception type: "+e.getClass().getSimpleName() + ": " + e.getLocalizedMessage());
 			DistinctDamageDescriptions.fatal("Trace: "+Arrays.toString(e.getStackTrace()));
 			throw e;
 		}
