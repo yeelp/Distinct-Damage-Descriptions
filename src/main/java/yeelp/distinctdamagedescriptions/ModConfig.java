@@ -110,6 +110,11 @@ public class ModConfig
 				"minecraft:llama_spit;0;0;1"
 		};
 		
+		@Name("Use Custom Damage Types")
+		@Comment("If true, Distinct Damage Descriptions will load custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
+		@RequiresMcRestart
+		public boolean useCustomDamageTypes = false;
+		
 		@Name("Extra Damage Classification")
 		@Comment("Enable/disable damage distributions for certain vanilla damage sources.")
 		public ExtraDamageDistsCategory extraDamage = new ExtraDamageDistsCategory();
@@ -241,7 +246,7 @@ public class ModConfig
 		};
 		
 		@Name("Use Creature Types")
-		@Comment({"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions.",
+		@Comment({"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
 				  "These JSON files can be used to apply potion immunities, along with applying the same resistances to large amounts of mobs at once.",
 				  "Remember that entries in the \"Mob Base Resistances/Weaknesses\" config will override any mob resistances provided by these JSON files.",
 				  "This is done to allow end users to still have granular control over resistances while still providing potion immunities to large swaths of mobs at once."})

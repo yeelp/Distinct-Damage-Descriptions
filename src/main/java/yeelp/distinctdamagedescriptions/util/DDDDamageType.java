@@ -1,18 +1,22 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.util.DamageSource;
 
 public final class DDDDamageType extends DamageSource
 {
-	private String type;
-	public DDDDamageType(DamageSource parentSource, String type)
+	private Set<String> types;
+	public DDDDamageType(DamageSource parentSource, String... types)
 	{
 		super(parentSource.damageType);
-		this.type = type;
+		this.types = new HashSet<String>(Arrays.asList(types));
 	}
 	
-	public String getExtendedType()
+	public Set<String> getExtendedTypes()
 	{
-		return this.type;
+		return this.types;
 	}
 }

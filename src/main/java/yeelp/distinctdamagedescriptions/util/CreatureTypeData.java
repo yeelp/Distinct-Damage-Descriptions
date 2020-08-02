@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.util;
 
 import java.util.HashSet;
+import java.util.Map;
 
 import net.minecraft.potion.PotionEffect;
 
@@ -19,6 +20,7 @@ public final class CreatureTypeData
 	private String type;
 	private MobResistanceCategories resists;
 	private HashSet<String> potionImmunities;
+	private Map<String, Float> extraResistances;
 	private boolean criticalImmunity;
 	/**
 	 * Make a new CreatureTypeData
@@ -26,13 +28,15 @@ public final class CreatureTypeData
 	 * @param resistances resistances this data has
 	 * @param potionImmunities potion immunities this data has
 	 * @param criticalImmunity if this data has crit immunity.
+	 * @param extraResistance additional resistances. A Map: String -> Float that indicates additional modifiers for all damage types.
 	 */
-	public CreatureTypeData(String name, MobResistanceCategories resistances, HashSet<String> potionImmunities, boolean criticalImmunity)
+	public CreatureTypeData(String name, MobResistanceCategories resistances, HashSet<String> potionImmunities, boolean criticalImmunity, Map<String, Float> extraResistances)
 	{
 		this.type = name;
 		this.resists = resistances;
 		this.potionImmunities = potionImmunities;
 		this.criticalImmunity = criticalImmunity;
+		this.extraResistances = extraResistances;
 	}
 	
 	private CreatureTypeData()
@@ -41,6 +45,7 @@ public final class CreatureTypeData
 		resists = new MobResistanceCategories(0, 0, 0, false, false, false, 0, 0);
 		potionImmunities = new HashSet<String>();
 		criticalImmunity = false;
+		this.extraResistances = new NonNullMap<String, Float>(0.0f);
 	}
 	
 	/**
@@ -78,5 +83,15 @@ public final class CreatureTypeData
 	public boolean isImmuneToCriticals()
 	{
 		return criticalImmunity;
+	}
+	
+	/**
+	 * Get the modifier for extra damage types.
+	 * @param damageTypeName name of the damage type.
+	 * @return a float modifier for damage.
+	 */
+	public float getModifierForDamageType(String damageTypeName)
+	{
+		return extraResistances.get(damageTypeName);
 	}
 }

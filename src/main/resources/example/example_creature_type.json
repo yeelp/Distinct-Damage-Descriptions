@@ -14,7 +14,7 @@
     //Immunities for mobs with this as a main type, defined in the same way as the individual overrides. This is a string with characters "s", "p", "b" denoting if this type should
     //have a slashing, piercing or bludgeoning resistance, respectively. Any combination of these characters are valid, and having no characters (an empty string)
     //will give the type no resistances. Order does not matter."
-    "immunities": "ps",
+    "physcialImmunities": "ps",
     //Percent chance a mob with this as a main type gets adaptive resistance. This is a float that represents a percent. In this case,
     //a value of 0.0314159 is a 3.14159% chance the mob gets adaptive resistance. 
     "adaptability_chance": 0.0314159,
@@ -39,5 +39,23 @@
     //A mob shouldn't have this type as both a main type and a sub type. Mono typed mobs only need to be listed in the main type list.
     "sub_type_mobs": [
         "minecraft:silverfish"
+    ],
+    //A list of extra properties, resistances/weaknesses to certain damage types. Dual typed mobs take 75% of this as a main type and 25% as a sub type.
+    "extraProperties": [
+        {
+            //the name of the damage type. Can use custom damage type names defined in custom damage type JSON's.
+            //These custom damage types take priority over vanilla ones for modifying damage values, but are applied after any
+            //physical modifiers. This means that if a piercing+slashing attack is labeled as ddd_example, but is also labeled as inWall, the ddd_example
+            //modifier (-0.8) is applied after piercing and slashing resistances, and the inWall modifier (1.0) is ignored.
+            "damageTypeName": "ddd_example",
+            //resistance to this damage type. Works the same as physical damage types, with negative values indicating a weakness. 
+            //There's no way to alter this value in gameplay, so set this to 1.4 for full immunity as a main type and as 4 for full immunity as a sub type.
+            "resistance": -0.8
+        },
+        {
+            //another example using a vanilla damage type: suffocating in a wall.
+            "damageTypeName": "inWall",
+            "resistance": 1.0
+        }
     ]
 }

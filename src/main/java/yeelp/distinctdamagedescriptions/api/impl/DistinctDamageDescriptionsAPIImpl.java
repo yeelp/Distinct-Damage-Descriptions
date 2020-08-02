@@ -23,6 +23,7 @@ import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.DamageCategories;

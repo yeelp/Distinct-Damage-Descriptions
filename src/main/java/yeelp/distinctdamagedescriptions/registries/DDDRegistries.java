@@ -7,6 +7,7 @@ public abstract class DDDRegistries
 	public static IDDDMobDamageRegistry mobDamage;
 	public static IDDDItemPropertiesRegistry itemProperties;
 	public static IDDDProjectilePropertiesRegistry projectileProperties;
+	public static IDDDDamageTypeRegistry damageTypes;
 	
 	public static void init()
 	{

@@ -10,25 +10,37 @@ import net.minecraft.util.Tuple;
 public final class DamageTypeData
 {
 	public static final DamageTypeData NORMAL = new DamageTypeData();
-	private Set<String> items, directSources, indirectSources;
-	private String name;
+	private Set<String> directSources, indirectSources;
+	private String originalSource;
 	private boolean includeAll;
 	private boolean noSource;
 	
 	private DamageTypeData()
 	{
-		this("normal", new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), false, false);
+		this("", new HashSet<String>(), new HashSet<String>(), false, false);
 	}
 	
-	public DamageTypeData(String name, Set<String> directSources, Set<String> indirectSources, Set<String> items, boolean includeAll, boolean noSource)
+	public DamageTypeData(String name, Set<String> directSources, Set<String> indirectSources, boolean includeAll, boolean noSource)
 	{
-		this.items = items;
 		this.directSources = directSources;
 		this.indirectSources = indirectSources;
-		this.name = "ddd_"+name;
+		this.originalSource = name;
 		this.includeAll = includeAll;
 		this.noSource = noSource;
+	}	
+	
+	public String getOriginalSource()
+	{
+		return originalSource;
 	}
 	
+	public Set<String> getDirectSources()
+	{
+		return directSources;
+	}
 	
+	public Set<String> getIndirectSources()
+	{
+		return indirectSources;
+	}
 }

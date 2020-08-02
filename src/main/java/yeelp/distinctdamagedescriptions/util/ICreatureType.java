@@ -30,4 +30,22 @@ public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound>
 	 * @return true if immune, false if not.
 	 */
 	boolean isImmuneToCriticalHits();
+	
+	/**
+	 * Get the modifier for a damage type.
+	 * @param damageTypeName name
+	 * @return a float modifier from both creature types if present.
+	 */
+	default float getModifierForDamageType(String damageTypeName)
+	{
+		CreatureTypeData sub = getSubCreatureTypeData();
+		if(sub == CreatureTypeData.UNKNOWN)
+		{
+			return getMainCreatureTypeData().getModifierForDamageType(damageTypeName);
+		}
+		else
+		{
+			return 0.75f*getMainCreatureTypeData().getModifierForDamageType(damageTypeName) + 0.25f*sub.getModifierForDamageType(damageTypeName);
+		}
+	}
 }

@@ -1,5 +1,10 @@
 package yeelp.distinctdamagedescriptions.event;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
@@ -8,53 +13,58 @@ import yeelp.distinctdamagedescriptions.util.DamageType;
 /**
  * Base class for all DamageDescriptionEvent events.
  * <br>
+ * These events are not {@link Cancelable}
+ * <br>
+ * These events do not have a result {@link HasResult}
+ * <br>
  * All children are fired on the {@link MinecraftForge#EVENT_BUS}
  * @author Yeelp
  *
  */
-@Cancelable
 public abstract class DamageDescriptionEvent extends Event
 {
-	private final DamageType type;
-	private final LivingHurtEvent evt;
 	private float amount;
+	private final Entity attacker;
+	private final EntityLivingBase defender;
 	/**
 	 * Create a new DamageDescriptionEvent
-	 * @param type the DamageType of this event
-	 * @param evt the underlying LivingHurtEvent
+	 * @param attacker the attacking Entity. May be null.
+	 * @param defender the defending EntityLivingBase.
 	 * @param amount the amount of damage of {@code type} damage being inflicted.
 	 */
-	public DamageDescriptionEvent(DamageType type, LivingHurtEvent evt, float amount)
+	public DamageDescriptionEvent(Entity attacker, EntityLivingBase defender, float amount)
 	{
 		super();
-		this.evt = evt;
-		this.type = type;
 		this.amount = amount;
+		this.attacker = attacker;
+		this.defender = defender;
 	}
 	
 	/**
-	 * Get the DamageType for this event
-	 * @return the DamageType enum.
+	 * Get the Entity inflicting the damage. The arrow, not the shooter.
+	 * @return The attacking Entity
 	 */
-	public DamageType getType()
+	@Nullable
+	public Entity getAttacker()
 	{
-		return this.type;
+		return attacker;
 	}
 	
 	/**
-	 * Get the underlying LivingHurtEvent that fired this DamageDescriptionEvent
-	 * @return the underlying LivingHurtEvent.
+	 * Get the defending EntityLivingBase.
+	 * @return The defending EntityLivingBase
 	 */
-	public LivingHurtEvent getLivingHurtEvent()
+	@Nonnull
+	public EntityLivingBase getDefender()
 	{
-		return this.evt;
+		return defender;
 	}
 	
 	/**
 	 * Get the amount of damage inflicted.
 	 * @return the amount of damage.
 	 */
-	public float getAmount()
+	public float getDamage()
 	{
 		return this.amount;
 	}
@@ -67,60 +77,16 @@ public abstract class DamageDescriptionEvent extends Event
 	{
 		this.amount = amount;
 	}
-	/**
-	 * This override cancels this event, which also cancels the underlying LivingHurtEvent, thus preventing damage. <br>
-	 * <br>
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setCanceled(boolean cancel)
-	{
-		evt.setCanceled(cancel);
-		super.setCanceled(cancel);
-	}
 	
 	/**
-	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of slashing damage, to allow control over its value.
-	 * <br>
-	 * This event is {@link Cancelable}. When canceled, the underlying LivingHurtEvent is also canceled, thus preventing damage. <br>
-	 * <br>
-	 * This event does not have a result {@link HasResult}
+	 * Get the resistance for this damage type.
+	 * @return the resistance
 	 */
-	public static class SlashingDamage extends DamageDescriptionEvent
-	{
-		public SlashingDamage(LivingHurtEvent evt, float amount)
-		{
-			super(DamageType.SLASHING, evt, amount);
-		}
-	}
+	public abstract float getResistance();
 	
 	/**
-	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of bludgeoning damage, to allow control over its value.
-	 * <br>
-	 * This event is {@link Cancelable}. When canceled, the underlying LivingHurtEvent is also canceled, thus preventing damage. <br>
-	 * <br>
-	 * This event does not have a result {@link HasResult}
+	 * Set the resistance for this damage type.
+	 * @param newResistance
 	 */
-	public static class BludgeoningDamage extends DamageDescriptionEvent
-	{
-		public BludgeoningDamage(LivingHurtEvent evt, float amount)
-		{
-			super(DamageType.BLUDGEONING, evt, amount);
-		}
-	}
-	
-	/**
-	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of piercing damage, to allow control over its value.
-	 * <br>
-	 * This event is {@link Cancelable}. When canceled, the underlying LivingHurtEvent is also canceled, thus preventing damage. <br>
-	 * <br>
-	 * This event does not have a result {@link HasResult}
-	 */
-	public static class PiercingDamage extends DamageDescriptionEvent
-	{
-		public PiercingDamage(LivingHurtEvent evt, float amount)
-		{
-			super(DamageType.PIERCING, evt, amount);
-		}
-	}
+	public abstract void setResistance(float newResistance);
 }

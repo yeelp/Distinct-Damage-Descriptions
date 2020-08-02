@@ -12,29 +12,38 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.FileHelper;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.SyntaxException;
 
-public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemPropertiesRegistry, IDDDProjectilePropertiesRegistry
+public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemPropertiesRegistry, IDDDProjectilePropertiesRegistry, IDDDDamageTypeRegistry
 {
 	INSTANCE;
 	private final Map<String, MobResistanceCategories> mobResists = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0, 0, 0, false, false, false, 0, 0));
@@ -45,9 +54,11 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     private final Map<String, ComparableTriple<Float, Float, Float>> itemDamageDist = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
     private final Map<String, ComparableTriple<Float, Float, Float>> projectileDist = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
     private final Map<String, String> itemIDToProjIDMap = new HashMap<String, String>();
+    private final Map<String, String> itemDamageTypes = new NonNullMap<String, String>("ddd_normal");
+    private final Map<String, Tuple<Map<String, String>, Map<String, String>>> damageTypeMap = new HashMap<String, Tuple<Map<String, String>, Map<String, String>>>();
     
-	private static File[] jsonFiles;
-	private static File directory;
+	private static File[] creatureJsonFiles, damageTypeJsonFiles;
+	private static File creatureDirectory, damageTypeDirectory;
 	DDDRegistriesImpl()
 	{
 		DDDRegistries.creatureTypes = this;
@@ -55,6 +66,8 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		DDDRegistries.mobDamage = this;
 		DDDRegistries.itemProperties = this;
 		DDDRegistries.projectileProperties = this;
+		DDDRegistries.damageTypes = this;
+		
 		try
 		{
 			init();
@@ -71,24 +84,23 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	@Override
 	public void init()
 	{
-		directory = DistinctDamageDescriptions.getModConfigDirectory();
-		if(directory.exists() || directory.mkdirs())
+		File mainDirectory = DistinctDamageDescriptions.getModConfigDirectory();
+		creatureDirectory = new File(mainDirectory, "creatureTypes");
+		damageTypeDirectory = new File(mainDirectory, "damageTypes");
+		if((creatureDirectory.exists() && damageTypeDirectory.exists()) || (damageTypeDirectory.mkdirs() && creatureDirectory.mkdirs()))
 		{
-			jsonFiles = directory.listFiles();
-			if(writeExampleCreatureTypeJSON())
+			creatureJsonFiles = creatureDirectory.listFiles();
+			damageTypeJsonFiles = damageTypeDirectory.listFiles();
+			if(writeExampleJSON("exmaple_creature_type.json", creatureDirectory))
 			{
-				jsonFiles = directory.listFiles();
+				creatureJsonFiles = creatureDirectory.listFiles();
+			}
+			if(writeExampleJSON("example_damage_type.json", damageTypeDirectory))
+			{
+				damageTypeJsonFiles = damageTypeDirectory.listFiles();
 			}
 			DistinctDamageDescriptions.debug("Checked JSON");
 			load();
-			if(ModConfig.showDotsOn && ModConfig.resist.useCreatureTypes)
-			{
-				DistinctDamageDescriptions.debug("CREATURE TYPES:");
-				for(CreatureTypeData data : creatureTypes.values())
-				{
-					DistinctDamageDescriptions.debug(data.getTypeName());
-				}
-			}
 		}
 	}	
 
@@ -166,6 +178,70 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     		return null;
     	}
     }
+	
+	@Override
+	public void registerDamageType(String name, Set<String> items, DamageTypeData...datas)
+	{
+		name = "ddd_"+name;
+		for(String s : items)
+		{
+			itemDamageTypes.put(s, name);
+		}
+		for(DamageTypeData d : datas)
+		{
+			Map<String, String> direct = new NonNullMap<String, String>("ddd_normal"), indirect = new NonNullMap<String, String>("ddd_normal");
+			for(String s : d.getDirectSources())
+			{
+				direct.put(s, name);
+			}
+			for(String s : d.getIndirectSources())
+			{
+				indirect.put(s, name);
+			}
+		}
+		DistinctDamageDescriptions.debug("Registered damage type: "+name);
+	}
+	
+	@Override
+	public DamageSource getDamageType(DamageSource originalSource)
+	{
+		Entity entity = originalSource.getImmediateSource();
+		String weaponSource = "ddd_normal";
+		if(entity instanceof EntityLivingBase)
+		{
+			EntityLivingBase livingEntity = (EntityLivingBase) entity;
+			ItemStack stack = livingEntity.getHeldItemMainhand();
+			if(!stack.isEmpty())
+			{
+				weaponSource = itemDamageTypes.get(stack.getItem().getRegistryName().toString());
+			}
+		}
+		Tuple<Map<String, String>, Map<String, String>> t = damageTypeMap.get(originalSource.damageType);
+		if(t == null)
+		{
+			if(weaponSource.equals("ddd_normal"))
+			{
+				return originalSource;
+			}
+			else
+			{
+				return new DDDDamageType(originalSource, weaponSource);
+			}
+		}
+		else
+		{
+			String direct = EntityList.getKey(originalSource.getImmediateSource()).toString(), indirect = EntityList.getKey(originalSource.getTrueSource()).toString();
+			if(weaponSource.equals("ddd_normal"))
+			{
+				return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect));
+			}
+			else
+			{
+				return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource);
+			}
+		}
+	}
+	
 	private static String[] tryPut(Map<String, ComparableTriple<Float, Float, Float>> map, String s)
     {
     	String[] contents = s.split(";");
@@ -181,11 +257,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     	return null;
     }
 	
-	private static boolean writeExampleCreatureTypeJSON()
+	private static boolean writeExampleJSON(String filename, File parentDirectory)
 	{
-		String name = "example_creature_type.json";
-		String relativePath = "example/"+name;
-		File dest = new File(directory, name);
+		String relativePath = "example/"+filename;
+		File dest = new File(parentDirectory, filename);
 		
 		try
 		{
@@ -212,7 +287,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	
 	private static boolean shouldOverwriteExampleJSON(File json)
 	{
-		boolean b = jsonFiles.length >= 1;
+		boolean b = json.getParentFile().listFiles().length >= 1;
 		boolean j = json.exists();
 		try(FileInputStream inStream = new FileInputStream(json); BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "UTF8")))
 		{
@@ -237,7 +312,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		{
 			DistinctDamageDescriptions.info("Creature Types Enabled!");
 			JsonParser parser = new JsonParser();
-			for(File f : jsonFiles)
+			for(File f : creatureJsonFiles)
 			{
 				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json"))
 				{
@@ -259,7 +334,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 						float slash = getJsonFloat(obj, "slashing_resistance", f);
 						float pierce = getJsonFloat(obj, "piercing_resistance", f);
 						float bludge = getJsonFloat(obj, "bludgeoning_resistance", f);
-						String immunities = getJsonString(obj, "immunities", f);
+						String immunities = getJsonString(obj, "physicalImmunities", f);
 						boolean slashImmune = immunities.contains("s");
 						boolean pierceImmune = immunities.contains("p");
 						boolean bludgeImmune = immunities.contains("b");
@@ -302,8 +377,22 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 								throw new SyntaxException("Invalid Entity ID for sub type in JSON "+f.getName());
 							}
 						}
+						Map<String, Float> modifierMap = new NonNullMap<String, Float>(0.0f);
+						for(JsonElement j : getJsonArray(obj, "extraProperties", f))
+						{
+							try
+							{
+								JsonObject o = j.getAsJsonObject();
+								modifierMap.put(getJsonString(o, "damageTypeName", f), getJsonFloat(o, "resistance", f));
+							}
+							catch(IllegalStateException e)
+							{
+								throw new SyntaxException("Invalid JSON for extra properties in "+f.getName());
+							}
+						}
 						MobResistanceCategories cats = new MobResistanceCategories(slash, pierce, bludge, slashImmune, pierceImmune, bludgeImmune, adaptiveChance, adaptiveAmount);
-						creatureTypes.put(type, new CreatureTypeData(type, cats, potionImmunities, critImmunity));
+						creatureTypes.put(type, new CreatureTypeData(type, cats, potionImmunities, critImmunity, modifierMap));
+						DistinctDamageDescriptions.debug("registered creature type: "+type);
 					}
 				}
 				catch(FileNotFoundException e)
@@ -338,6 +427,59 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 				}
 			}
 			DistinctDamageDescriptions.info("Loaded Creature Types!");
+		}
+		//CUSTOM DAMAGE TYPES FROM JSON
+		if(ModConfig.dmg.useCustomDamageTypes)
+		{
+			DistinctDamageDescriptions.info("Custom Damage Types Enabled!");
+			JsonParser parser = new JsonParser();
+			for(File f : damageTypeJsonFiles)
+			{
+				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json"))
+				{
+					continue;
+				}
+				else
+				{
+					JsonReader reader;
+					try
+					{
+						reader = new JsonReader(new FileReader(f));
+						reader.setLenient(true);
+						JsonElement elem = parser.parse(reader);
+						JsonObject obj = elem.getAsJsonObject();
+						String name = getJsonString(obj, "name", f);
+						JsonArray arr = getJsonArray(obj, "damageTypes", f);
+						DamageTypeData[] datas = new DamageTypeData[arr.size()];
+						int i = 0;
+						for(JsonElement j : getJsonArray(obj, "damageTypes", f))
+						{
+							try
+							{
+								JsonObject dmgObj = j.getAsJsonObject();
+								String damageName = getJsonString(dmgObj, "dmgSource", f);
+								boolean includeAll = getJsonBoolean(dmgObj, "includeAll", f);
+								boolean noSource = getJsonBoolean(dmgObj, "noSource", f);
+								Set<String> indirectSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "indirectSources", f));
+								Set<String> directSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "directSources", f));
+								datas[i++] = new DamageTypeData(damageName, indirectSources, directSources, includeAll, noSource);
+							}
+							catch(IllegalStateException e)
+							{
+								DistinctDamageDescriptions.err("Invalid Json for damage type in file "+f.getName());
+								throw e;
+							}
+						}
+						Set<String> items = parsePrimitiveJsonArrayAsSet(getJsonArray(obj, "items", f));
+						registerDamageType(name, items, datas);
+					}
+					catch(FileNotFoundException e)
+					{
+						DistinctDamageDescriptions.err("Could not find JSON!");
+					}	
+				}
+			}
+			DistinctDamageDescriptions.info("Loaded Custom Damage Types!");
 		}
 		//MOB RESISTANCES FROM CONFIG
 		for(String s : ModConfig.resist.mobBaseResist)
@@ -425,5 +567,22 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		{
 			return e;
 		}
+	}
+	
+	private static Set<String> parsePrimitiveJsonArrayAsSet(JsonArray arr)
+	{
+		Set<String> set = new HashSet<String>();
+		for(JsonElement e : arr)
+		{
+			if(e.isJsonPrimitive() && e.getAsJsonPrimitive().isString())
+			{
+				set.add(e.getAsString());
+			}
+			else
+			{
+				throw new SyntaxException("Invalid String JSON!");
+			}
+		}
+		return set;
 	}
 }

@@ -24,14 +24,20 @@ import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.client.render.patricle.DDDParticle;
 import yeelp.distinctdamagedescriptions.client.render.patricle.DDDParticleType;
+import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
+import yeelp.distinctdamagedescriptions.event.PhysicalDamageEvent;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.NonNullMap;
 
@@ -42,12 +48,37 @@ public class DamageHandler extends Handler
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void classifyDamage(LivingHurtEvent evt)
 	{
+		float finalModifier = 0.0f;
 		EntityLivingBase defender = evt.getEntityLiving();
-		DamageSource dmgSource = evt.getSource();
+		DamageSource dmgSource = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
+		Entity attacker = dmgSource.getImmediateSource();
+		String[] damageTypes = null;
+		if(ModConfig.resist.useCreatureTypes)
+		{
+			ICreatureType type = DDDAPI.accessor.getMobCreatureType(defender);
+			if(dmgSource instanceof DDDDamageType)
+			{
+				DDDDamageType dmgType = (DDDDamageType) dmgSource;
+				damageTypes = dmgType.getExtendedTypes().toArray(damageTypes);
+				for(String s : dmgType.getExtendedTypes())
+				{
+					finalModifier += type.getModifierForDamageType(s);
+				}
+			}
+			else
+			{
+				damageTypes = new String[] {dmgSource.damageType};
+				finalModifier = type.getModifierForDamageType(dmgSource.damageType);
+			}
+		}
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
 		Map<DamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(mobResists, dmgSource, evt.getAmount());
 		if(dmgMap == null)
 		{
+			float amount = evt.getAmount();
+			CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, amount, finalModifier, damageTypes);
+			MinecraftForge.EVENT_BUS.post(custEvt);
+			evt.setAmount(custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance());
 			return;
 		}
 		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
@@ -103,22 +134,22 @@ public class DamageHandler extends Handler
 				switch(type)
 				{
 					case SLASHING:
-						DamageDescriptionEvent.SlashingDamage slashEvent = new DamageDescriptionEvent.SlashingDamage(evt, dmgMap.get(type));
+						PhysicalDamageEvent.SlashingDamage slashEvent = new PhysicalDamageEvent.SlashingDamage(dmgMap.get(type), mobResists.getSlashingResistance(), attacker, defender);
 						MinecraftForge.EVENT_BUS.post(slashEvent);
-						dmg = slashEvent.getAmount();
-						mobMod = mobResists.getSlashingResistance();
+						dmg = slashEvent.getDamage();
+						mobMod = slashEvent.getResistance();
 						break;
 					case PIERCING:
-						DamageDescriptionEvent.PiercingDamage pierceEvent = new DamageDescriptionEvent.PiercingDamage(evt, dmgMap.get(type));
+						PhysicalDamageEvent.PiercingDamage pierceEvent = new PhysicalDamageEvent.PiercingDamage(dmgMap.get(type), mobResists.getPiercingResistance(), attacker, defender);
 						MinecraftForge.EVENT_BUS.post(pierceEvent);
-						dmg = pierceEvent.getAmount();
-						mobMod = mobResists.getPiercingResistance();
+						dmg = pierceEvent.getDamage();
+						mobMod = pierceEvent.getResistance();
 						break;
 					case BLUDGEONING:
-						DamageDescriptionEvent.BludgeoningDamage bludgeoningEvent = new DamageDescriptionEvent.BludgeoningDamage(evt, dmgMap.get(type));
+						PhysicalDamageEvent.BludgeoningDamage bludgeoningEvent = new PhysicalDamageEvent.BludgeoningDamage(dmgMap.get(type), mobResists.getBludgeoningResistance(), attacker, defender);
 						MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
-						dmg = bludgeoningEvent.getAmount();
-						mobMod = mobResists.getBludgeoningResistance();
+						dmg = bludgeoningEvent.getDamage();
+						mobMod = bludgeoningEvent.getResistance();
 						break;
 				}
 				if(mobMod > 0)
@@ -143,7 +174,14 @@ public class DamageHandler extends Handler
 				totalDamage += newDmg;
 			}
 		}
-		DistinctDamageDescriptions.debug("new damage: "+totalDamage);
+		DistinctDamageDescriptions.debug("new damage after physical deductions: "+totalDamage);
+		if(finalModifier != 0)
+		{
+			CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, totalDamage, finalModifier, damageTypes);
+			MinecraftForge.EVENT_BUS.post(custEvt);
+			totalDamage = custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance();
+			DistinctDamageDescriptions.debug("new damage after additional reductions: "+totalDamage);
+		}
 		float ratio = totalDamage/evt.getAmount();
 		evt.setAmount(totalDamage < 0 ? 0 : totalDamage);
 		dmgSource.setDamageBypassesArmor();
@@ -152,11 +190,11 @@ public class DamageHandler extends Handler
 		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{
 			attackerPlayer = (EntityPlayer) dmgSource.getTrueSource();
-			if(resisted)
+			if(resisted || finalModifier > 0)
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.RESISTANCE);
 			}
-			if(weakness)
+			if(weakness || finalModifier < 0)
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.WEAKNESS);
 			}
@@ -253,23 +291,5 @@ public class DamageHandler extends Handler
 		{
 			manager.addEffect(new DDDParticle(origin, 0, 4, 0, type, particleDisplacement));
 		}
-	}
-	
-	@SubscribeEvent
-	public void onSlash(DamageDescriptionEvent.SlashingDamage evt)
-	{
-		
-	}
-	
-	@SubscribeEvent
-	public void onPierce(DamageDescriptionEvent.PiercingDamage evt)
-	{
-		
-	}
-	
-	@SubscribeEvent
-	public void onSmack(DamageDescriptionEvent.BludgeoningDamage evt)
-	{
-		
 	}
 }
