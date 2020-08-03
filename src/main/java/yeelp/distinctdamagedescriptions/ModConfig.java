@@ -115,6 +115,10 @@ public class ModConfig
 		@RequiresMcRestart
 		public boolean useCustomDamageTypes = false;
 		
+		@Name("Cancel Events On Immunity")
+		@Comment("If true, Distinct Damage Descriptions will cancel hurt events if immunity blocks all incoming damage. This will prevent other mods from doing anything during that event and keep damage at zero.")
+		public boolean cancelLivingHurtEventOnImmunity = false;
+		
 		@Name("Extra Damage Classification")
 		@Comment("Enable/disable damage distributions for certain vanilla damage sources.")
 		public ExtraDamageDistsCategory extraDamage = new ExtraDamageDistsCategory();

@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -11,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -19,8 +22,12 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -45,8 +52,20 @@ import yeelp.distinctdamagedescriptions.util.NonNullMap;
 
 public class DamageHandler extends Handler
 {
+	//TODO remove excessive debug messages
 	private static Map<UUID, Boolean> shouldKnockback = new NonNullMap<UUID, Boolean>(false);
 	private static Random particleDisplacement = new Random();
+	
+	@SubscribeEvent
+	public void onDeath(LivingDeathEvent evt)
+	{
+		if(evt.getEntityLiving() instanceof EntityPlayerMP)
+		{
+			DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
+			((EntityPlayerMP) evt.getEntityLiving()).sendStatusMessage(source.getDeathMessage(evt.getEntityLiving()), false);
+		}
+	}
+	
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void classifyDamage(LivingHurtEvent evt)
 	{
@@ -56,9 +75,10 @@ public class DamageHandler extends Handler
 		Entity attacker = dmgSource.getImmediateSource();
 		if(ModConfig.showDotsOn)
 		{
-			ResourceLocation attackerLoc = attacker == null || attacker instanceof EntityPlayer ? null : EntityList.getKey(attacker), defendLoc = EntityList.getKey(defender);
-			String s1 = attackerLoc != null ? attackerLoc.toString() : "null", s2 = defendLoc != null ? defendLoc.toString() : "null";
-			DistinctDamageDescriptions.debug("Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", Defender: "+s2);
+			Entity trueAttacker = dmgSource.getTrueSource();
+			ResourceLocation attackerLoc = attacker == null || attacker instanceof EntityPlayer ? null : EntityList.getKey(attacker), defendLoc = defender == null ? null : EntityList.getKey(defender), trueAttackerLoc = trueAttacker == null ? null : EntityList.getKey(trueAttacker);
+			String s1 = attackerLoc != null ? attackerLoc.toString() : "null", s2 = defendLoc != null ? defendLoc.toString() : "null", s3 = trueAttackerLoc != null ? trueAttackerLoc.toString() : "null";
+			DistinctDamageDescriptions.debug("Damage Type: "+ dmgSource.damageType+" Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", True Attacker: "+s3+" Defender: "+s2);
 		}
 		String[] damageTypes = new String[0];
 		if(ModConfig.resist.useCreatureTypes && ModConfig.dmg.useCustomDamageTypes)
@@ -68,6 +88,7 @@ public class DamageHandler extends Handler
 			{
 				DDDDamageType dmgType = (DDDDamageType) dmgSource;
 				damageTypes = dmgType.getExtendedTypes().toArray(damageTypes);
+				DistinctDamageDescriptions.debug("Damage Types: "+Arrays.toString(damageTypes));
 				for(String s : dmgType.getExtendedTypes())
 				{
 					finalModifier += type.getModifierForDamageType(s);
@@ -88,7 +109,8 @@ public class DamageHandler extends Handler
 				float amount = evt.getAmount();
 				CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, amount, finalModifier, damageTypes);
 				MinecraftForge.EVENT_BUS.post(custEvt);
-				evt.setAmount(custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance());
+				evt.setAmount(MathHelper.clamp(custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance(), 0, Float.MAX_VALUE));
+				shouldKnockback.put(defender.getUniqueID(), evt.getAmount() == 0);
 			}
 			return;
 		}
@@ -195,7 +217,7 @@ public class DamageHandler extends Handler
 			totalDamage -= totalDamage*finalModifier;
 			DistinctDamageDescriptions.debug("new damage after additional reductions: "+totalDamage);
 		}
-		float ratio = totalDamage/evt.getAmount();
+		float ratio = MathHelper.clamp(totalDamage/evt.getAmount(), 0, Float.MAX_VALUE);
 		evt.setAmount(totalDamage < 0 ? 0 : totalDamage);
 		dmgSource.setDamageBypassesArmor();
 		//Only spawn particles and play sounds for players.
@@ -215,6 +237,8 @@ public class DamageHandler extends Handler
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
 				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
+				evt.setCanceled(ratio == 0 && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
+				DistinctDamageDescriptions.debug("cancel: "+evt.isCanceled());
 			}
 			else if(ratio != 0)
 			{

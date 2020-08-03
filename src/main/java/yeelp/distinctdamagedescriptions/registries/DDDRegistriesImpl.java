@@ -45,6 +45,7 @@ import yeelp.distinctdamagedescriptions.util.SyntaxException;
 
 public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemPropertiesRegistry, IDDDProjectilePropertiesRegistry, IDDDDamageTypeRegistry
 {
+	//TODO use the includeAll, noSource fields correctly. custom death messages?
 	INSTANCE;
 	private final Map<String, MobResistanceCategories> mobResists = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0, 0, 0, false, false, false, 0, 0));
 	private final Map<String, CreatureTypeData> creatureTypes = new NonNullMap<String, CreatureTypeData>(CreatureTypeData.UNKNOWN);
@@ -180,6 +181,12 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     }
 	
 	@Override
+	public boolean isProjectileRegistered(Entity projectile)
+	{
+		return projectileDist.containsKey(EntityList.getKey(projectile).toString());
+	}
+	
+	@Override
 	public void registerDamageType(String name, Set<String> items, DamageTypeData...datas)
 	{
 		name = "ddd_"+name;
@@ -196,8 +203,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			}
 			for(String s : d.getIndirectSources())
 			{
+				DistinctDamageDescriptions.debug("indirect put: "+s);
 				indirect.put(s, name);
 			}
+			damageTypeMap.compute(d.getOriginalSource(), (s, t) -> damageTypeMap.containsKey(s) ? updateTuple(t, direct, indirect) : new Tuple<Map<String, String>, Map<String, String>>(direct, indirect));
 		}
 		DistinctDamageDescriptions.debug("Registered damage type: "+name);
 	}
@@ -231,15 +240,17 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		else
 		{
 			String direct = EntityList.getKey(originalSource.getImmediateSource()).toString(), indirect = EntityList.getKey(originalSource.getTrueSource()).toString();
-			if(weaponSource.equals("ddd_normal"))
-			{
-				return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect));
-			}
-			else
-			{
-				return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource);
-			}
+			DistinctDamageDescriptions.debug(direct+", "+indirect);
+			DistinctDamageDescriptions.debug(t.getFirst().get(direct)+", "+t.getSecond().get(indirect));
+			return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource);
 		}
+	}
+	
+	private static Tuple<Map<String, String>, Map<String, String>> updateTuple(Tuple<Map<String,String>, Map<String, String>> t, Map<String, String> direct, Map<String, String> indirect)
+	{
+		t.getFirst().putAll(direct);
+		t.getSecond().putAll(indirect);
+		return t;
 	}
 	
 	private static String[] tryPut(Map<String, ComparableTriple<Float, Float, Float>> map, String s)
@@ -462,7 +473,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 								boolean noSource = getJsonBoolean(dmgObj, "noSource", f);
 								Set<String> indirectSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "indirectSources", f));
 								Set<String> directSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "directSources", f));
-								datas[i++] = new DamageTypeData(damageName, indirectSources, directSources, includeAll, noSource);
+								datas[i++] = new DamageTypeData(damageName, directSources, indirectSources, includeAll, noSource);
 							}
 							catch(IllegalStateException e)
 							{

@@ -8,12 +8,10 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentString;
 
 public final class DDDDamageType extends DamageSource
 {
@@ -29,6 +27,7 @@ public final class DDDDamageType extends DamageSource
 		super(parentSource.damageType);
 		this.parentSource = parentSource;
 		this.types = new HashSet<String>(Arrays.asList(types));
+		this.types.remove("ddd_normal");
 	}
 	
 	/**
@@ -111,7 +110,7 @@ public final class DDDDamageType extends DamageSource
     @Nullable
     public Entity getImmediateSource()
     {
-        return this.parentSource.getTrueSource();
+        return this.parentSource.getImmediateSource();
     }
 
     /**
@@ -166,7 +165,12 @@ public final class DDDDamageType extends DamageSource
 	@Override
     public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
     {
-    	return this.parentSource.getDeathMessage(entityLivingBaseIn);
+    	//return this.parentSource.getDeathMessage(entityLivingBaseIn);
+		if(entityLivingBaseIn.getAttackingEntity() == null)
+		{
+			return new TextComponentString("The world made an example of "+entityLivingBaseIn.getDisplayName().getFormattedText());
+		}
+		return new TextComponentString(entityLivingBaseIn.getAttackingEntity().getDisplayName().getFormattedText()+" made an example of "+entityLivingBaseIn.getDisplayName().getFormattedText());
     }
 
     /**

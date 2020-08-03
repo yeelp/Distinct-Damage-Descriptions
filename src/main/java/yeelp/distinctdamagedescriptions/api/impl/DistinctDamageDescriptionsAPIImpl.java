@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -167,7 +168,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 				damageCat = mobDist.distributeDamage(damage);
 			}
 		}
-		else if(src.getImmediateSource() instanceof IProjectile)
+		else if(isValidProjectile(src))
 		{
 			IProjectile projectile = (IProjectile) src.getImmediateSource();
 			IDamageDistribution dist = getDamageDistribution(projectile);
@@ -221,6 +222,19 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			map.put(DamageType.BLUDGEONING, resistances.isBludgeoningImmune() && !slyStrike ? -1 : bludgeoning);
 		}
 		return map;
+	}
+	
+	private static boolean isValidProjectile(DamageSource src)
+	{
+		Entity entityIn = src.getImmediateSource();
+		if(entityIn instanceof IProjectile)
+		{
+			return DDDRegistries.projectileProperties.isProjectileRegistered(entityIn) || !src.isMagicDamage();
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/***********
