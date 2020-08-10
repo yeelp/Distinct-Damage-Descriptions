@@ -56,10 +56,7 @@ public class DistinctDamageDescriptions
         CreatureType.register();
         PacketHandler.init();
         DDDSounds.init();
-        if(ModConfig.enableEnchants)
-        {
-        	DDDEnchantments.init();
-        }
+       	DDDEnchantments.init();
     }
     
     public static void info(String msg)

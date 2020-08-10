@@ -12,6 +12,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -52,7 +53,6 @@ import yeelp.distinctdamagedescriptions.util.NonNullMap;
 
 public class DamageHandler extends Handler
 {
-	//TODO remove excessive debug messages
 	private static Map<UUID, Boolean> shouldKnockback = new NonNullMap<UUID, Boolean>(false);
 	private static Random particleDisplacement = new Random();
 	
@@ -62,7 +62,12 @@ public class DamageHandler extends Handler
 		if(evt.getEntityLiving() instanceof EntityPlayerMP)
 		{
 			DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
-			((EntityPlayerMP) evt.getEntityLiving()).sendStatusMessage(source.getDeathMessage(evt.getEntityLiving()), false);
+			((EntityPlayerMP) evt.getEntityLiving()).mcServer.getPlayerList().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
+		}
+		else if(evt.getEntityLiving() instanceof EntityTameable)
+		{
+			DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
+			((EntityTameable) evt.getEntityLiving()).getOwner().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
 		}
 	}
 	
@@ -88,7 +93,6 @@ public class DamageHandler extends Handler
 			{
 				DDDDamageType dmgType = (DDDDamageType) dmgSource;
 				damageTypes = dmgType.getExtendedTypes().toArray(damageTypes);
-				DistinctDamageDescriptions.debug("Damage Types: "+Arrays.toString(damageTypes));
 				for(String s : dmgType.getExtendedTypes())
 				{
 					finalModifier += type.getModifierForDamageType(s);
@@ -238,7 +242,6 @@ public class DamageHandler extends Handler
 				spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
 				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
 				evt.setCanceled(ratio == 0 && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
-				DistinctDamageDescriptions.debug("cancel: "+evt.isCanceled());
 			}
 			else if(ratio != 0)
 			{

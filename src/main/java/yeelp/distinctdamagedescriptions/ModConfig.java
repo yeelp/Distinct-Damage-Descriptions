@@ -4,7 +4,9 @@ import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
+import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,14 +22,26 @@ public class ModConfig
 	@Comment("Alter the base resistances of armor and mobs")
 	public static final ResistanceCategory resist = new ResistanceCategory();
 	
+	@Name("Enchantments")
+	@Comment("Configure enchantments")
+	public static final EnchantCategory enchants = new EnchantCategory();
+	
 	@Name("Debug Mode")
 	@Comment("Enable debug mode. Console will be filled with debug messages. The frequency/content of the messages may vary across versions. Only enable if troubleshooting or developing.")
 	public static boolean showDotsOn = false;
 	
-	@Name("Enable Enchantments")
-	@Comment("Enable the Brute Force and Sly Strike enchantments. If disabled, the enchantments won't even be registered on startup, so be wary when loading worlds that had these enchantments previously enabled!")
-	@RequiresMcRestart
-	public static boolean enableEnchants = true;
+	public static class EnchantCategory
+	{
+		@Name("Enable Brute Force")
+		@Comment("If false, the Brute Force enchantment won't be registered. Worlds that had this enchant enabled will have this enchant removed from all items if loaded with this option set to false.")
+		@RequiresMcRestart
+		public boolean enableBruteForce = true;
+		
+		@Name("Enable Sly Strike")
+		@Comment("If false, the Sly Strike enchantment won't be registered. Worlds that had this enchant enabled will have this enchant removed from all items if loaded with this option set to false.")
+		@RequiresMcRestart
+		public boolean enableSlyStrike = true;
+	}
 	
 	public static class DamageCategory
 	{
@@ -114,6 +128,13 @@ public class ModConfig
 		@Comment("If true, Distinct Damage Descriptions will load custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
 		@RequiresMcRestart
 		public boolean useCustomDamageTypes = false;
+		
+		@Name("Use Custom Death Messages")
+		@Comment({"If custom damage types are enabled and this is turned on, the JSON specified death messages will be used.", 
+				  "This config option sets the showDeathMessages gamerule to false when enabled when worlds are loaded.",
+				  "The gamerule will be set to true when disabled of course. However, if the mod is uninstalled, this gamerule will have to be manually set back."})
+		@RequiresWorldRestart
+		public boolean useCustomDeathMessages = false;
 		
 		@Name("Cancel Events On Immunity")
 		@Comment("If true, Distinct Damage Descriptions will cancel hurt events if immunity blocks all incoming damage. This will prevent other mods from doing anything during that event and keep damage at zero.")
@@ -273,6 +294,18 @@ public class ModConfig
 			if (event.getModID().equals(ModConsts.MODID)) 
 			{
 				ConfigManager.sync(ModConsts.MODID, Config.Type.INSTANCE);
+			}
+		}
+		
+		public static void onWorldLoad(final WorldEvent.Load evt)
+		{
+			if(ModConfig.dmg.useCustomDeathMessages)
+			{
+				evt.getWorld().getGameRules().setOrCreateGameRule("showDeathMessages", "false");
+			}
+			else
+			{
+				evt.getWorld().getGameRules().setOrCreateGameRule("showDeathMessages", "true");
 			}
 		}
 	}

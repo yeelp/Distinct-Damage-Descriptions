@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -57,8 +58,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     private final Map<String, String> itemIDToProjIDMap = new HashMap<String, String>();
     private final Map<String, String> itemDamageTypes = new NonNullMap<String, String>("ddd_normal");
     private final Map<String, Tuple<Map<String, String>, Map<String, String>>> damageTypeMap = new HashMap<String, Tuple<Map<String, String>, Map<String, String>>>();
-    
-	private static File[] creatureJsonFiles, damageTypeJsonFiles;
+    private final Map<String, Tuple<String, String>> deathMessages = new HashMap<String, Tuple<String, String>>();
+    private final Map<String, String> includeAllMap = new NonNullMap<String, String>("ddd_normal");
+    private static File[] creatureJsonFiles, damageTypeJsonFiles;
 	private static File creatureDirectory, damageTypeDirectory;
 	DDDRegistriesImpl()
 	{
@@ -187,9 +189,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public void registerDamageType(String name, Set<String> items, DamageTypeData...datas)
+	public void registerDamageType(String name, String entityMsg, String otherMsg, Set<String> items, DamageTypeData...datas)
 	{
 		name = "ddd_"+name;
+		deathMessages.put(name, new Tuple<String, String>(entityMsg, otherMsg));
 		for(String s : items)
 		{
 			itemDamageTypes.put(s, name);
@@ -197,15 +200,19 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		for(DamageTypeData d : datas)
 		{
 			Map<String, String> direct = new NonNullMap<String, String>("ddd_normal"), indirect = new NonNullMap<String, String>("ddd_normal");
+			if(d.includeAll())
+			{
+				includeAllMap.put(d.getOriginalSource(), name);
+			}
 			for(String s : d.getDirectSources())
 			{
 				direct.put(s, name);
 			}
 			for(String s : d.getIndirectSources())
 			{
-				DistinctDamageDescriptions.debug("indirect put: "+s);
 				indirect.put(s, name);
 			}
+			
 			damageTypeMap.compute(d.getOriginalSource(), (s, t) -> damageTypeMap.containsKey(s) ? updateTuple(t, direct, indirect) : new Tuple<Map<String, String>, Map<String, String>>(direct, indirect));
 		}
 		DistinctDamageDescriptions.debug("Registered damage type: "+name);
@@ -216,6 +223,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	{
 		Entity entity = originalSource.getImmediateSource();
 		String weaponSource = "ddd_normal";
+		String additionalSource = includeAllMap.get(originalSource.damageType);
 		if(entity instanceof EntityLivingBase)
 		{
 			EntityLivingBase livingEntity = (EntityLivingBase) entity;
@@ -234,7 +242,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			}
 			else
 			{
-				return new DDDDamageType(originalSource, weaponSource);
+				return new DDDDamageType(originalSource, weaponSource, additionalSource);
 			}
 		}
 		else
@@ -242,7 +250,26 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			String direct = EntityList.getKey(originalSource.getImmediateSource()).toString(), indirect = EntityList.getKey(originalSource.getTrueSource()).toString();
 			DistinctDamageDescriptions.debug(direct+", "+indirect);
 			DistinctDamageDescriptions.debug(t.getFirst().get(direct)+", "+t.getSecond().get(indirect));
-			return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource);
+			return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource, additionalSource);
+		}
+	}
+	
+	@Override
+	public String getDeathMessage(@Nonnull String type, @Nonnull String defenderName, @Nullable String attackerName)
+	{
+		Tuple<String, String> t = deathMessages.get(type);
+		if(t == null)
+		{
+			DistinctDamageDescriptions.debug("This makes no sense hello??");
+			DistinctDamageDescriptions.debug(String.format("%s, %s %s", type, defenderName, attackerName == null ? "null" : attackerName));
+		}
+		if(attackerName == null)
+		{
+			return deathMessages.get(type).getSecond().replaceAll("#defender", defenderName);
+		}
+		else
+		{
+			return deathMessages.get(type).getFirst().replaceAll("#attacker", attackerName).replaceAll("#defender", defenderName);
 		}
 	}
 	
@@ -461,6 +488,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 						JsonObject obj = elem.getAsJsonObject();
 						String name = getJsonString(obj, "name", f);
 						JsonArray arr = getJsonArray(obj, "damageTypes", f);
+						JsonObject msgs = obj.get("deathMessages").getAsJsonObject();
+						String entityMsg = getJsonString(msgs, "deathHasAttacker", f);
+						String otherMsg = getJsonString(msgs, "deathHasNoAttacker", f);
 						DamageTypeData[] datas = new DamageTypeData[arr.size()];
 						int i = 0;
 						for(JsonElement j : getJsonArray(obj, "damageTypes", f))
@@ -470,10 +500,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 								JsonObject dmgObj = j.getAsJsonObject();
 								String damageName = getJsonString(dmgObj, "dmgSource", f);
 								boolean includeAll = getJsonBoolean(dmgObj, "includeAll", f);
-								boolean noSource = getJsonBoolean(dmgObj, "noSource", f);
 								Set<String> indirectSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "indirectSources", f));
 								Set<String> directSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "directSources", f));
-								datas[i++] = new DamageTypeData(damageName, directSources, indirectSources, includeAll, noSource);
+								datas[i++] = new DamageTypeData(damageName, directSources, indirectSources, includeAll);
 							}
 							catch(IllegalStateException e)
 							{
@@ -482,7 +511,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 							}
 						}
 						Set<String> items = parsePrimitiveJsonArrayAsSet(getJsonArray(obj, "items", f));
-						registerDamageType(name, items, datas);
+						registerDamageType(name, entityMsg, otherMsg, items, datas);
 					}
 					catch(FileNotFoundException e)
 					{

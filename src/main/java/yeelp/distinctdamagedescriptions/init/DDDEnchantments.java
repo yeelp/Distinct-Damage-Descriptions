@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.init;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.enchantments.EnchantmentBruteForce;
 import yeelp.distinctdamagedescriptions.enchantments.EnchantmentSlyStrike;
 
@@ -14,7 +15,13 @@ public class DDDEnchantments
 	{
 		slyStrike = new EnchantmentSlyStrike();
 		bruteForce = new EnchantmentBruteForce();
-		
-		ForgeRegistries.ENCHANTMENTS.registerAll(slyStrike, bruteForce);
+		if(ModConfig.enchants.enableBruteForce)
+		{
+			ForgeRegistries.ENCHANTMENTS.register(bruteForce);
+		}
+		if(ModConfig.enchants.enableSlyStrike)
+		{
+			ForgeRegistries.ENCHANTMENTS.register(slyStrike);
+		}
 	}
 }

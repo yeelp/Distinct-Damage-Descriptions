@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.util;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -12,10 +14,12 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public final class DDDDamageType extends DamageSource
 {
-	private Set<String> types;
+	private List<String> types;
 	private DamageSource parentSource;
 	/**
 	 * Make a new DDDDamageType
@@ -26,15 +30,16 @@ public final class DDDDamageType extends DamageSource
 	{
 		super(parentSource.damageType);
 		this.parentSource = parentSource;
-		this.types = new HashSet<String>(Arrays.asList(types));
-		this.types.remove("ddd_normal");
+		Set<String> temp = new HashSet<String>(Arrays.asList(types));
+		temp.remove("ddd_normal");
+		this.types = new LinkedList<String>(temp);
 	}
 	
 	/**
 	 * Get all extended types.
 	 * @return
 	 */
-	public Set<String> getExtendedTypes()
+	public List<String> getExtendedTypes()
 	{
 		return this.types;
 	}
@@ -165,12 +170,24 @@ public final class DDDDamageType extends DamageSource
 	@Override
     public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
     {
-    	//return this.parentSource.getDeathMessage(entityLivingBaseIn);
-		if(entityLivingBaseIn.getAttackingEntity() == null)
+		if(ModConfig.dmg.useCustomDeathMessages)
 		{
-			return new TextComponentString("The world made an example of "+entityLivingBaseIn.getDisplayName().getFormattedText());
+			int i = (int)(types.size()*Math.random());
+			EntityLivingBase attacker = entityLivingBaseIn.getAttackingEntity();
+			ITextComponent comp = new TextComponentString(DDDRegistries.damageTypes.getDeathMessage(types.get(i), entityLivingBaseIn.getName(), attacker == null? null : attacker.getName()));
+			if(comp.getUnformattedComponentText().trim().isEmpty())
+			{
+				return this.parentSource.getDeathMessage(entityLivingBaseIn);
+			}
+			else
+			{
+				return comp;
+			}
 		}
-		return new TextComponentString(entityLivingBaseIn.getAttackingEntity().getDisplayName().getFormattedText()+" made an example of "+entityLivingBaseIn.getDisplayName().getFormattedText());
+		else
+		{
+			return this.parentSource.getDeathMessage(entityLivingBaseIn);
+		}
     }
 
     /**

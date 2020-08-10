@@ -13,20 +13,18 @@ public final class DamageTypeData
 	private Set<String> directSources, indirectSources;
 	private String originalSource;
 	private boolean includeAll;
-	private boolean noSource;
 	
 	private DamageTypeData()
 	{
-		this("", new HashSet<String>(), new HashSet<String>(), false, false);
+		this("", new HashSet<String>(), new HashSet<String>(), false);
 	}
 	
-	public DamageTypeData(String name, Set<String> directSources, Set<String> indirectSources, boolean includeAll, boolean noSource)
+	public DamageTypeData(String name, Set<String> directSources, Set<String> indirectSources, boolean includeAll)
 	{
 		this.directSources = directSources;
 		this.indirectSources = indirectSources;
 		this.originalSource = name;
 		this.includeAll = includeAll;
-		this.noSource = noSource;
 	}	
 	
 	public String getOriginalSource()
@@ -42,5 +40,10 @@ public final class DamageTypeData
 	public Set<String> getIndirectSources()
 	{
 		return indirectSources;
+	}
+	
+	public boolean includeAll()
+	{
+		return includeAll;
 	}
 }
