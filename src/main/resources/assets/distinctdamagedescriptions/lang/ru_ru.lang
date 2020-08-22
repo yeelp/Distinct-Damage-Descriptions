@@ -1,0 +1,30 @@
+damagetypes.distinctdamagedescriptions.slashing=Рубящий
+damagetypes.distinctdamagedescriptions.piercing=Колющий
+damagetypes.distinctdamagedescriptions.bludgeoning=Дробящий
+
+keys.distinctdamagedescriptions.shift=[SHIFT]
+keys.distinctdamagedescriptions.ctrl=[CTRL]
+
+tooltips.distinctdamagedescriptions.damage=Урон
+tooltips.distinctdamagedescriptions.resistance=Сопротивление
+tooltips.distinctdamagedescriptions.immunities=Стартовый иммунитет:
+tooltips.distinctdamagedescriptions.adaptivechance=Шанс адаптации:
+tooltips.distinctdamagedescriptions.adaptiveamount=Степень адаптации:
+tooltips.distinctdamagedescriptions.effectiveness=Эффективность
+tooltips.distinctdamagedescriptions.weakness=Слабость
+tooltips.distinctdamagedescriptions.damagedistribution=Распределение урона:
+tooltips.distinctdamagedescriptions.projectiledistribution=Распределение снарядов:
+tooltips.distinctdamagedescriptions.armorresistances=Эффективность брони:
+tooltips.distinctdamagedescriptions.mobresistances=Сопротивление мобам:
+
+enchantment.distinctdamagedescriptions.slystrike=Коварный удар
+enchantment.distinctdamagedescriptions.bruteforce=Грубая сила
+
+enchantment.distinctdamagedescriptions.slystrike.desc=Оружие или инструменты с этим зачарованием игнорируют иммунитеты
+enchantment.distinctdamagedescriptions.bruteforce.desc=Оружие или инструменты с этим зачарованием игнорируют 10% сопротивления мобам за уровень
+
+distinctdamagedescriptions.subtitle.resist_ding=Атака ослаблена сопротивлением
+distinctdamagedescriptions.subtitle.weakness_hit=Атака усилена слабостью
+distinctdamagedescriptions.subtitle.immunity_hit=Атака заблокирована иммунитетом
+distinctdamagedescriptions.subtitle.adaptability_change=Адаптация изменена
+distinctdamagedescriptions.subtitle.high_resist_hit=Атака аннулирована сопротивлением
