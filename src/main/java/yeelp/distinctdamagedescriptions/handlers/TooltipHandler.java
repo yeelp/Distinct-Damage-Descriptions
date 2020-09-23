@@ -66,7 +66,7 @@ public class TooltipHandler extends Handler
 		ComparableTriple<Float, Float, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
-		if(damages != null)
+		if(damages != null && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
 		{
 			int index = 1;
 			if(projDist != null)
@@ -77,7 +77,7 @@ public class TooltipHandler extends Handler
 					{
 						int i = type.ordinal();
 						float percent = projDist.<Float>get(i);
-						if(percent > 0 && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
+						if(percent > 0)
 						{
 							tooltips.add(index, makeDamagePercentTooltip(percent, damageTypeTooltips[i]));
 						}
@@ -90,15 +90,15 @@ public class TooltipHandler extends Handler
 				float slashPercent = damages.getSlashingWeight();
 				float piercePercent = damages.getPiercingWeight();
 				float bludgePercent = damages.getBludgeoningWeight();
-				if(slashPercent > 0 && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
+				if(slashPercent > 0)
 				{
 					tooltips.add(index, makeDamagePercentTooltip(slashPercent, slashTooltip));
 				}
-				if(piercePercent > 0 && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
+				if(piercePercent > 0)
 				{
 					tooltips.add(index, makeDamagePercentTooltip(piercePercent, pierceTooltip));
 				}
-				if(bludgePercent > 0&& (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
+				if(bludgePercent > 0)
 				{
 					tooltips.add(index, makeDamagePercentTooltip(bludgePercent, bludgeTooltip));
 				}
