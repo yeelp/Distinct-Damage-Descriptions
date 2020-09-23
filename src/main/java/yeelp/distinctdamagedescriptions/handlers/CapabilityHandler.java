@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
@@ -45,19 +46,35 @@ public class CapabilityHandler extends Handler
 		}
 		else if(entity instanceof EntityLivingBase)
 		{
-			String key = EntityList.getKey(entity).toString();
-			ComparableTriple<Float, Float, Float> dmges = DDDRegistries.mobDamage.getMobDamage(key);
-			MobResistanceCategories resists = DDDRegistries.mobResists.getResistancesForMob(key);
-			Tuple<CreatureTypeData, CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
-			evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
-			evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount()));
-			evt.addCapability(creatureType, new CreatureType(types.getFirst(), types.getSecond()));
+			ResourceLocation loc = EntityList.getKey(entity);
+			if(loc != null)
+			{
+				String key = loc.toString();
+				ComparableTriple<Float, Float, Float> dmges = DDDRegistries.mobDamage.getMobDamage(key);
+				MobResistanceCategories resists = DDDRegistries.mobResists.getResistancesForMob(key);
+				Tuple<CreatureTypeData, CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
+				evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
+				evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount()));
+				evt.addCapability(creatureType, new CreatureType(types.getFirst(), types.getSecond()));
+			}
+			else
+			{
+				DistinctDamageDescriptions.warn("ResourceLocation was null for: "+entity.getName()+", but entity is non null!");
+			}
 		}
 		else if(entity instanceof IProjectile)
 		{
-			String key = EntityList.getKey(entity).toString();
-			ComparableTriple<Float, Float, Float> dmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
-			evt.addCapability(projDmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
+			ResourceLocation loc = EntityList.getKey(entity);
+			if(loc != null)
+			{
+				String key = loc.toString();
+				ComparableTriple<Float, Float, Float> dmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
+				evt.addCapability(projDmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
+			}
+			else
+			{
+				DistinctDamageDescriptions.warn("ResourceLocation was null for: "+entity.getName()+", but entity is non null!");
+			}
 		}
 	}
 	

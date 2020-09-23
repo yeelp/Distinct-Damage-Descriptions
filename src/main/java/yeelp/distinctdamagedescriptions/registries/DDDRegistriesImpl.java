@@ -31,6 +31,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
@@ -247,7 +248,8 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		}
 		else
 		{
-			String direct = EntityList.getKey(originalSource.getImmediateSource()).toString(), indirect = EntityList.getKey(originalSource.getTrueSource()).toString();
+			ResourceLocation directLoc = EntityList.getKey(originalSource.getImmediateSource()), indirectLoc = EntityList.getKey(originalSource.getTrueSource());
+			String direct = directLoc != null ? directLoc.toString() : "", indirect = indirectLoc != null ? indirectLoc.toString(): "";
 			DistinctDamageDescriptions.debug(direct+", "+indirect);
 			DistinctDamageDescriptions.debug(t.getFirst().get(direct)+", "+t.getSecond().get(indirect));
 			return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource, additionalSource);

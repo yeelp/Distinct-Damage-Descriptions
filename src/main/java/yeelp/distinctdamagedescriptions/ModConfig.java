@@ -30,6 +30,10 @@ public class ModConfig
 	@Comment("Enable debug mode. Console will be filled with debug messages. The frequency/content of the messages may vary across versions. Only enable if troubleshooting or developing.")
 	public static boolean showDotsOn = false;
 	
+	@Name("Suppress Warnings")
+	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
+	public static boolean suppressWarnings = false;
+	
 	public static class EnchantCategory
 	{
 		@Name("Enable Brute Force")

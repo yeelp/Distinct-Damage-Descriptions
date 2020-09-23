@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.client.render.patricle;
+package yeelp.distinctdamagedescriptions.client.render.particle;
 
 import java.util.Random;
 

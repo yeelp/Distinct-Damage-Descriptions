@@ -66,7 +66,10 @@ public class DistinctDamageDescriptions
     
     public static void warn(String msg)
     {
-    	logger.warn("[DISTINCT DAMAGE DESCRIPTIONS] "+msg);
+    	if(!ModConfig.suppressWarnings)
+    	{
+    		logger.warn("[DISTINCT DAMAGE DESCRIPTIONS] "+msg);
+    	}
     }
     
     public static void err(String msg)

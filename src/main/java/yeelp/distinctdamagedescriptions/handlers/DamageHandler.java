@@ -1,13 +1,9 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -23,11 +19,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
@@ -36,10 +29,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.client.render.patricle.DDDParticle;
-import yeelp.distinctdamagedescriptions.client.render.patricle.DDDParticleType;
+import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType; //This client package import is fine, since it's just an enum.
 import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
-import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.event.PhysicalDamageEvent;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
@@ -59,15 +50,22 @@ public class DamageHandler extends Handler
 	@SubscribeEvent
 	public void onDeath(LivingDeathEvent evt)
 	{
-		if(evt.getEntityLiving() instanceof EntityPlayerMP)
+		if(ModConfig.dmg.useCustomDeathMessages)
 		{
-			DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
-			((EntityPlayerMP) evt.getEntityLiving()).mcServer.getPlayerList().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
-		}
-		else if(evt.getEntityLiving() instanceof EntityTameable)
-		{
-			DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
-			((EntityTameable) evt.getEntityLiving()).getOwner().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
+			if(evt.getEntityLiving() instanceof EntityPlayerMP)
+			{
+				DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
+				((EntityPlayerMP) evt.getEntityLiving()).mcServer.getPlayerList().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
+			}
+			else if(evt.getEntityLiving() instanceof EntityTameable)
+			{
+				EntityTameable entity = (EntityTameable) evt.getEntityLiving();
+				if(entity.isTamed())
+				{
+					DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
+					entity.getOwner().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
+				}
+			}
 		}
 	}
 	
@@ -325,11 +323,16 @@ public class DamageHandler extends Handler
 	
 	private static void spawnRandomAmountOfParticles(Entity origin, DDDParticleType type)
 	{
-		ParticleManager manager = Minecraft.getMinecraft().effectRenderer;
+		//we remove imports to client packages so we can use them without causing a crash - but we need to check if we're client side.
+		if(!origin.world.isRemote)
+		{
+			return;
+		}
+		net.minecraft.client.particle.ParticleManager manager = net.minecraft.client.Minecraft.getMinecraft().effectRenderer;
 		int amount = (int)(2*Math.random())+2;
 		for(int i = 0; i < amount; i++)
 		{
-			manager.addEffect(new DDDParticle(origin, 0, 4, 0, type, particleDisplacement));
+			manager.addEffect(new yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle(origin, 0, 4, 0, type, particleDisplacement));
 		}
 	}
 }

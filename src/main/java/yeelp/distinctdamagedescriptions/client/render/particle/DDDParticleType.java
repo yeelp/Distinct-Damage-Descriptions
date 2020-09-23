@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.client.render.patricle;
+package yeelp.distinctdamagedescriptions.client.render.particle;
 
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.ModConsts;
