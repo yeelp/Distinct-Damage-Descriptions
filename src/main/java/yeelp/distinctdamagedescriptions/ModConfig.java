@@ -30,6 +30,10 @@ public class ModConfig
 	@Comment("Enable debug mode. Console will be filled with debug messages. The frequency/content of the messages may vary across versions. Only enable if troubleshooting or developing.")
 	public static boolean showDotsOn = false;
 	
+	@Name("Client")
+	@Comment("Alter client side settings")
+	public static final ClientCategory client = new ClientCategory();
+	
 	@Name("Suppress Warnings")
 	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
 	public static boolean suppressWarnings = false;
@@ -281,6 +285,13 @@ public class ModConfig
 				  "This is done to allow end users to still have granular control over resistances while still providing potion immunities to large swaths of mobs at once."})
 		@RequiresMcRestart
 		public boolean useCreatureTypes = false;
+	}
+	
+	public static class ClientCategory
+	{
+		@Name("Show Damage Distribution Tooltip for all items")
+		@Comment("If true, the Damage Distribution tooltip appears for all items. If false, it only appears for items with a damage distribution manually set.")
+		public boolean alwaysShowDamageDistTooltip = true;
 	}
 	
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)

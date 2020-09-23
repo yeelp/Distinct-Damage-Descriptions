@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
@@ -76,7 +77,7 @@ public class TooltipHandler extends Handler
 					{
 						int i = type.ordinal();
 						float percent = projDist.<Float>get(i);
-						if(percent > 0)
+						if(percent > 0 && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
 						{
 							tooltips.add(index, makeDamagePercentTooltip(percent, damageTypeTooltips[i]));
 						}
@@ -89,15 +90,15 @@ public class TooltipHandler extends Handler
 				float slashPercent = damages.getSlashingWeight();
 				float piercePercent = damages.getPiercingWeight();
 				float bludgePercent = damages.getBludgeoningWeight();
-				if(slashPercent > 0)
+				if(slashPercent > 0 && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
 				{
 					tooltips.add(index, makeDamagePercentTooltip(slashPercent, slashTooltip));
 				}
-				if(piercePercent > 0)
+				if(piercePercent > 0 && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
 				{
 					tooltips.add(index, makeDamagePercentTooltip(piercePercent, pierceTooltip));
 				}
-				if(bludgePercent > 0)
+				if(bludgePercent > 0&& (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
 				{
 					tooltips.add(index, makeDamagePercentTooltip(bludgePercent, bludgeTooltip));
 				}

@@ -157,10 +157,22 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		return itemDamageDist.get(key);
 	}
 	
+	@Override
+	public boolean doesItemHaveCustomDamageDistribution(String key)
+	{
+		return itemDamageDist.containsKey(key);
+	}
+	
 	@Override 
 	public ComparableTriple<Float, Float, Float> getArmorDistributionForItem(String key)
 	{
 		return itemArmorDist.get(key);
+	}
+	
+	@Override
+	public boolean doesArmorHaveCustomArmorDistribution(String key)
+	{
+		return itemArmorDist.containsKey(key);
 	}
 	
 	@Override
