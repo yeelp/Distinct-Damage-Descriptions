@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.ModConsts;
 
 /**
@@ -20,6 +21,7 @@ import yeelp.distinctdamagedescriptions.ModConsts;
  *
  */
 @Mod.EventBusSubscriber(Side.CLIENT)
+@SideOnly(Side.CLIENT)
 public class DDDParticle extends Particle
 {
 	private static TextureAtlasSprite sprite;

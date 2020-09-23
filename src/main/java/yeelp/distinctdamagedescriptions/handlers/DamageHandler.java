@@ -26,6 +26,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
@@ -227,17 +229,21 @@ public class DamageHandler extends Handler
 		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{
 			attackerPlayer = (EntityPlayer) dmgSource.getTrueSource();
-			if(resisted || finalModifier > 0)
+			boolean isRemote = attackerPlayer.world.isRemote;
+			if((resisted || finalModifier > 0) && isRemote)
 			{
-				spawnRandomAmountOfParticles(defender, DDDParticleType.RESISTANCE);
+					spawnRandomAmountOfParticles(defender, DDDParticleType.RESISTANCE);
 			}
-			if(weakness || finalModifier < 0)
+			if((weakness || finalModifier < 0) && isRemote)
 			{
 				spawnRandomAmountOfParticles(defender, DDDParticleType.WEAKNESS);
 			}
 			if(immunityResisted)
 			{
-				spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
+				if(isRemote)
+				{
+					spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
+				}
 				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
 				evt.setCanceled(ratio == 0 && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
 			}
@@ -321,13 +327,10 @@ public class DamageHandler extends Handler
 		return (float) MathHelper.clamp(damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f), 0.0f, applyAnvilReductionCap ? 0.75*damage : Float.MAX_VALUE);
 	}
 	
+	@SideOnly(Side.CLIENT)
 	private static void spawnRandomAmountOfParticles(Entity origin, DDDParticleType type)
 	{
-		//we remove imports to client packages so we can use them without causing a crash - but we need to check if we're client side.
-		if(!origin.world.isRemote)
-		{
-			return;
-		}
+		//we remove imports to client packages so we can use them without causing a crash
 		net.minecraft.client.particle.ParticleManager manager = net.minecraft.client.Minecraft.getMinecraft().effectRenderer;
 		int amount = (int)(2*Math.random())+2;
 		for(int i = 0; i < amount; i++)
