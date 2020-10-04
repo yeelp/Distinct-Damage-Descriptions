@@ -5,10 +5,9 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import yeelp.distinctdamagedescriptions.util.DamageType;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Base class for all DamageDescriptionEvent events.
@@ -21,6 +20,7 @@ import yeelp.distinctdamagedescriptions.util.DamageType;
  * @author Yeelp
  *
  */
+
 public abstract class DamageDescriptionEvent extends Event
 {
 	private float amount;
