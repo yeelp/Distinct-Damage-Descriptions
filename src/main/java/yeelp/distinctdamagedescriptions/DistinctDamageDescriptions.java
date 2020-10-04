@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -17,6 +18,7 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTDDDEventManager;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.CreatureType;
@@ -33,6 +35,8 @@ public class DistinctDamageDescriptions
     public static DistinctDamageDescriptions instance;
     public static File srcFile;
     
+    public static boolean hasCraftTweaker = false;
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -41,6 +45,11 @@ public class DistinctDamageDescriptions
         srcFile = event.getSourceFile();
         DDDAPI.init();
         DDDRegistries.init();
+        if(Loader.isModLoaded(ModConsts.CRAFTTWEAKER_ID))
+        {
+        	info("Distinct Damage Descriptions found CraftTweaker!");
+        	hasCraftTweaker = true;
+        }
     }
 
 	@EventHandler
@@ -57,6 +66,10 @@ public class DistinctDamageDescriptions
         PacketHandler.init();
         DDDSounds.init();
        	DDDEnchantments.init();
+       	if(hasCraftTweaker)
+       	{
+       		new CTDDDEventManager.EventHandler().register();
+       	}
     }
     
     public static void info(String msg)

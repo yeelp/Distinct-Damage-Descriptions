@@ -5,11 +5,11 @@ import crafttweaker.api.entity.IEntityLivingBase;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 
-public abstract class DDDEvent implements IDDDEvent
+public abstract class CTDDDEvent implements IDDDEvent
 {
 	private final DamageDescriptionEvent internal;
 	
-	DDDEvent(DamageDescriptionEvent evt)
+	CTDDDEvent(DamageDescriptionEvent evt)
 	{
 		this.internal = evt;
 	}

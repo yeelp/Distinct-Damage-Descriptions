@@ -6,7 +6,7 @@ import java.util.List;
 import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 
-public class CTCustomDamageEvent extends DDDEvent implements ICustomDamageEvent
+public class CTCustomDamageEvent extends CTDDDEvent implements ICustomDamageEvent
 {
 	private final List<String> damageTypes;
 	public CTCustomDamageEvent(CustomDamageEvent evt)
