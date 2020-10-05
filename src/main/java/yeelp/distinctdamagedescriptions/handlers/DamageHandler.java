@@ -24,19 +24,19 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType; //This client package import is fine, since it's just an enum.
+import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType;
 import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
-import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.event.PhysicalDamageEvent;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
+import yeelp.distinctdamagedescriptions.network.ParticleMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageType;
@@ -215,20 +215,20 @@ public class DamageHandler extends Handler
 		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{
 			attackerPlayer = (EntityPlayer) dmgSource.getTrueSource();
-			boolean isRemote = attackerPlayer.world.isRemote;
-			if((resisted || finalModifier > 0) && isRemote)
+			boolean isClient = FMLCommonHandler.instance().getSide() == Side.CLIENT && attackerPlayer.world.isRemote;
+			if((resisted || finalModifier > 0) && isClient)
 			{
-					spawnRandomAmountOfParticles(defender, DDDParticleType.RESISTANCE);
+				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.RESISTANCE);
 			}
-			if((weakness || finalModifier < 0) && isRemote)
+			if((weakness || finalModifier < 0) && isClient)
 			{
-				spawnRandomAmountOfParticles(defender, DDDParticleType.WEAKNESS);
+				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.WEAKNESS);
 			}
 			if(immunityResisted)
 			{
-				if(isRemote)
+				if(isClient)
 				{
-					spawnRandomAmountOfParticles(defender, DDDParticleType.IMMUNITY);
+					spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.IMMUNITY);
 				}
 				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
 				evt.setCanceled(ratio == 0 && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
@@ -328,15 +328,23 @@ public class DamageHandler extends Handler
 		}
 	}
 	
-	@SideOnly(Side.CLIENT)
-	private static void spawnRandomAmountOfParticles(Entity origin, DDDParticleType type)
+	private static void spawnRandomAmountOfParticles(EntityPlayer viewer, Entity origin, DDDParticleType type)
 	{
-		//we remove imports to client packages so we can use them without causing a crash
-		net.minecraft.client.particle.ParticleManager manager = net.minecraft.client.Minecraft.getMinecraft().effectRenderer;
-		int amount = (int)(2*Math.random())+2;
-		for(int i = 0; i < amount; i++)
+		if(viewer instanceof EntityPlayerMP)
 		{
-			manager.addEffect(new yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle(origin, 0, 4, 0, type, particleDisplacement));
+			EntityPlayerMP player = (EntityPlayerMP) viewer;
+			int amount = (int)(2*Math.random())+2;
+			for(int i = 0; i < amount; i++)
+			{
+				double x = origin.posX + origin.width*particleDisplacement.nextDouble() - origin.width/2;
+				double y = origin.posY + origin.getEyeHeight() + origin.height*particleDisplacement.nextDouble() - origin.height/2;
+				double z = origin.posZ + origin.width*particleDisplacement.nextDouble() - origin.width/2;
+				PacketHandler.INSTANCE.sendTo(new ParticleMessage(type, x, y, z), (EntityPlayerMP) player);
+			}
+		}
+		else
+		{
+			return;
 		}
 	}
 }
