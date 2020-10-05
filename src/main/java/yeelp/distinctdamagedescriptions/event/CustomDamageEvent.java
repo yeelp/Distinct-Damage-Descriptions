@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * Event for custom damage types. Need both creature types <strong>AND</strong> custom damage types enabled for this event to fire.
@@ -27,7 +27,7 @@ public final class CustomDamageEvent extends DamageDescriptionEvent
 	private final HashSet<String> damageTypes;
 	private float resistance;
 	/**
-	 * Build a new CustomeDamageEvent
+	 * Build a new CustomDamageEvent
 	 * @param attacker
 	 * @param defender
 	 * @param amount
@@ -42,7 +42,7 @@ public final class CustomDamageEvent extends DamageDescriptionEvent
 	}
 	
 	/**
-	 * Get all the damage types inflicted by this attack. Typically will be around one, but almost certainly never more than three.
+	 * Get all the damage types inflicted by this attack. Typically will be around one.
 	 * @return
 	 */
 	public String[] getDamageTypes()

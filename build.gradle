@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "1.0.1-beta"
+version = "1.1.0-beta"
 group = "yeelp.distinctdamagedescriptions" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "distinctdamagedescriptions"
 
@@ -33,7 +33,17 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+repositories {
+    maven {
+        name = "CraftTweaker/ContentTweaker"
+        url = "http://maven.blamejared.com"
+    }
+}
+
 dependencies {
+
+    deobfProvided "CraftTweaker2:CraftTweaker2-API:4.1.20.564"
+    deobfProvided "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.564"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

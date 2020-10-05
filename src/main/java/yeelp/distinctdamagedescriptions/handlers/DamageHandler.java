@@ -33,6 +33,7 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType; //This client package import is fine, since it's just an enum.
 import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
+import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.event.PhysicalDamageEvent;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
@@ -78,6 +79,7 @@ public class DamageHandler extends Handler
 		EntityLivingBase defender = evt.getEntityLiving();
 		DamageSource dmgSource = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
 		Entity attacker = dmgSource.getImmediateSource();
+		boolean hasCustomDamageTypes = false;
 		if(ModConfig.showDotsOn)
 		{
 			Entity trueAttacker = dmgSource.getTrueSource();
@@ -91,6 +93,7 @@ public class DamageHandler extends Handler
 			ICreatureType type = DDDAPI.accessor.getMobCreatureType(defender);
 			if(dmgSource instanceof DDDDamageType)
 			{
+				hasCustomDamageTypes = true;
 				DDDDamageType dmgType = (DDDDamageType) dmgSource;
 				damageTypes = dmgType.getExtendedTypes().toArray(damageTypes);
 				for(String s : dmgType.getExtendedTypes())
@@ -168,27 +171,10 @@ public class DamageHandler extends Handler
 					continue;
 				}
 				float mobMod = 0.0f;
-				switch(type)
-				{
-					case SLASHING:
-						PhysicalDamageEvent.SlashingDamage slashEvent = new PhysicalDamageEvent.SlashingDamage(dmgMap.get(type), mobResists.getSlashingResistance(), attacker, defender);
-						MinecraftForge.EVENT_BUS.post(slashEvent);
-						dmg = slashEvent.getDamage();
-						mobMod = slashEvent.getResistance();
-						break;
-					case PIERCING:
-						PhysicalDamageEvent.PiercingDamage pierceEvent = new PhysicalDamageEvent.PiercingDamage(dmgMap.get(type), mobResists.getPiercingResistance(), attacker, defender);
-						MinecraftForge.EVENT_BUS.post(pierceEvent);
-						dmg = pierceEvent.getDamage();
-						mobMod = pierceEvent.getResistance();
-						break;
-					case BLUDGEONING:
-						PhysicalDamageEvent.BludgeoningDamage bludgeoningEvent = new PhysicalDamageEvent.BludgeoningDamage(dmgMap.get(type), mobResists.getBludgeoningResistance(), attacker, defender);
-						MinecraftForge.EVENT_BUS.post(bludgeoningEvent);
-						dmg = bludgeoningEvent.getDamage();
-						mobMod = bludgeoningEvent.getResistance();
-						break;
-				}
+				PhysicalDamageEvent event = new PhysicalDamageEvent(type, dmgMap.get(type), getResistance(mobResists, type), attacker, defender);
+				MinecraftForge.EVENT_BUS.post(event);
+				dmg = event.getDamage();
+				mobMod = event.getResistance();
 				if(mobMod > 0)
 				{
 					mobMod = MathHelper.clamp(mobMod - bruteForceAmount, 0, Float.MAX_VALUE);
@@ -212,7 +198,7 @@ public class DamageHandler extends Handler
 			}
 		}
 		DistinctDamageDescriptions.debug("new damage after physical deductions: "+totalDamage);
-		if(finalModifier != 0)
+		if(hasCustomDamageTypes)
 		{
 			CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, totalDamage, finalModifier, damageTypes);
 			MinecraftForge.EVENT_BUS.post(custEvt);
@@ -325,6 +311,21 @@ public class DamageHandler extends Handler
 	private static float modDmg(float damage, float armor, float toughness, boolean applyAnvilReductionCap)
 	{
 		return (float) MathHelper.clamp(damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f), 0.0f, applyAnvilReductionCap ? 0.75*damage : Float.MAX_VALUE);
+	}
+	
+	private static float getResistance(IMobResistances resists, DamageType type)
+	{
+		switch(type)
+		{
+			case SLASHING:
+				return resists.getSlashingResistance();
+			case PIERCING:
+				return resists.getPiercingResistance();
+			case BLUDGEONING:
+				return resists.getBludgeoningResistance();
+			default:
+				return 0;
+		}
 	}
 	
 	@SideOnly(Side.CLIENT)
