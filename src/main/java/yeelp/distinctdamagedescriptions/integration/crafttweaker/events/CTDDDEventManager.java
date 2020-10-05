@@ -30,19 +30,4 @@ public final class CTDDDEventManager
 	{
 		return CUSTOM_DAMAGE.add(handler);
 	}
-	
-	public static class EventHandler extends Handler
-	{
-		@SubscribeEvent(priority=EventPriority.LOWEST)
-		public static void physicalDamage(PhysicalDamageEvent evt)
-		{
-			PHYSICAL_DAMAGE.publish(new CTPhysicalDamageEvent(evt));
-		}
-		
-		@SubscribeEvent(priority=EventPriority.LOWEST)
-		public static void customDamage(CustomDamageEvent evt)
-		{
-			CUSTOM_DAMAGE.publish(new CTCustomDamageEvent(evt));
-		}
-	}
 }

@@ -12,15 +12,15 @@ import yeelp.distinctdamagedescriptions.util.DamageType;
 /**
  * Base class for all physical damage events - slashing piercing and bludgeoning
  * <br>
- * These events are not {@link Cancelable}
+ * This event is not {@link Cancelable}
  * <br>
- * These events do not have a result {@link HasResult}
+ * This event does not have a result {@link HasResult}
  * <br>
- * All children are fired on the {@link MinecraftForge#EVENT_BUS}
+ * This event is fired on the {@link MinecraftForge#EVENT_BUS}
  * @author Yeelp
  * 
  */
-public abstract class PhysicalDamageEvent extends DamageDescriptionEvent
+public class PhysicalDamageEvent extends DamageDescriptionEvent
 {
 	private final DamageType type;
 	private float resistance;
@@ -46,50 +46,5 @@ public abstract class PhysicalDamageEvent extends DamageDescriptionEvent
 	public void setResistance(float newResistance)
 	{
 		resistance = newResistance;
-	}
-	
-	/**
-	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of slashing damage, to allow control over its value.
-	 * <br>
-	 * This event is not {@link Cancelable}. <br>
-	 * <br>
-	 * This event does not have a result {@link HasResult}
-	 */
-	public static class SlashingDamage extends PhysicalDamageEvent
-	{
-		public SlashingDamage(float amount, float resistance, @Nullable Entity attacker, @Nonnull EntityLivingBase defender)
-		{
-			super(DamageType.SLASHING, amount, resistance, attacker, defender);
-		}	
-	}
-	
-	/**
-	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of bludgeoning damage, to allow control over its value.
-	 * <br>
-	 * This event is not {@link Cancelable}. <br>
-	 * <br>
-	 * This event does not have a result {@link HasResult}
-	 */
-	public static class BludgeoningDamage extends PhysicalDamageEvent
-	{
-		public BludgeoningDamage(float amount, float resistance, @Nullable Entity attacker, @Nonnull EntityLivingBase defender)
-		{
-			super(DamageType.BLUDGEONING, amount, resistance, attacker, defender);
-		}
-	}
-	
-	/**
-	 * Fired as soon as possible during a LivingHurtEvent, if the attacking weapon inflicts a non-zero amount of piercing damage, to allow control over its value.
-	 * <br>
-	 * This event is not {@link Cancelable}. <br>
-	 * <br>
-	 * This event does not have a result {@link HasResult}
-	 */
-	public static class PiercingDamage extends PhysicalDamageEvent
-	{
-		public PiercingDamage(float amount, float resistance, @Nullable Entity attacker, @Nonnull EntityLivingBase defender)
-		{
-			super(DamageType.PIERCING, amount, resistance, attacker, defender);
-		}
 	}
 }

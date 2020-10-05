@@ -19,6 +19,7 @@ import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTDDDEventManager;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.CreatureType;
@@ -68,7 +69,7 @@ public class DistinctDamageDescriptions
        	DDDEnchantments.init();
        	if(hasCraftTweaker)
        	{
-       		new CTDDDEventManager.EventHandler().register();
+       		new CTEventHandler().register();
        	}
     }
     
