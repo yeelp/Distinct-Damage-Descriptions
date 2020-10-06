@@ -9,7 +9,7 @@ import yeelp.distinctdamagedescriptions.network.SoundMessage;
 
 public class PacketHandler
 {
-	public static final SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(ModConsts.MODID);
+	public static final SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(ModConsts.MODID_SHORT);
 	public static int id = 0;
 	public static final void init()
 	{

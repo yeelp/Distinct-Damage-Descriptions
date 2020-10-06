@@ -215,21 +215,17 @@ public class DamageHandler extends Handler
 		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{
 			attackerPlayer = (EntityPlayer) dmgSource.getTrueSource();
-			boolean isClient = FMLCommonHandler.instance().getSide() == Side.CLIENT && attackerPlayer.world.isRemote;
-			if((resisted || finalModifier > 0) && isClient)
+			if((resisted || finalModifier > 0))
 			{
 				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.RESISTANCE);
 			}
-			if((weakness || finalModifier < 0) && isClient)
+			if((weakness || finalModifier < 0))
 			{
 				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.WEAKNESS);
 			}
 			if(immunityResisted)
 			{
-				if(isClient)
-				{
-					spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.IMMUNITY);
-				}
+				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.IMMUNITY);
 				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
 				evt.setCanceled(ratio == 0 && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
 			}

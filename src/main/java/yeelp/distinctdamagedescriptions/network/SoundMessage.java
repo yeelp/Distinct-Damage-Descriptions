@@ -14,10 +14,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import yeelp.distinctdamagedescriptions.init.DDDSounds;
 
 public final class SoundMessage implements IMessage
 {
-	private String id;
+	private byte id;
 	private float volume;
 	private float pitch;
 	
@@ -26,14 +27,14 @@ public final class SoundMessage implements IMessage
 		
 	}
 	
-	public SoundMessage(@Nonnull SoundEvent sound, float volume, float pitch)
+	public SoundMessage(byte id, float volume, float pitch)
 	{
-		this.id = sound.getRegistryName().toString();
+		this.id = id;
 		this.volume = volume;
 		this.pitch = pitch;
 	}
 	
-	public String getSoundID()
+	public byte getSoundID()
 	{
 		return id;
 	}
@@ -52,7 +53,7 @@ public final class SoundMessage implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		id = pakBuf.readString(100);
+		id = pakBuf.readByte();
 		volume = pakBuf.readFloat();
 		pitch = pakBuf.readFloat();
 	}
@@ -61,7 +62,7 @@ public final class SoundMessage implements IMessage
 	public void toBytes(ByteBuf buf)
 	{
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		pakBuf.writeString(id);
+		pakBuf.writeByte(id);
 		pakBuf.writeFloat(volume);
 		pakBuf.writeFloat(pitch);
 	}
@@ -82,7 +83,7 @@ public final class SoundMessage implements IMessage
 			EntityPlayer player = NetworkHelper.getSidedPlayer(ctx);
 			if(player != null)
 			{
-				SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(msg.getSoundID()));
+				SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(DDDSounds.decodeSoundID(msg.getSoundID())));
 				if(sound != null)
 				{
 					player.playSound(sound, msg.getVolume(), msg.getPitch());

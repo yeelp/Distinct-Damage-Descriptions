@@ -1,6 +1,8 @@
 package yeelp.distinctdamagedescriptions.init;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,6 +18,7 @@ import yeelp.distinctdamagedescriptions.network.SoundMessage;
 public final class DDDSounds
 {
 	private static final Map<String, SoundEvent> SOUND_MAP = new HashMap<String, SoundEvent>();
+	private static final List<String> ID_LIST = new ArrayList<String>();
 	
 	public static final SoundEvent RESIST_DING = createSoundEvent("resist_ding");
 	public static final SoundEvent WEAKNESS_HIT = createSoundEvent("weakness_hit");
@@ -33,8 +36,10 @@ public final class DDDSounds
 	
 	private static SoundEvent createSoundEvent(String id)
 	{
-		SoundEvent sound = new SoundEvent(new ResourceLocation(ModConsts.MODID, id));
+		ResourceLocation loc = new ResourceLocation(ModConsts.MODID, id);
+		SoundEvent sound = new SoundEvent(loc);
 		SOUND_MAP.put(id, sound);
+		ID_LIST.add(loc.toString());
 		return sound;
 	}
 	
@@ -48,12 +53,36 @@ public final class DDDSounds
 	{
 		if(player instanceof EntityPlayerMP)
 		{
-			PacketHandler.INSTANCE.sendTo(new SoundMessage(name, vol, pitch), (EntityPlayerMP) player);
+			PacketHandler.INSTANCE.sendTo(new SoundMessage(encodeSoundID(name.getRegistryName().toString()), vol, pitch), (EntityPlayerMP) player);
 			return true;
 		}
 		else
 		{
 			return false;
+		}
+	}
+	
+	public static byte encodeSoundID(String id)
+	{
+		if(ID_LIST.contains(id))
+		{
+			return (byte) ID_LIST.indexOf(id);
+		}
+		else
+		{
+			throw new RuntimeException(String.format("Can't encode Distinct Damage Description SoundID %s!", id));
+		}
+	}
+	
+	public static String decodeSoundID(byte id)
+	{
+		if(ID_LIST.size() > id) //id is zero indexed, size isn't. Equality edge case not needed.
+		{
+			return ID_LIST.get(id);
+		}
+		else
+		{
+			throw new RuntimeException(String.format("Can't decode Distinct Damage Descriptions SoundID %d, should be no higher than %d", id, ID_LIST.size()-1));
 		}
 	}
 }
