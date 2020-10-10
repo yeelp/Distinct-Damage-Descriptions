@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -31,6 +32,7 @@ public class DistinctDamageDescriptions
 {
     private static Logger logger;
     private static File configDirectory;
+    private static Configuration config;
     
     @Instance(ModConsts.MODID)
     public static DistinctDamageDescriptions instance;
@@ -43,6 +45,7 @@ public class DistinctDamageDescriptions
     {
         logger = event.getModLog();
         configDirectory = event.getModConfigurationDirectory();
+        config = new Configuration(event.getSuggestedConfigurationFile());
         srcFile = event.getSourceFile();
         DDDAPI.init();
         DDDRegistries.init();
@@ -108,6 +111,10 @@ public class DistinctDamageDescriptions
 	{
 		return new File(configDirectory, ModConsts.MODID);
 	}
-
+	
+	public static Configuration getConfiguration()
+	{
+		return config;
+	}
 	
 }

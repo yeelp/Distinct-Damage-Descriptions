@@ -9,6 +9,7 @@ import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Config(modid = ModConsts.MODID)
@@ -322,6 +323,11 @@ public class ModConfig
 			{
 				evt.getWorld().getGameRules().setOrCreateGameRule("showDeathMessages", "true");
 			}
+		}
+		
+		public static void onServerStop(final FMLServerStoppedEvent evt)
+		{
+			DistinctDamageDescriptions.getConfiguration().save();
 		}
 	}
 }
