@@ -1,14 +1,18 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityBlaze;
@@ -21,9 +25,16 @@ import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 /**
  * Generates config values on the fly for newly encountered mobs.
@@ -37,7 +48,9 @@ public final class ConfigGenerator
 	private static final Map<ResourceLocation, IMobResistances> MOB_RESISTS_CACHE = new HashMap<ResourceLocation, IMobResistances>();
 	private static final Map<ResourceLocation, Float> ADAPTABILITY_CHANCE_CACHE = new HashMap<ResourceLocation, Float>();
 	private static final Map<ResourceLocation, IDamageDistribution> WEAPON_CACHE = new HashMap<ResourceLocation, IDamageDistribution>();
+	private static final Map<ResourceLocation, IDamageDistribution> PROJECTILE_CACHE = new HashMap<ResourceLocation, IDamageDistribution>();
 	private static final Map<ResourceLocation, IArmorDistribution> ARMOR_CACHE = new HashMap<ResourceLocation, IArmorDistribution>();
+	private static final Field efficiencyField = ObfuscationReflectionHelper.findField(ItemTool.class, "field_77864_a");
 	
 	/**
 	 * Generate Mob Capabilities on the fly and save them to be injected in the config later.
@@ -312,6 +325,11 @@ public final class ConfigGenerator
 			}
 			adaptChance = MathHelper.clamp(adaptChance, 0, 1);
 			adaptAmount = adaptAmount < 0 ? 0 : adaptAmount;
+			slash = roundToTwoDecimals(slash);
+			pierce = roundToTwoDecimals(pierce);
+			bludge = roundToTwoDecimals(bludge);
+			adaptChance = roundToTwoDecimals(adaptChance);
+			adaptAmount = roundToTwoDecimals(adaptAmount);
 			ADAPTABILITY_CHANCE_CACHE.put(loc, adaptChance);
 			mobResists = new MobResistances(slash, pierce, bludge, slashImmune, pierceImmune, bludgeImmune, Math.random() < adaptChance, adaptAmount);
 			MOB_DAMAGE_CACHE.put(loc, damageDist);
@@ -319,8 +337,319 @@ public final class ConfigGenerator
 			return new Tuple<IDamageDistribution, IMobResistances>(damageDist, mobResists);
 		}	
 	}
-	private static float generateResistance(float modifier, float bonus)
+	
+	/**
+	 * Get or generate tool capabilities on the fly
+	 * @param tool the ItemTool
+	 * @param stack the stack that this ItemTool is in.
+	 * @return An IDamageDistribution, freshly generated or from the cache.
+	 */
+	public static final IDamageDistribution getOrGenerateWeaponCapabilities(ItemTool tool, ItemStack stack)
+	{
+		if(WEAPON_CACHE.containsKey(tool.getRegistryName()))
+		{
+			return WEAPON_CACHE.get(tool.getRegistryName());
+		}
+		else
+		{
+			/*
+			 * We take a look at a tool's durability, enchantability, harvest level and efficiency to determine how 'good' of a tool it is. 
+			 * This determines how narrow a spread we give it.
+			 * 
+			 * 
+			 * Then we check to see which tool type we have. We give precedence to pickaxes, axes and shovels in that order.
+			 * pickaxes get a piercing biased distribution. Then, favor bludgeoning
+			 * axes get a slashing biased distribution. Then, favor bludgeoning.
+			 * shovels get a bludgeoning biased distribution Then, ever so lightly favor piercing.
+			 */
+			int durability = tool.getMaxDamage(stack);
+			int enchantability = tool.getItemEnchantability(stack);
+			Set<String> classes = tool.getToolClasses(stack);
+			float avgHarvestLevel = 0;
+			for(String s : classes)
+			{
+				avgHarvestLevel += tool.getHarvestLevel(stack, s, null, null);
+			}
+			avgHarvestLevel /= classes.size();
+			float efficiency = 0;
+			try
+			{
+				efficiency = efficiencyField.getFloat(tool);
+			}
+			catch (IllegalArgumentException | IllegalAccessException e)
+			{
+				e.printStackTrace();
+			}
+			
+			//Use this information to get a tool rating in (0,1]. First, convert the values to z scores, then add 3.5 to each value (this will make negative values small positive values and positive values even larger)
+			//Then, combine the z scores in a 4D vector and get the Euclidean norm. Finally, squash the values into the range (0,1] using tanh.
+			double rating = Math.pow(2, 2*getDurabilityZScore(durability))+
+					        Math.pow(2, 2*getHarvestLevelZScore(avgHarvestLevel))+
+					        Math.pow(2, 2*getEfficiencyZScore(efficiency))+
+					        Math.pow(2, 2*getEnchantabilityZScore(enchantability));
+			rating = Math.tanh(Math.sqrt(rating));
+			
+			//Now we choose our bias. We can use Forge's getToolClasses() set as ItemPickaxe, ItemAxe and ItemShovel set this string to "pickaxe", "axe" and "shovel" respectively. No instanceof checks needed.
+			float slash = 0, pierce = 0, bludge = 0;
+			if(classes.contains("pickaxe"))
+			{
+				pierce = roundToTwoDecimals(rating);
+				bludge = 1 - pierce;
+			}
+			else if(classes.contains("axe"))
+			{
+				slash = roundToTwoDecimals(rating);
+				bludge = 1 - slash;
+			}
+			else if(classes.contains("shovel"))
+			{
+				bludge = roundToTwoDecimals(rating);
+				float rem = (1 - bludge)/2;
+				bludge += rem;
+				pierce = 1 - bludge;
+			}
+			else
+			{
+				bludge = roundToTwoDecimals(rating);
+				pierce = 1 - bludge;
+			}
+			IDamageDistribution dist = new DamageDistribution(slash, pierce, bludge);
+			WEAPON_CACHE.put(tool.getRegistryName(), dist);
+			return dist;
+		}	
+	}
+	
+	/**
+	 * Get or generate weapon capabilities on the fly, but for ItemHoe instances.
+	 * @param hoe
+	 * @param stack
+	 * @return an IDamageDistribution from the cache or a fresh one.
+	 */
+	public static final IDamageDistribution getOrGenerateWeaponCapabilities(ItemHoe hoe, ItemStack stack)
+	{
+		if(WEAPON_CACHE.containsKey(hoe.getRegistryName()))
+		{
+			return WEAPON_CACHE.get(hoe.getRegistryName());
+		}
+		else
+		{
+			double rating = Math.tanh(Math.pow(2, getDurabilityZScore(hoe.getMaxDamage(stack))));
+			float pierce = roundToTwoDecimals(rating);
+			float bludge = 1 - pierce;
+			IDamageDistribution dist = new DamageDistribution(0.0f, pierce, bludge);
+			WEAPON_CACHE.put(hoe.getRegistryName(), dist);
+			return dist;
+		}
+	}
+	
+	/**
+	 * Get or generate weapon capabilities on the fly, but for ItemSword instances.
+	 * @param sword
+	 * @param stack
+	 * @return an IDamageDistribution from the cache, or a fresh one. 
+	 */
+	public static final IDamageDistribution getOrGenerateWeaponCapabilities(ItemSword sword, ItemStack stack)
+	{
+		if(WEAPON_CACHE.containsKey(sword.getRegistryName()))
+		{
+			return WEAPON_CACHE.get(sword.getRegistryName());
+		}
+		else
+		{
+			int durability = sword.getMaxDamage(stack), enchantability = sword.getItemEnchantability();
+			double rating = Math.pow(2, 2*getDurabilityZScore(durability))+
+							Math.pow(2, getEnchantabilityZScore(enchantability));
+			rating = Math.tanh(Math.sqrt(rating));
+			float slash = roundToTwoDecimals(rating), pierce = 0, bludge = 0;
+			if(rating < 0.4)
+			{
+				bludge = 1 - slash;
+			}
+			else
+			{
+				pierce = 1 - slash;
+			}
+			IDamageDistribution dist = new DamageDistribution(slash, pierce, bludge);
+			WEAPON_CACHE.put(sword.getRegistryName(), dist);
+			return dist;
+		}
+	}
+	
+	/**
+	 * Get or generate projectile capabilities on the fly
+	 * @param projectile the IProjectile
+	 * @param loc the ResourceLocation for the IProjectile
+	 * @return an IDamageDistribution.
+	 */
+	public static final IDamageDistribution getOrGenerateProjectileDistribution(IProjectile projectile, ResourceLocation loc)
+	{
+		if(PROJECTILE_CACHE.containsKey(loc))
+		{
+			return PROJECTILE_CACHE.get(loc);
+		}
+		else
+		{
+			IDamageDistribution dist = null;
+			if(projectile instanceof EntityArrow)
+			{
+				dist = new DamageDistribution(0,1,0); 
+			}
+			else
+			{
+				dist = new DamageDistribution(0,0,1);
+			}
+			PROJECTILE_CACHE.put(loc, dist);
+			return dist;
+		}
+	}
+	
+	/**
+	 * Generate armor resistances on the fly
+	 * @param armor
+	 * @param stack
+	 * @return an IArmorDistribution.
+	 */
+	public static final IArmorDistribution getOrGenerateArmorResistances(ItemArmor armor, ItemStack stack)
+	{
+		if(ARMOR_CACHE.containsKey(armor.getRegistryName()))
+		{
+			return ARMOR_CACHE.get(armor.getRegistryName());
+		}
+		else
+		{
+			int durability = armor.getMaxDamage(stack);
+			int enchantability = armor.getItemEnchantability(stack);
+			float toughness = armor.toughness;
+			
+			float bludge = 0.1f + 0.1f*durability;
+			float pierce = 0.1f + toughness/20.0f;
+			float slash = 0.15f + 0.01f*enchantability;
+			IArmorDistribution dist = new ArmorDistribution(slash, pierce, bludge);
+			ARMOR_CACHE.put(armor.getRegistryName(), dist);
+			return dist;
+		}
+	}
+	
+	public static final String[] getNewMobResistanceConfigValues()
+	{
+		int index = -1;
+		String[] vals = new String[MOB_RESISTS_CACHE.size()];
+		for(Entry<ResourceLocation, IMobResistances> entry : MOB_RESISTS_CACHE.entrySet())
+		{
+			IMobResistances resists = entry.getValue();
+			String val = entry.getKey().toString()+";";
+			val += resists.getSlashingResistance()+";";
+			val += resists.getPiercingResistance()+";";
+			val += resists.getBludgeoningResistance()+";";
+			val += getImmunitiesForConfig(resists.isSlashingImmune(), resists.isPiercingImmune(), resists.isBludgeoningImmune())+";";
+			val += ADAPTABILITY_CHANCE_CACHE.get(entry.getKey())+";";
+			val += resists.getAdaptiveAmount();
+			
+			vals[++index] = val;
+		}
+		return vals;
+	}
+	
+	public static final String[] getNewMobDamageConfigValues()
+	{
+		int index = -1;
+		String[] vals = new String[MOB_DAMAGE_CACHE.size()];
+		for(Entry<ResourceLocation, IDamageDistribution> entry : MOB_DAMAGE_CACHE.entrySet())
+		{
+			IDamageDistribution dist = entry.getValue();
+			String val = entry.getKey().toString()+";";
+			val += dist.getSlashingWeight()+";";
+			val += dist.getPiercingWeight()+";";
+			val += dist.getBludgeoningWeight();
+			
+			vals[++index] = val;
+		}
+		return vals;
+	}
+	
+	public static final String[] getNewWeaponConfigValues()
+	{
+		int index = -1;
+		String[] vals = new String[WEAPON_CACHE.size()];
+		for(Entry<ResourceLocation, IDamageDistribution> entry : WEAPON_CACHE.entrySet())
+		{
+			IDamageDistribution dist = entry.getValue();
+			String val = entry.getKey().toString()+";";
+			val += dist.getSlashingWeight()+";";
+			val += dist.getPiercingWeight()+";";
+			val += dist.getBludgeoningWeight();
+			
+			vals[++index] = val;
+		}
+		return vals;
+	}
+	
+	public static final String[] getNewProjectileConfigValues()
+	{
+		int index = -1;
+		String[] vals = new String[PROJECTILE_CACHE.size()];
+		for(Entry<ResourceLocation, IDamageDistribution> entry : PROJECTILE_CACHE.entrySet())
+		{
+			IDamageDistribution dist = entry.getValue();
+			String val = entry.getKey().toString()+";";
+			val += dist.getSlashingWeight()+";";
+			val += dist.getPiercingWeight()+";";
+			val += dist.getBludgeoningWeight();
+			
+			vals[++index] = val;
+		}
+		return vals;
+	}
+	
+	public static final String[] getNewArmorConfigValues()
+	{
+		int index = -1;
+		String[] vals = new String[ARMOR_CACHE.size()];
+		for(Entry<ResourceLocation, IArmorDistribution> entry : ARMOR_CACHE.entrySet())
+		{
+			IArmorDistribution dist = entry.getValue();
+			String val = entry.getKey().toString()+";";
+			val += dist.getSlashingWeight()+";";
+			val += dist.getPiercingWeight()+";";
+			val += dist.getBludgeoningWeight();
+			
+			vals[++index] = val;
+		}
+		return vals;
+	}
+	
+	private static final float generateResistance(float modifier, float bonus)
 	{
 		return modifier*rng.nextFloat() + bonus;
+	}
+	
+	private static final double getDurabilityZScore(int durability)
+	{
+		return (durability - 406.6)/582.111535704284;
+	}
+	
+	private static final double getHarvestLevelZScore(float avgLevel)
+	{
+		return (avgLevel - 1.2)/1.1661903789690602;
+	}
+	
+	private static final double getEfficiencyZScore(float efficiency)
+	{
+		return (efficiency - 6.4)/3.4409301068170506;
+	}
+	
+	private static final double getEnchantabilityZScore(float enchantability)
+	{
+		return (enchantability - 13.2)/5.635601121442148;
+	}
+	
+	private static final float roundToTwoDecimals(double a)
+	{
+		return (float)(Math.round(a*100)/100.f);
+	}
+	
+	private static String getImmunitiesForConfig(boolean slashing, boolean piercing, boolean bludgeoning)
+	{
+		return (slashing ? "s" : "") + (piercing ? "p" : "") + (bludgeoning ? "b" : "");
 	}
 }

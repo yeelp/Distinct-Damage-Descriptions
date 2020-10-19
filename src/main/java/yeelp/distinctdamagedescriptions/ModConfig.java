@@ -6,11 +6,14 @@ import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 @Config(modid = ModConsts.MODID)
 public class ModConfig
@@ -38,6 +41,10 @@ public class ModConfig
 	@Name("Suppress Warnings")
 	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
 	public static boolean suppressWarnings = false;
+	
+	@Name("Generate Configs")
+	@Comment("Set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles.")
+	public static boolean generateStats = false;
 	
 	public static class EnchantCategory
 	{
@@ -327,7 +334,48 @@ public class ModConfig
 		
 		public static void onServerStop(final FMLServerStoppedEvent evt)
 		{
-			DistinctDamageDescriptions.getConfiguration().save();
+			if(generateStats)
+			{
+				Configuration config = DistinctDamageDescriptions.getConfiguration();
+				Property itemDmg = config.get("damage", "Weapon Base Damage", dmg.itemBaseDamage);
+				Property mobDmg = config.get("damage", "Mob Base Damage", dmg.mobBaseDmg);
+				Property projDmg = config.get("damage", "Projectile Damage Type", dmg.projectileDamageTypes);
+				Property armorResist = config.get("resistance", "Armor Resistance/Weakness", resist.armorResist);
+				Property mobResists = config.get("resistance", "Mob Base Resistance/Weakness", resist.mobBaseResist);
+				
+				itemDmg.set(merge(dmg.itemBaseDamage, ConfigGenerator.getNewWeaponConfigValues()));
+				mobDmg.set(merge(dmg.mobBaseDmg, ConfigGenerator.getNewMobDamageConfigValues()));
+				projDmg.set(merge(dmg.projectileDamageTypes, ConfigGenerator.getNewProjectileConfigValues()));
+				armorResist.set(merge(resist.armorResist, ConfigGenerator.getNewArmorConfigValues()));
+				mobResists.set(merge(resist.mobBaseResist, ConfigGenerator.getNewMobResistanceConfigValues()));
+				config.save();
+			}
+		}
+		
+		private static String[] merge(String[] xs, String[] ys)
+		{
+			if(xs.length == 0)
+			{
+				return ys;
+			}
+			else if(ys.length == 0)
+			{
+				return xs;
+			}
+			else
+			{
+				int index = -1;
+				String[] arr = new String[xs.length + ys.length];
+				for(String x : xs)
+				{
+					arr[++index] = x;
+				}
+				for(String y : ys)
+				{
+					arr[++index] = y;
+				}
+				return arr;
+			}
 		}
 	}
 }
