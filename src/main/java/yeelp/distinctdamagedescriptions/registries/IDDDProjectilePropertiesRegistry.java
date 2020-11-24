@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -8,9 +10,9 @@ import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 
 public interface IDDDProjectilePropertiesRegistry extends IDDDRegistry
 {
-    public ComparableTriple<Float, Float, Float> getProjectileDamageTypes(String key);
+    Optional<ComparableTriple<Float, Float, Float>> getProjectileDamageTypes(String key);
     
-    public ComparableTriple<Float, Float, Float> getProjectileDamageTypesFromItemID(String itemID);
+    ComparableTriple<Float, Float, Float> getProjectileDamageTypesFromItemID(String itemID);
     
-    public boolean isProjectileRegistered(Entity projectile);
+    boolean isProjectileRegistered(Entity projectile);
 }

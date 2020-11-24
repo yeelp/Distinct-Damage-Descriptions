@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries;
 
 import java.util.Map;
+import java.util.Optional;
 
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
@@ -11,5 +12,5 @@ import yeelp.distinctdamagedescriptions.util.NonNullMap;
 
 public interface IDDDMobResistancesRegistry extends IDDDRegistry
 {
-	public MobResistanceCategories getResistancesForMob(String key);
+	public Optional<MobResistanceCategories> getResistancesForMob(String key);
 }

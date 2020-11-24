@@ -16,6 +16,7 @@ tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
 tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distribution:
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:
+tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is on and Mob Capabilities not generated yet! Spawn this mob to generate capabilities!
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force

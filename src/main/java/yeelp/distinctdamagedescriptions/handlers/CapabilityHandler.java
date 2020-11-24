@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
+import java.util.Optional;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,7 +10,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -20,9 +25,13 @@ import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
+import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.CreatureType;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
+import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
 
@@ -50,11 +59,31 @@ public class CapabilityHandler extends Handler
 			if(loc != null)
 			{
 				String key = loc.toString();
-				ComparableTriple<Float, Float, Float> dmges = DDDRegistries.mobDamage.getMobDamage(key);
-				MobResistanceCategories resists = DDDRegistries.mobResists.getResistancesForMob(key);
+				Optional<ComparableTriple<Float, Float, Float>> oDmges = DDDRegistries.mobDamage.getMobDamage(key);
+				Optional<MobResistanceCategories> oResists = DDDRegistries.mobResists.getResistancesForMob(key);
+				IDamageDistribution dist;
+				IMobResistances mobResists;
+				if(oDmges.isPresent())
+				{
+					ComparableTriple<Float, Float, Float> dmges = oDmges.get();
+					dist = new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight());
+				}
+				else
+				{
+					dist = ConfigGenerator.getOrGenerateMobDamage((EntityLivingBase) entity, loc);
+				}
+				if(oResists.isPresent())
+				{
+					MobResistanceCategories resists = oResists.get();
+					mobResists = new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount());
+				}
+				else
+				{
+					mobResists = ConfigGenerator.getOrGenerateMobResistances((EntityLivingBase) entity, loc);
+				}
 				Tuple<CreatureTypeData, CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
-				evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
-				evt.addCapability(mobs, new MobResistances(resists.getSlashingResistance(), resists.getPiercingResistance(), resists.getBludgeoningResistance(), resists.getSlashingImmunity(), resists.getPiercingImmunity(), resists.getBludgeoningImmunity(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount()));
+				evt.addCapability(dmg, dist);
+				evt.addCapability(mobs, mobResists);
 				evt.addCapability(creatureType, new CreatureType(types.getFirst(), types.getSecond()));
 			}
 			else
@@ -68,8 +97,18 @@ public class CapabilityHandler extends Handler
 			if(loc != null)
 			{
 				String key = loc.toString();
-				ComparableTriple<Float, Float, Float> dmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
-				evt.addCapability(projDmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
+				Optional<ComparableTriple<Float, Float, Float>> oDmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
+				IDamageDistribution dist;
+				if(oDmges.isPresent())
+				{
+					ComparableTriple<Float, Float, Float> dmges = oDmges.get();
+					dist = new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight());
+				}
+				else
+				{
+					dist = ConfigGenerator.getOrGenerateProjectileDistribution((IProjectile) entity, loc);
+				}
+				evt.addCapability(projDmg, dist);
 			}
 			else
 			{
@@ -83,12 +122,48 @@ public class CapabilityHandler extends Handler
 	{
 		Item item = evt.getObject().getItem();
 		String key = item.getRegistryName().toString();
-		ComparableTriple<Float, Float, Float> dmges = DDDRegistries.itemProperties.getDamageDistributionForItem(key);
-		evt.addCapability(dmg, new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()));
+		Optional<ComparableTriple<Float, Float, Float>> oDmges = DDDRegistries.itemProperties.getDamageDistributionForItem(key);
+		IDamageDistribution dist;
+		if(oDmges.isPresent())
+		{
+			ComparableTriple<Float, Float, Float> dmges = oDmges.get();
+			dist = new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight());
+		}
+		else
+		{
+			if(item instanceof ItemSword)
+			{
+				dist = ConfigGenerator.getOrGenerateWeaponCapabilities((ItemSword) item, evt.getObject());
+			}
+			else if(item instanceof ItemTool)
+			{
+				dist = ConfigGenerator.getOrGenerateWeaponCapabilities((ItemTool) item, evt.getObject());
+			}
+			else if(item instanceof ItemHoe)
+			{
+				dist = ConfigGenerator.getOrGenerateWeaponCapabilities((ItemHoe) item, evt.getObject());
+			}
+			else
+			{
+				ComparableTriple<Float, Float, Float> dmges = DDDRegistries.itemProperties.getDefaultDamageDistribution();
+				dist = new DamageDistribution(dmges.getLeft(), dmges.getMiddle(), dmges.getRight()); 
+			}
+		}
+		evt.addCapability(dmg, dist);
 		if(item instanceof ItemArmor)
 		{
-			ComparableTriple<Float, Float, Float> resists = DDDRegistries.itemProperties.getArmorDistributionForItem(key);
-			evt.addCapability(armor, new ArmorDistribution(resists.getLeft(), resists.getMiddle(), resists.getRight()));
+			Optional<ComparableTriple<Float, Float, Float>> oResists = DDDRegistries.itemProperties.getArmorDistributionForItem(key);
+			IArmorDistribution armorResists;
+			if(oResists.isPresent())
+			{
+				ComparableTriple<Float, Float, Float> resists = oResists.get();
+				armorResists = new ArmorDistribution(resists.getLeft(), resists.getMiddle(), resists.getRight());
+			}
+			else
+			{
+				armorResists = ConfigGenerator.getOrGenerateArmorResistances((ItemArmor) item, evt.getObject());
+			}
+			evt.addCapability(armor, armorResists);
 		}
 	}
 	

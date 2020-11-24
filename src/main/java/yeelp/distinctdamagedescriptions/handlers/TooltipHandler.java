@@ -2,9 +2,12 @@ package yeelp.distinctdamagedescriptions.handlers;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Optional;
 
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -19,6 +22,7 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ComparableTriple;
+import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
@@ -50,6 +54,7 @@ public class TooltipHandler extends Handler
 	private static final ITextComponent mobImmunityTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.immunities").setStyle(AQUA);
 	private static final ITextComponent mobAdaptiveTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptivechance").setStyle(LIGHT_PURPLE);
 	private static final ITextComponent mobAdaptiveAmountTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptiveamount").setStyle(LIGHT_PURPLE);
+	private static final ITextComponent notGenerated = new TextComponentTranslation("tooltips.distinctdamagedescriptions.notgenerated").setStyle(new Style().setColor(TextFormatting.GOLD).setBold(true));
 	private static final ITextComponent[] damageTypeTooltips = {slashTooltip, pierceTooltip, bludgeTooltip};
 	private static final String resistanceColor = TextFormatting.GRAY.toString();
 	private static final String weaknessColor = TextFormatting.DARK_RED.toString();
@@ -108,48 +113,58 @@ public class TooltipHandler extends Handler
 		if(item instanceof ItemMonsterPlacer)
 		{
 			ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
-			MobResistanceCategories mobCats = DDDRegistries.mobResists.getResistancesForMob(ItemMonsterPlacer.getNamedIdFrom(evt.getItemStack()).toString());
+			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(evt.getItemStack());
+			Optional<MobResistanceCategories> oMobCats = DDDRegistries.mobResists.getResistancesForMob(loc.toString());
+			MobResistanceCategories mobCats;
 			int index = tooltips.size();
 			if(advanced)
 			{
 				index = tooltips.size()-2;
 			}
 			int startingIndex = index;
-			if(ctrlHeld)
+			if(oMobCats.isPresent())
 			{
-				float[] resistsPercents = {mobCats.getSlashingResistance(), mobCats.getPiercingResistance(), mobCats.getBludgeoningResistance()};
-				boolean[] immunities = {mobCats.getSlashingImmunity(), mobCats.getPiercingImmunity(), mobCats.getBludgeoningImmunity()};
-				float adaptive = mobCats.adaptiveChance();
-				float adaptiveAmount = mobCats.getAdaptiveAmount();
-				Tuple<Float, Float> adaptiveInfo = new Tuple<Float, Float>(adaptive, adaptiveAmount);
-				boolean hasImmunities = false;
-				for(DamageType type : DamageType.values())
+				mobCats = oMobCats.get();
+				if(ctrlHeld)
 				{
-					tooltips.add(index, makeMobResistTooltip(resistsPercents[type.ordinal()], damageTypeTooltips[type.ordinal()]));
-					hasImmunities = hasImmunities || immunities[type.ordinal()];
-				}
-				if(hasImmunities)
-				{
-					index = tooltips.size();
-					if(advanced)
+					float[] resistsPercents = {mobCats.getSlashingResistance(), mobCats.getPiercingResistance(), mobCats.getBludgeoningResistance()};
+					boolean[] immunities = {mobCats.getSlashingImmunity(), mobCats.getPiercingImmunity(), mobCats.getBludgeoningImmunity()};
+					float adaptive = mobCats.adaptiveChance();
+					float adaptiveAmount = mobCats.getAdaptiveAmount();
+					Tuple<Float, Float> adaptiveInfo = new Tuple<Float, Float>(adaptive, adaptiveAmount);
+					boolean hasImmunities = false;
+					for(DamageType type : DamageType.values())
 					{
-						index = tooltips.size()-2;
+						tooltips.add(index, makeMobResistTooltip(resistsPercents[type.ordinal()], damageTypeTooltips[type.ordinal()]));
+						hasImmunities = hasImmunities || immunities[type.ordinal()];
 					}
-					tooltips.add(index, makeMobImmunityTooltip(immunities));
-				}
-				if(adaptive > 0)
-				{
-					index = tooltips.size();
-					if(advanced)
+					if(hasImmunities)
 					{
-						index = tooltips.size()-2;
+						index = tooltips.size();
+						if(advanced)
+						{
+							index = tooltips.size()-2;
+						}
+						tooltips.add(index, makeMobImmunityTooltip(immunities));
 					}
-					Tuple<String, String> adaptiveTooltips = makeMobAdaptiveTooltip(adaptiveInfo);
-					tooltips.add(index, adaptiveTooltips.getSecond());
-					tooltips.add(index, adaptiveTooltips.getFirst());
+					if(adaptive > 0)
+					{
+						index = tooltips.size();
+						if(advanced)
+						{
+							index = tooltips.size()-2;
+						}
+						Tuple<String, String> adaptiveTooltips = makeMobAdaptiveTooltip(adaptiveInfo);
+						tooltips.add(index, adaptiveTooltips.getSecond());
+						tooltips.add(index, adaptiveTooltips.getFirst());
+					}
 				}
+				tooltips.add(startingIndex, mobResistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));
 			}
-			tooltips.add(startingIndex, mobResistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));
+			else
+			{
+				tooltips.add(index, notGenerated.getFormattedText());
+			}
 		}
 		if(armors != null)
 		{

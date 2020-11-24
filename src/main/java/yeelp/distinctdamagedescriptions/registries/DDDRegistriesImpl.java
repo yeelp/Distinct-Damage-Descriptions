@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -109,9 +110,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}	
 
 	@Override
-	public MobResistanceCategories getResistancesForMob(String key)
+	public Optional<MobResistanceCategories> getResistancesForMob(String key)
 	{
-		return mobResists.get(key);
+		return optionalGet(mobResists, key);
 	}
 
 	@Override
@@ -146,15 +147,21 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public ComparableTriple<Float, Float, Float> getMobDamage(String key)
+	public Optional<ComparableTriple<Float, Float, Float>> getMobDamage(String key)
 	{
-		return mobDamage.get(key);
+		return optionalGet(mobDamage, key);
 	}
 	
 	@Override
-	public ComparableTriple<Float, Float, Float> getDamageDistributionForItem(String key)
+	public Optional<ComparableTriple<Float, Float, Float>> getDamageDistributionForItem(String key)
 	{
-		return itemDamageDist.get(key);
+		return optionalGet(itemDamageDist, key);
+	}
+	
+	@Override
+	public ComparableTriple<Float, Float, Float> getDefaultDamageDistribution()
+	{
+		return ((NonNullMap<String, ComparableTriple<Float, Float, Float>>) itemDamageDist).getDefaultValue();
 	}
 	
 	@Override
@@ -163,10 +170,16 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		return itemDamageDist.containsKey(key);
 	}
 	
-	@Override 
-	public ComparableTriple<Float, Float, Float> getArmorDistributionForItem(String key)
+	@Override
+	public ComparableTriple<Float, Float, Float> getDefaultArmorDistribution()
 	{
-		return itemArmorDist.get(key);
+		return ((NonNullMap<String, ComparableTriple<Float, Float, Float>>) itemArmorDist).getDefaultValue();
+	}
+	
+	@Override 
+	public Optional<ComparableTriple<Float, Float, Float>> getArmorDistributionForItem(String key)
+	{
+		return optionalGet(itemArmorDist, key);
 	}
 	
 	@Override
@@ -176,9 +189,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public ComparableTriple<Float, Float, Float> getProjectileDamageTypes(String key)
+	public Optional<ComparableTriple<Float, Float, Float>> getProjectileDamageTypes(String key)
     {
-    	return projectileDist.get(key);
+    	return optionalGet(projectileDist, key);
     }
     
 	@Override
@@ -638,5 +651,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			}
 		}
 		return set;
+	}
+	
+	private static <T> Optional<T> optionalGet(Map<String, T> map, String key)
+	{
+		return ModConfig.generateStats && !map.containsKey(key) ? Optional.of(map.get(key)) : Optional.empty();
 	}
 }
