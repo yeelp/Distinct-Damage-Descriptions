@@ -47,6 +47,10 @@ public class CapabilityHandler extends Handler
 	public void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> evt)
 	{
 		Entity entity = evt.getObject();
+		if(entity == null)
+		{
+			return;
+		}
 		if(entity instanceof EntityPlayer)
 		{
 			evt.addCapability(dmg, new DamageDistribution());

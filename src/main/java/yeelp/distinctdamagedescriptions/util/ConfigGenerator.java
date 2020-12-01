@@ -98,9 +98,6 @@ public final class ConfigGenerator
 		{
 			return MOB_RESISTS_CACHE.get(loc);
 		}
-		final double health = entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue();
-		final double armor = entity.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue();
-		final double knockbackResist = entity.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
 		final boolean isMonster = entity.isCreatureType(EnumCreatureType.MONSTER, false);
 		final boolean isWaterMob = entity.isCreatureType(EnumCreatureType.WATER_CREATURE, false);
 		final boolean isPeaceful = !(isMonster || isWaterMob);
@@ -112,14 +109,8 @@ public final class ConfigGenerator
 		 * Non monsters (isPeaceful) will get no more than 10% to any category by default.
 		 * otherwise base value is 25%.
 		 * 
-		 * - For each 10 health, this cap increases by 5% (Max 40% bonus).
-		 * - For each point of armor, the value set is increased by 5% (Will not increase a value past 80%).
-		 * - Each 10% of knockback resistance will increase the mob's bludgeoning resistance by 5%
-		 * 		- A mob with full knockback resistance gets bludgeoning immunity.
-		 * - A mob with over 50 health gets an immunity, provided it doesn't have a bludgeoning immunity from the point above.
 		 * - Bosses get an additional 20% to resistance values below 50%
-		 * - A mob's adaptability chance increases by 5% for each 5 points of max health below 20.
-		 * 		- arthropods gain a bonus 25% to adaptability.
+		 * - arthropods gain a bonus 25% to adaptability.
 		 * - A mob's adaptability amount is set to 25% by default.
 		 * 		- This increases by 5% for each resistance below 50%.
 		 * 
@@ -143,42 +134,12 @@ public final class ConfigGenerator
 		boolean slashImmune = false, pierceImmune = false, bludgeImmune = false;
 		
 		float modifier = (float) (isMonster ? 0.3 : isPeaceful ? 0.1 : 0.25);
-		//bonus to modifier for health
-		modifier += MathHelper.clamp(0.05*health/10.0, 0, 0.4);
-		//bonus for armor
-		float bonus = (float) (armor*0.05);
 		
 		//generate base resistance
-		slash = generateResistance(modifier, bonus);
-		pierce = generateResistance(modifier, bonus);
-		bludge = generateResistance(modifier, bonus);
+		slash = generateResistance(modifier);
+		pierce = generateResistance(modifier);
+		bludge = generateResistance(modifier);
 		
-		//bonus for knockback resistance
-		if(knockbackResist == 1)
-		{
-			bludgeImmune = true;
-		}
-		else
-		{
-			bludge += 0.05f*((int) (knockbackResist/0.1));
-		}
-		
-		//bonus immunity
-		if(health > 50 && !bludgeImmune)
-		{
-			switch(rng.nextInt(3))
-			{
-				case 0:
-					slashImmune = true;
-					break;
-				case 1:
-					pierceImmune = true;
-					break;
-				case 2:
-					bludgeImmune = true;
-					break;
-			}	
-		}
 		
 		//boss bonus
 		if(isBoss)
@@ -189,18 +150,15 @@ public final class ConfigGenerator
 		}
 		
 		//adaptability bonus
-		if(health < 20)
+		adaptChance = 0.1f*rng.nextFloat();
+		if(isArthropod)
 		{
-			adaptChance = (float) (0.05*health/5.0);
-			if(isArthropod)
-			{
-				adaptChance += 0.25;
-			}
-			adaptAmount = 0.25f;
-			adaptAmount += slash < 0.5 ? 0.05 : 0.0;
-			adaptAmount += pierce < 0.5 ? 0.05 : 0.0;
-			adaptAmount += bludge < 0.5 ? 0.05 : 0.0;
+			adaptChance += 0.25;
 		}
+		adaptAmount = 0.25f;
+		adaptAmount += slash < 0.5 ? 0.05 : 0.0;
+		adaptAmount += pierce < 0.5 ? 0.05 : 0.0;
+		adaptAmount += bludge < 0.5 ? 0.05 : 0.0;
 		
 		if(entity instanceof AbstractSkeleton)
 		{
@@ -626,9 +584,9 @@ public final class ConfigGenerator
 		return vals;
 	}
 	
-	private static final float generateResistance(float modifier, float bonus)
+	private static final float generateResistance(float modifier)
 	{
-		return modifier*rng.nextFloat() + bonus;
+		return modifier*rng.nextFloat();
 	}
 	
 	private static final double getDurabilityZScore(int durability)
