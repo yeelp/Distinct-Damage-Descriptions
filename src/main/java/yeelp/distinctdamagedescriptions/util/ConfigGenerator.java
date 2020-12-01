@@ -36,6 +36,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 
 /**
  * Generates config values on the fly for newly encountered mobs.
@@ -52,6 +53,7 @@ public final class ConfigGenerator
 	private static final Map<ResourceLocation, IDamageDistribution> PROJECTILE_CACHE = new HashMap<ResourceLocation, IDamageDistribution>();
 	private static final Map<ResourceLocation, IArmorDistribution> ARMOR_CACHE = new HashMap<ResourceLocation, IArmorDistribution>();
 	private static final Field efficiencyField = ObfuscationReflectionHelper.findField(ItemTool.class, "field_77864_a");
+	private static boolean updated = false;
 	
 	/**
 	 * Generate Mob Capabilities on the fly and save them to be injected in the config later.
@@ -87,6 +89,7 @@ public final class ConfigGenerator
 			
 			
 			MOB_DAMAGE_CACHE.put(loc, damageDist);
+			updated = true;
 			
 			return damageDist;
 		}	
@@ -301,7 +304,9 @@ public final class ConfigGenerator
 		adaptAmount = roundToTwoDecimals(adaptAmount);
 		ADAPTABILITY_CHANCE_CACHE.put(loc, adaptChance);
 		mobResists = new MobResistances(slash, pierce, bludge, slashImmune, pierceImmune, bludgeImmune, Math.random() < adaptChance, adaptAmount);
+		DistinctDamageDescriptions.debug(String.format("Values for %s: %f, %f, %f", loc, slash, pierce, bludge));
 		MOB_RESISTS_CACHE.put(loc, mobResists);
+		updated = true;
 		return mobResists;
 	}
 	/**
@@ -381,6 +386,7 @@ public final class ConfigGenerator
 			}
 			IDamageDistribution dist = new DamageDistribution(slash, pierce, bludge);
 			WEAPON_CACHE.put(tool.getRegistryName(), dist);
+			updated = true;
 			return dist;
 		}	
 	}
@@ -404,6 +410,7 @@ public final class ConfigGenerator
 			float bludge = 1 - pierce;
 			IDamageDistribution dist = new DamageDistribution(0.0f, pierce, bludge);
 			WEAPON_CACHE.put(hoe.getRegistryName(), dist);
+			updated = true;
 			return dist;
 		}
 	}
@@ -437,6 +444,7 @@ public final class ConfigGenerator
 			}
 			IDamageDistribution dist = new DamageDistribution(slash, pierce, bludge);
 			WEAPON_CACHE.put(sword.getRegistryName(), dist);
+			updated = true;
 			return dist;
 		}
 	}
@@ -465,6 +473,7 @@ public final class ConfigGenerator
 				dist = new DamageDistribution(0,0,1);
 			}
 			PROJECTILE_CACHE.put(loc, dist);
+			updated = true;
 			return dist;
 		}
 	}
@@ -487,11 +496,12 @@ public final class ConfigGenerator
 			int enchantability = armor.getItemEnchantability(stack);
 			float toughness = armor.toughness;
 			
-			float bludge = 0.1f + 0.1f*durability;
-			float pierce = 0.1f + toughness/20.0f;
-			float slash = 0.15f + 0.01f*enchantability;
+			float bludge = 0.1f + MathHelper.clamp(0.01f*durability, 0.0f, 0.9f);
+			float pierce = 0.1f + MathHelper.clamp(toughness/20.0f, 0.0f, 0.9f);
+			float slash = 0.15f + MathHelper.clamp(0.01f*enchantability, 0.0f, 0.85f);
 			IArmorDistribution dist = new ArmorDistribution(slash, pierce, bludge);
 			ARMOR_CACHE.put(armor.getRegistryName(), dist);
+			updated = true;
 			return dist;
 		}
 	}
@@ -582,6 +592,16 @@ public final class ConfigGenerator
 			vals[++index] = val;
 		}
 		return vals;
+	}
+	
+	public static boolean hasUpdated()
+	{
+		return updated;
+	}
+	
+	public static void markUpdated()
+	{
+		updated = false;
 	}
 	
 	private static final float generateResistance(float modifier)

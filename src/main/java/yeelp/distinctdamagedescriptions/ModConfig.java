@@ -11,7 +11,6 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
@@ -320,6 +319,7 @@ public class ModConfig
 			}
 		}
 		
+		@SubscribeEvent
 		public static void onWorldLoad(final WorldEvent.Load evt)
 		{
 			if(ModConfig.dmg.useCustomDeathMessages)
@@ -332,16 +332,18 @@ public class ModConfig
 			}
 		}
 		
-		public static void onServerStop(final FMLServerStoppedEvent evt)
+		@SubscribeEvent
+		public static void onWorldSave(final WorldEvent.Save evt)
 		{
-			if(generateStats)
+			if(generateStats && ConfigGenerator.hasUpdated())
 			{
+				DistinctDamageDescriptions.info("Adding new config values...");
 				Configuration config = DistinctDamageDescriptions.getConfiguration();
-				Property itemDmg = config.get("damage", "Weapon Base Damage", dmg.itemBaseDamage);
-				Property mobDmg = config.get("damage", "Mob Base Damage", dmg.mobBaseDmg);
-				Property projDmg = config.get("damage", "Projectile Damage Type", dmg.projectileDamageTypes);
-				Property armorResist = config.get("resistance", "Armor Resistance/Weakness", resist.armorResist);
-				Property mobResists = config.get("resistance", "Mob Base Resistance/Weakness", resist.mobBaseResist);
+				Property itemDmg = config.get("general.damage", "Weapon Base Damage", dmg.itemBaseDamage);
+				Property mobDmg = config.get("general.damage", "Mob Base Damage", dmg.mobBaseDmg);
+				Property projDmg = config.get("general.damage", "Projectile Damage Type", dmg.projectileDamageTypes);
+				Property armorResist = config.get("general.resistance", "Armor Resistance/Weakness", resist.armorResist);
+				Property mobResists = config.get("general.resistance", "Mob Base Resistance/Weakness", resist.mobBaseResist);
 				
 				itemDmg.set(merge(dmg.itemBaseDamage, ConfigGenerator.getNewWeaponConfigValues()));
 				mobDmg.set(merge(dmg.mobBaseDmg, ConfigGenerator.getNewMobDamageConfigValues()));
@@ -349,6 +351,7 @@ public class ModConfig
 				armorResist.set(merge(resist.armorResist, ConfigGenerator.getNewArmorConfigValues()));
 				mobResists.set(merge(resist.mobBaseResist, ConfigGenerator.getNewMobResistanceConfigValues()));
 				config.save();
+				ConfigGenerator.markUpdated();
 			}
 		}
 		

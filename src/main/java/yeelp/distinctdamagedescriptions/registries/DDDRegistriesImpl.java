@@ -655,6 +655,6 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	
 	private static <T> Optional<T> optionalGet(Map<String, T> map, String key)
 	{
-		return ModConfig.generateStats && !map.containsKey(key) ? Optional.of(map.get(key)) : Optional.empty();
+		return !ModConfig.generateStats || map.containsKey(key) ? Optional.of(map.get(key)) : Optional.empty();
 	}
 }
