@@ -1,8 +1,13 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.BLUDGEONING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.PIERCING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.SLASHING;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,7 +19,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -79,7 +83,7 @@ public final class ConfigGenerator
 					//Arthropods typically bite, so give them piercing usually. Up to 20% of their damage can be bludgeoning instead.
 					float bludgeAmount = rng.nextInt(20)/100.0f;
 					float pierceAmount = 1 - bludgeAmount;
-					damageDist = new DamageDistribution(0, pierceAmount, bludgeAmount);
+					damageDist = new DamageDistribution(new Tuple<String, Float>(PIERCING, pierceAmount), new Tuple<String, Float>(BLUDGEONING, bludgeAmount));
 					isArthropod = true;
 					break;
 				default:
@@ -303,7 +307,24 @@ public final class ConfigGenerator
 		adaptChance = roundToTwoDecimals(adaptChance);
 		adaptAmount = roundToTwoDecimals(adaptAmount);
 		ADAPTABILITY_CHANCE_CACHE.put(loc, adaptChance);
-		mobResists = new MobResistances(slash, pierce, bludge, slashImmune, pierceImmune, bludgeImmune, Math.random() < adaptChance, adaptAmount);
+		Map<String, Float> resists = new NonNullMap<String, Float>(0.0f);
+		Set<String> immunities = new HashSet<String>();
+		resists.put(SLASHING, slash);
+		resists.put(PIERCING, pierce);
+		resists.put(BLUDGEONING, bludge);
+		if(slashImmune)
+		{
+			immunities.add(SLASHING);
+		}
+		if(pierceImmune)
+		{
+			immunities.add(PIERCING);
+		}
+		if(bludgeImmune)
+		{
+			immunities.add(BLUDGEONING);
+		}
+		mobResists = new MobResistances(resists, immunities, Math.random() < adaptChance, adaptAmount);
 		DistinctDamageDescriptions.debug(String.format("Values for %s: %f, %f, %f", loc, slash, pierce, bludge));
 		MOB_RESISTS_CACHE.put(loc, mobResists);
 		updated = true;
@@ -384,7 +405,7 @@ public final class ConfigGenerator
 				bludge = roundToTwoDecimals(rating);
 				pierce = 1 - bludge;
 			}
-			IDamageDistribution dist = new DamageDistribution(slash, pierce, bludge);
+			IDamageDistribution dist = new DamageDistribution(new Tuple<String, Float>(SLASHING, slash), new Tuple<String, Float>(PIERCING, pierce), new Tuple<String, Float>(BLUDGEONING, bludge));
 			WEAPON_CACHE.put(tool.getRegistryName(), dist);
 			updated = true;
 			return dist;
@@ -408,7 +429,7 @@ public final class ConfigGenerator
 			double rating = Math.tanh(Math.pow(2, getDurabilityZScore(hoe.getMaxDamage(stack))));
 			float pierce = roundToTwoDecimals(rating);
 			float bludge = 1 - pierce;
-			IDamageDistribution dist = new DamageDistribution(0.0f, pierce, bludge);
+			IDamageDistribution dist = new DamageDistribution(new Tuple<String, Float>("piercing", pierce), new Tuple<String, Float>("bludgeoning", bludge));
 			WEAPON_CACHE.put(hoe.getRegistryName(), dist);
 			updated = true;
 			return dist;
@@ -442,7 +463,7 @@ public final class ConfigGenerator
 			{
 				pierce = 1 - slash;
 			}
-			IDamageDistribution dist = new DamageDistribution(slash, pierce, bludge);
+			IDamageDistribution dist = new DamageDistribution(new Tuple<String, Float>("slashing", slash), new Tuple<String, Float>("piercing", pierce), new Tuple<String, Float>("bludgeoning", bludge));
 			WEAPON_CACHE.put(sword.getRegistryName(), dist);
 			updated = true;
 			return dist;
@@ -466,11 +487,11 @@ public final class ConfigGenerator
 			IDamageDistribution dist = null;
 			if(projectile instanceof EntityArrow)
 			{
-				dist = new DamageDistribution(0,1,0); 
+				dist = DamageDistribution.PIERCING_DISTRIBUTION; 
 			}
 			else
 			{
-				dist = new DamageDistribution(0,0,1);
+				dist = DamageDistribution.BLUDGEONING_DISTRIBUTION;
 			}
 			PROJECTILE_CACHE.put(loc, dist);
 			updated = true;
@@ -499,7 +520,7 @@ public final class ConfigGenerator
 			float bludge = 0.1f + MathHelper.clamp(0.01f*durability, 0.0f, 0.9f);
 			float pierce = 0.1f + MathHelper.clamp(toughness/20.0f, 0.0f, 0.9f);
 			float slash = 0.15f + MathHelper.clamp(0.01f*enchantability, 0.0f, 0.85f);
-			IArmorDistribution dist = new ArmorDistribution(slash, pierce, bludge);
+			IArmorDistribution dist = new ArmorDistribution(new Tuple<String, Float>(SLASHING, slash), new Tuple<String, Float>(PIERCING, pierce), new Tuple<String, Float>(BLUDGEONING, bludge));
 			ARMOR_CACHE.put(armor.getRegistryName(), dist);
 			updated = true;
 			return dist;
@@ -514,10 +535,10 @@ public final class ConfigGenerator
 		{
 			IMobResistances resists = entry.getValue();
 			String val = entry.getKey().toString()+";";
-			val += resists.getSlashingResistance()+";";
-			val += resists.getPiercingResistance()+";";
-			val += resists.getBludgeoningResistance()+";";
-			val += getImmunitiesForConfig(resists.isSlashingImmune(), resists.isPiercingImmune(), resists.isBludgeoningImmune())+";";
+			val += resists.getResistance(SLASHING)+";";
+			val += resists.getResistance(PIERCING)+";";
+			val += resists.getResistance(BLUDGEONING)+";";
+			val += getImmunitiesForConfig(resists.hasImmunity(SLASHING), resists.hasImmunity(PIERCING), resists.hasImmunity(BLUDGEONING))+";";
 			val += ADAPTABILITY_CHANCE_CACHE.get(entry.getKey())+";";
 			val += resists.getAdaptiveAmount();
 			
@@ -534,9 +555,9 @@ public final class ConfigGenerator
 		{
 			IDamageDistribution dist = entry.getValue();
 			String val = entry.getKey().toString()+";";
-			val += dist.getSlashingWeight()+";";
-			val += dist.getPiercingWeight()+";";
-			val += dist.getBludgeoningWeight();
+			val += dist.getWeight(SLASHING)+";";
+			val += dist.getWeight(PIERCING)+";";
+			val += dist.getWeight(BLUDGEONING);
 			
 			vals[++index] = val;
 		}
@@ -551,9 +572,9 @@ public final class ConfigGenerator
 		{
 			IDamageDistribution dist = entry.getValue();
 			String val = entry.getKey().toString()+";";
-			val += dist.getSlashingWeight()+";";
-			val += dist.getPiercingWeight()+";";
-			val += dist.getBludgeoningWeight();
+			val += dist.getWeight(SLASHING)+";";
+			val += dist.getWeight(PIERCING)+";";
+			val += dist.getWeight(BLUDGEONING);
 			
 			vals[++index] = val;
 		}
@@ -568,9 +589,9 @@ public final class ConfigGenerator
 		{
 			IDamageDistribution dist = entry.getValue();
 			String val = entry.getKey().toString()+";";
-			val += dist.getSlashingWeight()+";";
-			val += dist.getPiercingWeight()+";";
-			val += dist.getBludgeoningWeight();
+			val += dist.getWeight(SLASHING)+";";
+			val += dist.getWeight(PIERCING)+";";
+			val += dist.getWeight(BLUDGEONING);
 			
 			vals[++index] = val;
 		}
@@ -585,9 +606,9 @@ public final class ConfigGenerator
 		{
 			IArmorDistribution dist = entry.getValue();
 			String val = entry.getKey().toString()+";";
-			val += dist.getSlashingWeight()+";";
-			val += dist.getPiercingWeight()+";";
-			val += dist.getBludgeoningWeight();
+			val += dist.getWeight(SLASHING)+";";
+			val += dist.getWeight(PIERCING)+";";
+			val += dist.getWeight(BLUDGEONING);
 			
 			vals[++index] = val;
 		}

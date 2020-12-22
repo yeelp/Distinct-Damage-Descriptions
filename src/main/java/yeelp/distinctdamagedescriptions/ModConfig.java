@@ -62,11 +62,17 @@ public class ModConfig
 	{
 		@Name("Mob Base Damage")
 		@Comment({"Modify the base damage type distribution of mobs.",
-				  "Each entry is of the form id;s;p;b where:",
+				  "Each entry is of the form id;s;p;b;[(t,a)] where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
 				  "   s is the percent of slashing damage this mob does.",
 				  "   p is the percent of piercing damage this mob does.",
 				  "   b is the percent of bludgeoning damage this mob does.",
+				  "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of custom damage a mob does if custom damage is enabled.",
+				  "      t is the type of custom damage. Requires the 'ddd_' prefix.",
+				  "      a is the percent of this custom damage this mob does.",
+				  "      If this list is present but custom damage is disabled, the percentages here will be distributed amongst all non-zero physical damages.",
+				  "      This list may be omitted if the mob inflicts no custom damage, including the semicolon.",
+				  "   All percents ('s', 'p', 'b', and the value 'a' of every tuple) MUST add to 1",
 				  "Mobs that aren't listed here will inflict full bludgeoning damage.",
 				  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
@@ -80,11 +86,17 @@ public class ModConfig
 		
 		@Name("Weapon Base Damage")
 		@Comment({"Modify the base damage type distribution of weapons/items.",
-			  "Each entry is of the form id;s;p;b where:",
+			  "Each entry is of the form id;s;p;b;[(t,a)] where:",
 			  "   id is the namespaced id of the item (e.g. minecraft:diamond_sword)",
 			  "   s is the base percent of slashing damage this item does.",
 			  "   p is the base percent of piercing damage this item does.",
 			  "   b is the base percent of bludgeoning damage this item does.",
+			  "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of custom damage a weapon does if custom damage is enabled.",
+			  "      t is the type of custom damage. Requires the 'ddd_' prefix.",
+			  "      a is the percent of this custom damage this mob does.",
+			  "      If this list is present but custom damage is disabled, the percentages here will be distributed amongst all non-zero physical damages.",
+			  "      This list may be omitted if the weapon inflicts no custom damage, including the semicolon.",
+			  "   All percents ('s', 'p', 'b', and the value 'a' of every tuple) MUST add to 1",
 			  "Items that aren't listed here will inflict 100% bludgeoning damage, no matter the item.",
 			  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
@@ -122,13 +134,19 @@ public class ModConfig
 		
 		@Name("Projectile Damage Type")
 		@Comment({"Modify the damage type of projectiles",
-				  "Each entry is of the form id;s;p;b;items where:",
+				  "Each entry is of the form id;s;p;b;[(t,a)];items where:",
 				  "   id is the namespaced id of the projectile ENTITY (e.g. minecraft:arrow)",
 				  "   s is the base percent of slashing damage this projectile does.",
 				  "   p is the base percent of piercing damage this projectile does.",
 				  "   b is the base percent of bludgeoning damage this projectile does.",
+				  "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of custom damage a projectile does if custom damage is enabled.",
+				  "      t is the type of custom damage. Requires the 'ddd_' prefix",
+				  "      a is the percent of this custom damage this projectile does.",
+				  "      If this list is present but custom damage is disabled, the percentages here will be distributed amongst all non-zero physical damages.",
+				  "      This list may be omitted if the projectile inflicts no custom damage.",
+				  "   All percents ('s', 'p', 'b', and the value 'a' of every tuple) MUST add to 1",
 				  "   items are the item ids associated with this projectile, separated by a comma (For example, arrow entities are associated with the item ids minecraft:arrow and minecraft:tipped_arrow). This is used for tooltips.",
-				  "       If the projectile has no item form, omit this part, including the semicolon (so the entry looks like id;s;p;b)",
+				  "      If the projectile has no item form, omit this part, including the semicolon.",
 				  "Projectiles that aren't listed here will inflict piercing damage, no matter the projectile.",
 				  "Malformed entries in this list will be ignored."})
 	    @RequiresMcRestart
@@ -140,7 +158,7 @@ public class ModConfig
 		};
 		
 		@Name("Use Custom Damage Types")
-		@Comment("If true, Distinct Damage Descriptions will load custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
+		@Comment("If true, Distinct Damage Descriptions will load and enable custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
 		@RequiresMcRestart
 		public boolean useCustomDamageTypes = false;
 		
@@ -188,15 +206,26 @@ public class ModConfig
 	
 	public static class ResistanceCategory
 	{
+		@Name("Adapt to Custom Damage")
+		@Comment("If true, mobs with adaptive resistance will adapt to custom damage as well, if custom damage is enabled. If false, they will only adapt to the built in slashing, piercing, bludgeoning")
+		public boolean adaptToCustom = false;
+		
 		@Name("Mob Base Resistance/Weakness")
 		@Comment({"Modify the base resistance/weakness of mobs. This overrides any resistances provided by creature types JSON files.",
-				  "Each entry is of the form id;s;p;b;immunities;adaptive where:",
+				  "Each entry is of the form id;s;p;b;immunities;adaptive;amount;[(t,a)];[custom_immunities] where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
 				  "   s is the base slashing resistance percent of this mob.",
 				  "   p is the base piercing resistance percent of this mob.",
 				  "   b is the base bludgeoning resistance percent of this mob.",
 				  "   immunities is a string with the only the characters \"b\", \"s\", or \"p\" indicating what damage types (bludgeoning, slashing, piercing respectively) this mob is immune to. Multiple damage types, or no damage types can be listed. Order doesn't matter.",
 				  "   adaptive is a decimal in the range [0,1] indicating the percent chance that this mob has adaptive immunity, with 0 being never, and 1 being always.",
+				  "   amount is the amount resistances change for this mob when adaptability triggers",
+				  "   [(t,a)] is a list of comma separated tuples (t,a), of custom damage types this mob resists (if enabled).",
+				  "      t is the damage type this mob resists. Requires the 'ddd_' prefix.",
+				  "      a is the base percent of resistance this mob has to that custom damage type.",
+				  "   [custom_immunities] is a comma separated list of custom damage types that this mob resists (if enabled). Requires the 'ddd_' prefix for each damage type.",
+				  "   Both [(t,a)] and [custom_immunities] must be present if either or both are to be used. If the mob has no custom immunities or damage resistances, just leave that list empty (put [])",
+				  "   You can omit both lists if the mob has no custom resistances AND no custom immunities.",
 				  "Mobs that aren't listed here will have no resistances. Positive values indicate a resistance, negative values indicate a weakness.",
 				  "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type",
 		          "Malformed entries in this list will be ignored."})
@@ -250,13 +279,35 @@ public class ModConfig
 				"minecraft:wither;0.25;0;0;;0;0"
 		};
 		
+		@Name("Shield Effectiveness")
+		@Comment({"Modify how shields block damage.",
+			  "Each entry is of the form id;s;p;b;[(t,a)] where:",
+			  "   id is the namespaced id of the item (e.g. minecraft:shield)",
+			  "   s is the slashing effectiveness of the shield.",
+			  "   p is the piercing effectiveness of the shield.",
+			  "   b is the bludgeoning effectiveness of the shield.",
+			  "   [(t,a)] is a list of comma separated tuples of custom damage types this shield blocks (if enabled).",
+			  "      t is the type this shield blocks. Requires the 'ddd_' prefix.",
+			  "      a is the effectiveness the shield has against that damage type.",
+			  "      This list may be omitted if the shield blocks no custom damage.",
+			  "Shields not listed here will act as normal shields (will block all damage they can interact with).",
+			  "Shield effectiveness determines how much physical damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
+			  "Blocking damage will still knock the attacker back, but the knockback amount is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by 33% of the vanilla amount).",
+			  "Malformed entries in this list will be ignored."})
+		@RequiresMcRestart
+		public String[] shieldResist = {"minecraft:shield;0.8;0.5;0.2"};
+		
 		@Name("Armor Resistance/Weakness")
 		@Comment({"Modify the base resistance effectiveness of armor",
-			  "Each entry is of the form id;s;p;b where:",
+			  "Each entry is of the form id;s;p;b;[(t,a)] where:",
 			  "   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
 			  "   s is the base slashing effectiveness of this armor.",
 			  "   p is the base piercing effectiveness of this armor.",
 			  "   b is the base bludgeoning effectiveness of this armor.",
+			  "   [(t,a)] is a list of comma separated tuples of custom damage types this armor resists (if enabled).",
+			  "      t is the damage type this armor resists. Requires the 'ddd_' prefix.",
+			  "      a is the armor's effectiveness against that damage type.",
+			  "      You can omit this list if the armor resists no custom damage.",
 			  "Armors that aren't listed here will have no effectiveness (this doesn't mean the armor does nothing).",
 			  "Resistances effectiveness determines how armor points are distributed. That is, an value of 0.5 means that armor only uses 50% of its usual armor points when defending against that type",
 	          "Malformed entries in this list will be ignored."})
@@ -337,7 +388,7 @@ public class ModConfig
 		{
 			if(generateStats && ConfigGenerator.hasUpdated())
 			{
-				DistinctDamageDescriptions.info("Adding new config values...");
+				DistinctDamageDescriptions.debug("Adding new config values...");
 				Configuration config = DistinctDamageDescriptions.getConfiguration();
 				Property itemDmg = config.get("general.damage", "Weapon Base Damage", dmg.itemBaseDamage);
 				Property mobDmg = config.get("general.damage", "Mob Base Damage", dmg.mobBaseDmg);

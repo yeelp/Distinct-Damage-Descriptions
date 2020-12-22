@@ -15,6 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public final class DDDDamageType extends DamageSource
@@ -37,7 +38,7 @@ public final class DDDDamageType extends DamageSource
 	
 	/**
 	 * Get all extended types.
-	 * @return
+	 * @return list of extended types.
 	 */
 	public List<String> getExtendedTypes()
 	{
@@ -170,11 +171,13 @@ public final class DDDDamageType extends DamageSource
 	@Override
     public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
     {
-		if(ModConfig.dmg.useCustomDeathMessages)
+		if(ModConfig.dmg.useCustomDeathMessages && !DDDAPI.accessor.isPhysicalDamageOnly(this))
 		{
-			int i = (int)(types.size()*Math.random());
+			List<String> filteredTypes = new LinkedList<String>(types);
+			filteredTypes.removeIf((s) -> !s.startsWith("ddd_"));
+			int i = (int)(filteredTypes.size()*Math.random());
 			EntityLivingBase attacker = entityLivingBaseIn.getAttackingEntity();
-			ITextComponent comp = new TextComponentString(DDDRegistries.damageTypes.getDeathMessage(types.get(i), entityLivingBaseIn.getName(), attacker == null? null : attacker.getName()));
+			ITextComponent comp = new TextComponentString(DDDRegistries.damageTypes.getDeathMessage(filteredTypes.get(i), entityLivingBaseIn.getName(), attacker == null? null : attacker.getName()));
 			if(comp.getUnformattedComponentText().trim().isEmpty())
 			{
 				return this.parentSource.getDeathMessage(entityLivingBaseIn);

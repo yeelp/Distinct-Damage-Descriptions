@@ -2,22 +2,20 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
-import yeelp.distinctdamagedescriptions.event.PhysicalDamageEvent;
+import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 
 public class CTEventHandler extends Handler
 {
 	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void physicalDamage(PhysicalDamageEvent evt)
+	public void physicalDamage(DamageDescriptionEvent.Pre evt)
 	{
-		CTDDDEventManager.PHYSICAL_DAMAGE.publish(new CTPhysicalDamageEvent(evt));
+		CTDDDEventManager.PRE_DAMAGE.publish(new CTPreDamageEvent(evt));
 	}
 	
 	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void customDamage(CustomDamageEvent evt)
+	public void customDamage(DamageDescriptionEvent.Post evt)
 	{
-		CTDDDEventManager.CUSTOM_DAMAGE.publish(new CTCustomDamageEvent(evt));
+		CTDDDEventManager.POST_DAMAGE.publish(new CTPostDamageEvent(evt));
 	}
 }

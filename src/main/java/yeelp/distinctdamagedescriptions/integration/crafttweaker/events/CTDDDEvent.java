@@ -27,27 +27,26 @@ public abstract class CTDDDEvent implements IDDDEvent
 	}
 
 	@Override
-	public float getDamage()
+	public float getDamage(String type)
 	{
-		return this.internal.getDamage();
+		return this.internal.getDamage(type);
 	}
 
 	@Override
-	public void setDamage(float damage)
+	public void setDamage(String type, float damage)
 	{
-		this.internal.setDamage(damage);
+		this.internal.setDamage(type, damage);
 	}
 
 	@Override
-	public float getResistance()
+	public float getResistance(String type)
 	{
-		return this.internal.getResistance();
+		return this.internal.getResistance(type);
 	}
 
 	@Override
-	public void setResiatance(float resistance)
+	public void setResistance(String type, float resistance)
 	{
-		this.internal.setResistance(resistance);
+		this.internal.setResistance(type, resistance);
 	}
-	
 }

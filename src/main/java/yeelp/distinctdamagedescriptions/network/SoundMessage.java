@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.network;
 
-import javax.annotation.Nonnull;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;

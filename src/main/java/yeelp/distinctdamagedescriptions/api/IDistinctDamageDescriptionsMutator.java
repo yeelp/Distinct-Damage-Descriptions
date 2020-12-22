@@ -1,19 +1,19 @@
 package yeelp.distinctdamagedescriptions.api;
 
+import java.util.Map;
+import java.util.Set;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface IDistinctDamageDescriptionsMutator
 {
 	/**
 	 * Set player resistances
-	 * @param player 
-	 * @param slash slashing resistance
-	 * @param pierce piercing resistance
-	 * @param bludge bludgeoning resistance
-	 * @param slashImmune slashing immunity
-	 * @param pierceImmune piercing immunity
-	 * @param bludgeImmune bludgeoning immunity
+	 * @param player
+	 * @param newReists map of new resistances
+	 * @param newImmunities set of new immunities, will overwrite old ones.
 	 * @param adaptive adaptability status
+	 * @param adaptiveAmount amount for adaptability
 	 */
-	public void setPlayerResistances(EntityPlayer player, float slash, float pierce, float bludge, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, boolean adaptive);
+	public void setPlayerResistances(EntityPlayer player, Map<String, Float> newReists, Set<String> newImmunities, boolean adaptive, float adaptiveAmount);
 }

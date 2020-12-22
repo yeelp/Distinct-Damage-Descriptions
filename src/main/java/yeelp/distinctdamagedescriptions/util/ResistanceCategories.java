@@ -1,5 +1,10 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * A simple container for storing resistances
  * @author Yeelp
@@ -7,75 +12,50 @@ package yeelp.distinctdamagedescriptions.util;
  */
 public abstract class ResistanceCategories
 {
-	private ComparableTriple<Float, Float, Float> resistances;
-	private ComparableTriple<Boolean, Boolean, Boolean> immunities;
+	private Map<String, Float> resistMap;
+	private Set<String> dmgImmunities;
 	
-	/**
-	 * Create new resistances
-	 * @param slashing slashing resistance. Ideally in range (-infty, 1]
-	 * @param piercing piercing resistance. Ideally in range (-infty, 1]
-	 * @param bludgeoning bludgeoning resistance. Ideally in range (-infty, 1]
-	 * @param slashImmune slashing immunity
-	 * @param pierceImmune piercing immunity
-	 * @param bludgeImmune bludgeoning immunity
-	 */
-	public ResistanceCategories(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune)
+	public ResistanceCategories(Map<String, Float> resistances, Collection<String> immunities)
 	{
-		this.resistances = new ComparableTriple<Float, Float, Float>(slashing, piercing, bludgeoning);
-		this.immunities = new ComparableTriple<Boolean, Boolean, Boolean>(slashImmune, pierceImmune, bludgeImmune);
+		this.resistMap = resistances;
+		this.dmgImmunities = new HashSet<String>(immunities);
 	}
 	
 	/**
-	 * Get slashing resistance
-	 * @return slashing resistance
+	 * Get resistance for a certain damage type.
+	 * @param type
+	 * @return resistance to that damage type.
 	 */
-	public float getSlashingResistance()
+	public float getResistance(String type)
 	{
-		return this.resistances.getLeft();
+		return this.resistMap.get(type);
 	}
 	
 	/**
-	 * Get piercing resistance
-	 * @return piercing resistance
+	 * Check if immunity to this damage type exists
+	 * @param type
+	 * @return true if immune, false if not.
 	 */
-	public float getPiercingResistance()
+	public boolean hasImmunity(String type)
 	{
-		return this.resistances.getMiddle();
+		return this.dmgImmunities.contains(type);
 	}
 	
 	/**
-	 * Get bludgeoning resistance
-	 * @return bludgeoning resistance
+	 * Get the map of resistances
+	 * @return the map of resistances
 	 */
-	public float getBludgeoningResistance()
+	public Map<String, Float> getResistanceMap()
 	{
-		return this.resistances.getRight();
+		return this.resistMap;
 	}
 	
 	/**
-	 * Get slashing immunity
-	 * @return slashing immunity status
+	 * get the set of immunities
+	 * @return the set of immunities
 	 */
-	public boolean getSlashingImmunity()
+	public Set<String> getImmunities()
 	{
-		return immunities.getLeft();
-	}
-	
-	/**
-	 * Get piercing immunity
-	 * @return piercing immunity status
-	 */
-	public boolean getPiercingImmunity()
-	{
-		return immunities.getMiddle();
-	}
-	
-	/**
-	 * Get bludgeoning immunity
-	 * @return bludgeoning immunity status
-	 */
-	public boolean getBludgeoningImmunity()
-	{
-		return immunities.getRight();
+		return this.dmgImmunities;
 	}
 }

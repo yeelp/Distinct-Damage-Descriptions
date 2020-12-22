@@ -1,91 +1,52 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
+import net.minecraft.util.Tuple;
+
+/**
+ * A wrapped Map for storing damage values split across categories.
+ * @author Yeelp
+ *
+ */
 public final class DamageCategories
 {
-	private ComparableTriple<Float, Float, Float> damage;
+	private Map<String, Float> dmg;
 	/**
-	 * Create a new base damage
-	 * @param slashing slashing damage.
-	 * @param piercing piercing damage.
-	 * @param bludgeoning bludgeoning damage.
+	 * Create a new DamageCategories
+	 * @param dmges an array of tuples of the form {@code(type, dmg)} where:
+	 *        {@code type} is the type of damage
+	 *        {@code dmg} is the amount of damage that type inflicted.
 	 */
-	public DamageCategories(float slashing, float piercing, float bludgeoning)
+	@SafeVarargs
+	public DamageCategories(Tuple<String, Float>... dmges)
 	{
-		this.damage = new ComparableTriple<Float, Float, Float>(slashing, piercing, bludgeoning);
-	}
-	
-	/**
-	 * Create a new DamageCategories from a triple
-	 * @param triple
-	 */
-	public DamageCategories(ComparableTriple<Float, Float, Float> triple)
-	{
-		this.damage = triple;
-	}
-	
-	/**
-	 * Get slashing damage
-	 * @return slashing damage
-	 */
-	public float getSlashingDamage()
-	{
-		return this.damage.getLeft();
-	}
-	
-	/**
-	 * Get piercing damage
-	 * @return piercing damage
-	 */
-	public float getPiercingDamage()
-	{
-		return this.damage.getMiddle();
-	}
-	
-	/**
-	 * Get bludgeoning damage
-	 * @return bludgeoning damage
-	 */
-	public float getBludgeoningDamage()
-	{
-		return this.damage.getRight();
-	}
-	
-	/**
-	 * Get the DamageTypes inflicted by a collection of DamageCategories
-	 * @param damageCategories
-	 * @return Set of DamageType enums.
-	 */
-	public static Set<DamageType> getDamageTypes(DamageCategories...damageCategories)
-	{
-		HashSet<DamageType> set = new HashSet<DamageType>();
-		for(DamageCategories cat : damageCategories)
+		this.dmg = new NonNullMap<String, Float>(0.0f);
+		for(Tuple<String, Float> t : dmges)
 		{
-			if(cat.getSlashingDamage() > 0)
-			{
-				set.add(DamageType.SLASHING);
-			}
-			if(cat.getPiercingDamage() > 0)
-			{
-				set.add(DamageType.PIERCING);
-			}
-			if(cat.getBludgeoningDamage() > 0)
-			{
-				set.add(DamageType.BLUDGEONING);
-			}
-			if(set.size() == DamageType.values().length)
-			{
-				return set;
-			}
+			this.dmg.put(t.getFirst(), t.getSecond());
 		}
-		return set;
+	}
+	
+	public DamageCategories(Map<String, Float> dmges)
+	{
+		this.dmg = dmges;
+	}
+	
+	
+	public float getDamage(String type)
+	{
+		return this.dmg.get(type);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return String.format("(slashing: %f, piercing: %f, bludgeoning: %f)", getSlashingDamage(), getPiercingDamage(), getBludgeoningDamage());
+		return String.format("(slashing: %f, piercing: %f, bludgeoning: %f)", getDamage("slashing"), getDamage("piercing"), getDamage("bludgeoning"));
+	}
+	
+	protected Map<String, Float> getDistribution()
+	{
+		return this.dmg;
 	}
 }

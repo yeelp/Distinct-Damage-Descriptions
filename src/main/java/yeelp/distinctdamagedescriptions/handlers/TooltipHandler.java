@@ -1,10 +1,14 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.BLUDGEONING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.PIERCING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.SLASHING;
+
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.util.ResourceLocation;
@@ -18,13 +22,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ComparableTriple;
-import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
-import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.KeyHelper;
@@ -69,7 +69,7 @@ public class TooltipHandler extends Handler
 		List<String> tooltips = evt.getToolTip();
 		boolean advanced = evt.getFlags().isAdvanced();
 		Item item = evt.getItemStack().getItem();
-		ComparableTriple<Float, Float, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
+		Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
 		if(damages != null && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
@@ -79,11 +79,13 @@ public class TooltipHandler extends Handler
 			{
 				if(ctrlHeld)
 				{
-					for(DamageType type : DamageType.values())
+					for(String type : projDist.keySet())
 					{
-						int i = type.ordinal();
-						float percent = projDist.<Float>get(i);
-						if(percent > 0)
+						float percent = projDist.get(type);
+						int i = type.equals(SLASHING) ? 0 :
+							    type.equals(PIERCING) ? 1 :
+							    type.equals(BLUDGEONING) ? 2 : -1;
+						if(percent > 0 && i != -1)
 						{
 							tooltips.add(index, makeDamagePercentTooltip(percent, damageTypeTooltips[i]));
 						}
@@ -93,9 +95,9 @@ public class TooltipHandler extends Handler
 			}
 			if(shiftHeld)
 			{
-				float slashPercent = damages.getSlashingWeight();
-				float piercePercent = damages.getPiercingWeight();
-				float bludgePercent = damages.getBludgeoningWeight();
+				float slashPercent = damages.getWeight(SLASHING);
+				float piercePercent = damages.getWeight(PIERCING);
+				float bludgePercent = damages.getWeight(BLUDGEONING);
 				if(slashPercent > 0)
 				{
 					tooltips.add(index, makeDamagePercentTooltip(slashPercent, slashTooltip));
@@ -128,16 +130,16 @@ public class TooltipHandler extends Handler
 				mobCats = oMobCats.get();
 				if(ctrlHeld)
 				{
-					float[] resistsPercents = {mobCats.getSlashingResistance(), mobCats.getPiercingResistance(), mobCats.getBludgeoningResistance()};
-					boolean[] immunities = {mobCats.getSlashingImmunity(), mobCats.getPiercingImmunity(), mobCats.getBludgeoningImmunity()};
+					float[] resistsPercents = {mobCats.getResistance(SLASHING), mobCats.getResistance(PIERCING), mobCats.getResistance(BLUDGEONING)};
+					boolean[] immunities = {mobCats.hasImmunity(SLASHING), mobCats.hasImmunity(PIERCING), mobCats.hasImmunity(BLUDGEONING)};
 					float adaptive = mobCats.adaptiveChance();
 					float adaptiveAmount = mobCats.getAdaptiveAmount();
 					Tuple<Float, Float> adaptiveInfo = new Tuple<Float, Float>(adaptive, adaptiveAmount);
 					boolean hasImmunities = false;
-					for(DamageType type : DamageType.values())
+					for(int i = 0; i < 3; i++)
 					{
-						tooltips.add(index, makeMobResistTooltip(resistsPercents[type.ordinal()], damageTypeTooltips[type.ordinal()]));
-						hasImmunities = hasImmunities || immunities[type.ordinal()];
+						tooltips.add(index, makeMobResistTooltip(resistsPercents[i], damageTypeTooltips[i]));
+						hasImmunities = hasImmunities || immunities[i];
 					}
 					if(hasImmunities)
 					{
@@ -172,9 +174,9 @@ public class TooltipHandler extends Handler
 			int index = 1;
 			if(ctrlHeld)
 			{
-				float slashResist = armors.getSlashingWeight();
-				float pierceResist = armors.getPiercingWeight();
-				float bludgeResist = armors.getBludgeoningWeight();
+				float slashResist = armors.getWeight(SLASHING);
+				float pierceResist = armors.getWeight(PIERCING);
+				float bludgeResist = armors.getWeight(BLUDGEONING);
 				if(slashResist != 0)
 				{
 					tooltips.add(index, makeArmorTooltip(slashResist, slashTooltip));
@@ -211,11 +213,11 @@ public class TooltipHandler extends Handler
 	private static String makeMobImmunityTooltip(boolean[] immunities)
 	{
 		String str = mobImmunityTooltip.getFormattedText()+" ";
-		for(DamageType type : DamageType.values())
+		for(int i = 0; i < 3; i++)
 		{
-			if(immunities[type.ordinal()])
+			if(immunities[i])
 			{
-				str += damageTypeTooltips[type.ordinal()].getFormattedText() + ", ";
+				str += damageTypeTooltips[i].getFormattedText() + ", ";
 			}
 		}
 		str = str.trim();

@@ -1,31 +1,40 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
 
 public class MobResistances extends DamageResistances implements IMobResistances
 {
 	private boolean adaptive;
 	private float adaptiveAmount;
-	private boolean[] adaptiveTo;
+	private Set<String> adaptiveTo;
 	
 	public MobResistances()
 	{
-		this(0, 0, 0, false, false, false, false, 0.0f);
+		this(new NonNullMap<String, Float>(0.0f), new HashSet<String>(), false, 0.0f);
 	}
 	
-	public MobResistances(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, boolean adaptitability, float adaptiveAmount)
+	public MobResistances(Map<String, Float> resistances, Collection<String> immunities, boolean adaptitability, float adaptiveAmount)
 	{
-		super(slashing, piercing, bludgeoning, slashImmune, pierceImmune, bludgeImmune);
+		super(resistances, immunities);
 		this.adaptive = adaptitability;
 		this.adaptiveAmount = adaptiveAmount;
-		this.adaptiveTo = new boolean[DamageType.values().length];
+		this.adaptiveTo = new HashSet<String>();
 	}
 
 	@Override
@@ -57,63 +66,62 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	{
 		return this.adaptiveAmount;
 	}
-
+	
 	@Override
-	public boolean updateAdaptiveResistance(DamageType... damageTypes)
+	public void setAdaptiveAmount(float amount)
 	{
-		float[] netChange = new float[3];
-		for(DamageType damageType : DamageType.values())
-		{
-			int i = damageType.ordinal();
-			if(adaptiveTo[i])
-			{
-				adaptiveTo[i] = false;
-				netChange[i] -= adaptiveAmount;
-			}
-		}
-		for(DamageType damageType : damageTypes)
-		{
-			int i = damageType.ordinal();
-			adaptiveTo[i] = true;
-			netChange[i] += adaptiveAmount;
-		}
-		super.slashing += netChange[0];
-		super.piercing += netChange[1];
-		super.bludgeoning += netChange[2];
-		return netChange[0] != 0 || netChange[1] != 0 || netChange[2] != 0;
+		this.adaptiveAmount = amount;
 	}
 
-	private void setImmunity(DamageType damageType, boolean status)
+	@Override
+	public boolean updateAdaptiveResistance(String... damageTypes)
 	{
-		switch(damageType)
+		boolean changed = false;
+		for(String s : damageTypes)
 		{
-			case SLASHING:
-				super.setSlashingImmunity(status);
-				break;
-			case PIERCING:
-				super.setPiercingImmunity(status);
-				break;
-			case BLUDGEONING:
-				super.setBludgeoningImmunity(status);
-				break;
-				//needed for JVM
-			default:
-				break;
+			if(ModConfig.resist.adaptToCustom || DDDAPI.accessor.isPhysicalDamage(s))
+			{
+				if(adaptiveTo.contains(s))
+				{
+					continue;
+				}
+				else
+				{
+					changed = true;
+					this.adaptiveTo.add(s);
+					this.setResistance(s, this.getResistance(s) + adaptiveAmount);
+				}
+			}
 		}
+		Set<String> temp = new HashSet<String>(Arrays.asList(damageTypes));
+		for(String s : adaptiveTo)
+		{
+			if(temp.contains(s))
+			{
+				continue;
+			}
+			else
+			{
+				changed = true;
+				adaptiveTo.remove(s);
+				this.setResistance(s, this.getResistance(s) - adaptiveAmount);
+			}
+		}
+		return changed;
 	}
 
 	@Override
 	public NBTTagCompound serializeNBT()
 	{
 		NBTTagCompound tag = super.serializeNBT();
+		NBTTagList adaptabilityStatus = new NBTTagList();
 		tag.setBoolean("adaptive", adaptive);
 		tag.setFloat("adaptiveAmount", adaptiveAmount);
-		byte[] bytes = new byte[adaptiveTo.length];
-		for(int i = 0; i < adaptiveTo.length; i++)
+		for(String s : adaptiveTo)
 		{
-			bytes[i] = booleanAsByte(adaptiveTo[i]);
+			adaptabilityStatus.appendTag(new NBTTagString(s));
 		}
-		tag.setByteArray("adaptabilityStatus", bytes);
+		tag.setTag("adaptabilityStatus", adaptabilityStatus);
 		return tag;
 	}
 	
@@ -123,10 +131,10 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		super.deserializeNBT(tag);
 		adaptive = tag.getBoolean("adaptive");
 		adaptiveAmount = tag.getFloat("adaptiveAmount");
-		int i = 0;
-		for(byte b : tag.getByteArray("adaptabilityStatus"))
+		adaptiveTo = new HashSet<String>();
+		for(NBTBase nbt : tag.getTagList("adaptabilityStatus", new NBTTagString().getId()))
 		{
-			adaptiveTo[i++] = byteAsBoolean(b);
+			adaptiveTo.add(((NBTTagString) nbt).getString());
 		}
 	}
 	
@@ -157,15 +165,5 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		{
 			instance.deserializeNBT((NBTTagCompound) nbt);
 		}
-	}
-	
-	private static byte booleanAsByte(boolean b)
-	{
-		return (byte) (b ? 1 : 0);
-	}
-	
-	private static boolean byteAsBoolean(byte b)
-	{
-		return b != 0;
 	}
 }

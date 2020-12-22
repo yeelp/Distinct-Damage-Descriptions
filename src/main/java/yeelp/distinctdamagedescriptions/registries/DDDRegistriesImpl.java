@@ -1,5 +1,9 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.BLUDGEONING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.PIERCING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.SLASHING;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,9 +12,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -20,7 +26,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,17 +35,13 @@ import com.google.gson.stream.JsonReader;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.FileHelper;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
@@ -50,15 +52,15 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 {
 	//TODO use the includeAll, noSource fields correctly. custom death messages?
 	INSTANCE;
-	private final Map<String, MobResistanceCategories> mobResists = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(0, 0, 0, false, false, false, 0, 0));
+	private final Map<String, MobResistanceCategories> mobResists = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(new NonNullMap<String, Float>(0.0f), new HashSet<String>(), 0, 0));
 	private final Map<String, CreatureTypeData> creatureTypes = new NonNullMap<String, CreatureTypeData>(CreatureTypeData.UNKNOWN);
-	private final Map<String, Tuple<String, String>> creatureMap = new NonNullMap<String, Tuple<String, String>>(new Tuple<String, String>("unknown", "unknown"));
-	private final Map<String, ComparableTriple<Float, Float, Float>> mobDamage = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
-	private final Map<String, ComparableTriple<Float, Float, Float>> itemArmorDist = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 0.0f));
-    private final Map<String, ComparableTriple<Float, Float, Float>> itemDamageDist = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
-    private final Map<String, ComparableTriple<Float, Float, Float>> projectileDist = new NonNullMap<String, ComparableTriple<Float, Float, Float>>(new ComparableTriple<Float, Float, Float>(0.0f, 0.0f, 1.0f));
+	private final Map<String, Set<String>> creatureMap = new NonNullMap<String, Set<String>>(new HashSet<String>());
+	private final Map<String, Map<String, Float>> mobDamage = new NonNullMap<String, Map<String, Float>>(buildMap(0.0f, new Tuple<String, Float>(BLUDGEONING, 1.0f)));
+	private final Map<String, Map<String, Float>> itemArmorDist = new NonNullMap<String, Map<String, Float>>(new NonNullMap<String, Float>(0.0f));
+    private final Map<String, Map<String, Float>> itemDamageDist = new NonNullMap<String, Map<String, Float>>(((NonNullMap<String, Map<String, Float>>)mobDamage).getDefaultValue());
+    private final Map<String, Map<String, Float>> projectileDist = new NonNullMap<String, Map<String, Float>>(buildMap(0.0f, new Tuple<String, Float>(PIERCING, 1.0f)));
+    private final Map<String, Map<String, Float>> shieldDist = new NonNullMap<String, Map<String, Float>>(new NonNullMap<String, Float>(1.0f));
     private final Map<String, String> itemIDToProjIDMap = new HashMap<String, String>();
-    private final Map<String, String> itemDamageTypes = new NonNullMap<String, String>("ddd_normal");
     private final Map<String, Tuple<Map<String, String>, Map<String, String>>> damageTypeMap = new HashMap<String, Tuple<Map<String, String>, Map<String, String>>>();
     private final Map<String, Tuple<String, String>> deathMessages = new HashMap<String, Tuple<String, String>>();
     private final Map<String, String> includeAllMap = new NonNullMap<String, String>("ddd_normal");
@@ -116,28 +118,21 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 
 	@Override
-	public Tuple<CreatureTypeData, CreatureTypeData> getCreatureTypeForMob(String key)
+	public Set<CreatureTypeData> getCreatureTypeForMob(String key)
 	{
-		Tuple<String, String> t = creatureMap.get(key);
-		CreatureTypeData main = null, sub = null;
-		if(!t.getFirst().equals(CreatureTypeData.UNKNOWN.getTypeName()))
+		HashSet<CreatureTypeData> set = new HashSet<CreatureTypeData>();
+		for(String s : creatureMap.get(key))
 		{
-			main = creatureTypes.get(t.getFirst());
-			if(!t.getSecond().equals(CreatureTypeData.UNKNOWN.getTypeName()))
-			{
-				sub = creatureTypes.get(t.getSecond());
-			}
-			else
-			{
-				sub = CreatureTypeData.UNKNOWN;
-			}
+			set.add(creatureTypes.get(s));
+		}
+		if(!set.isEmpty())
+		{
+			return set;
 		}
 		else
 		{
-			main = CreatureTypeData.UNKNOWN;
-			sub = CreatureTypeData.UNKNOWN;
+			return new HashSet<CreatureTypeData>(ImmutableList.of(CreatureTypeData.UNKNOWN));
 		}
-		return new Tuple<CreatureTypeData, CreatureTypeData>(main, sub);
 	}
 
 	@Override
@@ -147,21 +142,21 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public Optional<ComparableTriple<Float, Float, Float>> getMobDamage(String key)
+	public Optional<Map<String, Float>> getMobDamage(String key)
 	{
 		return optionalGet(mobDamage, key);
 	}
 	
 	@Override
-	public Optional<ComparableTriple<Float, Float, Float>> getDamageDistributionForItem(String key)
+	public Optional<Map<String, Float>> getDamageDistributionForItem(String key)
 	{
 		return optionalGet(itemDamageDist, key);
 	}
 	
 	@Override
-	public ComparableTriple<Float, Float, Float> getDefaultDamageDistribution()
+	public Map<String, Float> getDefaultDamageDistribution()
 	{
-		return ((NonNullMap<String, ComparableTriple<Float, Float, Float>>) itemDamageDist).getDefaultValue();
+		return ((NonNullMap<String, Map<String, Float>>) itemDamageDist).getDefaultValue();
 	}
 	
 	@Override
@@ -171,13 +166,13 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public ComparableTriple<Float, Float, Float> getDefaultArmorDistribution()
+	public Map<String, Float> getDefaultArmorDistribution()
 	{
-		return ((NonNullMap<String, ComparableTriple<Float, Float, Float>>) itemArmorDist).getDefaultValue();
+		return ((NonNullMap<String, Map<String, Float>>) itemArmorDist).getDefaultValue();
 	}
 	
 	@Override 
-	public Optional<ComparableTriple<Float, Float, Float>> getArmorDistributionForItem(String key)
+	public Optional<Map<String, Float>> getArmorDistributionForItem(String key)
 	{
 		return optionalGet(itemArmorDist, key);
 	}
@@ -189,13 +184,19 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public Optional<ComparableTriple<Float, Float, Float>> getProjectileDamageTypes(String key)
+	public Optional<Map<String, Float>> getShieldDistribution(String key)
+	{
+		return optionalGet(shieldDist, key);
+	}
+	
+	@Override
+	public Optional<Map<String, Float>> getProjectileDamageTypes(String key)
     {
     	return optionalGet(projectileDist, key);
     }
     
 	@Override
-    public ComparableTriple<Float, Float, Float> getProjectileDamageTypesFromItemID(String itemID)
+    public Map<String, Float> getProjectileDamageTypesFromItemID(String itemID)
     {
     	String str = itemIDToProjIDMap.get(itemID);
     	if(str != null)
@@ -215,14 +216,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public void registerDamageType(String name, String entityMsg, String otherMsg, Set<String> items, DamageTypeData...datas)
+	public void registerDamageType(String name, String entityMsg, String otherMsg, DamageTypeData...datas)
 	{
 		name = "ddd_"+name;
 		deathMessages.put(name, new Tuple<String, String>(entityMsg, otherMsg));
-		for(String s : items)
-		{
-			itemDamageTypes.put(s, name);
-		}
 		for(DamageTypeData d : datas)
 		{
 			Map<String, String> direct = new NonNullMap<String, String>("ddd_normal"), indirect = new NonNullMap<String, String>("ddd_normal");
@@ -245,31 +242,14 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public DamageSource getDamageType(DamageSource originalSource)
+	public Set<String> getCustomDamageContext(DamageSource originalSource)
 	{
-		Entity entity = originalSource.getImmediateSource();
-		String weaponSource = "ddd_normal";
-		String additionalSource = includeAllMap.get(originalSource.damageType);
-		if(entity instanceof EntityLivingBase)
-		{
-			EntityLivingBase livingEntity = (EntityLivingBase) entity;
-			ItemStack stack = livingEntity.getHeldItemMainhand();
-			if(!stack.isEmpty())
-			{
-				weaponSource = itemDamageTypes.get(stack.getItem().getRegistryName().toString());
-			}
-		}
 		Tuple<Map<String, String>, Map<String, String>> t = damageTypeMap.get(originalSource.damageType);
+		Set<String> types = new HashSet<String>();
+		types.add(includeAllMap.get(originalSource.getDamageType()));
 		if(t == null)
 		{
-			if(weaponSource.equals("ddd_normal"))
-			{
-				return originalSource;
-			}
-			else
-			{
-				return new DDDDamageType(originalSource, weaponSource, additionalSource);
-			}
+			return types;
 		}
 		else
 		{
@@ -277,7 +257,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			String direct = directLoc != null ? directLoc.toString() : "", indirect = indirectLoc != null ? indirectLoc.toString(): "";
 			DistinctDamageDescriptions.debug(direct+", "+indirect);
 			DistinctDamageDescriptions.debug(t.getFirst().get(direct)+", "+t.getSecond().get(indirect));
-			return new DDDDamageType(originalSource, t.getFirst().get(direct), t.getSecond().get(indirect), weaponSource, additionalSource);
+			types.add(t.getFirst().get(direct));
+			types.add(t.getSecond().get(indirect));
+			return types;
 		}
 	}
 	
@@ -307,12 +289,17 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		return t;
 	}
 	
-	private static String[] tryPut(Map<String, ComparableTriple<Float, Float, Float>> map, String s)
+	private static String[] tryPut(float defaultVal, Map<String, Map<String, Float>> map, String s, int customInfoIndex)
     {
     	String[] contents = s.split(";");
     	try
 		{
-			map.put(contents[0], new ComparableTriple<Float, Float, Float>(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3])));
+    		String customInfo = contents.length-1 < customInfoIndex ? "" : contents[customInfoIndex];
+    		NonNullMap<String, Float> dist = buildMap(defaultVal, parseStringOfTuples(parseConfigString(customInfo)));
+    		dist.put(SLASHING, Float.valueOf(contents[1]));
+    		dist.put(PIERCING, Float.valueOf(contents[2]));
+    		dist.put(BLUDGEONING, Float.valueOf(contents[3]));
+			map.put(contents[0], dist);
 			return contents;
 		}
 		catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
@@ -396,15 +383,6 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 					}
 					else
 					{
-						float slash = getJsonFloat(obj, "slashing_resistance", f);
-						float pierce = getJsonFloat(obj, "piercing_resistance", f);
-						float bludge = getJsonFloat(obj, "bludgeoning_resistance", f);
-						String immunities = getJsonString(obj, "physicalImmunities", f);
-						boolean slashImmune = immunities.contains("s");
-						boolean pierceImmune = immunities.contains("p");
-						boolean bludgeImmune = immunities.contains("b");
-						float adaptiveChance = getJsonFloat(obj, "adaptability_chance", f);
-						float adaptiveAmount = getJsonFloat(obj, "adaptability_amount", f);
 						boolean critImmunity = getJsonBoolean(obj, "critical_hit_immunity", f);
 						//We use a HashSet as that most likely guarantees a fast containment check.
 						HashSet<String> potionImmunities = new HashSet<String>();
@@ -420,43 +398,18 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 							}
 						}
 						//Update map with new info
-						for(JsonElement j : getJsonArray(obj, "main_type_mobs", f))
+						for(JsonElement j : getJsonArray(obj, "mobs", f))
 						{
 							if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString())
 							{
-								creatureMap.compute(j.getAsString(), (s, t) -> new Tuple<String, String>(type, t.getSecond()));
+								creatureMap.get(j.getAsString()).add(type);
 							}
 							else
 							{
 								throw new SyntaxException("Invalid Entity ID for main type in JSON "+f.getName());
 							}
 						}
-						for(JsonElement j : getJsonArray(obj, "sub_type_mobs", f))
-						{
-							if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString())
-							{
-								creatureMap.compute(j.getAsString(), (s, t) -> new Tuple<String, String>(t.getFirst(), type));
-							}
-							else
-							{
-								throw new SyntaxException("Invalid Entity ID for sub type in JSON "+f.getName());
-							}
-						}
-						Map<String, Float> modifierMap = new NonNullMap<String, Float>(0.0f);
-						for(JsonElement j : getJsonArray(obj, "extraProperties", f))
-						{
-							try
-							{
-								JsonObject o = j.getAsJsonObject();
-								modifierMap.put(getJsonString(o, "damageTypeName", f), getJsonFloat(o, "resistance", f));
-							}
-							catch(IllegalStateException e)
-							{
-								throw new SyntaxException("Invalid JSON for extra properties in "+f.getName());
-							}
-						}
-						MobResistanceCategories cats = new MobResistanceCategories(slash, pierce, bludge, slashImmune, pierceImmune, bludgeImmune, adaptiveChance, adaptiveAmount);
-						creatureTypes.put(type, new CreatureTypeData(type, cats, potionImmunities, critImmunity, modifierMap));
+						creatureTypes.put(type, new CreatureTypeData(type, potionImmunities, critImmunity));
 						DistinctDamageDescriptions.debug("registered creature type: "+type);
 					}
 				}
@@ -467,28 +420,6 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 				catch(IllegalStateException | ClassCastException e1)
 				{
 					DistinctDamageDescriptions.err("Could not parse "+f.getName()+" as a CreatureType!");
-				}
-			}
-			for(String s : creatureMap.keySet())
-			{
-				Tuple<CreatureTypeData, CreatureTypeData> data = getCreatureTypeForMob(s);
-				CreatureTypeData main = data.getFirst(), sub = data.getSecond();
-				if(main == CreatureTypeData.UNKNOWN)
-				{
-					continue;
-				}
-				else
-				{
-					if(sub == CreatureTypeData.UNKNOWN)
-					{
-						mobResists.put(s, main.getMobResistances());
-					}
-					else
-					{
-						MobResistanceCategories mainCat = main.getMobResistances(), subCat = sub.getMobResistances();
-						MobResistanceCategories cats = new MobResistanceCategories(0.75f*mainCat.getSlashingResistance() + 0.25f*subCat.getSlashingResistance(), 0.75f*mainCat.getPiercingResistance() + 0.25f*subCat.getPiercingResistance(), 0.75f*mainCat.getBludgeoningResistance() + 0.25f*subCat.getBludgeoningResistance(), mainCat.getSlashingImmunity(), mainCat.getPiercingImmunity(), mainCat.getBludgeoningImmunity(), mainCat.adaptiveChance(), mainCat.getAdaptiveAmount());
-						mobResists.put(s, cats);
-					}
 				}
 			}
 			DistinctDamageDescriptions.info("Loaded Creature Types!");
@@ -520,7 +451,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 						String otherMsg = getJsonString(msgs, "deathHasNoAttacker", f);
 						DamageTypeData[] datas = new DamageTypeData[arr.size()];
 						int i = 0;
-						for(JsonElement j : getJsonArray(obj, "damageTypes", f))
+						for(JsonElement j : arr)
 						{
 							try
 							{
@@ -537,8 +468,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 								throw e;
 							}
 						}
-						Set<String> items = parsePrimitiveJsonArrayAsSet(getJsonArray(obj, "items", f));
-						registerDamageType(name, entityMsg, otherMsg, items, datas);
+						registerDamageType(name, entityMsg, otherMsg, datas);
 					}
 					catch(FileNotFoundException e)
 					{
@@ -554,7 +484,32 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			try
 			{
 				String[] contents = s.split(";");
-				mobResists.put(contents[0], new MobResistanceCategories(Float.valueOf(contents[1]), Float.valueOf(contents[2]), Float.valueOf(contents[3]), contents[4].contains("s"), contents[4].contains("p"), contents[4].contains("b"), Float.valueOf(contents[5]), Float.valueOf(contents[6])));
+				Map<String, Float> resists;
+				Set<String> immunities= new HashSet<String>();
+				if(contents.length == 9)
+				{
+					resists = buildMap(0.0f, parseStringOfTuples(parseConfigString(contents[7])));
+				}
+				else
+				{
+					resists = new NonNullMap<String, Float>(0.0f);
+				}
+				resists.put(SLASHING, Float.valueOf(contents[1]));
+				resists.put(PIERCING, Float.valueOf(contents[2]));
+				resists.put(BLUDGEONING, Float.valueOf(contents[3]));
+				if(contents[4].contains("s"))
+				{
+					immunities.add(SLASHING);
+				}
+				if(contents[4].contains("p"))
+				{
+					immunities.add(PIERCING);
+				}
+				if(contents[4].contains("b"))
+				{
+					immunities.add(BLUDGEONING);
+				}
+				mobResists.put(contents[0], new MobResistanceCategories(resists, immunities, Float.valueOf(contents[5]), Float.valueOf(contents[6])));
 			}
 			catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
 			{
@@ -565,25 +520,25 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		//MOB DAMAGE FROM CONFIG
 		for(String s : ModConfig.dmg.mobBaseDmg)
 		{
-			tryPut(mobDamage, s);
+			tryPut(0.0f, mobDamage, s, 4);
 		}
 		DistinctDamageDescriptions.info("Mob damage loaded!");
 		//ARMOR RESISTANCES FROM CONFIG
 		for(String s : ModConfig.resist.armorResist)
 		{
-			tryPut(itemArmorDist, s);
+			tryPut(0.0f, itemArmorDist, s, 4);
 		}
 		DistinctDamageDescriptions.info("Armor resistances loaded!");
 		//WEAPON DAMAGE FROM CONFIG
 		for(String s : ModConfig.dmg.itemBaseDamage)
 		{
-			tryPut(itemDamageDist, s);
+			tryPut(0.0f, itemDamageDist, s, 4);
 		}
 		DistinctDamageDescriptions.info("Weapon damage loaded!");
 		//Projectile Damage Types from Config
 		for(String s : ModConfig.dmg.projectileDamageTypes)
 		{
-			String[] entry = tryPut(projectileDist, s);
+			String[] entry = tryPut(0.0f, projectileDist, s, 4);
 			if(entry.length == 5)
 			{
 				if(!entry[4].trim().isEmpty())
@@ -656,5 +611,70 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	private static <T> Optional<T> optionalGet(Map<String, T> map, String key)
 	{
 		return !ModConfig.generateStats || map.containsKey(key) ? Optional.of(map.get(key)) : Optional.empty();
+	}
+	
+	@SafeVarargs
+	private static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Tuple<K, V>...mappings)
+	{
+		if(mappings == null)
+		{
+			return new NonNullMap<K, V>(defaultVal);
+		}
+		else
+		{
+			NonNullMap<K, V> map = new NonNullMap<K, V>(defaultVal);
+			for(Tuple<K, V> t : mappings)
+			{
+				map.put(t.getFirst(), t.getSecond());
+			}
+			return map;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static Tuple<String, Float>[] parseStringOfTuples(String[] strings)
+	{
+		if(strings == null)
+		{
+			return null;
+		}
+		else if(strings.length == 0)
+		{
+			return (Tuple<String, Float>[])(new Object[0]);
+		}
+		else
+		{
+			List<Tuple<String, Float>> ts = new ArrayList<Tuple<String, Float>>();
+			for(String s : strings)
+			{
+				String[] temp = s.split(",");
+				temp[0] = temp[0].substring(1);
+				temp[1] = temp[1].substring(0, temp[1].length()-1);
+				ts.add(new Tuple<String, Float>(temp[0], Float.parseFloat(temp[1])));
+			}
+			return ts.toArray((Tuple<String, Float>[])(new Object[0]));
+		}
+	}
+	
+	private static String[] parseConfigString(String s)
+	{
+		if(s.equals(""))
+		{
+			return null;
+		}
+		else if(s.equals("[]"))
+		{
+			return new String[0];
+		}
+		else
+		{
+			//Split the string at every instance of "),(" or "), (", trim off ends, return.
+			String[] arr = s.split("\\),(?:\\s?)\\(");
+			arr[0] = arr[0].substring(2); //remove "[(" prefix
+			String temp = arr[arr.length-1];
+			temp = temp.substring(0, temp.length()-2); //remove ")]" suffix
+			arr[arr.length-1] = temp;
+			return arr;
+		}
 	}
 }

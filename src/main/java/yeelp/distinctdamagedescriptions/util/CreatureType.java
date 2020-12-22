@@ -1,26 +1,51 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
+
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class CreatureType implements ICreatureType
 {
-	public static final CreatureType UNKNOWN = new CreatureType(CreatureTypeData.UNKNOWN, CreatureTypeData.UNKNOWN);
-	public String mainType, subType;
+	public static final CreatureType UNKNOWN = new CreatureType(CreatureTypeData.UNKNOWN);
+	private Set<String> types;
+	private Set<String> potionImmunities;
+	private boolean critImmunity = false;
 	
-	public CreatureType(CreatureTypeData main, CreatureTypeData sub)
+	public CreatureType(Set<CreatureTypeData> datas)
 	{
-		mainType = main.getTypeName();
-		subType = sub.getTypeName();
+		types = new HashSet<String>();
+		potionImmunities = new HashSet<String>();
+		for(CreatureTypeData data : datas)
+		{
+			types.add(data.getTypeName());
+			potionImmunities.addAll(data.getPotionImmunities());
+			critImmunity = critImmunity || data.isImmuneToCriticals();
+		}
 	}
+	
+	public CreatureType(CreatureTypeData...datas)
+	{
+		this(new HashSet<CreatureTypeData>(ImmutableList.copyOf(datas)));
+	}
+	
+	@Override
+	public Set<String> getCreatureTypeNames()
+	{
+		return this.types;
+	}
+	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
@@ -37,40 +62,47 @@ public class CreatureType implements ICreatureType
 	public NBTTagCompound serializeNBT()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("mainType", mainType);
-		tag.setString("subType", subType);
+		NBTTagList types = new NBTTagList(), potImmunities = new NBTTagList();
+		for(String s : this.types)
+		{
+			types.appendTag(new NBTTagString(s));
+		}
+		for(String s : this.potionImmunities)
+		{
+			potImmunities.appendTag(new NBTTagString(s));
+		}
+		tag.setTag("types", types);
+		tag.setTag("potionImmunities", potImmunities);
+		tag.setBoolean("critImmunity", critImmunity);
 		return tag;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt)
 	{
-		mainType = nbt.getString("mainType");
-		subType = nbt.getString("subType");
-	}
-
-	@Override
-	public CreatureTypeData getMainCreatureTypeData()
-	{
-		return DDDRegistries.creatureTypes.getCreatureTypeData(mainType);
-	}
-
-	@Override
-	public CreatureTypeData getSubCreatureTypeData()
-	{
-		return DDDRegistries.creatureTypes.getCreatureTypeData(subType);
+		types = new HashSet<String>();
+		potionImmunities = new HashSet<String>();
+		critImmunity = nbt.getBoolean("critImmunity");
+		for(NBTBase s : nbt.getTagList("types", new NBTTagString().getId()))
+		{
+			types.add(((NBTTagString) s).getString());
+		}
+		for(NBTBase s : nbt.getTagList("potionImmunities", new NBTTagString().getId()))
+		{
+			potionImmunities.add(((NBTTagString) s).getString());
+		}
 	}
 	
 	@Override
 	public boolean isImmuneToPotionEffect(PotionEffect effect)
 	{
-		return getMainCreatureTypeData().isImmuneToPotionEffect(effect) || getSubCreatureTypeData().isImmuneToPotionEffect(effect);
+		return potionImmunities.contains(effect.getPotion().getRegistryName().toString());
 	}
 	
 	@Override
 	public boolean isImmuneToCriticalHits()
 	{
-		return getMainCreatureTypeData().isImmuneToCriticals();
+		return critImmunity;
 	}
 	
 	public static void register()

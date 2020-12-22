@@ -1,22 +1,18 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Set;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound>
-{
+{	
 	/**
-	 * Get the main creature type
-	 * @return the main CreatureTypeData
+	 * Return a set of all the creature type names.
+	 * @return a Set of all the creature type names
 	 */
-	CreatureTypeData getMainCreatureTypeData();
-	
-	/**
-	 * Get the sub creature type
-	 * @return the sub CreatureTypeData
-	 */
-	CreatureTypeData getSubCreatureTypeData();
+	Set<String> getCreatureTypeNames();
 	
 	/**
 	 * Is this creature type immune to a PotionEffect?
@@ -32,20 +28,30 @@ public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound>
 	boolean isImmuneToCriticalHits();
 	
 	/**
-	 * Get the modifier for a damage type.
-	 * @param damageTypeName name
-	 * @return a float modifier from both creature types if present.
+	 * Check if this ICreatureType is a certain type.
+	 * @param name
+	 * @return
 	 */
-	default float getModifierForDamageType(String damageTypeName)
+	default boolean isCreatureType(String name)
 	{
-		CreatureTypeData sub = getSubCreatureTypeData();
-		if(sub == CreatureTypeData.UNKNOWN)
-		{
-			return getMainCreatureTypeData().getModifierForDamageType(damageTypeName);
-		}
-		else
-		{
-			return 0.75f*getMainCreatureTypeData().getModifierForDamageType(damageTypeName) + 0.25f*sub.getModifierForDamageType(damageTypeName);
-		}
+		return getCreatureTypeNames().contains(name);
+	}
+	
+	/**
+	 * Get how many types this ICreatureType has.
+	 * @return
+	 */
+	default int getTypeCount()
+	{
+		return getCreatureTypeNames().size();
+	}
+	
+	/**
+	 * Convenience method for checking if an ICreatureType is single typed, may have applications in certain situations...
+	 * @return
+	 */
+	default boolean isSingleTyped()
+	{
+		return getTypeCount() == 1;
 	}
 }

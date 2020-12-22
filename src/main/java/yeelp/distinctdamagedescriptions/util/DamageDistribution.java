@@ -1,33 +1,55 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
-	public static final IDamageDistribution PIERCING_DISTRIBUTION = new DamageDistribution(0, 1, 0);
-	public static final IDamageDistribution BLUDGEONING_DISTRIBUTION = new DamageDistribution(0, 0, 1);
-	public static final IDamageDistribution SLASHING_DISTRIBUTION = new DamageDistribution(1, 0, 0);
+	public static final IDamageDistribution PIERCING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("slashing", 1.0f));
+	public static final IDamageDistribution BLUDGEONING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("piercing", 1.0f));
+	public static final IDamageDistribution SLASHING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("bludgeoning", 1.0f));
 	@Override
-	protected boolean invariantViolated(float slash, float pierce, float bludge)
+	protected boolean invariantViolated(Collection<Float> weights)
 	{
-		return slash + pierce + bludge > 1 && super.invariantViolated(slash, pierce, bludge);
+		float sum = 0.0f;
+		for(float f : weights)
+		{
+			sum += f;
+		}
+		return Math.abs(sum - 1) <= 0.01 || super.invariantViolated(weights);
 	}
 	
 	public DamageDistribution()
 	{
-		this(0, 0, 1);
+		this(new Tuple<String, Float>("bludgeoning", 1.0f));
 	}
 	
-	public DamageDistribution(float slash, float pierce, float bludge) 
+	@SafeVarargs
+	public DamageDistribution(Tuple<String, Float>... weights) 
 	{
-		super(slash, pierce, bludge);
+		super(weights);
+		if(invariantViolated(this.distMap.values()))
+		{
+			throw new InvariantViolationException("weights are negative or do not add to 1!");
+		}
+	}
+	
+	public DamageDistribution(Map<String, Float> weightMap)
+	{
+		super(weightMap);
+		if(invariantViolated(this.distMap.values()))
+		{
+			throw new InvariantViolationException("weights are negative or do not add to 1!");
+		}
 	}
 	
 	@Override
@@ -74,7 +96,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 		@Override
 		public void readNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side, NBTBase nbt)
 		{
-			instance.deserializeNBT((NBTTagCompound) nbt); 
+			instance.deserializeNBT((NBTTagList) nbt); 
 		}
 	}
 }
