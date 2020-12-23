@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
@@ -23,6 +24,12 @@ public class ShieldDistribution extends Distribution implements IDistribution
 	public ShieldDistribution(Map<String, Float> blockMap)
 	{
 		super(blockMap);
+	}
+	
+	@SafeVarargs
+	public ShieldDistribution(Tuple<String, Float>... mappings)
+	{
+		super(mappings);
 	}
 	
 	public Map<String, Float> block(Map<String, Float> fullDamage)

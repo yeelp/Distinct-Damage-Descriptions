@@ -33,6 +33,7 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
@@ -57,6 +58,7 @@ public final class ConfigGenerator
 	private static final Map<ResourceLocation, IDamageDistribution> WEAPON_CACHE = new HashMap<ResourceLocation, IDamageDistribution>();
 	private static final Map<ResourceLocation, IDamageDistribution> PROJECTILE_CACHE = new HashMap<ResourceLocation, IDamageDistribution>();
 	private static final Map<ResourceLocation, IArmorDistribution> ARMOR_CACHE = new HashMap<ResourceLocation, IArmorDistribution>();
+	private static final Map<ResourceLocation, ShieldDistribution> SHIELD_CACHE = new HashMap<ResourceLocation, ShieldDistribution>();
 	private static final Field efficiencyField = ObfuscationReflectionHelper.findField(ItemTool.class, "field_77864_a");
 	private static boolean updated = false;
 	
@@ -528,6 +530,26 @@ public final class ConfigGenerator
 		}
 	}
 	
+	/**
+	 * Generate shield distributions on the fly. No real way to generate anything concrete, only one shield to reference in vanilla, so we randomize values.
+	 * @param shield
+	 * @param stack
+	 * @return A ShieldDistribution
+	 */
+	public static final ShieldDistribution getOrGenerateShieldDistribution(ItemShield shield, ItemStack stack)
+	{
+		if(SHIELD_CACHE.containsKey(shield.getRegistryName()))
+		{
+			return SHIELD_CACHE.get(shield.getRegistryName());
+		}
+		else
+		{
+			ShieldDistribution dist = new ShieldDistribution(new Tuple<String, Float>(SLASHING, generateResistance(1.0f)), new Tuple<String, Float>(PIERCING, generateResistance(1.0f)), new Tuple<String, Float>(BLUDGEONING, generateResistance(1.0f)));
+			SHIELD_CACHE.put(shield.getRegistryName(), dist);
+			return dist;
+		}
+	}
+	
 	public static final String[] getNewMobResistanceConfigValues()
 	{
 		int index = -1;
@@ -606,6 +628,23 @@ public final class ConfigGenerator
 		for(Entry<ResourceLocation, IArmorDistribution> entry : ARMOR_CACHE.entrySet())
 		{
 			IArmorDistribution dist = entry.getValue();
+			String val = entry.getKey().toString()+";";
+			val += dist.getWeight(SLASHING)+";";
+			val += dist.getWeight(PIERCING)+";";
+			val += dist.getWeight(BLUDGEONING);
+			
+			vals[++index] = val;
+		}
+		return vals;
+	}
+	
+	public static final String[] getNewShieldConfigValues()
+	{
+		int index = -1;
+		String[] vals = new String[SHIELD_CACHE.size()];
+		for(Entry<ResourceLocation, ShieldDistribution> entry : SHIELD_CACHE.entrySet())
+		{
+			ShieldDistribution dist = entry.getValue();
 			String val = entry.getKey().toString()+";";
 			val += dist.getWeight(SLASHING)+";";
 			val += dist.getWeight(PIERCING)+";";

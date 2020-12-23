@@ -396,12 +396,14 @@ public class ModConfig
 				Property projDmg = config.get("general.damage", "Projectile Damage Type", dmg.projectileDamageTypes);
 				Property armorResist = config.get("general.resistance", "Armor Resistance/Weakness", resist.armorResist);
 				Property mobResists = config.get("general.resistance", "Mob Base Resistance/Weakness", resist.mobBaseResist);
+				Property shieldDists = config.get("general.resistance", "Shield Effectiveness", resist.shieldResist);
 				
 				itemDmg.set(YLib.merge(dmg.itemBaseDamage, ConfigGenerator.getNewWeaponConfigValues()));
 				mobDmg.set(YLib.merge(dmg.mobBaseDmg, ConfigGenerator.getNewMobDamageConfigValues()));
 				projDmg.set(YLib.merge(dmg.projectileDamageTypes, ConfigGenerator.getNewProjectileConfigValues()));
 				armorResist.set(YLib.merge(resist.armorResist, ConfigGenerator.getNewArmorConfigValues()));
 				mobResists.set(YLib.merge(resist.mobBaseResist, ConfigGenerator.getNewMobResistanceConfigValues()));
+				shieldDists.set(YLib.merge(resist.shieldResist, ConfigGenerator.getNewShieldConfigValues()));
 				config.save();
 				ConfigGenerator.markUpdated();
 			}
