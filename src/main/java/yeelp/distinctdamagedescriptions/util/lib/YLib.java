@@ -20,7 +20,7 @@ public final class YLib
 		if(strings.length != 0)
 		{
 			String last = strings[strings.length-1];
-			for(int i = 0; i < strings.length-2; i++)
+			for(int i = 0; i <= strings.length-2; i++)
 			{
 				result += strings[i] + sep + (addSpace ? " " : "");
 			}

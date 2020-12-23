@@ -11,5 +11,6 @@ public class ModConsts
 	public static final class InternalDamageTypes
 	{
 		public static final String SLASHING = "slashing", PIERCING = "piercing", BLUDGEONING = "bludgeoning";
+		public static final String[] PHYSICAL_DAMAGE_TYPES = {SLASHING, PIERCING, BLUDGEONING};
 	}
 }

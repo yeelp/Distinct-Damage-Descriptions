@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
@@ -220,16 +222,20 @@ public final class DDDCombatRules extends CombatRules
 		boolean immunity = false, weakness = false, resist = false, effectiveShield = false;
 		if(blockedDmg >= 0.01)
 		{
-			damageShield(attacker, defender, mods.getActiveShield(), (float) blockedDmg, (float) ratio);
+			boolean broken = damageShield(attacker, defender, mods.getActiveShield(), (float) blockedDmg, (float) ratio);
 			effectiveShield = true;
 			if(Math.abs(unmoddedDmg - blockedDmg) <= 0.001)
 			{
-				defender.playSound(SoundEvents.ITEM_SHIELD_BLOCK, 0.8f, 0.8f + defender.world.rand.nextFloat() * 0.4f);
+				if(defender instanceof EntityPlayer && !broken)
+				{
+					((EntityPlayer) defender).playSound(SoundEvents.ITEM_SHIELD_BLOCK, 1.0f, 0.8f + defender.world.rand.nextFloat() * 0.4f);
+					DDDSounds.playSound((EntityPlayer) defender, DDDSounds.IMMUNITY_HIT, 1.0f, 0.8f + defender.world.rand.nextFloat() * 0.4f);
+				}
 				return new CombatResults(false, false, false, true, new NonNullMap<String, Float>(0.0f), resistMap, armors, mobResists);
 			}
-			else
+			else if(!broken)
 			{
-				//TODO play sound	
+				DDDSounds.playSound((EntityPlayer) defender, DDDSounds.HIGH_RESIST_HIT, 1.0f, 0.8f + defender.world.rand.nextFloat() * 0.4f);	
 			}
 		}
 		for(Entry<String, Float> entry : dmgMap.entrySet())
@@ -348,21 +354,24 @@ public final class DDDCombatRules extends CombatRules
 		return result;
 	}
 	
-	private static void damageShield(@Nullable Entity attacker, @Nonnull EntityLivingBase defender, ItemStack shield, float blockedDmg, float ratio)
+	private static boolean damageShield(@Nullable Entity attacker, @Nonnull EntityLivingBase defender, ItemStack shield, float blockedDmg, float ratio)
 	{
+		boolean broken = false;
 		if(!(shield.getItem() instanceof ItemShield))
 		{
-			return;
+			return broken;
 		}
 		shield.damageItem(1 + (int)Math.floor(blockedDmg), defender);
 		if(shield.isEmpty())
 		{
 			defender.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.8f, 0.8f + defender.world.rand.nextFloat() * 0.4f);
+			broken = true;
 		}
 		if(attacker instanceof EntityLivingBase)
 		{
 			((EntityLivingBase) attacker).knockBack(defender, 0.4f*ratio + 0.1f, defender.posX - attacker.posX, defender.posZ - attacker.posZ);
 		}
+		return broken;
 	}
 	
 	private static boolean canBlockDamage(Entity attacker, EntityLivingBase defender, DDDDamageType src)
@@ -403,6 +412,10 @@ public final class DDDCombatRules extends CombatRules
 	private static int getArmorDamageAmount(Map<String, Float> absorption, IArmorDistribution armorDist)
 	{
 		float sum = absorption.entrySet().stream().reduce(0.0f, (a, e) -> a + e.getValue()*armorDist.getWeight(e.getKey()), (u, v) -> u + v);
+		if(sum == 0)
+		{
+			return 0;
+		}
 		return (int) MathHelper.clamp(sum, 0, Float.MAX_VALUE) + 1;
 	}
 }

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -640,8 +641,8 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		return !ModConfig.generateStats || map.containsKey(key) ? Optional.of(map.get(key)) : Optional.empty();
 	}
 	
-	@SafeVarargs
-	private static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Tuple<K, V>...mappings)
+	
+	private static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Iterable<Tuple<K, V>> mappings)
 	{
 		if(mappings == null)
 		{
@@ -658,8 +659,15 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		}
 	}
 	
+	@SafeVarargs
+	private static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Tuple<K, V>...mappings)
+	{
+		return buildMap(defaultVal, Arrays.asList(mappings));
+	}
+	
+	
 	@SuppressWarnings("unchecked")
-	private static Tuple<String, Float>[] parseStringOfTuples(String[] strings)
+	private static Iterable<Tuple<String, Float>> parseStringOfTuples(String[] strings)
 	{
 		if(strings == null)
 		{
@@ -667,19 +675,17 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		}
 		else if(strings.length == 0)
 		{
-			return (Tuple<String, Float>[])(new Object[0]);
+			return Collections.EMPTY_LIST;
 		}
 		else
 		{
 			List<Tuple<String, Float>> ts = new ArrayList<Tuple<String, Float>>();
 			for(String s : strings)
 			{
-				String[] temp = s.split(",");
-				temp[0] = temp[0].substring(1);
-				temp[1] = temp[1].substring(0, temp[1].length()-1);
+				String[] temp = s.split(", ");
 				ts.add(new Tuple<String, Float>(temp[0], Float.parseFloat(temp[1])));
 			}
-			return ts.toArray((Tuple<String, Float>[])(new Object[0]));
+			return ts;
 		}
 	}
 	

@@ -10,6 +10,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
@@ -111,7 +113,7 @@ public abstract class Distribution implements IDistribution
 		HashSet<String> set = new HashSet<String>();
 		for(Entry<String, Float> entry : distMap.entrySet())
 		{
-			if(entry.getValue() > 0)
+			if((DDDAPI.accessor.isPhysicalDamage(entry.getKey()) || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
 			{
 				set.add(entry.getKey());
 			}

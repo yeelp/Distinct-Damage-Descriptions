@@ -11,7 +11,11 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
@@ -68,7 +72,32 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	@Override
 	public Map<String, Float> distributeDamage(float dmg)
 	{
-		return super.distribute(dmg);
+		if(ModConfig.dmg.useCustomDamageTypes)
+		{
+			return super.distribute(dmg);
+		}
+		else
+		{
+			NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
+			float remainingWeight = distMap.get(ModConsts.InternalDamageTypes.SLASHING) + distMap.get(ModConsts.InternalDamageTypes.PIERCING) + distMap.get(ModConsts.InternalDamageTypes.BLUDGEONING);
+			long physicalDamageCount = distMap.keySet().stream().filter((s) -> DDDAPI.accessor.isPhysicalDamage(s)).count();
+			if(physicalDamageCount > 0)
+			{
+				remainingWeight /= physicalDamageCount;
+				for(String s : ModConsts.InternalDamageTypes.PHYSICAL_DAMAGE_TYPES)
+				{
+					if(distMap.containsKey(s))
+					{
+						map.put(s, (distMap.get(s) + remainingWeight)*dmg);
+					}
+				}
+			}
+			else
+			{
+				map.put(ModConsts.InternalDamageTypes.BLUDGEONING, 1.0f);
+			}
+			return map;
+		}
 	}
 	
 	public static void register()
