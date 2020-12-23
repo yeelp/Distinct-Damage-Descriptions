@@ -44,8 +44,12 @@ public class ModConfig
 	public static boolean suppressWarnings = false;
 	
 	@Name("Generate Configs")
-	@Comment("Set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles.")
+	@Comment("If set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles.")
 	public static boolean generateStats = false;
+	
+	@Name("Generate JSON")
+	@Comment("If set, DistinctDamageDescriptions will generate exmaple JSON files for custom damage types and creature types.")
+	public static boolean generateJSON = true;
 	
 	public static class EnchantCategory
 	{

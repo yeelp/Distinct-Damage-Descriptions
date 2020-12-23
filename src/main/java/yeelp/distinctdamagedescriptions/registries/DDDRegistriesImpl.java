@@ -349,7 +349,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		try(FileInputStream inStream = new FileInputStream(json); BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "UTF8")))
 		{
 			String firstLine = reader.readLine();
-			return (j && !("// Mod Version: "+ModConsts.VERSION).equals(firstLine)) || (!j && !b);
+			return ((j && !("// Mod Version: "+ModConsts.VERSION).equals(firstLine)) || (!j && !b)) && ModConfig.generateJSON;
 		}
 		catch (FileNotFoundException e)
 		{
