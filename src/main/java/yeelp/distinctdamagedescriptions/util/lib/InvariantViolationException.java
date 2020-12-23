@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.util.lib;
 
 /**
  * Simple exception for when certain action would result in class invariant violations.

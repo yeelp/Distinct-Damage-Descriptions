@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
  * Base capability for damage resistance capabilities

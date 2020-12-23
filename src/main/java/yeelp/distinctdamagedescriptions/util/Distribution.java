@@ -10,6 +10,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public abstract class Distribution implements IDistribution
 {
@@ -25,10 +27,10 @@ public abstract class Distribution implements IDistribution
 			}
 			else
 			{
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	@SafeVarargs
@@ -122,7 +124,7 @@ public abstract class Distribution implements IDistribution
 		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
 		for(Entry<String, Float> entry : this.distMap.entrySet())
 		{
-			map.compute(entry.getKey(), (s, w) -> value * w);
+			map.put(entry.getKey(), value * entry.getValue());
 		}
 		return map;
 	}

@@ -11,6 +11,7 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
@@ -25,7 +26,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 		{
 			sum += f;
 		}
-		return Math.abs(sum - 1) <= 0.01 || super.invariantViolated(weights);
+		return !(Math.abs(sum - 1) <= 0.01) || super.invariantViolated(weights);
 	}
 	
 	public DamageDistribution()
@@ -65,9 +66,9 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	@Override
-	public DamageCategories distributeDamage(float dmg)
+	public Map<String, Float> distributeDamage(float dmg)
 	{
-		return new DamageCategories(super.distribute(dmg));
+		return super.distribute(dmg);
 	}
 	
 	public static void register()

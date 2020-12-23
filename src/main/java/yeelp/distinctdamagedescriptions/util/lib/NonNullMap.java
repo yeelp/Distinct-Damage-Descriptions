@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.util.lib;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class NonNullMap<Key, Value> extends AbstractMap<Key, Value> implements M
 	}
 	
 	/**
-	 * Get the default value the map uses
+	 * Get the default value the map uses. Note updating the default value here will change it across all mappings that are mapped to the default value.
 	 * @return the default value
 	 */
 	public Value getDefaultValue()

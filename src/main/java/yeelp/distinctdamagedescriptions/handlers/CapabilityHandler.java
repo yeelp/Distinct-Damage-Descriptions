@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
@@ -34,11 +35,13 @@ import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
 
 public class CapabilityHandler extends Handler
 {
 	private static final ResourceLocation dmg = new ResourceLocation(ModConsts.MODID, "dmgDistribution");
 	private static final ResourceLocation armor = new ResourceLocation(ModConsts.MODID, "armorResists");
+	private static final ResourceLocation shield = new ResourceLocation(ModConsts.MODID, "shieldEffectiveness");
 	private static final ResourceLocation mobs = new ResourceLocation(ModConsts.MODID, "mobResists");
 	private static final ResourceLocation projDmg = new ResourceLocation(ModConsts.MODID, "projectileDmgDistribution");
 	private static final ResourceLocation creatureType = new ResourceLocation(ModConsts.MODID, "creatureTypes");
@@ -168,6 +171,21 @@ public class CapabilityHandler extends Handler
 				armorResists = ConfigGenerator.getOrGenerateArmorResistances((ItemArmor) item, evt.getObject());
 			}
 			evt.addCapability(armor, armorResists);
+		}
+		else if(item instanceof ItemShield)
+		{
+			Optional<Map<String, Float>> oCaps = DDDRegistries.itemProperties.getShieldDistribution(key);
+			ShieldDistribution shieldDist;
+			if(oCaps.isPresent())
+			{
+				Map<String, Float> caps = oCaps.get();
+				shieldDist = new ShieldDistribution(caps);
+			}
+			else
+			{
+				shieldDist = new ShieldDistribution();
+			}
+			evt.addCapability(shield, shieldDist);
 		}
 	}
 	

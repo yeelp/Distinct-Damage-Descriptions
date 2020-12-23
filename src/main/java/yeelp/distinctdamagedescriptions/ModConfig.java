@@ -13,6 +13,8 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
 @Config(modid = ModConsts.MODID)
 public class ModConfig
@@ -338,9 +340,7 @@ public class ModConfig
 		
 		@Name("Use Creature Types")
 		@Comment({"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
-				  "These JSON files can be used to apply potion immunities, along with applying the same resistances to large amounts of mobs at once.",
-				  "Remember that entries in the \"Mob Base Resistances/Weaknesses\" config will override any mob resistances provided by these JSON files.",
-				  "This is done to allow end users to still have granular control over resistances while still providing potion immunities to large swaths of mobs at once."})
+				  "These JSON files can be used to apply potion immunitiesto large swaths of mobs at once. Also usuable in CraftTweaker"})
 		@RequiresMcRestart
 		public boolean useCreatureTypes = false;
 	}
@@ -367,6 +367,7 @@ public class ModConfig
 			if (event.getModID().equals(ModConsts.MODID)) 
 			{
 				ConfigManager.sync(ModConsts.MODID, Config.Type.INSTANCE);
+				DebugLib.updateStatus();
 			}
 		}
 		
@@ -396,40 +397,16 @@ public class ModConfig
 				Property armorResist = config.get("general.resistance", "Armor Resistance/Weakness", resist.armorResist);
 				Property mobResists = config.get("general.resistance", "Mob Base Resistance/Weakness", resist.mobBaseResist);
 				
-				itemDmg.set(merge(dmg.itemBaseDamage, ConfigGenerator.getNewWeaponConfigValues()));
-				mobDmg.set(merge(dmg.mobBaseDmg, ConfigGenerator.getNewMobDamageConfigValues()));
-				projDmg.set(merge(dmg.projectileDamageTypes, ConfigGenerator.getNewProjectileConfigValues()));
-				armorResist.set(merge(resist.armorResist, ConfigGenerator.getNewArmorConfigValues()));
-				mobResists.set(merge(resist.mobBaseResist, ConfigGenerator.getNewMobResistanceConfigValues()));
+				itemDmg.set(YLib.merge(dmg.itemBaseDamage, ConfigGenerator.getNewWeaponConfigValues()));
+				mobDmg.set(YLib.merge(dmg.mobBaseDmg, ConfigGenerator.getNewMobDamageConfigValues()));
+				projDmg.set(YLib.merge(dmg.projectileDamageTypes, ConfigGenerator.getNewProjectileConfigValues()));
+				armorResist.set(YLib.merge(resist.armorResist, ConfigGenerator.getNewArmorConfigValues()));
+				mobResists.set(YLib.merge(resist.mobBaseResist, ConfigGenerator.getNewMobResistanceConfigValues()));
 				config.save();
 				ConfigGenerator.markUpdated();
 			}
 		}
 		
-		private static String[] merge(String[] xs, String[] ys)
-		{
-			if(xs.length == 0)
-			{
-				return ys;
-			}
-			else if(ys.length == 0)
-			{
-				return xs;
-			}
-			else
-			{
-				int index = -1;
-				String[] arr = new String[xs.length + ys.length];
-				for(String x : xs)
-				{
-					arr[++index] = x;
-				}
-				for(String y : ys)
-				{
-					arr[++index] = y;
-				}
-				return arr;
-			}
-		}
+		
 	}
 }

@@ -27,8 +27,8 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.KeyHelper;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 
 public class TooltipHandler extends Handler
 {

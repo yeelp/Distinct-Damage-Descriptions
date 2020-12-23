@@ -17,6 +17,7 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class MobResistances extends DamageResistances implements IMobResistances
 {
@@ -94,7 +95,8 @@ public class MobResistances extends DamageResistances implements IMobResistances
 			}
 		}
 		Set<String> temp = new HashSet<String>(Arrays.asList(damageTypes));
-		for(String s : adaptiveTo)
+		Set<String> iter = new HashSet<String>(adaptiveTo);
+		for(String s : iter)
 		{
 			if(temp.contains(s))
 			{

@@ -22,7 +22,7 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry
 	/**
 	 * Get a damage type
 	 * @param originalDamageSource the original damage source
-	 * @return a set of Strings with additional damage type context, or the originalDamageSource if no additional context could be found.
+	 * @return a set of Strings with additional damage type context, or the empty set if no additional context was found.
 	 */
 	Set<String> getCustomDamageContext(DamageSource originalDamageSource);
 	

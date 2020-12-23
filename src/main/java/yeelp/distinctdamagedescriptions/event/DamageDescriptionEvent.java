@@ -11,7 +11,7 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import yeelp.distinctdamagedescriptions.util.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
  * Base class for all DamageDescriptionEvent events.

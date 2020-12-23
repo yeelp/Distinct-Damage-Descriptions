@@ -25,6 +25,8 @@ import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.CreatureType;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)
 public class DistinctDamageDescriptions
@@ -48,6 +50,7 @@ public class DistinctDamageDescriptions
         srcFile = event.getSourceFile();
         DDDAPI.init();
         DDDRegistries.init();
+        DebugLib.updateStatus();
         if(Loader.isModLoaded(ModConsts.CRAFTTWEAKER_ID))
         {
         	info("Distinct Damage Descriptions found CraftTweaker!");
@@ -66,6 +69,7 @@ public class DistinctDamageDescriptions
         ArmorDistribution.register();
         DamageDistribution.register();
         CreatureType.register();
+        ShieldDistribution.register();
         PacketHandler.init();
         DDDSounds.init();
        	DDDEnchantments.init();

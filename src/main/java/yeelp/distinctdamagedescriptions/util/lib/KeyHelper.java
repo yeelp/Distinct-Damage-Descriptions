@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.util.lib;
 
 import org.lwjgl.input.Keyboard;
 

@@ -19,6 +19,7 @@ import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
 
 public abstract interface IDistinctDamageDescriptionsAccessor
 {
@@ -65,6 +66,14 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @return the ICreatureType the mob has. Always returns {@link CreatureType.UNKNOWN} for mobs that are instances of EntityPlayer
 	 */
 	ICreatureType getMobCreatureType(EntityLivingBase entity);
+	
+	/**
+	 * Get a stack's shield distribution
+	 * @param stack
+	 * @return a ShieldDistribution, or null if the stack doesn't have this capability.
+	 */
+	@Nullable
+	ShieldDistribution getShieldDistribution(ItemStack stack);
 	
 	/**
 	 * Get a map of armor resistance for an entity

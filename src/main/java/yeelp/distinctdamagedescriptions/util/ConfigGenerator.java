@@ -41,6 +41,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
  * Generates config values on the fly for newly encountered mobs.

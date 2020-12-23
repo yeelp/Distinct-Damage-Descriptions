@@ -7,6 +7,11 @@ import java.util.Map.Entry;
 
 import net.minecraft.util.Tuple;
 
+/**
+ * A container to store armor and toughness values once distributed.
+ * @author dunca
+ *
+ */
 public final class ArmorCategories
 {
 	private Map<String, Float> armor, toughness;
@@ -49,12 +54,6 @@ public final class ArmorCategories
 	public Iterable<Tuple<String, Float>> getNonZeroToughnessValues()
 	{
 		return getNonZeroValues(toughness);
-	}
-	
-	@Override
-	public String toString()
-	{
-		return String.format("(slashing: %f, piercing: %f, bludgeoning: %f)", getArmor("slashing"), getArmor("piercing"), getArmor("bludgeoning"));
 	}
 	
 	private Iterable<Tuple<String, Float>> getNonZeroValues(Map<String, Float> map)

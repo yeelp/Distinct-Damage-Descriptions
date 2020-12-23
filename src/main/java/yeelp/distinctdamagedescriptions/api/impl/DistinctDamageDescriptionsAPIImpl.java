@@ -17,10 +17,10 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
@@ -32,7 +32,6 @@ import yeelp.distinctdamagedescriptions.util.ArmorCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.DamageCategories;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
@@ -40,7 +39,9 @@ import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistancesProvider;
-import yeelp.distinctdamagedescriptions.util.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.util.ShieldDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
 {
@@ -96,6 +97,10 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Nullable
 	public IArmorDistribution getArmorResistances(ItemStack stack)
 	{
+		if(stack == null || !(stack.getItem() instanceof ItemArmor))
+		{
+			return null;
+		}
 		return ArmorDistributionProvider.getArmorResistances(stack);
 	}
 
@@ -109,6 +114,17 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	public ICreatureType getMobCreatureType(EntityLivingBase entity)
 	{
 		return CreatureTypeProvider.getCreatureType(entity);
+	}
+	
+	@Override
+	@Nullable
+	public ShieldDistribution getShieldDistribution(ItemStack stack)
+	{
+		if(stack == null || !(stack.getItem() instanceof ItemShield))
+		{
+			return null;
+		}
+		return ShieldDistributionProvider.getShieldDistribution(stack);
 	}
 	
 	@Override
@@ -161,10 +177,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Nullable
 	public Map<String, Float> classifyDamage(@Nonnull DamageSource src, float damage)
 	{
-		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
+		Map<String, Float> map = new NonNullMap<String, Float>(0.0f);
 		boolean slyStrike = false;
 		IDamageDistribution dist;
-		DamageCategories damageCat;
 		if(src.getImmediateSource() instanceof EntityLivingBase)
 		{
 			EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
@@ -190,15 +205,24 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			dist = getExtraDamageDistribution(src);
 			if(dist == null)
 			{
-				return null;
+				Set<String> types = DDDRegistries.damageTypes.getCustomDamageContext(src);
+				if(types.size() == 0)
+				{
+					return null;
+				}
+				else
+				{
+					NonNullMap<String, Float> custMap = new NonNullMap<String, Float>(0.0f);
+					float weight = 1.0f/types.size();
+					for(String s : types)
+					{
+						custMap.put(s, weight);
+					}
+					dist = new DamageDistribution(custMap);
+				}
 			}
 		}
-		damageCat = dist.distributeDamage(damage);
-		DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
-		for(String s : dist.getCategories())
-		{
-			map.put(s, damageCat.getDamage(s));
-		}
+		map = dist.distributeDamage(damage);
 		return map;
 	}
 	
@@ -208,14 +232,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
 		for(String s : types)
 		{
-			if(resists.hasImmunity(s))
-			{
-				map.put(s, Float.MAX_VALUE);
-			}
-			else
-			{
-				map.put(s, resists.getResistance(s));
-			}
+			map.put(s, resists.getResistance(s));
 		}
 		return map;
 	}

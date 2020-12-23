@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,14 +44,13 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
-import yeelp.distinctdamagedescriptions.util.FileHelper;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
-import yeelp.distinctdamagedescriptions.util.NonNullMap;
-import yeelp.distinctdamagedescriptions.util.SyntaxException;
+import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
 
 public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemPropertiesRegistry, IDDDProjectilePropertiesRegistry, IDDDDamageTypeRegistry
 {
-	//TODO use the includeAll, noSource fields correctly. custom death messages?
 	INSTANCE;
 	private final Map<String, MobResistanceCategories> mobResists = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(new NonNullMap<String, Float>(0.0f), new HashSet<String>(), 0, 0));
 	private final Map<String, CreatureTypeData> creatureTypes = new NonNullMap<String, CreatureTypeData>(CreatureTypeData.UNKNOWN);
@@ -299,6 +299,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     		dist.put(SLASHING, Float.valueOf(contents[1]));
     		dist.put(PIERCING, Float.valueOf(contents[2]));
     		dist.put(BLUDGEONING, Float.valueOf(contents[3]));
+    		//We need to remove all zero entries in the map, as this will mess up adaptive resistance (it will think the damage was inflicted and adapt to it).
+    		dist.remove(SLASHING, 0.0f);
+    		dist.remove(PIERCING, 0.0f);
+    		dist.remove(BLUDGEONING, 0.0f);
 			map.put(contents[0], dist);
 			return contents;
 		}
@@ -497,6 +501,9 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 				resists.put(SLASHING, Float.valueOf(contents[1]));
 				resists.put(PIERCING, Float.valueOf(contents[2]));
 				resists.put(BLUDGEONING, Float.valueOf(contents[3]));
+				resists.remove(SLASHING, 0.0f);
+				resists.remove(PIERCING, 0.0f);
+				resists.remove(BLUDGEONING, 0.0f);
 				if(contents[4].contains("s"))
 				{
 					immunities.add(SLASHING);
@@ -528,6 +535,11 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		{
 			tryPut(0.0f, itemArmorDist, s, 4);
 		}
+		//SHIELD EFFECTIVENESS FROM CONFIG
+		for(String s : ModConfig.resist.shieldResist)
+		{
+			tryPut(0.0f, shieldDist, s, 4);
+		}
 		DistinctDamageDescriptions.info("Armor resistances loaded!");
 		//WEAPON DAMAGE FROM CONFIG
 		for(String s : ModConfig.dmg.itemBaseDamage)
@@ -536,14 +548,29 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		}
 		DistinctDamageDescriptions.info("Weapon damage loaded!");
 		//Projectile Damage Types from Config
+		Pattern digits = Pattern.compile("\\A\\d++(\\.\\d++)?\\z");
 		for(String s : ModConfig.dmg.projectileDamageTypes)
 		{
-			String[] entry = tryPut(0.0f, projectileDist, s, 4);
-			if(entry.length == 5)
+			int index = s.lastIndexOf(";");
+			if(index == -1)
 			{
-				if(!entry[4].trim().isEmpty())
+				DistinctDamageDescriptions.warn(s + "Isn't a valid entry! Ignoring...");
+			}
+			String ids = s.substring(index+1);
+			if(!ids.startsWith("[") && !digits.matcher(ids).find()) //If false, this isn't a list of ids, it's a list of custom damage types
+			{
+				s = s.substring(0, index);
+			}
+			else
+			{
+				ids = null;
+			}
+			String[] entry = tryPut(0.0f, projectileDist, s, 4);
+			if(entry != null && ids != null)
+			{
+				if(!ids.trim().isEmpty())
 				{
-					for(String i : entry[4].split(","))
+					for(String i : ids.split(","))
 					{
 						itemIDToProjIDMap.put(i, entry[0]);
 					}
