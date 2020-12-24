@@ -303,7 +303,7 @@ public class ModConfig
 		@RequiresMcRestart
 		public String[] shieldResist = {"minecraft:shield;0.8;0.5;0.2"};
 		
-		@Name("Armor Resistance/Weakness")
+		@Name("Armor Resistance")
 		@Comment({"Modify the base resistance effectiveness of armor",
 			  "Each entry is of the form id;s;p;b;[(t,a)] where:",
 			  "   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
@@ -354,6 +354,11 @@ public class ModConfig
 		@Name("Show Damage Distribution Tooltip for all items")
 		@Comment("If true, the Damage Distribution tooltip appears for all items. If false, it only appears for items with a damage distribution manually set.")
 		public boolean alwaysShowDamageDistTooltip = true;
+		
+		@Name("Use Damage Type Icons")
+		@Comment("If true, Distinct Damage Descriptions will use icons for built in damage types.")
+		public boolean useIcons = false;
+		
 	}
 	
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)
@@ -398,7 +403,7 @@ public class ModConfig
 				Property itemDmg = config.get("general.damage", "Weapon Base Damage", dmg.itemBaseDamage);
 				Property mobDmg = config.get("general.damage", "Mob Base Damage", dmg.mobBaseDmg);
 				Property projDmg = config.get("general.damage", "Projectile Damage Type", dmg.projectileDamageTypes);
-				Property armorResist = config.get("general.resistance", "Armor Resistance/Weakness", resist.armorResist);
+				Property armorResist = config.get("general.resistance", "Armor Resistance", resist.armorResist);
 				Property mobResists = config.get("general.resistance", "Mob Base Resistance/Weakness", resist.mobBaseResist);
 				Property shieldDists = config.get("general.resistance", "Shield Effectiveness", resist.shieldResist);
 				

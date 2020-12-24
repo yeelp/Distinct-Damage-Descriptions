@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 
 public interface IDDDDamageTypeRegistry extends IDDDRegistry
@@ -13,11 +14,20 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry
 	/**
 	 * register a damage type
 	 * @param name name of the damage type
+	 * @param displayName the name used in tooltips
+	 * @param colour the colour used in tooltips.
 	 * @param entityMsg the death message shown when killed by an entity
 	 * @param otherMsg the death message shown when killed without an attacker
 	 * @param datas data that determines what causes this damage type.
 	 */
-	void registerDamageType(String name, String entityMsg, String otherMsg, DamageTypeData...datas);
+	void registerDamageType(String name, String displayName, TextFormatting colour, String entityMsg, String otherMsg, DamageTypeData...datas);
+	
+	/**
+	 * Get the display name for a custom damage type
+	 * @param name the internal name, with the "ddd_" prefix.
+	 * @return the display name
+	 */
+	String getDisplayName(String name);
 	
 	/**
 	 * Get a damage type

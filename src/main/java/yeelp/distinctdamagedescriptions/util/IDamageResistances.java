@@ -4,8 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 /**
- * Damage Resistances capability base.<p>
- * INVARIANT: each resistance <= 1, where 1 is full immunity
+ * Damage Resistances capability base.
  * @author Yeelp
  *
  */

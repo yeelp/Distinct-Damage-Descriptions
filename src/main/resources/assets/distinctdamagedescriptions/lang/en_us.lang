@@ -12,11 +12,13 @@ tooltips.distinctdamagedescriptions.adaptivechance=Adaptability Chance:
 tooltips.distinctdamagedescriptions.adaptiveamount=Adaptability Amount:
 tooltips.distinctdamagedescriptions.effectiveness=Effectiveness
 tooltips.distinctdamagedescriptions.weakness=Weakness
+tooltips.distinctdamagedescriptions.noresists=None
 tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
 tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distribution:
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
+tooltips.distinctdamagedescriptions.shielddist=Shield Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:
-tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is on and Mob Capabilities not generated yet! Spawn this mob to generate capabilities!
+tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is on and Mob Capabilities not generated yet! Spawn this mob to generate capabilities (may need to restart)!
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force

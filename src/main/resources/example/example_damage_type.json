@@ -3,6 +3,29 @@
     //the name of this damage type. Internally, this will be prepended with "ddd_". 
     //So here, the damage source is actually named ddd_example. "ddd_normal" is used internally
     "name": "example",
+    
+    //The name to display on tooltips. If omitted, will use name instead.
+    "displayName": "Example",
+    
+    //The colour of the name in tooltips. Possible choices are:
+    //black
+    //darkblue
+    //darkgreen
+    //darkaqua
+    //darkred
+    //darkpurple
+    //gold
+    //gray
+    //darkgray
+    //blue
+    //green
+    //aqua
+    //red
+    //lightpurple
+    //yellow
+    //white
+    "displayColour": "green",
+    
     //A list of damage sources that cause this damage type
     "damageTypes": [
         {

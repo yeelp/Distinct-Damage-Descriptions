@@ -40,6 +40,9 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
@@ -65,6 +68,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
     private final Map<String, Tuple<Map<String, String>, Map<String, String>>> damageTypeMap = new HashMap<String, Tuple<Map<String, String>, Map<String, String>>>();
     private final Map<String, Tuple<String, String>> deathMessages = new HashMap<String, Tuple<String, String>>();
     private final Map<String, String> includeAllMap = new NonNullMap<String, String>("ddd_normal");
+    private final Map<String, String> displayInfo = new HashMap<String, String>();
     private static File[] creatureJsonFiles, damageTypeJsonFiles;
 	private static File creatureDirectory, damageTypeDirectory;
 	DDDRegistriesImpl()
@@ -217,9 +221,10 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	}
 	
 	@Override
-	public void registerDamageType(String name, String entityMsg, String otherMsg, DamageTypeData...datas)
+	public void registerDamageType(String name, String displayName, TextFormatting colour, String entityMsg, String otherMsg, DamageTypeData...datas)
 	{
 		name = "ddd_"+name;
+		displayInfo.put(name, new TextComponentString(displayName).setStyle(new Style().setColor(colour)).getFormattedText());
 		deathMessages.put(name, new Tuple<String, String>(entityMsg, otherMsg));
 		for(DamageTypeData d : datas)
 		{
@@ -240,6 +245,12 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			damageTypeMap.compute(d.getOriginalSource(), (s, t) -> damageTypeMap.containsKey(s) ? updateTuple(t, direct, indirect) : new Tuple<Map<String, String>, Map<String, String>>(direct, indirect));
 		}
 		DistinctDamageDescriptions.debug("Registered damage type: "+name);
+	}
+	
+	@Override
+	public String getDisplayName(String name)
+	{
+		return displayInfo.get(name);
 	}
 	
 	@Override
@@ -450,6 +461,16 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 						JsonElement elem = parser.parse(reader);
 						JsonObject obj = elem.getAsJsonObject();
 						String name = getJsonString(obj, "name", f);
+						String displayName;
+						try
+						{
+							displayName = getJsonString(obj, "displayName", f);
+						}
+						catch(Exception e)
+						{
+							displayName = name;
+						}
+						TextFormatting colour = TextFormatting.getValueByName(getJsonString(obj, "displayColour", f));
 						JsonArray arr = getJsonArray(obj, "damageTypes", f);
 						JsonObject msgs = obj.get("deathMessages").getAsJsonObject();
 						String entityMsg = getJsonString(msgs, "deathHasAttacker", f);
@@ -473,7 +494,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 								throw e;
 							}
 						}
-						registerDamageType(name, entityMsg, otherMsg, datas);
+						registerDamageType(name, displayName, colour, entityMsg, otherMsg, datas);
 					}
 					catch(FileNotFoundException e)
 					{

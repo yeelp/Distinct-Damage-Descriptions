@@ -9,66 +9,61 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.util.TooltipUtils;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 
 public class TooltipHandler extends Handler
 {
-	private static final DecimalFormat formatter = new DecimalFormat("##.##%");
+	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
 	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
-	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE);
-	private static final Style LIGHT_PURPLE = new Style().setColor(TextFormatting.LIGHT_PURPLE);
 	private static final Style YELLOW = new Style().setColor(TextFormatting.YELLOW);
-	private static final Style AQUA = new Style().setColor(TextFormatting.AQUA);
-	private static final Style DARK_RED = new Style().setColor(TextFormatting.DARK_RED);
-	private static final ITextComponent slashTooltip = new TextComponentTranslation("damagetypes.distinctdamagedescriptions.slashing").setStyle(WHITE);
-	private static final ITextComponent pierceTooltip = new TextComponentTranslation("damagetypes.distinctdamagedescriptions.piercing").setStyle(WHITE);
-	private static final ITextComponent bludgeTooltip = new TextComponentTranslation("damagetypes.distinctdamagedescriptions.bludgeoning").setStyle(WHITE);
 	private static final ITextComponent shiftTooltip = new TextComponentTranslation("keys.distinctdamagedescriptions.shift").setStyle(YELLOW);
 	private static final ITextComponent ctrlTooltip = new TextComponentTranslation("keys.distinctdamagedescriptions.ctrl").setStyle(YELLOW);
-	private static final ITextComponent damageTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damage").setStyle(GRAY);
-	private static final ITextComponent resistanceTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.resistance").setStyle(GRAY);
-	private static final ITextComponent weaknessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.weakness").setStyle(DARK_RED); 
-	private static final ITextComponent effectivenessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(GRAY);
 	private static final ITextComponent damageDistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damagedistribution").setStyle(GRAY);
 	private static final ITextComponent projDistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.projectiledistribution").setStyle(GRAY);
 	private static final ITextComponent armorResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.armorresistances").setStyle(GRAY);
+	private static final ITextComponent shieldDistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(GRAY);
 	private static final ITextComponent mobResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobresistances").setStyle(GRAY);
-	private static final ITextComponent mobImmunityTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.immunities").setStyle(AQUA);
-	private static final ITextComponent mobAdaptiveTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptivechance").setStyle(LIGHT_PURPLE);
-	private static final ITextComponent mobAdaptiveAmountTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptiveamount").setStyle(LIGHT_PURPLE);
 	private static final ITextComponent notGenerated = new TextComponentTranslation("tooltips.distinctdamagedescriptions.notgenerated").setStyle(new Style().setColor(TextFormatting.GOLD).setBold(true));
-	private static final ITextComponent[] damageTypeTooltips = {slashTooltip, pierceTooltip, bludgeTooltip};
-	private static final String resistanceColor = TextFormatting.GRAY.toString();
-	private static final String weaknessColor = TextFormatting.DARK_RED.toString();
 	
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	@SideOnly(value = Side.CLIENT)
 	public void onTooltip(ItemTooltipEvent evt)
 	{
-		IDamageDistribution damages = DDDAPI.accessor.getDamageDistribution(evt.getItemStack());
-		IArmorDistribution armors = DDDAPI.accessor.getArmorResistances(evt.getItemStack());
+		ItemStack stack = evt.getItemStack();
+		Item item = evt.getItemStack().getItem();
 		List<String> tooltips = evt.getToolTip();
 		boolean advanced = evt.getFlags().isAdvanced();
-		Item item = evt.getItemStack().getItem();
+		IDamageDistribution damages = DDDAPI.accessor.getDamageDistribution(evt.getItemStack());
+		IArmorDistribution armors = DDDAPI.accessor.getArmorResistances(evt.getItemStack());
+		ShieldDistribution shield = DDDAPI.accessor.getShieldDistribution(evt.getItemStack());
 		Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
@@ -79,41 +74,35 @@ public class TooltipHandler extends Handler
 			{
 				if(ctrlHeld)
 				{
-					for(String type : projDist.keySet())
-					{
-						float percent = projDist.get(type);
-						int i = type.equals(SLASHING) ? 0 :
-							    type.equals(PIERCING) ? 1 :
-							    type.equals(BLUDGEONING) ? 2 : -1;
-						if(percent > 0 && i != -1)
-						{
-							tooltips.add(index, makeDamagePercentTooltip(percent, damageTypeTooltips[i]));
-						}
-					}
+					tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(projDist));
 				}
-				tooltips.add(index, projDistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));
+				tooltips.add(index, projDistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 			}
 			if(shiftHeld)
 			{
-				float slashPercent = damages.getWeight(SLASHING);
-				float piercePercent = damages.getWeight(PIERCING);
-				float bludgePercent = damages.getWeight(BLUDGEONING);
-				if(slashPercent > 0)
-				{
-					tooltips.add(index, makeDamagePercentTooltip(slashPercent, slashTooltip));
-				}
-				if(piercePercent > 0)
-				{
-					tooltips.add(index, makeDamagePercentTooltip(piercePercent, pierceTooltip));
-				}
-				if(bludgePercent > 0)
-				{
-					tooltips.add(index, makeDamagePercentTooltip(bludgePercent, bludgeTooltip));
-				}
+				tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(damages));
 			}
-			tooltips.add(index, damageDistTooltip.getFormattedText() + (shiftHeld ? "" : " "+shiftTooltip.getFormattedText()));
+			tooltips.add(index, damageDistTooltip.getFormattedText() + getShiftText(shiftHeld));
 		}
-		if(item instanceof ItemMonsterPlacer)
+		if(armors != null)
+		{
+			int index = 1;
+			if(ctrlHeld)
+			{
+				tooltips.addAll(index, TooltipUtils.buildArmorDistTooltips(armors));
+			}
+			tooltips.add(index, armorResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
+		}
+		else if(shield != null)
+		{
+			int index = 1;
+			if(ctrlHeld)
+			{
+				tooltips.addAll(index, TooltipUtils.buildShieldDistTooltips(shield));
+			}
+			tooltips.add(index, shieldDistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
+		}
+		else if(item instanceof ItemMonsterPlacer)
 		{
 			ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
 			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(evt.getItemStack());
@@ -124,115 +113,46 @@ public class TooltipHandler extends Handler
 			{
 				index = tooltips.size()-2;
 			}
-			int startingIndex = index;
 			if(oMobCats.isPresent())
 			{
-				mobCats = oMobCats.get();
 				if(ctrlHeld)
 				{
-					float[] resistsPercents = {mobCats.getResistance(SLASHING), mobCats.getResistance(PIERCING), mobCats.getResistance(BLUDGEONING)};
-					boolean[] immunities = {mobCats.hasImmunity(SLASHING), mobCats.hasImmunity(PIERCING), mobCats.hasImmunity(BLUDGEONING)};
-					float adaptive = mobCats.adaptiveChance();
-					float adaptiveAmount = mobCats.getAdaptiveAmount();
-					Tuple<Float, Float> adaptiveInfo = new Tuple<Float, Float>(adaptive, adaptiveAmount);
-					boolean hasImmunities = false;
-					for(int i = 0; i < 3; i++)
-					{
-						tooltips.add(index, makeMobResistTooltip(resistsPercents[i], damageTypeTooltips[i]));
-						hasImmunities = hasImmunities || immunities[i];
-					}
-					if(hasImmunities)
-					{
-						index = tooltips.size();
-						if(advanced)
-						{
-							index = tooltips.size()-2;
-						}
-						tooltips.add(index, makeMobImmunityTooltip(immunities));
-					}
-					if(adaptive > 0)
-					{
-						index = tooltips.size();
-						if(advanced)
-						{
-							index = tooltips.size()-2;
-						}
-						Tuple<String, String> adaptiveTooltips = makeMobAdaptiveTooltip(adaptiveInfo);
-						tooltips.add(index, adaptiveTooltips.getSecond());
-						tooltips.add(index, adaptiveTooltips.getFirst());
-					}
+					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(oMobCats.get()));
 				}
-				tooltips.add(startingIndex, mobResistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));
+				tooltips.add(index, mobResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 			}
 			else
 			{
 				tooltips.add(index, notGenerated.getFormattedText());
 			}
 		}
-		if(armors != null)
-		{
-			int index = 1;
-			if(ctrlHeld)
-			{
-				float slashResist = armors.getWeight(SLASHING);
-				float pierceResist = armors.getWeight(PIERCING);
-				float bludgeResist = armors.getWeight(BLUDGEONING);
-				if(slashResist != 0)
-				{
-					tooltips.add(index, makeArmorTooltip(slashResist, slashTooltip));
-				}
-				if(pierceResist != 0)
-				{
-					tooltips.add(index, makeArmorTooltip(pierceResist, pierceTooltip));
-				}
-				if(bludgeResist != 0)
-				{
-					tooltips.add(index, makeArmorTooltip(bludgeResist, bludgeTooltip));
-				}
-			}
-			tooltips.add(index, armorResistTooltip.getFormattedText() + (ctrlHeld ? "" : " "+ctrlTooltip.getFormattedText()));
-		}
-	}
-
-	private static String makeArmorTooltip(float percent, ITextComponent tooltip)
-	{
-		return String.format("   %s %s %s", formatNum(percent).substring(1), tooltip.getFormattedText(), effectivenessTooltip.getFormattedText());
-	}
-
-	private static String makeDamagePercentTooltip(float percent, ITextComponent tooltip)
-	{
-		return String.format("   %s %s %s", formatNum(percent).substring(1), tooltip.getFormattedText(), damageTooltip.getFormattedText());
+		
 	}
 	
-	private static String makeMobResistTooltip(float percent, ITextComponent tooltip)
+	/*@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onTooltipPost(RenderTooltipEvent.PostText evt)
 	{
-		boolean isNegative = percent < 0;
-		return String.format("   %s%s %s %s", isNegative ? weaknessColor : resistanceColor, formatNum(percent).substring(1), tooltip.getFormattedText(), isNegative ? weaknessTooltip.getFormattedText() : resistanceTooltip.getFormattedText());
+		Minecraft mc = Minecraft.getMinecraft();
+		GL11.glPushMatrix();
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		mc.getTextureManager().bindTexture(ICONS);
+		Gui.drawModalRectWithCustomSizedTexture(evt.getX() + 18, evt.getY() + 18, 0, 0, 13, 13, 256, 256);
+		GL11.glPopMatrix();
+	}*/
+	
+	private static String getShiftText(boolean held)
+	{
+		return getWhenNotHeld(held, shiftTooltip);
 	}
 	
-	private static String makeMobImmunityTooltip(boolean[] immunities)
+	private static String getCtrlText(boolean held)
 	{
-		String str = mobImmunityTooltip.getFormattedText()+" ";
-		for(int i = 0; i < 3; i++)
-		{
-			if(immunities[i])
-			{
-				str += damageTypeTooltips[i].getFormattedText() + ", ";
-			}
-		}
-		str = str.trim();
-		return str.substring(0, str.length()-1);
+		return getWhenNotHeld(held, ctrlTooltip);
 	}
 	
-	private static Tuple<String, String> makeMobAdaptiveTooltip(Tuple<Float, Float> adaptiveInfo)
+	private static String getWhenNotHeld(boolean held, ITextComponent tooltip)
 	{
-		String str1 = String.format("%s %s", mobAdaptiveTooltip.getFormattedText(), formatNum(adaptiveInfo.getFirst().floatValue()).substring(1));
-		String str2 = String.format("   %s %s", mobAdaptiveAmountTooltip.getFormattedText(), formatNum(adaptiveInfo.getSecond().floatValue()).substring(1));
-		return new Tuple<String, String>(str1, str2);
-	}
-	
-	private static String formatNum(float num)
-	{
-		return String.format("%s%s", num < 0 ? "" : "+", formatter.format(num));
+		return held ? "" : " "+tooltip.getFormattedText();
 	}
 }
