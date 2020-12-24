@@ -1,10 +1,5 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.BLUDGEONING;
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.PIERCING;
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.SLASHING;
-
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -67,23 +62,6 @@ public class TooltipHandler extends Handler
 		Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
-		if(damages != null && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
-		{
-			int index = 1;
-			if(projDist != null)
-			{
-				if(ctrlHeld)
-				{
-					tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(projDist));
-				}
-				tooltips.add(index, projDistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
-			}
-			if(shiftHeld)
-			{
-				tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(damages));
-			}
-			tooltips.add(index, damageDistTooltip.getFormattedText() + getShiftText(shiftHeld));
-		}
 		if(armors != null)
 		{
 			int index = 1;
@@ -108,11 +86,7 @@ public class TooltipHandler extends Handler
 			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(evt.getItemStack());
 			Optional<MobResistanceCategories> oMobCats = DDDRegistries.mobResists.getResistancesForMob(loc.toString());
 			MobResistanceCategories mobCats;
-			int index = tooltips.size();
-			if(advanced)
-			{
-				index = tooltips.size()-2;
-			}
+			int index = 1;
 			if(oMobCats.isPresent())
 			{
 				if(ctrlHeld)
@@ -126,20 +100,42 @@ public class TooltipHandler extends Handler
 				tooltips.add(index, notGenerated.getFormattedText());
 			}
 		}
-		
+		if(damages != null && (DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(evt.getItemStack().getItem().getRegistryName().toString()) || ModConfig.client.alwaysShowDamageDistTooltip))
+		{
+			int index = 1;
+			if(projDist != null)
+			{
+				if(ctrlHeld)
+				{
+					tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(projDist));
+				}
+				tooltips.add(index, projDistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
+			}
+			if(shiftHeld)
+			{
+				tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(damages));
+			}
+			tooltips.add(index, damageDistTooltip.getFormattedText() + getShiftText(shiftHeld));
+		}
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onTooltipPost(RenderTooltipEvent.PostText evt)
 	{
-		Minecraft mc = Minecraft.getMinecraft();
-		GL11.glPushMatrix();
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		mc.getTextureManager().bindTexture(ICONS);
-		Gui.drawModalRectWithCustomSizedTexture(evt.getX() + 18, evt.getY() + 18, 0, 0, 13, 13, 256, 256);
-		GL11.glPopMatrix();
-	}*/
+		if(ModConfig.client.useIcons)
+		{
+			Minecraft mc = Minecraft.getMinecraft();
+			GL11.glPushMatrix();
+			GL11.glColor3f(1.0f, 1.0f, 1.0f);
+			mc.getTextureManager().bindTexture(ICONS);
+			for(Tuple<Integer, Integer> t : TooltipUtils.getIconsToDraw(evt.getStack(), KeyHelper.isShiftHeld(), KeyHelper.isCtrlHeld()))
+			{
+				Gui.drawModalRectWithCustomSizedTexture(evt.getX() - 2, evt.getY() + t.getFirst(), t.getSecond(), 0, 10, 10, 256, 256);
+			}	
+			GL11.glPopMatrix();
+		}
+	}
 	
 	private static String getShiftText(boolean held)
 	{

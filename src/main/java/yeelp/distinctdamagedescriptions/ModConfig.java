@@ -356,7 +356,8 @@ public class ModConfig
 		public boolean alwaysShowDamageDistTooltip = true;
 		
 		@Name("Use Damage Type Icons")
-		@Comment("If true, Distinct Damage Descriptions will use icons for built in damage types.")
+		@Comment({"If true, Distinct Damage Descriptions will use icons for built in damage types (slashing, piercing, bludgeoning).",
+				 "These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
 		public boolean useIcons = false;
 		
 	}

@@ -1,5 +1,9 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.BLUDGEONING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.PIERCING;
+import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.SLASHING;
+
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,29 +11,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Queue;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemMonsterPlacer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.*;
-
 public final class TooltipUtils
 {
+	private static final int ICON_HEIGHT = 10;
 	private static final DecimalFormat formatter = new DecimalFormat("##.##%");
 	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
 	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE);
@@ -50,7 +54,6 @@ public final class TooltipUtils
 	private static final Map<String, ITextComponent> damageTypeTooltips = new HashMap<String, ITextComponent>();
 	private static final String grayColour = TextFormatting.GRAY.toString();
 	private static final String redColour = TextFormatting.DARK_RED.toString();
-	private static final Queue<Integer> imageIndices = new LinkedList<Integer>();
 	
 	static
 	{
@@ -110,7 +113,7 @@ public final class TooltipUtils
 		int index = 0;
 		for(String s : immunities)
 		{
-			strings[index++] = getDamageName(s);
+			strings[index++] = getDamageName(s, false);
 		}
 		return str + YLib.joinNiceString(true, ",", strings);
 	}
@@ -132,7 +135,8 @@ public final class TooltipUtils
 		for(String s : dist.getCategories())
 		{
 			float percent = dist.getWeight(s);
-			lst.add(makeOneDistString(percent, getDamageName(s), prefix, suffix));
+			String name = getDamageName(s);
+			lst.add(makeOneTooltipString(percent, name, prefix, name.isEmpty() ? "" : suffix));
 		}
 		return lst;
 	}
@@ -143,12 +147,13 @@ public final class TooltipUtils
 		for(String s : dist.keySet())
 		{
 			float percent = dist.get(s);
-			lst.add(makeOneDistString(percent, getDamageName(s), prefix, suffix));
+			String name = getDamageName(s);
+			lst.add(makeOneTooltipString(percent, name, prefix, name.isEmpty() ? "" : suffix));
 		}
 		return lst;
 	}
 	
-	private static String makeOneDistString(float percent, String damageName, String prefix, String suffix)
+	private static String makeOneTooltipString(float percent, String damageName, String prefix, String suffix)
 	{
 		return String.format("   %s%s %s %s", prefix, formatNum(percent), damageName, suffix);
 	}
@@ -156,7 +161,7 @@ public final class TooltipUtils
 	private static String makeOneMobResistString(float percent, String damageType)
 	{
 		boolean isNegative = percent < 0;
-		return String.format("   %s%s %s %s", isNegative ? redColour : grayColour, formatNum(percent), damageType, isNegative ? weaknessTooltip.getFormattedText() : resistanceTooltip.getFormattedText());
+		return makeOneTooltipString(percent, damageType, isNegative ? redColour : grayColour, isNegative ? weaknessTooltip.getFormattedText() : resistanceTooltip.getFormattedText());
 	}
 	
 	private static String formatNum(float num)
@@ -164,8 +169,108 @@ public final class TooltipUtils
 		return String.format("%s%s", num < 0 ? "" : "+", formatter.format(num)).substring(1);
 	}
 	
+	private static String getDamageName(String s, boolean usingIcons)
+	{
+		if(DDDAPI.accessor.isPhysicalDamage(s))
+		{
+			if(usingIcons)
+			{
+				return "";
+			}
+			else
+			{
+				return damageTypeTooltips.get(s).getFormattedText();
+			}
+		}
+		return DDDRegistries.damageTypes.getDisplayName(s);
+	}
+	
 	private static String getDamageName(String s)
 	{
-		return DDDAPI.accessor.isPhysicalDamage(s) ? damageTypeTooltips.get(s).getFormattedText() : DDDRegistries.damageTypes.getDisplayName(s);
+		return getDamageName(s, ModConfig.client.useIcons);
+	}
+	
+	private static int getIndex(String s)
+	{
+		int index = 0;
+		switch(s)
+		{
+			case ModConsts.InternalDamageTypes.SLASHING:
+				break;
+			case ModConsts.InternalDamageTypes.PIERCING:
+				index = 1;
+				break;
+			case ModConsts.InternalDamageTypes.BLUDGEONING:
+				index = 2;
+				break;
+		}
+		return ICON_HEIGHT*index;
+	}
+	
+	/**
+	 * Get the icon y locations and type
+	 * @param stack stack to check
+	 * @param shiftHeld
+	 * @param ctrlHeld
+	 * @return an iterable of y positions and type (index)
+	 */
+	public static Iterable<Tuple<Integer, Integer>> getIconsToDraw(ItemStack stack, boolean shiftHeld, boolean ctrlHeld)
+	{
+		LinkedList<Tuple<Integer, Integer>> lst = new LinkedList<Tuple<Integer, Integer>>();
+		int currY = 21;
+		if(stack.isEmpty())
+		{
+			return lst;
+		}
+		Item item = stack.getItem();
+		if(shiftHeld)
+		{
+			IDamageDistribution dist = DDDAPI.accessor.getDamageDistribution(stack);
+			currY = addIcons(currY, lst, dist.getCategories());
+		}
+		currY += 11;
+		if(ctrlHeld)
+		{
+			Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
+			IArmorDistribution armorDist = DDDAPI.accessor.getArmorResistances(stack);
+			ShieldDistribution shieldDist = DDDAPI.accessor.getShieldDistribution(stack);
+			if(projDist != null)
+			{
+				addIcons(currY, lst, projDist.keySet());
+			}
+			else if(armorDist != null)
+			{
+				addIcons(currY, lst, armorDist.getCategories());
+			}
+			else if(shieldDist != null)
+			{
+				addIcons(currY, lst, shieldDist.getCategories());
+			}
+			else if(item instanceof ItemMonsterPlacer)
+			{
+				ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
+				ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
+				Optional<MobResistanceCategories> oMobCats = DDDRegistries.mobResists.getResistancesForMob(loc.toString());
+				MobResistanceCategories mobCats;
+				if(oMobCats.isPresent())
+				{
+					addIcons(currY, lst, oMobCats.get().getResistanceMap().keySet());
+				}
+			}
+		}
+		return lst;
+	}
+	
+	private static int addIcons(int currY, LinkedList<Tuple<Integer, Integer>> lst, Iterable<String> types)
+	{
+		for(String s : types)
+		{
+			if(DDDAPI.accessor.isPhysicalDamage(s))
+			{
+				lst.add(new Tuple<Integer, Integer>(currY, getIndex(s)));
+			}
+			currY += ICON_HEIGHT;
+		}
+		return currY;
 	}
 }
