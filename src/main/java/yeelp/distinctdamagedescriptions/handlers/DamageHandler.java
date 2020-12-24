@@ -20,6 +20,7 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -80,7 +81,6 @@ public class DamageHandler extends Handler
 	@SubscribeEvent
 	public void onAttack(LivingAttackEvent evt)
 	{
-		//TODO Remove shield check, but keep lines 103-113; needed.
 		EntityLivingBase defender = evt.getEntityLiving();
 		DamageSource src = DDDAPI.accessor.getDamageContext(evt.getSource());
 		Entity attacker = src.getImmediateSource();
@@ -105,7 +105,6 @@ public class DamageHandler extends Handler
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void onHit(LivingHurtEvent evt)
 	{
-		//TODO rewrite to use DDDCombatRules methods
 		EntityLivingBase defender = evt.getEntityLiving();
 		DamageSource dmgSource = evt.getSource();
 		Entity attacker = dmgSource.getImmediateSource();
@@ -152,11 +151,11 @@ public class DamageHandler extends Handler
 		}
 		
 		//One more reduction for natural armor/enchants/potions
-		float totalDamage = DDDCombatRules.getDamageAfterAbsorb((float) YMath.sum(results.getDamage().values()), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue(), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+		float totalDamage = CombatRules.getDamageAfterAbsorb((float) YMath.sum(results.getDamage().values()), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue(), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
 		int enchantMods = EnchantmentHelper.getEnchantmentModifierDamage(defender.getArmorInventoryList(), dmgSource);
 		if(enchantMods > 0)
 		{
-			totalDamage = DDDCombatRules.getDamageAfterMagicAbsorb(totalDamage, enchantMods);
+			totalDamage = CombatRules.getDamageAfterMagicAbsorb(totalDamage, enchantMods);
 		}
 		DamageDescriptionEvent.Post post = new DamageDescriptionEvent.Post(attacker, defender, results.getDamage(), results.getResistances(), results.getArmor());
 		MinecraftForge.EVENT_BUS.post(post);

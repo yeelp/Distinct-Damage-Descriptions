@@ -36,7 +36,7 @@ import yeelp.distinctdamagedescriptions.util.lib.YMath;
  * @author Yeelp
  *
  */
-public final class DDDCombatRules extends CombatRules
+public final class DDDCombatRules
 {
 	private static final Map<Integer, CombatModifiers> modifiers = new HashMap<Integer, CombatModifiers>();
 	private static class CombatModifiers
