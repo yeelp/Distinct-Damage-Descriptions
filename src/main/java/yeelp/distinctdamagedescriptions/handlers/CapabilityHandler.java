@@ -183,7 +183,7 @@ public class CapabilityHandler extends Handler
 			}
 			else
 			{
-				shieldDist = new ShieldDistribution();
+				shieldDist = ConfigGenerator.getOrGenerateShieldDistribution((ItemShield) item, evt.getObject());
 			}
 			evt.addCapability(shield, shieldDist);
 		}

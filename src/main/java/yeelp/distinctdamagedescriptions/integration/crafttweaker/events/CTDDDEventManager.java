@@ -21,7 +21,7 @@ public final class CTDDDEventManager
 	}
 	
 	@ZenMethod
-	public static IEventHandle onCustomDamage(IEventHandler<CTPostDamageEvent> handler)
+	public static IEventHandle onPostDamage(IEventHandler<CTPostDamageEvent> handler)
 	{
 		return POST_DAMAGE.add(handler);
 	}

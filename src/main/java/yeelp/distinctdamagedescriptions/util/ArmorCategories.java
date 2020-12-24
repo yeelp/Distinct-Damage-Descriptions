@@ -9,7 +9,7 @@ import net.minecraft.util.Tuple;
 
 /**
  * A container to store armor and toughness values once distributed.
- * @author dunca
+ * @author Yeelp
  *
  */
 public final class ArmorCategories

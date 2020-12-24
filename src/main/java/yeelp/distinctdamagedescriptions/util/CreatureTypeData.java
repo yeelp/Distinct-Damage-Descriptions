@@ -19,30 +19,15 @@ public final class CreatureTypeData
 	public static final CreatureTypeData UNKNOWN = new CreatureTypeData();
 	
 	private String type;
-	@Deprecated
-	private MobResistanceCategories resists;
 	private Set<String> potionImmunities;
-	@Deprecated
-	private Map<String, Float> extraResistances;
 	private boolean criticalImmunity;
-	/**
-	 * Make a new CreatureTypeData
-	 * @param name name of this data
-	 * @param resistances resistances this data has
-	 * @param potionImmunities potion immunities this data has
-	 * @param criticalImmunity if this data has crit immunity.
-	 * @param extraResistance additional resistances. A Map: String -> Float that indicates additional modifiers for all damage types.
-	 */
-	@Deprecated
-	public CreatureTypeData(String name, MobResistanceCategories resistances, HashSet<String> potionImmunities, boolean criticalImmunity, Map<String, Float> extraResistances)
-	{
-		this.type = name;
-		this.resists = resistances;
-		this.potionImmunities = potionImmunities;
-		this.criticalImmunity = criticalImmunity;
-		this.extraResistances = extraResistances;
-	}
 	
+	/**
+	 * Build a new CreatureTypeData
+	 * @param name
+	 * @param potionImmunities set of potion effect strings this creature type is immune to.
+	 * @param criticalImmunity if this creature type is immune to criticals.
+	 */
 	public CreatureTypeData(String name, Set<String> potionImmunities, boolean criticalImmunity)
 	{
 		this.type = name;
@@ -66,31 +51,15 @@ public final class CreatureTypeData
 		return type;
 	}
 	
+	/**
+	 * Get a set of potion immunities
+	 * @return the set of potions this creature type is immune to.
+	 */
 	public Set<String> getPotionImmunities()
 	{
 		return this.potionImmunities;
 	}
 	
-	/**
-	 * Get the resistances
-	 * @return resistances
-	 */
-	@Deprecated
-	public MobResistanceCategories getMobResistances()
-	{
-		return resists;
-	}
-	
-	/**
-	 * Is this CreatureTypeData providing immunity to this PotionEffect
-	 * @param effect effect in question
-	 * @return true if immune, false if not
-	 */
-	@Deprecated
-	public boolean isImmuneToPotionEffect(PotionEffect effect)
-	{
-		return potionImmunities.contains(effect.getPotion().getRegistryName().toString());
-	}
 	
 	/**
 	 * Is this CreatureTypeData providing crit immunity?
@@ -99,16 +68,5 @@ public final class CreatureTypeData
 	public boolean isImmuneToCriticals()
 	{
 		return criticalImmunity;
-	}
-	
-	/**
-	 * Get the modifier for extra damage types.
-	 * @param damageTypeName name of the damage type.
-	 * @return a float modifier for damage.
-	 */
-	@Deprecated
-	public float getModifierForDamageType(String damageTypeName)
-	{
-		return extraResistances.get(damageTypeName);
 	}
 }
