@@ -298,7 +298,7 @@ public class ModConfig
 			  "      This list may be omitted if the shield blocks no custom damage.",
 			  "Shields not listed here will act as normal shields (will block all damage they can interact with).",
 			  "Shield effectiveness determines how much physical damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
-			  "Blocking damage will still knock the attacker back, but the knockback amount is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by 33% of the vanilla amount).",
+			  "Blocking damage will still knock the attacker back, but the knockback strength is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by about 33% of the vanilla amount).",
 			  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] shieldResist = {"minecraft:shield;0.8;0.5;0.2"};
@@ -344,7 +344,7 @@ public class ModConfig
 		
 		@Name("Use Creature Types")
 		@Comment({"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
-				  "These JSON files can be used to apply potion immunitiesto large swaths of mobs at once. Also usuable in CraftTweaker"})
+				  "These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usuable in CraftTweaker."})
 		@RequiresMcRestart
 		public boolean useCreatureTypes = false;
 	}
@@ -417,8 +417,6 @@ public class ModConfig
 				config.save();
 				ConfigGenerator.markUpdated();
 			}
-		}
-		
-		
+		}	
 	}
 }
