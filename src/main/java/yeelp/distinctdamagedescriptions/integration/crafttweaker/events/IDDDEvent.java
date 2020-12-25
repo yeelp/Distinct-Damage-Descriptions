@@ -6,7 +6,7 @@ import crafttweaker.api.entity.IEntityLivingBase;
 import crafttweaker.api.event.IEntityEvent;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
-import stanhebben.zenscript.annotations.ZenSetter;
+import stanhebben.zenscript.annotations.ZenMethod;
 
 @ZenClass("mods.ddd.events.DDDEvent")
 @ZenRegister
@@ -39,29 +39,33 @@ public abstract interface IDDDEvent extends IEntityEvent
 	
 	/**
 	 * Get the damage inflicted
+	 * @param type the damage type.
 	 * @return damage inflicted
 	 */
-	@ZenGetter("damage")
-	float getDamage();
+	@ZenMethod
+	float getDamage(String type);
 	
 	/**
 	 * Set the damage to inflict via this event
+	 * @param type the damage type.
 	 * @param damage new damage to inflict
 	 */
-	@ZenSetter("damage")
-	void setDamage(float damage);
+	@ZenMethod
+	void setDamage(String type, float damage);
 	
 	/**
-	 * Get the resistance the defender has against this damage.
+	 * Get the resistance the defender has against a damage type.
+	 * @param type the damage type.
 	 * @return the resistance
 	 */
-	@ZenGetter("resistance")
-	abstract float getResistance();
+	@ZenMethod
+	abstract float getResistance(String type);
 	
 	/**
-	 * Set the resistance the defender will use for this damage
+	 * Set the resistance the defender will use for a damage type
+	 * @param type the damage type
 	 * @param resistance the new resistance
 	 */
-	@ZenSetter("resistance")
-	abstract void setResiatance(float resistance);
+	@ZenMethod
+	abstract void setResistance(String type, float resistance);
 }

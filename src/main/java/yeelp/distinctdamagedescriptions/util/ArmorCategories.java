@@ -1,124 +1,68 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import net.minecraft.util.Tuple;
+
+/**
+ * A container to store armor and toughness values once distributed.
+ * @author Yeelp
+ *
+ */
 public final class ArmorCategories
 {
-	private ComparableTriple<Float, Float, Float> armor, toughness;
+	private Map<String, Float> armor, toughness;
 	/**
 	 * Create a new base armor
-	 * @param slashing slashing armor.
-	 * @param piercing piercing armor.
-	 * @param bludgeoning bludgeoning armor.
-	 * @param slashTough slashing toughness.
-	 * @param pierceTough piercing toughness.
-	 * @param bludgeTough bludgeoning toughness.
+	 * @param armorMap the distribution of armor points
+	 * @param toughnessMap the distribution of toughness points.
 	 */
-	public ArmorCategories(float slashing, float piercing, float bludgeoning, float slashTough, float pierceTough, float bludgeTough)
+	public ArmorCategories(Map<String, Float> armorMap, Map<String, Float> toughnessMap)
 	{
-		this.armor = new ComparableTriple<Float, Float, Float>(slashing, piercing, bludgeoning);
-		this.toughness = new ComparableTriple<Float, Float, Float>(slashTough, pierceTough, bludgeTough);
+		this.armor = armorMap;
+		this.toughness = toughnessMap;
 	}
 	
 	/**
-	 * Build an ArmorCategories from two triples.
-	 * @param armor
-	 * @param toughness
+	 * Get armor for a specific type
+	 * @param type
+	 * @return armor points
 	 */
-	public ArmorCategories(ComparableTriple<Float, Float, Float> armor, ComparableTriple<Float, Float, Float> toughness)
+	public float getArmor(String type)
 	{
-		this.armor = armor;
-		this.toughness = toughness;
+		return this.armor.get(type);
 	}
 	
 	/**
-	 * Get slashing armor
-	 * @return slashing armor
+	 * Get toughness for a specific type
+	 * @param type
+	 * @return toughness points.
 	 */
-	public float getSlashingArmor()
+	public float getToughness(String type)
 	{
-		return this.armor.getLeft();
+		return this.toughness.get(type);
 	}
 	
-	/**
-	 * Get piercing armor
-	 * @return piercing armor
-	 */
-	public float getPiercingArmor()
+	public Iterable<Tuple<String, Float>> getNonZeroArmorValues()
 	{
-		return this.armor.getMiddle();
+		return getNonZeroValues(armor);
 	}
 	
-	/**
-	 * Get bludgeoning armor
-	 * @return bludgeoning armor
-	 */
-	public float getBludgeoningArmor()
+	public Iterable<Tuple<String, Float>> getNonZeroToughnessValues()
 	{
-		return this.armor.getRight();
+		return getNonZeroValues(toughness);
 	}
 	
-	/**
-	 * Get slashing toughness
-	 * @return slashing toughness
-	 */
-	public float getSlashingToughness()
+	private Iterable<Tuple<String, Float>> getNonZeroValues(Map<String, Float> map)
 	{
-		return this.toughness.getLeft();
-	}
-	
-	/**
-	 * Get piercing toughness
-	 * @return piercing toughness
-	 */
-	public float getPiercingToughness()
-	{
-		return this.toughness.getMiddle();
-	}
-	
-	/**
-	 * Get bludgeoning toughness
-	 * @return bludgeoning toughness
-	 */
-	public float getBludgeoningToughness()
-	{
-		return this.toughness.getRight();
-	}
-	
-	/**
-	 * Get the DamageTypes blocked by a collection of ArmorCategories
-	 * @param armorCategories
-	 * @return Set of DamageType enums.
-	 */
-	public static Set<DamageType> getDamageTypes(ArmorCategories...armorCategories)
-	{
-		HashSet<DamageType> set = new HashSet<DamageType>();
-		for(ArmorCategories cat : armorCategories)
+		List<Tuple<String, Float>> lst = new LinkedList<Tuple<String, Float>>();
+		for(Entry<String, Float> entry : map.entrySet())
 		{
-			if(cat.getSlashingArmor() > 0)
-			{
-				set.add(DamageType.SLASHING);
-			}
-			if(cat.getPiercingArmor() > 0)
-			{
-				set.add(DamageType.PIERCING);
-			}
-			if(cat.getBludgeoningArmor() > 0)
-			{
-				set.add(DamageType.BLUDGEONING);
-			}
-			if(set.size() == DamageType.values().length)
-			{
-				return set;
-			}
+			lst.add(new Tuple<String, Float>(entry.getKey(), entry.getValue()));
 		}
-		return set;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return String.format("(slashing: %f, piercing: %f, bludgeoning: %f)", getSlashingArmor(), getPiercingArmor(), getBludgeoningArmor());
+		return lst;
 	}
 }

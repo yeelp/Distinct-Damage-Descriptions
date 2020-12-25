@@ -5,10 +5,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 
 public interface IDDDDamageTypeRegistry extends IDDDRegistry
@@ -16,19 +14,27 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry
 	/**
 	 * register a damage type
 	 * @param name name of the damage type
+	 * @param displayName the name used in tooltips
+	 * @param colour the colour used in tooltips.
 	 * @param entityMsg the death message shown when killed by an entity
 	 * @param otherMsg the death message shown when killed without an attacker
-	 * @param items items that cause this damage type.
 	 * @param datas data that determines what causes this damage type.
 	 */
-	void registerDamageType(String name, String entityMsg, String otherMsg, Set<String> items, DamageTypeData...datas);
+	void registerDamageType(String name, String displayName, TextFormatting colour, String entityMsg, String otherMsg, DamageTypeData...datas);
+	
+	/**
+	 * Get the display name for a custom damage type
+	 * @param name the internal name, with the "ddd_" prefix.
+	 * @return the display name
+	 */
+	String getDisplayName(String name);
 	
 	/**
 	 * Get a damage type
 	 * @param originalDamageSource the original damage source
-	 * @return a DDDDamageType with additional damage type context, or the originalDamageSource if no additional context could be found.
+	 * @return a set of Strings with additional damage type context, or the empty set if no additional context was found.
 	 */
-	DamageSource getDamageType(DamageSource originalDamageSource);
+	Set<String> getCustomDamageContext(DamageSource originalDamageSource);
 	
 	/**
 	 * Get a death message

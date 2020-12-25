@@ -1,24 +1,33 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ArmorDistribution extends Distribution implements IArmorDistribution
 {
 	public ArmorDistribution()
 	{
-		this(0, 0, 0);
+		this(new NonNullMap<String, Float>(0.0f));
 	}
 	
-	public ArmorDistribution(float slashing, float piercing, float bludgeoning)
+	@SafeVarargs
+	public ArmorDistribution(Tuple<String, Float>...weights)
 	{
-		super(slashing, piercing, bludgeoning);
+		super(weights);
+	}
+	
+	public ArmorDistribution(Map<String, Float> resistMap)
+	{
+		super(resistMap);
 	}
 	
 	@Override
@@ -64,7 +73,7 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 		@Override
 		public void readNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side, NBTBase nbt)
 		{
-			instance.deserializeNBT((NBTTagCompound) nbt);
+			instance.deserializeNBT((NBTTagList) nbt);
 		}
 	}
 }

@@ -4,96 +4,43 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 /**
- * Damage Resistances capability base.<p>
- * INVARIANT: each resistance <= 1, where 1 is full immunity
+ * Damage Resistances capability base.
  * @author Yeelp
  *
  */
 public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompound>
 {
 	/**
-	 * Get Slashing Resistance
-	 * @return slashing resistance. Returns 2.0 on full immunity.
+	 * Get resistance for a certain type.
+	 * @param type
+	 * @return the resistance for that type.
 	 */
-	float getSlashingResistance();
+	float getResistance(String type);
 	
 	/**
-	 * Get Piercing Resistance
-	 * @return piercing resistance. Returns 2.0 on full immunity.
+	 * Set the resistance for a certain type.
+	 * @param type
+	 * @param value the resistance value to set.
 	 */
-	float getPiercingResistance();
+	void setResistance(String type, float value);
 	
 	/**
-	 * Get Bludgeoning Resistance
-	 * @return bludgeoning resistance. Returns 2.0 on full immunity.
+	 * Get immunity status for a type
+	 * @param type
+	 * @return true if immune, false otherwise.
 	 */
-	float getBludgeoningResistance();
+	boolean hasImmunity(String type);
 	
 	/**
-	 * Set slashing resistance
-	 * @param resist new resistance level
-	 * @throws InvariantViolationException if resist > 1
+	 * Set immunity status for a certain type.
+	 * @param type
+	 * @param status true if immune, false if susceptible
 	 */
-	void setSlashingResistance(float resist) throws InvariantViolationException;
+	void setImmunity(String type, boolean status);
 	
 	/**
-	 * Set Piercing resistance
-	 * @param resist new resistance level
-	 * @throws InvariantViolationException if resist > 1
+	 * Clear all immunities
 	 */
-	void setPiercingResistance(float resist) throws InvariantViolationException;
+	void clearImmunities();
 	
-	/**
-	 * Set Bludgeoning resistance
-	 * @param resist new resistance level
-	 * @throws InvariantViolationException if resist > 1
-	 */
-	void setBludgeoningResistance(float resist) throws InvariantViolationException;
-	
-	/**
-	 * Set Slashing immunity
-	 * @param immune status. True if immune, false if susceptible.
-	 */
-	void setSlashingImmunity(boolean immune);
-	
-	/**
-	 * Set Piercing immunity
-	 * @param immune status. True if immune, false if susceptible.
-	 */
-	void setPiercingImmunity(boolean immune);
-	
-	/**
-	 * Set Bludgeoning immunity
-	 * @param immune status. True if immune. false if susceptible.
-	 */
-	void setBludgeoningImmunity(boolean immune);
-	
-	/**
-	 * Get slashing immunity status
-	 * @return true if slashing immune, false otherwise.
-	 */
-	boolean isSlashingImmune();
-	
-	/**
-	 * Get piercing immunity status
-	 * @return true if piercing immune, false otherwise.
-	 */
-	boolean isPiercingImmune();
-	
-	/**
-	 * Get bludgeoning immunity status
-	 * @return true if bludgeoning immune, false otherwise.
-	 */
-	boolean isBludgeoningImmune();
-	
-	/**
-	 * Convenience method for setting or removing full immunity.
-	 * @param immune true if fully immune, false if fully susceptible.
-	 */
-	default void setFullImmunity(boolean immune)
-	{
-		setSlashingImmunity(immune);
-		setPiercingImmunity(immune);
-		setBludgeoningImmunity(immune);
-	}
 }

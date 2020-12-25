@@ -1,81 +1,133 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public abstract class Distribution implements IDistribution
 {
-	private float slash;
-	private float pierce;
-	private float bludge;
+	protected Map<String, Float> distMap;
 	
-	protected boolean invariantViolated(float slash, float pierce, float bludge)
+	protected boolean invariantViolated(Collection<Float> weights)
 	{
-		return Math.min(Math.min(slash, pierce), bludge) < 0;
+		for(float f : weights)
+		{
+			if(f >= 0.0f)
+			{
+				continue;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
-	Distribution(float slash, float pierce, float bludge)
+	@SafeVarargs
+	Distribution(Tuple<String, Float>... weights)
 	{
-		if(invariantViolated(slash, pierce, bludge))
+		distMap = new NonNullMap<String, Float>(0.0f);
+		for(Tuple<String, Float> t : weights)
 		{
-			throw new InvariantViolationException("New weights are invalid!");
+			if(t.getSecond() < 0.0f)
+			{
+				throw new InvariantViolationException("New weights are invalid!");
+			}
+			else
+			{
+				distMap.put(t.getFirst(), t.getSecond());
+			}
 		}
-		this.slash = slash;
-		this.pierce = pierce;
-		this.bludge = bludge;
+	}
+	
+	Distribution(Map<String, Float> weightMap)
+	{
+		this.distMap = weightMap;
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT()
+	public NBTTagList serializeNBT()
 	{
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setFloat("slashing", slash);
-		tag.setFloat("piercing", pierce);
-		tag.setFloat("bludgeoning", bludge);
-		return tag;
-	}
-
-	@Override
-	public void deserializeNBT(NBTTagCompound nbt)
-	{
-		slash = nbt.getFloat("slashing");
-		pierce = nbt.getFloat("piercing");
-		bludge = nbt.getFloat("bludgeoning");
-	}
-
-	@Override
-	public float getSlashingWeight()
-	{
-		return slash;
-	}
-
-	@Override
-	public float getPiercingWeight()
-	{
-		return pierce;
-	}
-
-	@Override
-	public float getBludgeoningWeight()
-	{
-		return bludge;
-	}
-
-	@Override
-	public void setNewWeights(float slashing, float piercing, float bludgeoning) throws InvariantViolationException
-	{
-		if(invariantViolated(slashing, piercing, bludgeoning))
+		NBTTagList lst = new NBTTagList();
+		for(Entry<String, Float> entry : this.distMap.entrySet())
 		{
-			throw new InvariantViolationException("New damage weights are either non positive or do not add to 1!");
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("type", entry.getKey());
+			tag.setFloat("weight", entry.getValue());
+			lst.appendTag(tag);
 		}
-		this.slash = slashing;
-		this.pierce = piercing;
-		this.bludge = bludgeoning;
+		return lst;
 	}
 
-	ComparableTriple<Float, Float, Float> distribute(float value)
+	@Override
+	public void deserializeNBT(NBTTagList lst)
 	{
-		return new ComparableTriple<Float, Float, Float>(value*slash, value*pierce, value*bludge);
+		this.distMap = new NonNullMap<String, Float>(0.0f);
+		for(NBTBase nbt : lst)
+		{
+			NBTTagCompound tag = (NBTTagCompound) nbt;
+			this.distMap.put(tag.getString("type"), tag.getFloat("weight"));
+		}
+	}
+
+	@Override
+	public float getWeight(String type)
+	{
+		return distMap.get(type);
+	}
+	
+	@Override
+	public void setWeight(String type, float amount)
+	{
+		distMap.put(type, amount);
+	}
+	
+	@Override
+	public void setNewWeights(Map<String, Float> map) throws InvariantViolationException
+	{
+		if(invariantViolated(map.values()))
+		{
+			throw new InvariantViolationException("Weights are either non positive or do not add to 1!");
+		}
+		else
+		{
+			this.distMap = map;
+		}
+	}
+	
+	@Override
+	public Set<String> getCategories()
+	{
+		HashSet<String> set = new HashSet<String>();
+		for(Entry<String, Float> entry : distMap.entrySet())
+		{
+			if((DDDAPI.accessor.isPhysicalDamage(entry.getKey()) || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
+			{
+				set.add(entry.getKey());
+			}
+		}
+		return set;
+	}
+
+	NonNullMap<String, Float> distribute(float value)
+	{
+		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
+		for(Entry<String, Float> entry : this.distMap.entrySet())
+		{
+			map.put(entry.getKey(), value * entry.getValue());
+		}
+		return map;
 	}
 }

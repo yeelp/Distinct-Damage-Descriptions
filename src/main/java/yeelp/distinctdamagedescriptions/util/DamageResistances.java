@@ -1,6 +1,16 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
  * Base capability for damage resistance capabilities
@@ -9,128 +19,82 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public abstract class DamageResistances implements IDamageResistances
 {
-	protected float slashing;
-	protected float piercing;
-	protected float bludgeoning;
-	private boolean slashImmune;
-	private boolean pierceImmune;
-	private boolean bludgeImmune;
+	private Map<String, Float> resistances;
+	private Set<String> immunities;
 	
-	DamageResistances(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune)
+	DamageResistances(Map<String, Float> resistances, Collection<String> immunities)
 	{
-		this.slashing = slashing;
-		this.piercing = piercing;
-		this.bludgeoning = bludgeoning;
-		this.slashImmune = slashImmune;
-		this.pierceImmune = pierceImmune;
-		this.bludgeImmune = bludgeImmune;
+		this.resistances = resistances;
+		this.immunities = new HashSet<String>(immunities);
 	}
 	
-	@Override
-	public float getSlashingResistance()
+	public float getResistance(String type)
 	{
-		return slashing;
+		return this.resistances.get(type);
 	}
 	
-	@Override
-	public float getPiercingResistance()
+	public boolean hasImmunity(String type)
 	{
-		return piercing;
+		return this.immunities.contains(type);
 	}
 	
-	@Override
-	public float getBludgeoningResistance()
+	public void setResistance(String type, float amount)
 	{
-		return bludgeoning;
+		this.resistances.put(type, amount);
 	}
 	
-	@Override
-	public void setSlashingResistance(float resist) throws InvariantViolationException
+	public void setImmunity(String type, boolean status)
 	{
-		if(resist > 1)
+		if(status)
 		{
-			throw new InvariantViolationException("Damage resistance can't be greater than 1!");
+			this.immunities.add(type);
 		}
-		slashing = resist;
-	}
-	
-	@Override 
-	public void setPiercingResistance(float resist) throws InvariantViolationException
-	{
-		if(resist > 1)
+		else
 		{
-			throw new InvariantViolationException("Damage resistance can't be greater than 1!");
+			this.immunities.remove(type);
 		}
-		piercing = resist;
 	}
 	
-	@Override
-	public void setBludgeoningResistance(float resist) throws InvariantViolationException
+	public void clearImmunities()
 	{
-		if(resist > 1)
-		{
-			throw new InvariantViolationException("Damage resistance can't be greater than 1!");
-		}
-		bludgeoning = resist;
-	}
-	
-	@Override
-	public void setSlashingImmunity(boolean immune)
-	{
-		slashImmune = immune;
-	}
-	
-	@Override
-	public void setPiercingImmunity(boolean immune)
-	{
-		pierceImmune = immune;
-	}
-	
-	@Override
-	public void setBludgeoningImmunity(boolean immune)
-	{
-		bludgeImmune = immune;
-	}
-	
-	@Override
-	public boolean isSlashingImmune()
-	{
-		return slashImmune;
-	}
-	
-	@Override
-	public boolean isPiercingImmune()
-	{
-		return pierceImmune;
-	}
-	
-	@Override
-	public boolean isBludgeoningImmune()
-	{
-		return bludgeImmune;
+		this.immunities.clear();
 	}
 	
 	@Override
 	public NBTTagCompound serializeNBT()
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setFloat("slashingResist", slashing);
-		tag.setFloat("piercingResist", piercing);
-		tag.setFloat("bludgeoningResist", bludgeoning);
-		tag.setBoolean("slashingImmunity", slashImmune);
-		tag.setBoolean("piercingImmunity", pierceImmune);
-		tag.setBoolean("bludgeoningImmunity", bludgeImmune);
+		NBTTagList lst = new NBTTagList();
+		NBTTagList immunities = new NBTTagList();
+		for(Entry<String, Float> entry : resistances.entrySet())
+		{
+			NBTTagCompound compound = new NBTTagCompound();
+			compound.setString("type", entry.getKey());
+			compound.setFloat("amount", entry.getValue());
+			lst.appendTag(compound);
+		}
+		tag.setTag("resistances", lst);
+		for(String s : this.immunities)
+		{
+			immunities.appendTag(new NBTTagString(s));
+		}
+		tag.setTag("immunities", immunities);
 		return tag;
 	}
 	
 	@Override
 	public void deserializeNBT(NBTTagCompound tag)
 	{
-		slashing = tag.getFloat("slashingResist");
-		piercing = tag.getFloat("piercingResist");
-		bludgeoning = tag.getFloat("bludgeoningResist");
-		slashImmune = tag.getBoolean("slashingImmunity");
-		pierceImmune = tag.getBoolean("piercingImmunity");
-		bludgeImmune = tag.getBoolean("bludgeoningImmunity");
+		this.resistances = new NonNullMap<String, Float>(0.0f);
+		this.immunities = new HashSet<String>();
+		for(NBTBase nbt : tag.getTagList("resistances", new NBTTagCompound().getId()))
+		{
+			NBTTagCompound resist = (NBTTagCompound) nbt;
+			resistances.put(resist.getString("type"), resist.getFloat("amount"));
+		}
+		for(NBTBase nbt : tag.getTagList("immunities", new NBTTagString().getId()))
+		{
+			immunities.add(((NBTTagString) nbt).getString());
+		}
 	}
 }

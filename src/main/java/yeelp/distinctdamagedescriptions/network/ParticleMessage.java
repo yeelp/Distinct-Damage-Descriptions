@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType;
-import yeelp.distinctdamagedescriptions.util.ComparableTriple;
 
 public final class ParticleMessage implements IMessage
 {
@@ -38,9 +37,9 @@ public final class ParticleMessage implements IMessage
 		return this.type;
 	}
 	
-	public ComparableTriple<Double, Double, Double> getCoordinates()
+	public double[] getCoordinates()
 	{
-		return new ComparableTriple<Double, Double, Double>(x,y,z);
+		return new double[] {x,y,z};
 	}
 	
 	
@@ -80,8 +79,8 @@ public final class ParticleMessage implements IMessage
 			EntityPlayer receivingPlayer = NetworkHelper.getSidedPlayer(ctx);
 			if(receivingPlayer.world.isRemote)
 			{
-				ComparableTriple<Double, Double, Double> coords = msg.getCoordinates();
-				Minecraft.getMinecraft().effectRenderer.addEffect(new DDDParticle(receivingPlayer.world, coords.getLeft(), coords.getMiddle(), coords.getRight(), 0, 4, 0, msg.getType()));
+				double[] coords = msg.getCoordinates();
+				Minecraft.getMinecraft().effectRenderer.addEffect(new DDDParticle(receivingPlayer.world, coords[0], coords[1], coords[2], 0, 4, 0, msg.getType()));
 			}
 			else
 			{

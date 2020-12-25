@@ -1,7 +1,11 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,14 +14,13 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
@@ -25,29 +28,48 @@ import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.ArmorCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeProvider;
-import yeelp.distinctdamagedescriptions.util.DamageCategories;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
-import yeelp.distinctdamagedescriptions.util.DamageType;
 import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistancesProvider;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.util.ShieldDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
 {
 	INSTANCE;
 	
+	private static final EntityEquipmentSlot[] armorSlots = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
+	private final Map<DamageSource, Tuple<Supplier<Boolean>, IDamageDistribution>> extraDists = new HashMap<DamageSource, Tuple<Supplier<Boolean>, IDamageDistribution>>();
+	
 	private DistinctDamageDescriptionsAPIImpl()
 	{
 		DDDAPI.accessor = this;
 		DDDAPI.mutator = this;
+		/* setting up extraDists:
+		 * All we need to do is make a supplier that checks the corresponding config value 
+		 * and associate that supplier with the DamageDistribution used (in a Tuple).
+		 * When the DamageSource maps to the Tuple, we can get the value from the Supplier in the Tuple,
+		 * returning the DamageDistribution on a pass, and null on a fail.
+		 * 
+		 * Using a Supplier to ensure the actual boolean value from the config is checked, 
+		 * instead of a locally wrapped Boolean copy, which may not update if the config is changed.
+		 * We want these config values not not require a restart (because it's not needed), so Supplier seems the best way to go.
+		 */
+		extraDists.put(DamageSource.ANVIL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
+		extraDists.put(DamageSource.CACTUS, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableCactusDamage, DamageDistribution.PIERCING_DISTRIBUTION));
+		extraDists.put(DamageSource.FALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
+		extraDists.put(DamageSource.FALLING_BLOCK, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallingBlockDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
+		extraDists.put(DamageSource.FLY_INTO_WALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFlyIntoWallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
 	}
-	
-	private static final EntityEquipmentSlot[] armorSlots = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
 	
 	/************
 	 * ACCESSOR *
@@ -75,6 +97,10 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Nullable
 	public IArmorDistribution getArmorResistances(ItemStack stack)
 	{
+		if(stack == null || !(stack.getItem() instanceof ItemArmor))
+		{
+			return null;
+		}
 		return ArmorDistributionProvider.getArmorResistances(stack);
 	}
 
@@ -91,6 +117,17 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
+	@Nullable
+	public ShieldDistribution getShieldDistribution(ItemStack stack)
+	{
+		if(stack == null || !(stack.getItem() instanceof ItemShield))
+		{
+			return null;
+		}
+		return ShieldDistributionProvider.getShieldDistribution(stack);
+	}
+	
+	@Override
 	public Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity)
 	{
 		HashMap<EntityEquipmentSlot, IArmorDistribution> map = new HashMap<EntityEquipmentSlot, IArmorDistribution>();
@@ -102,10 +139,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<DamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, boolean bootsOnly, boolean helmetOnly)
+	public Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, boolean bootsOnly, boolean helmetOnly)
 	{
-		HashMap<DamageType, Tuple<Float, Float>> map = new HashMap<DamageType, Tuple<Float, Float>>();
-		float slashArmor = 0, pierceArmor = 0, bludgeArmor = 0, slashTough = 0, pierceTough = 0, bludgeTough = 0;
+		NonNullMap<String, Tuple<Float, Float>> map = new NonNullMap<String, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
 		for(EntityEquipmentSlot slot : armorSlots)
 		{
 			ItemStack stack = entity.getItemStackFromSlot(slot);
@@ -127,30 +163,23 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 				IArmorDistribution armorResists = getArmorResistances(stack);
 				float armor = armorItem.damageReduceAmount;
 				float toughness = armorItem.toughness;
-				float slashWeight = armorResists.getSlashingWeight();
-				float pierceWeight = armorResists.getPiercingWeight();
-				float bludgeWeight = armorResists.getBludgeoningWeight();
-				slashArmor += armor*slashWeight;
-				pierceArmor += armor*pierceWeight;
-				bludgeArmor += armor*bludgeWeight;
-				slashTough += toughness*slashWeight;
-				pierceTough += toughness*pierceWeight;
-				bludgeTough += toughness*bludgeWeight;
+				ArmorCategories cats = armorResists.distributeArmor(armor, toughness);
+				for(Tuple<String, Float> t : cats.getNonZeroArmorValues())
+				{
+					map.compute(t.getFirst(), (s, v) -> new Tuple<Float, Float>(v.getFirst() + t.getSecond(), v.getSecond() + cats.getToughness(s)));
+				}
 			}
 		}
-		map.put(DamageType.SLASHING, new Tuple<Float, Float>(slashArmor, slashTough));
-		map.put(DamageType.PIERCING, new Tuple<Float, Float>(pierceArmor, pierceTough));
-		map.put(DamageType.BLUDGEONING, new Tuple<Float, Float>(bludgeArmor, bludgeTough));
 		return map;
 	}
 	
 	@Override
 	@Nullable
-	public Map<DamageType, Float> classifyDamage(@Nonnull IMobResistances resistances, @Nonnull DamageSource src, float damage)
+	public Map<String, Float> classifyDamage(@Nonnull DamageSource src, float damage)
 	{
-		HashMap<DamageType, Float> map = new HashMap<DamageType, Float>();
+		Map<String, Float> map = new NonNullMap<String, Float>(0.0f);
 		boolean slyStrike = false;
-		DamageCategories damageCat = null;
+		IDamageDistribution dist;
 		if(src.getImmediateSource() instanceof EntityLivingBase)
 		{
 			EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
@@ -158,70 +187,118 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			boolean hasEmptyHand = heldItem.isEmpty();
 			if(!hasEmptyHand)
 			{
-				IDamageDistribution weaponDist = getDamageDistribution(heldItem);
+				dist = getDamageDistribution(heldItem);
 				slyStrike = EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.slyStrike, attacker) > 0;
-				damageCat = weaponDist.distributeDamage(damage);
 			}
 			else
 			{
-				IDamageDistribution mobDist = getDamageDistribution(attacker);
-				damageCat = mobDist.distributeDamage(damage);
+				dist = getDamageDistribution(attacker);
 			}
 		}
 		else if(isValidProjectile(src))
 		{
 			IProjectile projectile = (IProjectile) src.getImmediateSource();
-			IDamageDistribution dist = getDamageDistribution(projectile);
-			damageCat = dist.distributeDamage(damage);
+			dist = getDamageDistribution(projectile);
 		}
 		else
 		{
-			if(src.isExplosion() && ModConfig.dmg.extraDamage.enableExplosionDamage)
+			dist = getExtraDamageDistribution(src);
+			if(dist == null)
 			{
-				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
+				Set<String> types = DDDRegistries.damageTypes.getCustomDamageContext(src);
+				if(types.size() == 0)
+				{
+					return null;
+				}
+				else
+				{
+					NonNullMap<String, Float> custMap = new NonNullMap<String, Float>(0.0f);
+					float weight = 1.0f/types.size();
+					for(String s : types)
+					{
+						custMap.put(s, weight);
+					}
+					dist = new DamageDistribution(custMap);
+				}
 			}
-			else if(src == DamageSource.CACTUS && ModConfig.dmg.extraDamage.enableCactusDamage)
+		}
+		map = dist.distributeDamage(damage);
+		return map;
+	}
+	
+	@Override
+	public Map<String, Float> classifyResistances(Set<String> types, IMobResistances resists)
+	{
+		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
+		for(String s : types)
+		{
+			map.put(s, resists.getResistance(s));
+		}
+		return map;
+	}
+	
+	@Override
+	public DamageSource getDamageContext(DamageSource src)
+	{
+		Entity entity = src.getImmediateSource();
+		String type = src.getDamageType();
+		Set<String> types = new HashSet<String>();
+		if(entity instanceof EntityLivingBase)
+		{
+			EntityLivingBase livingEntity = (EntityLivingBase) entity;
+			ItemStack stack = livingEntity.getHeldItemMainhand();
+			if(!stack.isEmpty())
 			{
-				damageCat = DamageDistribution.PIERCING_DISTRIBUTION.distributeDamage(damage);
-			}
-			else if(src == DamageSource.ANVIL && ModConfig.dmg.extraDamage.enableAnvilDamage)
-			{
-				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
-			}
-			else if(src == DamageSource.FALLING_BLOCK && ModConfig.dmg.extraDamage.enableFallingBlockDamage)
-			{
-				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
-			}
-			else if(src == DamageSource.FALL && ModConfig.dmg.extraDamage.enableFallDamage)
-			{
-				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
-			}
-			else if(src == DamageSource.FLY_INTO_WALL && ModConfig.dmg.extraDamage.enableFlyIntoWallDamage)
-			{
-				damageCat = DamageDistribution.BLUDGEONING_DISTRIBUTION.distributeDamage(damage);
+				types.addAll(getDamageDistribution(stack).getCategories());
 			}
 			else
 			{
-				return null;
+				types.addAll(getDamageDistribution(livingEntity).getCategories());
 			}
 		}
-		DistinctDamageDescriptions.debug(String.format("Damage Categories: %s", damageCat.toString()));
-		float slashing = damageCat.getSlashingDamage();
-		float piercing = damageCat.getPiercingDamage();
-		float bludgeoning = damageCat.getBludgeoningDamage();
-		if(slashing > 0)
+		else if(isValidProjectile(src))
 		{
-			map.put(DamageType.SLASHING, resistances.isSlashingImmune() && !slyStrike ? -1 : slashing);
+			types.addAll(getDamageDistribution((IProjectile) src.getImmediateSource()).getCategories());
 		}
-		if(piercing > 0)
+		else
 		{
-			map.put(DamageType.PIERCING, resistances.isPiercingImmune() && !slyStrike ? -1 : piercing);
+			IDamageDistribution dist = getExtraDamageDistribution(src);
+			if(dist != null)
+			{
+				types.addAll(dist.getCategories());
+			}
 		}
-		if(bludgeoning > 0)
+		types.addAll(DDDRegistries.damageTypes.getCustomDamageContext(src));
+		
+		if(!ModConfig.dmg.useCustomDamageTypes)
 		{
-			map.put(DamageType.BLUDGEONING, resistances.isBludgeoningImmune() && !slyStrike ? -1 : bludgeoning);
+			types.removeIf(s -> s.startsWith("ddd_"));
 		}
-		return map;
+		if(types.size() == 0)
+		{
+			return src;
+		}
+		else
+		{
+			return new DDDDamageType(src, types.toArray(new String[] {}));
+		}
+	}
+	
+	@Override
+	public boolean isPhysicalDamageOnly(DDDDamageType src)
+	{
+		for(String s : src.getExtendedTypes())
+		{
+			if(isPhysicalDamage(s))
+			{
+				continue;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private static boolean isValidProjectile(DamageSource src)
@@ -237,20 +314,42 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 	}
 	
+	@Nullable
+	private IDamageDistribution getExtraDamageDistribution(DamageSource src)
+	{
+		if(src.isExplosion() && ModConfig.dmg.extraDamage.enableExplosionDamage)
+		{
+			return DamageDistribution.BLUDGEONING_DISTRIBUTION;
+		}
+		else if(extraDists.containsKey(src))
+		{
+			Tuple<Supplier<Boolean>, IDamageDistribution> t = extraDists.get(src);
+			return t.getFirst().get() ? t.getSecond() : null;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	/***********
 	 * MUTATOR *
 	 ***********/
 	@Override
-	public void setPlayerResistances(EntityPlayer player, float slash, float pierce, float bludge, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, boolean adaptive)
+	public void setPlayerResistances(EntityPlayer player, Map<String, Float> newResists, Set<String> newImmunities, boolean adaptive, float adaptiveAmount)
 	{
 		IMobResistances mobResists = getMobResistances(player);
-		mobResists.setSlashingResistance(slash);
-		mobResists.setPiercingResistance(pierce);
-		mobResists.setBludgeoningResistance(bludge);
-		mobResists.setSlashingImmunity(slashImmune);
-		mobResists.setPiercingImmunity(pierceImmune);
-		mobResists.setBludgeoningImmunity(bludgeImmune);
+		for(Entry<String, Float> entry : newResists.entrySet())
+		{
+			mobResists.setResistance(entry.getKey(), entry.getValue());
+		}
+		mobResists.clearImmunities();
+		for(String s : newImmunities)
+		{
+			mobResists.setImmunity(s, true);
+		}
 		mobResists.setAdaptiveResistance(adaptive);
+		mobResists.setAdaptiveAmount(adaptiveAmount);
 		CapabilityHandler.syncResistances(player);
 	}
 }

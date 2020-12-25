@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -18,19 +19,21 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
-import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTDDDEventManager;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.CreatureType;
 import yeelp.distinctdamagedescriptions.util.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.MobResistances;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)
 public class DistinctDamageDescriptions
 {
     private static Logger logger;
     private static File configDirectory;
+    private static Configuration config;
     
     @Instance(ModConsts.MODID)
     public static DistinctDamageDescriptions instance;
@@ -43,9 +46,11 @@ public class DistinctDamageDescriptions
     {
         logger = event.getModLog();
         configDirectory = event.getModConfigurationDirectory();
+        config = new Configuration(event.getSuggestedConfigurationFile());
         srcFile = event.getSourceFile();
         DDDAPI.init();
         DDDRegistries.init();
+        DebugLib.updateStatus();
         if(Loader.isModLoaded(ModConsts.CRAFTTWEAKER_ID))
         {
         	info("Distinct Damage Descriptions found CraftTweaker!");
@@ -64,6 +69,7 @@ public class DistinctDamageDescriptions
         ArmorDistribution.register();
         DamageDistribution.register();
         CreatureType.register();
+        ShieldDistribution.register();
         PacketHandler.init();
         DDDSounds.init();
        	DDDEnchantments.init();
@@ -108,6 +114,10 @@ public class DistinctDamageDescriptions
 	{
 		return new File(configDirectory, ModConsts.MODID);
 	}
-
+	
+	public static Configuration getConfiguration()
+	{
+		return config;
+	}
 	
 }

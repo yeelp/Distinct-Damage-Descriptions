@@ -14,4 +14,10 @@ public class CTIEntityLivingBaseExt
 	{
 		return new CTCreatureType(entity);
 	}
+	
+	@ZenGetter("resistances")
+	public static CTResistances getResistances(IEntityLivingBase entity)
+	{
+		return new CTResistances(entity);
+	}
 }

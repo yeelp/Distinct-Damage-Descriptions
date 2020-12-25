@@ -20,15 +20,21 @@ public interface IMobResistances extends IDamageResistances
 	float getAdaptiveAmount();
 	
 	/**
+	 * Set the adaptive resistance amount.
+	 * @param amount
+	 */
+	void setAdaptiveAmount(float amount);
+	
+	/**
 	 * Set the adaptive resistance status.
 	 * @param status true if this mob should be adaptive resistant, false if not.
 	 */
 	void setAdaptiveResistance(boolean status);
 	
 	/**
-	 * Update adaptive resistance.
+	 * Update adaptive resistance. Doesn't check if this mob is adaptive.
 	 * @param damageTypes new types this mob should be more resistant to.
 	 * @return true if there was a net change in any resistances
 	 */
-	boolean updateAdaptiveResistance(DamageType...damageTypes);
+	boolean updateAdaptiveResistance(String...damageTypes);
 }

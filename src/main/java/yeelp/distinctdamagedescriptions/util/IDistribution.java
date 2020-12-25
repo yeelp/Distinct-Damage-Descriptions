@@ -1,34 +1,38 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import java.util.Map;
+import java.util.Set;
 
-public abstract interface IDistribution extends ICapabilitySerializable<NBTTagCompound>
-{
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+
+public abstract interface IDistribution extends ICapabilitySerializable<NBTTagList>
+{	
 	/**
-	 * Get the slashing weight
-	 * @return float in [0,1] for percent of slashing weight
+	 * Get the weight associated with a certain type
+	 * @param type
+	 * @return the weight of that type in this distribution.
 	 */
-	float getSlashingWeight();
+	float getWeight(String type);
 	
 	/**
-	 * Get the piercing weight
-	 * @return float in [0,1] for percent of piercing weight
+	 * 
+	 * @param type
+	 * @param amount
 	 */
-	float getPiercingWeight();
+	void setWeight(String type, float amount);
 	
 	/**
-	 * Get the bludgeoning weight
-	 * @return float in [0,1] for percent of bludgeoning weight
+	 * Set new damage distribution weights. Will overwrite existing weights and add new ones.
+	 * @param map a map containing new weights
+	 * @throws InvariantViolationException if a weight < 0.
 	 */
-	float getBludgeoningWeight();
+	void setNewWeights(Map<String, Float> map) throws InvariantViolationException;
 	
 	/**
-	 * Set new damage distribution weights
-	 * @param slash new slashing weight
-	 * @param pierce new piercing weight
-	 * @param bludegoning new bludgeoning weight
-	 * @throws InvariantViolationException
+	 * Get the categories for this distribution.
+	 * @return
 	 */
-	void setNewWeights(float slash, float pierce, float bludgeoning) throws InvariantViolationException;
+	Set<String> getCategories();
 }

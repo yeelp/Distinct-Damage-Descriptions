@@ -1,12 +1,35 @@
 // Mod Version: "${version}"
 {
     //the name of this damage type. Internally, this will be prepended with "ddd_". 
-    //So here, the damage source is actually named ddd_example. "normal" is used internally
+    //So here, the damage source is actually named ddd_example. "ddd_normal" is used internally
     "name": "example",
+    
+    //The name to display on tooltips. If omitted, will use name instead.
+    "displayName": "Example",
+    
+    //The colour of the name in tooltips. Possible choices are:
+    //black
+    //darkblue
+    //darkgreen
+    //darkaqua
+    //darkred
+    //darkpurple
+    //gold
+    //gray
+    //darkgray
+    //blue
+    //green
+    //aqua
+    //red
+    //lightpurple
+    //yellow
+    //white
+    "displayColour": "green",
+    
     //A list of damage sources that cause this damage type
     "damageTypes": [
         {
-            //The type of damage source
+            //The type of damage source.
             "dmgSource": "indirectMagic",
             //a quick flag to indicate if ALL instances of this damage source should be counted as this damage type.
             "includeAll": false,
@@ -20,20 +43,8 @@
                 "minecraft:witch"
             ],
             //All the entities that should count as this damage type when attacking with the specified damage source directly.
-            //All damage sources have a direct source.
+            //Not all damage sources have a direct source.
             "directSources": [
-            ]
-        },
-        {
-            //A second damage source as an additional example. 
-            //Note now both indirectMagic from witches AND regular mob damage from cave spiders and spiders count as ddd_example damage
-            "dmgSource": "mob",
-            "includeAll": false,
-            "indirectSources": [
-            ],
-            "directSources": [
-                "minecraft:cave_spider",
-                "minecraft:spider"
             ]
         },
         {
@@ -50,14 +61,9 @@
         }
     ],
     
-    //A list of items in the form <modid>:<itemid> of items that inflict this type of damage.
-    "items": [
-        "minecraft:wooden_pickaxe"
-    ],
-    
     //A set of format strings for displaying custom death messages.
     "deathMessages": {
-        //A string for when an entity is killed by a another entity using this damage type.
+        //A string for when an entity is killed by another entity using this damage type.
         //Place #attacker for where you want the attacker's name to go.
         //Place #defender for where you want the defender's name to go.
         "deathHasAttacker": "#attacker made an example of #defender",

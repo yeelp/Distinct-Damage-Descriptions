@@ -1,5 +1,8 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * Mob Resistances. Used on startup.
  * @author Yeelp
@@ -9,32 +12,34 @@ public class MobResistanceCategories extends ResistanceCategories
 {
 	private float adaptive;
 	private float adaptiveAmount;
+	
 	/**
-	 * Construct a new MobResistanceCategories
-	 * @param slashing slashing resistance
-	 * @param piercing piercing resistance
-	 * @param bludgeoning bludgeoning resistance
-	 * @param slashImmune slashing immunity
-	 * @param pierceImmune piercing immunity
-	 * @param bludgeImmune bludgeoning immunity
-	 * @param adaptive adaptability chance
+	 * Build new Mob resistances
+	 * @param resistances map of resistances
+	 * @param immunities collection of immunities
+	 * @param adaptiveChance chance adaptability is present
+	 * @param adaptiveAmount amount resistances change by if adaptive.
 	 */
-	public MobResistanceCategories(float slashing, float piercing, float bludgeoning, boolean slashImmune, boolean pierceImmune, boolean bludgeImmune, float adaptive, float adaptiveAmount)
+	public MobResistanceCategories(Map<String, Float> resistances, Collection<String> immunities, float adaptiveChance, float adaptiveAmount)
 	{
-		super(slashing, piercing, bludgeoning, slashImmune, pierceImmune, bludgeImmune);
-		this.adaptive = adaptive;
+		super(resistances, immunities);
+		this.adaptive = adaptiveChance;
 		this.adaptiveAmount = adaptiveAmount;
 	}
 	
 	/**
-	 * Get adaptability status
-	 * @return adaptability status
+	 * Get adaptability chance
+	 * @return adaptability chance
 	 */
 	public float adaptiveChance()
 	{
 		return adaptive;
 	}
 	
+	/**
+	 * Get the amount resistances change by on adaptability
+	 * @return the amount resistances change on adaptability.
+	 */
 	public float getAdaptiveAmount()
 	{
 		return adaptiveAmount;

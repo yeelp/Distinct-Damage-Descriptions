@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import java.util.Map;
 
 /**
  * Damage Distribution capability. <p>
@@ -12,10 +11,9 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 public interface IDamageDistribution extends IDistribution
 {
 	/**
-	 * Distribute damage across all three categories
+	 * Distribute damage across all categories
 	 * @param dmg damage
-	 * @return a DamageCategories with {@code dmg} distributed across all three categories
+	 * @return a Map<String, Float> with {@code dmg} distributed across all categories
 	 */
-	DamageCategories distributeDamage(float dmg);
-	
+	Map<String, Float> distributeDamage(float dmg);
 }

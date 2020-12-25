@@ -1,53 +1,52 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType;
-import yeelp.distinctdamagedescriptions.event.CustomDamageEvent;
-import yeelp.distinctdamagedescriptions.event.PhysicalDamageEvent;
-import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
-import yeelp.distinctdamagedescriptions.network.ParticleMessage;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDCombatRules;
+import yeelp.distinctdamagedescriptions.util.DDDCombatRules.CombatResults;
 import yeelp.distinctdamagedescriptions.util.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.DamageType;
-import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
-import yeelp.distinctdamagedescriptions.util.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public class DamageHandler extends Handler
 {
-	private static Map<UUID, Boolean> shouldKnockback = new NonNullMap<UUID, Boolean>(false);
+	private static Set<UUID> noKnockback = new HashSet<UUID>();
+	private static Map<UUID, ShieldDistribution> activeShield = new HashMap<UUID, ShieldDistribution>();
 	private static Random particleDisplacement = new Random();
 	
 	@SubscribeEvent
@@ -55,9 +54,13 @@ public class DamageHandler extends Handler
 	{
 		if(ModConfig.dmg.useCustomDeathMessages)
 		{
+			DamageSource source = evt.getSource();
+			if(ModConfig.dmg.useCustomDamageTypes)
+			{
+				source = DDDAPI.accessor.getDamageContext(source);
+			}
 			if(evt.getEntityLiving() instanceof EntityPlayerMP)
 			{
-				DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
 				((EntityPlayerMP) evt.getEntityLiving()).mcServer.getPlayerList().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
 			}
 			else if(evt.getEntityLiving() instanceof EntityTameable)
@@ -65,21 +68,42 @@ public class DamageHandler extends Handler
 				EntityTameable entity = (EntityTameable) evt.getEntityLiving();
 				if(entity.isTamed())
 				{
-					DamageSource source = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
 					entity.getOwner().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
 				}
 			}
 		}
 	}
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void classifyDamage(LivingHurtEvent evt)
+	@SubscribeEvent
+	public void onAttack(LivingAttackEvent evt)
 	{
-		float finalModifier = 0.0f;
 		EntityLivingBase defender = evt.getEntityLiving();
-		DamageSource dmgSource = ModConfig.dmg.useCustomDamageTypes ? DDDRegistries.damageTypes.getDamageType(evt.getSource()) : evt.getSource();
+		DamageSource src = DDDAPI.accessor.getDamageContext(evt.getSource());
+		Entity attacker = src.getImmediateSource();
+		DDDCombatRules.setModifiers(src, defender);
+		if(src instanceof DDDDamageType)
+		{
+			//Let the damage bypass armor so the shield can't block it normally.
+			evt.getSource().setDamageBypassesArmor();
+			if(attacker instanceof EntityLivingBase && defender instanceof EntityPlayer)
+			{
+				EntityLivingBase livingAttacker = (EntityLivingBase) attacker;
+				EntityPlayer defendingPlayer = (EntityPlayer) defender;
+				ItemStack weapon = livingAttacker.getHeldItemMainhand();
+				if(defender.isActiveItemStackBlocking() && weapon.getItem().canDisableShield(weapon, defender.getActiveItemStack(), defender, livingAttacker))
+				{
+					defendingPlayer.disableShield(true);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void onHit(LivingHurtEvent evt)
+	{
+		EntityLivingBase defender = evt.getEntityLiving();
+		DamageSource dmgSource = evt.getSource();
 		Entity attacker = dmgSource.getImmediateSource();
-		boolean hasCustomDamageTypes = false;
 		if(ModConfig.showDotsOn)
 		{
 			Entity trueAttacker = dmgSource.getTrueSource();
@@ -87,260 +111,118 @@ public class DamageHandler extends Handler
 			String s1 = attackerLoc != null ? attackerLoc.toString() : "null", s2 = defendLoc != null ? defendLoc.toString() : "null", s3 = trueAttackerLoc != null ? trueAttackerLoc.toString() : "null";
 			DistinctDamageDescriptions.debug("Damage Type: "+ dmgSource.damageType+" Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", True Attacker: "+s3+" Defender: "+s2);
 		}
-		String[] damageTypes = new String[0];
-		if(ModConfig.resist.useCreatureTypes && ModConfig.dmg.useCustomDamageTypes)
-		{
-			ICreatureType type = DDDAPI.accessor.getMobCreatureType(defender);
-			if(dmgSource instanceof DDDDamageType)
-			{
-				hasCustomDamageTypes = true;
-				DDDDamageType dmgType = (DDDDamageType) dmgSource;
-				damageTypes = dmgType.getExtendedTypes().toArray(damageTypes);
-				for(String s : dmgType.getExtendedTypes())
-				{
-					finalModifier += type.getModifierForDamageType(s);
-				}
-			}
-			else
-			{
-				damageTypes = new String[] {dmgSource.damageType};
-				finalModifier = type.getModifierForDamageType(dmgSource.damageType);
-			}
-		}
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
-		Map<DamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(mobResists, dmgSource, evt.getAmount());
-		if(dmgMap == null)
+		Map<String, Float> dmgMap = DDDAPI.accessor.classifyDamage(dmgSource, evt.getAmount());
+		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
+		DistinctDamageDescriptions.debug("Damage Total: "+DebugLib.entriesToString(dmgMap));
+		if(dmgMap == null)// couldn't classify damage, so further calculations are meaningless/undefined. Return, let vanilla handle the rest,
 		{
-			if(ModConfig.dmg.useCustomDamageTypes && ModConfig.resist.useCreatureTypes)
-			{
-				float amount = evt.getAmount();
-				CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, amount, finalModifier, damageTypes);
-				MinecraftForge.EVENT_BUS.post(custEvt);
-				evt.setAmount(MathHelper.clamp(custEvt.getDamage() - custEvt.getDamage()*custEvt.getResistance(), 0, Float.MAX_VALUE));
-				shouldKnockback.put(defender.getUniqueID(), evt.getAmount() == 0);
-			}
 			return;
 		}
-		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
-		boolean bootsOnly = false;
-		boolean helmetOnly = false;
-		boolean applyAnvilReductionCap = false;
-		float bruteForceAmount = 0;
-		if(dmgSource == DamageSource.FALL)
+		Map<String, Float> resistMap = DDDAPI.accessor.classifyResistances(dmgMap.keySet(), mobResists);
+		Map<String, Tuple<Float, Float>> armors = DDDCombatRules.getApplicableArmorValues(attacker, defender);
+		DamageDescriptionEvent.Pre pre = new DamageDescriptionEvent.Pre(attacker, defender, dmgMap, resistMap, armors);
+		MinecraftForge.EVENT_BUS.post(pre);
+		if(pre.isCanceled())
 		{
-			bootsOnly = true;
+			return;
 		}
-		else if(dmgSource == DamageSource.ANVIL)
+		CombatResults results = DDDCombatRules.computeNewDamage(attacker, defender, pre.getAllDamages(), pre.getAllResistances(), pre.getAllArmor(), mobResists);
+		//determine if knockback should occur
+		if(results.wasImmunityTriggered())
 		{
-			helmetOnly = true;
-			applyAnvilReductionCap = true;
-		}
-		else if(dmgSource == DamageSource.FALLING_BLOCK)
-		{
-			helmetOnly = true;
-		}
-		else if(dmgSource.getImmediateSource() instanceof EntityLivingBase)
-		{
-			bruteForceAmount = 0.1f*EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.bruteForce, (EntityLivingBase) dmgSource.getImmediateSource());
-		}
-		Map<DamageType, Tuple<Float, Float>> armors = DDDAPI.accessor.getArmorValuesForEntity(defender, bootsOnly, helmetOnly);
-		DistinctDamageDescriptions.debug("Damage Total: ("+dmgMap.get(DamageType.SLASHING)+", "+dmgMap.get(DamageType.PIERCING)+", "+dmgMap.get(DamageType.BLUDGEONING)+")");
-		float[] absorb = new float[3];
-		boolean blockKnockbackFlag = true;
-		boolean immunityResisted = false;
-		boolean resisted = false;
-		boolean weakness = false;
-		for(Float f : dmgMap.values())
-		{
-			if(f != null && f.floatValue() > 0)
+			noKnockback.add(defender.getUniqueID());
+			for(Float f : results.getDamage().values())
 			{
-				blockKnockbackFlag = false;
-				break;
-			}
-		}
-		shouldKnockback.put(defender.getUniqueID(), blockKnockbackFlag);
-		float totalDamage = 0;
-		for(DamageType type : DamageType.values())
-		{
-			if(dmgMap.containsKey(type))
-			{
-				float dmg = dmgMap.get(type);
-				if(dmg < 0)
+				if(f != null && f.floatValue() > 0)
 				{
-					immunityResisted = true;
-					continue;
-				}
-				float mobMod = 0.0f;
-				PhysicalDamageEvent event = new PhysicalDamageEvent(type, dmgMap.get(type), getResistance(mobResists, type), attacker, defender);
-				MinecraftForge.EVENT_BUS.post(event);
-				dmg = event.getDamage();
-				mobMod = event.getResistance();
-				if(mobMod > 0)
-				{
-					mobMod = MathHelper.clamp(mobMod - bruteForceAmount, 0, Float.MAX_VALUE);
-				}
-				Tuple<Float, Float> resists = armors.get(type);
-				float newDmg = modDmg(dmg, resists.getFirst(), resists.getSecond(), applyAnvilReductionCap);
-				newDmg -= newDmg*mobMod;
-				//We use an error tolerance to avoid floating point precision errors playing wrong sound effects.
-				//If newDmg and dmg are within a small neighbourhood of eachother, then we can ignore the exact difference in size and call them "equal"
-				boolean isVeryClose = Math.abs(newDmg - dmg) < 0.0000001D;
-				if(!resisted && newDmg < dmg && !isVeryClose)
-				{
-					resisted = true;
-				}
-				if(!weakness && newDmg > dmg && !isVeryClose)
-				{
-					weakness = true;
-				}
-				absorb[type.ordinal()] = dmg - newDmg; 
-				totalDamage += newDmg;
-			}
-		}
-		DistinctDamageDescriptions.debug("new damage after physical deductions: "+totalDamage);
-		if(hasCustomDamageTypes)
-		{
-			CustomDamageEvent custEvt = new CustomDamageEvent(attacker, defender, totalDamage, finalModifier, damageTypes);
-			MinecraftForge.EVENT_BUS.post(custEvt);
-			totalDamage = custEvt.getDamage();
-			finalModifier = custEvt.getResistance();
-			totalDamage -= totalDamage*finalModifier;
-			DistinctDamageDescriptions.debug("new damage after additional reductions: "+totalDamage);
-		}
-		float ratio = MathHelper.clamp(totalDamage/evt.getAmount(), 0, Float.MAX_VALUE);
-		evt.setAmount(totalDamage < 0 ? 0 : totalDamage);
-		dmgSource.setDamageBypassesArmor();
-		//Only spawn particles and play sounds for players.
-		EntityPlayer attackerPlayer = null;
-		if(dmgSource.getTrueSource() instanceof EntityPlayer)
-		{
-			attackerPlayer = (EntityPlayer) dmgSource.getTrueSource();
-			if((resisted || finalModifier > 0))
-			{
-				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.RESISTANCE);
-			}
-			if((weakness || finalModifier < 0))
-			{
-				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.WEAKNESS);
-			}
-			if(immunityResisted)
-			{
-				spawnRandomAmountOfParticles(attackerPlayer, defender, DDDParticleType.IMMUNITY);
-				DDDSounds.playSound(attackerPlayer, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
-				evt.setCanceled(ratio == 0 && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
-			}
-			else if(ratio != 0)
-			{
-				if(ratio > 1)
-				{
-					DDDSounds.playSound(attackerPlayer, DDDSounds.WEAKNESS_HIT, 0.6f, 1.0f);
-				}
-				else if(ratio < 1)
-				{
-					DDDSounds.playSound(attackerPlayer, DDDSounds.RESIST_DING, 1.7f, 1.0f);
+					noKnockback.remove(defender.getUniqueID());
+					break;
 				}
 			}
-			else if(ratio == 0)
-			{
-				DDDSounds.playSound(attackerPlayer, DDDSounds.HIGH_RESIST_HIT, 1.7f, 1.0f);
-			}
 		}
+		else if(results.wasShieldEffective())
+		{
+			noKnockback.add(defender.getUniqueID());
+		}
+		
+		//One more reduction for natural armor/enchants/potions
+		float totalDamage = CombatRules.getDamageAfterAbsorb((float) YMath.sum(results.getDamage().values()), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue(), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+		int enchantMods = EnchantmentHelper.getEnchantmentModifierDamage(defender.getArmorInventoryList(), dmgSource);
+		if(enchantMods > 0)
+		{
+			totalDamage = CombatRules.getDamageAfterMagicAbsorb(totalDamage, enchantMods);
+		}
+		DamageDescriptionEvent.Post post = new DamageDescriptionEvent.Post(attacker, defender, results.getDamage(), results.getResistances(), results.getArmor());
+		MinecraftForge.EVENT_BUS.post(post);
+		totalDamage = (float) YMath.sum(post.getAllDamages().values());
+		DistinctDamageDescriptions.debug("new damage after deductions: "+totalDamage);
+		boolean resistancesUpdated = false; 
 		if(mobResists.hasAdaptiveResistance())
 		{
+			resistancesUpdated = mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new String[0]));
 			DistinctDamageDescriptions.debug("Updating mob's adaptive resistance, since it is present...");
-			if(mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new DamageType[0])) && attackerPlayer != null)
-			{
-				DDDSounds.playSound(attackerPlayer, DDDSounds.ADAPTABILITY_CHANGE, 2.0f, 1.0f);
-			}
+			
 		}
-		Map<EntityEquipmentSlot, IArmorDistribution> armorMap = DDDAPI.accessor.getArmorDistributionsForEntity(defender);
-		for(ItemStack stack : defender.getArmorInventoryList())
+		//Only spawn particles and play sounds for players.
+		if(dmgSource.getTrueSource() instanceof EntityPlayerMP)
 		{
-			Item item = stack.getItem();
-			if(!(item instanceof ItemArmor || item instanceof ISpecialArmor))
+			EntityPlayerMP player = (EntityPlayerMP) dmgSource.getTrueSource();
+			evt.setCanceled(doEffects(player, defender, results, MathHelper.clamp(totalDamage/evt.getAmount(), 0, Float.MAX_VALUE)) && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
+			if(resistancesUpdated)
 			{
-				continue;
-			}
-			ItemArmor armorItem = (ItemArmor) item;
-			if(helmetOnly && armorItem.armorType != EntityEquipmentSlot.HEAD)
-			{
-				continue;
-			}
-			else if(bootsOnly && armorItem.armorType != EntityEquipmentSlot.FEET)
-			{
-				continue;
-			}
-			IArmorDistribution armorDist = armorMap.get(armorItem.armorType);
-			int damageAmount = (int) MathHelper.clamp(Math.floor(absorb[0]*armorDist.getSlashingWeight() + absorb[1]*armorDist.getPiercingWeight() + absorb[2]*armorDist.getBludgeoningWeight()), 1.0f, Float.MAX_VALUE);
-			if(item instanceof ISpecialArmor)
-			{
-				ISpecialArmor armor = (ISpecialArmor) item;
-				if(armor.handleUnblockableDamage(defender, stack, dmgSource, totalDamage, armorItem.getEquipmentSlot().ordinal()))
-				{
-					continue;
-				}
-				else
-				{
-					DistinctDamageDescriptions.debug("Damaging ISpecialArmor by: "+damageAmount);
-					armor.damageArmor(defender, stack, dmgSource, damageAmount, armorItem.getEquipmentSlot().ordinal());
-				}
-			}
-			else
-			{
-				DistinctDamageDescriptions.debug("Damaging ItemArmor by: "+damageAmount);
-				stack.damageItem((int) damageAmount, defender);
+				DDDSounds.playSound(player, DDDSounds.ADAPTABILITY_CHANGE, 2.0f, 1.0f);
 			}
 		}
+		evt.setAmount(totalDamage < 0 ? 0 : totalDamage);
+		dmgSource.setDamageBypassesArmor();
+		DDDCombatRules.wipeModifiers(attacker, defender);
 	}
 	
 	@SubscribeEvent
 	public void onKnockback(LivingKnockBackEvent evt)
 	{
 		UUID uuid = evt.getEntityLiving().getUniqueID();
-		if(shouldKnockback.get(uuid))
+		if(noKnockback.contains(uuid))
 		{
-			evt.setCanceled(true);
-			shouldKnockback.remove(uuid);
+			evt.setCanceled(noKnockback.remove(uuid));
 		}
 	}
 	
-	private static float modDmg(float damage, float armor, float toughness, boolean applyAnvilReductionCap)
+	/*
+	 * Return true if immunity blocked all damage.
+	 */
+	private static boolean doEffects(EntityPlayerMP player, EntityLivingBase defender, CombatResults results, float ratio)
 	{
-		return (float) MathHelper.clamp(damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f), 0.0f, applyAnvilReductionCap ? 0.75*damage : Float.MAX_VALUE);
-	}
-	
-	private static float getResistance(IMobResistances resists, DamageType type)
-	{
-		switch(type)
+		if(results.wasResistanceHit())
 		{
-			case SLASHING:
-				return resists.getSlashingResistance();
-			case PIERCING:
-				return resists.getPiercingResistance();
-			case BLUDGEONING:
-				return resists.getBludgeoningResistance();
-			default:
-				return 0;
+			DDDParticle.spawnRandomAmountOfParticles(player, defender, DDDParticleType.RESISTANCE);
 		}
-	}
-	
-	private static void spawnRandomAmountOfParticles(EntityPlayer viewer, Entity origin, DDDParticleType type)
-	{
-		if(viewer instanceof EntityPlayerMP)
+		if(results.wasWeaknessHit())
 		{
-			EntityPlayerMP player = (EntityPlayerMP) viewer;
-			int amount = (int)(2*Math.random())+2;
-			for(int i = 0; i < amount; i++)
+			DDDParticle.spawnRandomAmountOfParticles(player, defender, DDDParticleType.WEAKNESS);
+		}
+		if(results.wasImmunityTriggered())
+		{
+			DDDParticle.spawnRandomAmountOfParticles(player, defender, DDDParticleType.IMMUNITY);
+			DDDSounds.playSound(player, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
+			return ratio == 0;
+		}
+		else if(ratio != 0)
+		{
+			if(ratio > 1)
 			{
-				double x = origin.posX + origin.width*particleDisplacement.nextDouble() - origin.width/2;
-				double y = origin.posY + origin.getEyeHeight() + origin.height*particleDisplacement.nextDouble() - origin.height/2;
-				double z = origin.posZ + origin.width*particleDisplacement.nextDouble() - origin.width/2;
-				PacketHandler.INSTANCE.sendTo(new ParticleMessage(type, x, y, z), (EntityPlayerMP) player);
+				DDDSounds.playSound(player, DDDSounds.WEAKNESS_HIT, 0.6f, 1.0f);
+			}
+			else if(ratio < 1)
+			{
+				DDDSounds.playSound(player, DDDSounds.RESIST_DING, 1.7f, 1.0f);
 			}
 		}
 		else
 		{
-			return;
+			DDDSounds.playSound(player, DDDSounds.HIGH_RESIST_HIT, 1.7f, 1.0f);
 		}
+		return false;
 	}
 }

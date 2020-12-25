@@ -1,11 +1,7 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import net.minecraft.util.Tuple;
 
 public final class DamageTypeData
 {
