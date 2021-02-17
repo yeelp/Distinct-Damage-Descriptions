@@ -327,28 +327,34 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	
 	private static boolean writeExampleJSON(String filename, File parentDirectory)
 	{
-		String relativePath = "example/"+filename;
-		File dest = new File(parentDirectory, filename);
-		
-		try
+		if(ModConfig.generateJSON)
 		{
-			boolean shouldOverwrite = shouldOverwriteExampleJSON(dest);
-			if(DistinctDamageDescriptions.srcFile != null && DistinctDamageDescriptions.srcFile.isDirectory())
+			String relativePath = "example/"+filename;
+			File dest = new File(parentDirectory, filename);	
+			try
 			{
-				File source = new File(DistinctDamageDescriptions.srcFile, relativePath);
-				return FileHelper.copyFile(source, dest, shouldOverwrite);
+				boolean shouldOverwrite = shouldOverwriteExampleJSON(dest);
+				if(DistinctDamageDescriptions.srcFile != null && DistinctDamageDescriptions.srcFile.isDirectory())
+				{
+					File source = new File(DistinctDamageDescriptions.srcFile, relativePath);
+					return FileHelper.copyFile(source, dest, shouldOverwrite);
+				}
+				else
+				{
+					InputStream stream = DDDRegistriesImpl.class.getClassLoader().getResourceAsStream(relativePath);
+					boolean result = FileHelper.copyFile(stream, dest, shouldOverwrite);
+					stream.close();
+					return result;
+				}
 			}
-			else
+			catch (IOException e)
 			{
-				InputStream stream = DDDRegistriesImpl.class.getClassLoader().getResourceAsStream(relativePath);
-				boolean result = FileHelper.copyFile(stream, dest, shouldOverwrite);
-				stream.close();
-				return result;
+				e.printStackTrace();
+				return false;
 			}
 		}
-		catch (IOException e)
+		else
 		{
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -360,7 +366,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 		try(FileInputStream inStream = new FileInputStream(json); BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "UTF8")))
 		{
 			String firstLine = reader.readLine();
-			return ((j && !("// Mod Version: "+ModConsts.VERSION).equals(firstLine)) || (!j && !b)) && ModConfig.generateJSON;
+			return ((j && !("// Mod Version: "+ModConsts.VERSION).equals(firstLine)) || (!j && !b));
 		}
 		catch (FileNotFoundException e)
 		{

@@ -48,7 +48,7 @@ public class ModConfig
 	public static boolean generateStats = false;
 	
 	@Name("Generate JSON")
-	@Comment("If set, DistinctDamageDescriptions will generate exmaple JSON files for custom damage types and creature types.")
+	@Comment("If set, DistinctDamageDescriptions will generate example JSON files for custom damage types and creature types.")
 	public static boolean generateJSON = true;
 	
 	public static class EnchantCategory
