@@ -31,13 +31,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle;
-import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.DDDCombatRules;
 import yeelp.distinctdamagedescriptions.util.DDDCombatRules.CombatResults;
 import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DDDEffects;
 import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
@@ -165,10 +164,10 @@ public class DamageHandler extends Handler
 			
 		}
 		//Only spawn particles and play sounds for players.
-		if(dmgSource.getTrueSource() instanceof EntityPlayerMP)
+		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{
-			EntityPlayerMP player = (EntityPlayerMP) dmgSource.getTrueSource();
-			evt.setCanceled(doEffects(player, defender, results, MathHelper.clamp(totalDamage/evt.getAmount(), 0, Float.MAX_VALUE)) && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
+			EntityPlayer player = (EntityPlayer) dmgSource.getTrueSource();
+			evt.setCanceled(DDDEffects.doEffects(player, defender, results, MathHelper.clamp(totalDamage/evt.getAmount(), 0, Float.MAX_VALUE)) && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
 			if(resistancesUpdated)
 			{
 				DDDSounds.playSound(player, DDDSounds.ADAPTABILITY_CHANGE, 2.0f, 1.0f);
@@ -187,42 +186,5 @@ public class DamageHandler extends Handler
 		{
 			evt.setCanceled(noKnockback.remove(uuid));
 		}
-	}
-	
-	/*
-	 * Return true if immunity blocked all damage.
-	 */
-	private static boolean doEffects(EntityPlayerMP player, EntityLivingBase defender, CombatResults results, float ratio)
-	{
-		if(results.wasResistanceHit())
-		{
-			DDDParticle.spawnRandomAmountOfParticles(player, defender, DDDParticleType.RESISTANCE);
-		}
-		if(results.wasWeaknessHit())
-		{
-			DDDParticle.spawnRandomAmountOfParticles(player, defender, DDDParticleType.WEAKNESS);
-		}
-		if(results.wasImmunityTriggered())
-		{
-			DDDParticle.spawnRandomAmountOfParticles(player, defender, DDDParticleType.IMMUNITY);
-			DDDSounds.playSound(player, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
-			return ratio == 0;
-		}
-		else if(ratio != 0)
-		{
-			if(ratio > 1)
-			{
-				DDDSounds.playSound(player, DDDSounds.WEAKNESS_HIT, 0.6f, 1.0f);
-			}
-			else if(ratio < 1)
-			{
-				DDDSounds.playSound(player, DDDSounds.RESIST_DING, 1.7f, 1.0f);
-			}
-		}
-		else
-		{
-			DDDSounds.playSound(player, DDDSounds.HIGH_RESIST_HIT, 1.7f, 1.0f);
-		}
-		return false;
 	}
 }

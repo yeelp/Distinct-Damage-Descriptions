@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.network;
 
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,34 +14,25 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle;
-import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType;
+import yeelp.distinctdamagedescriptions.util.DDDEffects.ParticleInfo;
 
 public final class ParticleMessage implements IMessage
 {
-	private double x, y, z;
-	private DDDParticleType type;
+	private ParticleInfo[] infos = new ParticleInfo[0];
 	
 	public ParticleMessage()
 	{
 		
 	}
 	
-	public ParticleMessage(DDDParticleType type, double x, double y, double z)
+	public ParticleMessage(List<ParticleInfo> infos)
 	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.type = type;
+		this.infos = infos.toArray(this.infos);
 	}
 	
-	public DDDParticleType getType()
+	public ParticleInfo[] getInfos()
 	{
-		return this.type;
-	}
-	
-	public double[] getCoordinates()
-	{
-		return new double[] {x,y,z};
+		return this.infos;
 	}
 	
 	
@@ -47,20 +40,22 @@ public final class ParticleMessage implements IMessage
 	public void fromBytes(ByteBuf buf)
 	{
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		this.x = pakBuf.readDouble();
-		this.y = pakBuf.readDouble();
-		this.z = pakBuf.readDouble();
-		this.type = DDDParticleType.values()[pakBuf.readInt()];
+		this.infos = new ParticleInfo[pakBuf.readInt()];
+		for(int i = 0; i < this.infos.length; i++)
+		{
+			this.infos[i] = new ParticleInfo(pakBuf);
+		}
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		pakBuf.writeDouble(this.x);
-		pakBuf.writeDouble(this.y);
-		pakBuf.writeDouble(this.z);
-		pakBuf.writeInt(type.ordinal());
+		pakBuf.writeInt(infos.length);
+		for(ParticleInfo info : infos)
+		{
+			info.toBytes(pakBuf);
+		}
 	}
 	
 	public static final class Handler implements IMessageHandler<ParticleMessage, IMessage>
@@ -79,8 +74,11 @@ public final class ParticleMessage implements IMessage
 			EntityPlayer receivingPlayer = NetworkHelper.getSidedPlayer(ctx);
 			if(receivingPlayer.world.isRemote)
 			{
-				double[] coords = msg.getCoordinates();
-				Minecraft.getMinecraft().effectRenderer.addEffect(new DDDParticle(receivingPlayer.world, coords[0], coords[1], coords[2], 0, 4, 0, msg.getType()));
+				for(ParticleInfo info : msg.getInfos())
+				{
+					double[] coords = info.getCoordinates();
+					Minecraft.getMinecraft().effectRenderer.addEffect(new DDDParticle(receivingPlayer.world, coords[0], coords[1], coords[2], 0, 4, 0, info.getType()));
+				}
 			}
 			else
 			{
