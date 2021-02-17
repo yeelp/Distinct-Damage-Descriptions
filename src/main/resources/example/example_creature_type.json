@@ -1,4 +1,4 @@
-// Mod Version: "${version}"
+// Mod Version: ${version}
 {
     //Name of the creature type. Will be converted to lowercase internally. "unknown" is not allowed (as it is used internally)
     "name": "example",

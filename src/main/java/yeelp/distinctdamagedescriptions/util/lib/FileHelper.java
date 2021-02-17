@@ -1,22 +1,33 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public final class FileHelper
 {
+	private static final String NEW_LINE = System.lineSeparator();
 	public static boolean copyFile(File src, File dest, boolean overwrite) throws IOException
 	{
-		try(InputStream input = new FileInputStream(src))
+		try(BufferedReader input = new BufferedReader(new FileReader(src)))
 		{
 			return copyFile(input, dest, overwrite);
 		}
 	}
 	
 	public static boolean copyFile(InputStream stream, File dest, boolean overwrite) throws IOException
+	{
+		try(BufferedReader input = new BufferedReader(new InputStreamReader(stream)))
+		{
+			return copyFile(input, dest, overwrite);
+		}
+	}
+	
+	public static boolean copyFile(BufferedReader reader, File dest, boolean overwrite) throws IOException
 	{
 		if(dest.exists())
 		{
@@ -34,14 +45,18 @@ public final class FileHelper
 			dest.createNewFile();
 		}
 		
-		try(FileOutputStream output = new FileOutputStream(dest))
+		try(FileWriter output = new FileWriter(dest))
 		{
-			int readBytes;
-			byte[] buf = new byte[4096];
-			while((readBytes = stream.read(buf)) > 0)
-			{
-				output.write(buf);
-			}
+			reader.lines().forEach((s) -> {
+				try
+				{
+					output.write(s + NEW_LINE);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			});
 		}
 		return true;
 	}

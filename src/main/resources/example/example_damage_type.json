@@ -1,4 +1,4 @@
-// Mod Version: "${version}"
+// Mod Version: ${version}
 {
     //the name of this damage type. Internally, this will be prepended with "ddd_". 
     //So here, the damage source is actually named ddd_example. "ddd_normal" is used internally

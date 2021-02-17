@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "1.2.0-beta"
+version = "1.2.1-beta"
 group = "yeelp.distinctdamagedescriptions" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "distinctdamagedescriptions"
 
@@ -30,8 +30,12 @@ minecraft {
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20171003"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    replace "\${version}", project.version
+    replaceIn "ModConsts.java"
 }
+
+sourceSets.main.java.srcDirs += 'java'
+sourceSets.main.resources.srcDirs += 'resources'
 
 repositories {
     maven {
@@ -84,6 +88,6 @@ processResources {
     // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-        exclude 'exmaple/**.json'
+        exclude 'example/**.json'
     }
 }
