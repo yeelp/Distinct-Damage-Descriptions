@@ -71,9 +71,10 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		extraDists.put(DamageSource.FLY_INTO_WALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFlyIntoWallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
 	}
 	
-	/************
+	/* ***********
 	 * ACCESSOR *
 	 ************/
+	
 	@Override
 	@Nullable
 	public IDamageDistribution getDamageDistribution(ItemStack stack)

@@ -34,6 +34,7 @@ public final class YMath
 		HashSet<X> result = new HashSet<X>(a);
 		for(X x : a) //iterate over a, so removing elements from result won't cause problems by removing during iteration.
 		{
+			if(b.contains(x))
 			{
 				result.remove(x);
 			}

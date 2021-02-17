@@ -1,10 +1,7 @@
 package yeelp.distinctdamagedescriptions.util;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-
-import net.minecraft.potion.PotionEffect;
 
 /**
  * Data storage for CreatureTypes
