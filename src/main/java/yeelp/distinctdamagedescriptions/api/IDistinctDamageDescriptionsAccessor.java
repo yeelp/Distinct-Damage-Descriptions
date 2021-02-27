@@ -20,7 +20,7 @@ import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 
 public abstract interface IDistinctDamageDescriptionsAccessor
 {
@@ -121,16 +121,16 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	/**
 	 * Apply DDD modifications to a DamageSource
 	 * @param src the src to apply modifications to.
-	 * @return A new DamageSource; either a {@link DDDDamageType} if the DamageSource had additional context, or {@code src} if no additional context could be applied.
+	 * @return A new DamageSource; either a {@link DDDDamageSource} if the DamageSource had additional context, or {@code src} if no additional context could be applied.
 	 */
 	DamageSource getDamageContext(DamageSource src);
 	
 	/**
-	 * Check if a {@link DDDDamageType} is physical (slash, pierce, bludgeoning) only. 
+	 * Check if a {@link DDDDamageSource} is physical (slash, pierce, bludgeoning) only. 
 	 * @param src
 	 * @return true if only physical.
 	 */
-	boolean isPhysicalDamageOnly(DDDDamageType src);
+	boolean isPhysicalDamageOnly(DDDDamageSource src);
 
 	/**
 	 * Check if a damage type string is physical.

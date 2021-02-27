@@ -227,7 +227,7 @@ public final class DDDCombatRules
 			mods.setBruteForceAmount(0.1f*EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.bruteForce, entity));
 			mods.setSlyStrike(EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.slyStrike, entity) > 0);
 		}
-		if(src instanceof DDDDamageType && canBlockDamage(attacker, defender, (DDDDamageType) src))
+		if(src instanceof DDDDamageSource && canBlockDamage(attacker, defender, (DDDDamageSource) src))
 		{
 			mods.setActiveShield(defender.getActiveItemStack());
 		}
@@ -408,7 +408,7 @@ public final class DDDCombatRules
 		return broken;
 	}
 	
-	private static boolean canBlockDamage(Entity attacker, EntityLivingBase defender, DDDDamageType src)
+	private static boolean canBlockDamage(Entity attacker, EntityLivingBase defender, DDDDamageSource src)
 	{
 		if(defender.isActiveItemStackBlocking())
 		{

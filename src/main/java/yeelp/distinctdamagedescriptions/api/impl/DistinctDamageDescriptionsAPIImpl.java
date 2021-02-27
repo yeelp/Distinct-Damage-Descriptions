@@ -40,7 +40,7 @@ import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorCategories;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
@@ -273,12 +273,12 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		else
 		{
-			return new DDDDamageType(src, types.toArray(new String[] {}));
+			return new DDDDamageSource(src, types.toArray(new String[] {}));
 		}
 	}
 	
 	@Override
-	public boolean isPhysicalDamageOnly(DDDDamageType src)
+	public boolean isPhysicalDamageOnly(DDDDamageSource src)
 	{
 		for(String s : src.getExtendedTypes())
 		{

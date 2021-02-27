@@ -31,7 +31,6 @@ public final class YLib
 	
 	/**
 	 * Merge two arrays of Strings, by placing all elements of {@code ys} after all elements of {@code xs}. Does not sort them. Use standard sort methods from Arrays for that.
-	 * @param <T> The type of the array
 	 * @param xs the first array
 	 * @param ys the second array
 	 * @return An array where all the elements of {@code xs} are followed by all the elements of {@code ys}, in their original order.

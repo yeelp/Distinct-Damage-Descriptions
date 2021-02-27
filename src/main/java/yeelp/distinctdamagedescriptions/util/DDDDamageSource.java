@@ -18,7 +18,7 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
-public final class DDDDamageType extends DamageSource
+public final class DDDDamageSource extends DamageSource
 {
 	private List<String> types;
 	private DamageSource parentSource;
@@ -27,7 +27,7 @@ public final class DDDDamageType extends DamageSource
 	 * @param parentSource parent source
 	 * @param types extended types.
 	 */
-	public DDDDamageType(DamageSource parentSource, String... types)
+	public DDDDamageSource(DamageSource parentSource, String... types)
 	{
 		super(parentSource.damageType);
 		this.parentSource = parentSource;

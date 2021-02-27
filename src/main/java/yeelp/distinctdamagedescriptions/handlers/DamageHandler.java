@@ -37,7 +37,7 @@ import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.DDDCombatRules;
 import yeelp.distinctdamagedescriptions.util.DDDCombatRules.CombatResults;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 import yeelp.distinctdamagedescriptions.util.DDDEffects;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
@@ -80,7 +80,7 @@ public class DamageHandler extends Handler
 		DamageSource src = DDDAPI.accessor.getDamageContext(evt.getSource());
 		Entity attacker = src.getImmediateSource();
 		DDDCombatRules.setModifiers(src, defender);
-		if(src instanceof DDDDamageType)
+		if(src instanceof DDDDamageSource)
 		{
 			//Let the damage bypass armor so the shield can't block it normally.
 			evt.getSource().setDamageBypassesArmor();
