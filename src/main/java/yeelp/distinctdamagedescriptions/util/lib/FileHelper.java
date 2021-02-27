@@ -47,7 +47,8 @@ public final class FileHelper
 		
 		try(FileWriter output = new FileWriter(dest))
 		{
-			reader.lines().forEach((s) -> {
+			reader.lines().forEach((s) -> 
+			{
 				try
 				{
 					output.write(s + NEW_LINE);
