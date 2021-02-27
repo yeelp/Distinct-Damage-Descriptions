@@ -39,6 +39,10 @@ public class ModConfig
 	@Comment("Alter client side settings")
 	public static final ClientCategory client = new ClientCategory();
 	
+	@Name("Compatibility (NYI)")
+	@Comment("Tweak DDD's behaviour with other mods")
+	public static final CompatCategory compat = new CompatCategory();
+	
 	@Name("Suppress Warnings")
 	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
 	public static boolean suppressWarnings = false;
@@ -50,6 +54,15 @@ public class ModConfig
 	@Name("Generate JSON")
 	@Comment("If set, DistinctDamageDescriptions will generate example JSON files for custom damage types and creature types.")
 	public static boolean generateJSON = true;
+	
+	public static class CompatCategory
+	{
+		@Name("Tool Material Bias")
+		@Comment("Tools that use materials, like TiC tools, will use these distributions to influence the tool distribution.")
+		public String[] toolMatBias;
+		
+		public String[] armorMatBias;
+	}
 	
 	public static class EnchantCategory
 	{
