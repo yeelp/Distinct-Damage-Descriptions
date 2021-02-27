@@ -521,6 +521,7 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 				if(contents.length == 9)
 				{
 					resists = buildMap(0.0f, parseStringOfTuples(parseConfigString(contents[7])));
+					immunities = parseImmunitiesFromArray(contents[8]);
 				}
 				else
 				{
@@ -735,6 +736,24 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 			temp = temp.substring(0, temp.length()-2); //remove ")]" suffix
 			arr[arr.length-1] = temp;
 			return arr;
+		}
+	}
+	
+	private static Set<String> parseImmunitiesFromArray(String s)
+	{
+		Set<String> set = new HashSet<String>();
+		if(s.equals("") || s.equals("[]"))
+		{
+			return set;
+		}
+		else
+		{
+			String[] arr = s.substring(1, s.length() - 1).split(",");
+			for(String str : arr)
+			{
+				set.add(str.trim());
+			}
+			return set;
 		}
 	}
 }
