@@ -2,7 +2,7 @@
 {
   "modid": "distinctdamagedescriptions",
   "name": "Distinct Damage Descriptions",
-  "description": "Bringing D&D style distinctions for physical damage to Minecraft!",
+  "description": "Bringing D&D style damage distinctions to Minecraft!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
