@@ -59,9 +59,9 @@ public class ModConfig
 	{
 		@Name("Tool Material Bias")
 		@Comment("Tools that use materials, like TiC tools, will use these distributions to influence the tool distribution.")
-		public String[] toolMatBias;
+		public String[] toolMatBias = {};
 		
-		public String[] armorMatBias;
+		public String[] armorMatBias = {};
 	}
 	
 	public static class EnchantCategory

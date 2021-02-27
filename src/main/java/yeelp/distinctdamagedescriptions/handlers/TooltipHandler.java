@@ -125,7 +125,7 @@ public class TooltipHandler extends Handler
 	public void onTooltipPost(RenderTooltipEvent.PostText evt)
 	{
 		ItemStack stack = evt.getStack();
-		if(ModConfig.client.useIcons && shouldShowDist(stack))
+		if(ModConfig.client.useIcons)
 		{
 			Minecraft mc = Minecraft.getMinecraft();
 			GL11.glPushMatrix();

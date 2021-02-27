@@ -228,12 +228,13 @@ public final class TooltipUtils
 			return lst;
 		}
 		Item item = stack.getItem();
-		if(shiftHeld)
+		boolean offsetFlag = DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
+		if(shiftHeld && offsetFlag)
 		{
 			IDamageDistribution dist = DDDAPI.accessor.getDamageDistribution(stack);
 			currY = addIcons(currY, lst, dist.getCategories());
 		}
-		currY += 11;
+		currY += offsetFlag ? 11 : 0;
 		if(ctrlHeld)
 		{
 			Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(YResources.getRegistryString(item));
