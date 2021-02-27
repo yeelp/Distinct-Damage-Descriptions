@@ -25,22 +25,22 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
+import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.ICreatureType;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.providers.ArmorDistributionProvider;
+import yeelp.distinctdamagedescriptions.capability.providers.CreatureTypeProvider;
+import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
+import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
+import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorCategories;
-import yeelp.distinctdamagedescriptions.util.ArmorDistributionProvider;
-import yeelp.distinctdamagedescriptions.util.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.DamageDistribution;
-import yeelp.distinctdamagedescriptions.util.DamageDistributionProvider;
-import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.ICreatureType;
-import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.IMobResistances;
-import yeelp.distinctdamagedescriptions.util.MobResistancesProvider;
-import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
@@ -140,21 +140,13 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, boolean bootsOnly, boolean helmetOnly)
+	public Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots)
 	{
 		NonNullMap<String, Tuple<Float, Float>> map = new NonNullMap<String, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
-		for(EntityEquipmentSlot slot : armorSlots)
+		for(EntityEquipmentSlot slot : slots)
 		{
 			ItemStack stack = entity.getItemStackFromSlot(slot);
 			if(stack.isEmpty())
-			{
-				continue;
-			}
-			else if(bootsOnly && slot != EntityEquipmentSlot.FEET)
-			{
-				continue;
-			}
-			else if(helmetOnly && slot != EntityEquipmentSlot.HEAD)
 			{
 				continue;
 			}

@@ -1,5 +1,9 @@
 package yeelp.distinctdamagedescriptions;
 
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.inventory.EntityEquipmentSlot;
+
 public class ModConsts
 {
 	public static final String MODID = "distinctdamagedescriptions";
@@ -13,4 +17,7 @@ public class ModConsts
 		public static final String SLASHING = "slashing", PIERCING = "piercing", BLUDGEONING = "bludgeoning";
 		public static final String[] PHYSICAL_DAMAGE_TYPES = {SLASHING, PIERCING, BLUDGEONING};
 	}
+	
+	public static final EntityEquipmentSlot[] ARMOR_SLOTS = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
+	public static final Iterable<EntityEquipmentSlot> ARMOR_SLOTS_ITERABLE = ImmutableList.copyOf(ARMOR_SLOTS);
 }

@@ -23,19 +23,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.MobResistances;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
-import yeelp.distinctdamagedescriptions.util.CreatureType;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
-import yeelp.distinctdamagedescriptions.util.DamageDistribution;
-import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
-import yeelp.distinctdamagedescriptions.util.MobResistances;
-import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
 
 public class CapabilityHandler extends Handler
 {

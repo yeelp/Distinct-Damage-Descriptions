@@ -42,6 +42,13 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.MobResistances;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**

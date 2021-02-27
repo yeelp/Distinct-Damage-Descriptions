@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.capability;
 
 /**
  * A wrapped DamageResistance with additional information about mob adaptive immunity.

@@ -1,4 +1,6 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.capability;
+
+import yeelp.distinctdamagedescriptions.util.ArmorCategories;
 
 /**
  * Armor resistances

@@ -1,10 +1,11 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.capability.providers;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 
 public class ArmorDistributionProvider
 {

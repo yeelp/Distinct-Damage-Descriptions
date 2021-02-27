@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.capability;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -10,6 +10,8 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.capability.providers.ArmorDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.ArmorCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ArmorDistribution extends Distribution implements IArmorDistribution

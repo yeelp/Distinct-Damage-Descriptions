@@ -28,8 +28,13 @@ import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDistribution;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public final class TooltipUtils
 {
@@ -231,7 +236,7 @@ public final class TooltipUtils
 		currY += 11;
 		if(ctrlHeld)
 		{
-			Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(item.getRegistryName().toString());
+			Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(YResources.getRegistryString(item));
 			IArmorDistribution armorDist = DDDAPI.accessor.getArmorResistances(stack);
 			ShieldDistribution shieldDist = DDDAPI.accessor.getShieldDistribution(stack);
 			if(projDist != null)

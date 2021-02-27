@@ -1,8 +1,9 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.capability.providers;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 
 public class MobResistancesProvider
 {

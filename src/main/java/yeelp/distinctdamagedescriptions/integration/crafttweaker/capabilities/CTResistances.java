@@ -10,8 +10,8 @@ import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenSetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
-import yeelp.distinctdamagedescriptions.util.IMobResistances;
 
 @ZenClass("mods.ddd.Resistances")
 @ZenRegister

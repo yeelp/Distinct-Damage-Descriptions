@@ -9,7 +9,7 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.util.ICreatureType;
+import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 
 @ZenClass("mods.ddd.CreatureType")
 @ZenRegister

@@ -12,14 +12,15 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes;
-import yeelp.distinctdamagedescriptions.util.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.ICreatureType;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.ICreatureType;
-import yeelp.distinctdamagedescriptions.util.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.IMobResistances;
-import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
 
 public abstract interface IDistinctDamageDescriptionsAccessor
 {
@@ -83,13 +84,21 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity);
 	
 	/**
+	 * Get all armor values per damage type for an entity
+	 * @param entity
+	 * @return A Map mapping damage types to a tuple (armor, toughness)
+	 */
+	default Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity)
+	{
+		return getArmorValuesForEntity(entity, ModConsts.ARMOR_SLOTS_ITERABLE);
+	}
+	/**
 	 * Get a map of damage types to armor values for that damage type.
 	 * @param entity
-	 * @param bootsOnly True if only boots should be used
-	 * @param helmetOnly True if only helmets should be used
+	 * @param slots the slots to consider. Other slots are ignored, even if they have armor in them.
 	 * @return A Map mapping damage types to a tuple (armor, toughness).
 	 */
-	Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, boolean bootsOnly, boolean helmetOnly);
+	Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots);
 	
 	/**
 	 * classify and categorize damage.

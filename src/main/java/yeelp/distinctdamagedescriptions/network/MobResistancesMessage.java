@@ -9,7 +9,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.util.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 
 public class MobResistancesMessage extends AbstractCapabilityMessage<NBTTagCompound>
 {

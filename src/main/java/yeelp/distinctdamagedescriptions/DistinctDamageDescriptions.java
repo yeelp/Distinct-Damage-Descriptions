@@ -12,6 +12,11 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.MobResistances;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
@@ -21,11 +26,6 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.CreatureType;
-import yeelp.distinctdamagedescriptions.util.DamageDistribution;
-import yeelp.distinctdamagedescriptions.util.MobResistances;
-import yeelp.distinctdamagedescriptions.util.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)

@@ -24,7 +24,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
@@ -38,6 +42,11 @@ import yeelp.distinctdamagedescriptions.util.lib.YMath;
 public final class DDDCombatRules
 {
 	private static final Map<Integer, CombatModifiers> modifiers = new HashMap<Integer, CombatModifiers>();
+	/**
+	 * This container stores all modifiers for that hit.
+	 * @author Yeelp
+	 *
+	 */
 	private static class CombatModifiers
 	{
 		private boolean slyStrike = false, applyAnvilReductionCap = false, bootsOnly = false, helmetOnly = false;
@@ -111,8 +120,34 @@ public final class DDDCombatRules
 		{
 			bruteForce = amount;
 		}
+		
+		public Iterable<EntityEquipmentSlot> getApplicableArmorSlots()
+		{
+			HashSet<EntityEquipmentSlot> set = new HashSet<EntityEquipmentSlot>(4);
+			if(this.bootsOnly)
+			{
+				set.add(EntityEquipmentSlot.FEET);
+			}
+			if(this.helmetOnly)
+			{
+				set.add(EntityEquipmentSlot.HEAD);
+			}
+			else if(!(this.bootsOnly || this.helmetOnly))
+			{
+				set.add(EntityEquipmentSlot.FEET);
+				set.add(EntityEquipmentSlot.HEAD);
+				set.add(EntityEquipmentSlot.LEGS);
+				set.add(EntityEquipmentSlot.CHEST);
+			}
+			return set;	
+		}
 	}
 	
+	/**
+	 * This container stores all the results after damage calculations
+	 * @author Yeelp
+	 *
+	 */
 	public static class CombatResults
 	{
 		private final boolean immunityResisted, resisted, weakness, effectiveShield;
@@ -268,10 +303,10 @@ public final class DDDCombatRules
 				dmgMap.put(type, newDmg);
 			}
 		}
-		if(damageArmor(defender, resistMap, mods.isBootsOnly(), mods.isHelmetOnly()))
+		if(damageArmor(defender, absorb, mods.isBootsOnly(), mods.isHelmetOnly()))
 		{
 			//refresh armor values
-			armors = DDDAPI.accessor.getArmorValuesForEntity(defender, mods.isBootsOnly(), mods.isHelmetOnly());
+			armors = DDDAPI.accessor.getArmorValuesForEntity(defender, mods.getApplicableArmorSlots());
 		}
 		return new CombatResults(weakness, resist, immunity, effectiveShield, dmgMap, resistMap, armors, mobResists);
 	}
@@ -284,7 +319,7 @@ public final class DDDCombatRules
 	public static Map<String, Tuple<Float, Float>> getApplicableArmorValues(@Nullable Entity attacker, @Nonnull EntityLivingBase defender)
 	{
 		CombatModifiers mods = getModifiers(attacker, defender);
-		return DDDAPI.accessor.getArmorValuesForEntity(defender, mods.isBootsOnly(), mods.isHelmetOnly());
+		return DDDAPI.accessor.getArmorValuesForEntity(defender, mods.getApplicableArmorSlots());
 	}
 	
 	private static CombatModifiers getModifiers(@Nullable Entity attacker, @Nonnull EntityLivingBase defender)
@@ -401,7 +436,7 @@ public final class DDDCombatRules
 		return false;
 	}
 	
-	public static float applyDamageCalcs(float damage, float resistance, Tuple<Float, Float> armors, boolean applyAnvilReductionCap)
+	private static float applyDamageCalcs(float damage, float resistance, Tuple<Float, Float> armors, boolean applyAnvilReductionCap)
 	{
 		float armor = armors.getFirst(), toughness = armors.getSecond();
 		float f = (float) MathHelper.clamp(damage*(1-Math.max(armor/5.0f, armor - damage/(6+toughness/4.0f))/25.0f), 0.0f, applyAnvilReductionCap ? 0.75*damage : Float.MAX_VALUE);
