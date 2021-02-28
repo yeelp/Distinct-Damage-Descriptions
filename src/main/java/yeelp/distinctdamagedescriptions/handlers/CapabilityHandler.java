@@ -36,6 +36,7 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public class CapabilityHandler extends Handler
 {
@@ -60,62 +61,58 @@ public class CapabilityHandler extends Handler
 			evt.addCapability(mobs, new MobResistances());
 			evt.addCapability(creatureType, CreatureType.UNKNOWN);
 		}
-		else if(entity instanceof EntityLivingBase)
+		else
 		{
-			ResourceLocation loc = EntityList.getKey(entity);
-			if(loc != null)
+			Optional<ResourceLocation> oLoc = YResources.getEntityID(entity);
+			if(oLoc.isPresent())
 			{
+				ResourceLocation loc = oLoc.get();
 				String key = loc.toString();
-				Optional<Map<String, Float>> oDmges = DDDRegistries.mobDamage.getMobDamage(key);
-				Optional<MobResistanceCategories> oResists = DDDRegistries.mobResists.getResistancesForMob(key);
-				IDamageDistribution dist;
-				IMobResistances mobResists;
-				if(oDmges.isPresent())
-				{
-					Map<String, Float> dmges = oDmges.get();
-					dist = new DamageDistribution(dmges);
+				if(entity instanceof EntityLivingBase)
+				{	
+					Optional<Map<String, Float>> oDmges = DDDRegistries.mobDamage.getMobDamage(key);
+					Optional<MobResistanceCategories> oResists = DDDRegistries.mobResists.getResistancesForMob(key);
+					IDamageDistribution dist;
+					IMobResistances mobResists;
+					if(oDmges.isPresent())
+					{
+						Map<String, Float> dmges = oDmges.get();
+						dist = new DamageDistribution(dmges);
+					}
+					else
+					{
+						dist = ConfigGenerator.getOrGenerateMobDamage((EntityLivingBase) entity, loc);
+					}
+					if(oResists.isPresent())
+					{
+						MobResistanceCategories resists = oResists.get();
+						mobResists = new MobResistances(resists.getResistanceMap(), resists.getImmunities(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount());
+					}
+					else
+					{
+						mobResists = ConfigGenerator.getOrGenerateMobResistances((EntityLivingBase) entity, loc);
+					}
+					Set<CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
+					evt.addCapability(dmg, dist);
+					evt.addCapability(mobs, mobResists);
+					evt.addCapability(creatureType, new CreatureType(types));
 				}
-				else
+				else if(entity instanceof IProjectile)
 				{
-					dist = ConfigGenerator.getOrGenerateMobDamage((EntityLivingBase) entity, loc);
+					Optional<Map<String, Float>> oDmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
+					IDamageDistribution dist;
+					if(oDmges.isPresent())
+					{
+						Map<String, Float> dmges = oDmges.get();
+						dist = new DamageDistribution(dmges);
+					}
+					else
+					{
+						dist = ConfigGenerator.getOrGenerateProjectileDistribution((IProjectile) entity, loc);
+					}
+					evt.addCapability(projDmg, dist);
+					
 				}
-				if(oResists.isPresent())
-				{
-					MobResistanceCategories resists = oResists.get();
-					mobResists = new MobResistances(resists.getResistanceMap(), resists.getImmunities(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount());
-				}
-				else
-				{
-					mobResists = ConfigGenerator.getOrGenerateMobResistances((EntityLivingBase) entity, loc);
-				}
-				Set<CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
-				evt.addCapability(dmg, dist);
-				evt.addCapability(mobs, mobResists);
-				evt.addCapability(creatureType, new CreatureType(types));
-			}
-			else
-			{
-				DistinctDamageDescriptions.warn("ResourceLocation was null for: "+entity.getName()+", but entity is non null!");
-			}
-		}
-		else if(entity instanceof IProjectile)
-		{
-			ResourceLocation loc = EntityList.getKey(entity);
-			if(loc != null)
-			{
-				String key = loc.toString();
-				Optional<Map<String, Float>> oDmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
-				IDamageDistribution dist;
-				if(oDmges.isPresent())
-				{
-					Map<String, Float> dmges = oDmges.get();
-					dist = new DamageDistribution(dmges);
-				}
-				else
-				{
-					dist = ConfigGenerator.getOrGenerateProjectileDistribution((IProjectile) entity, loc);
-				}
-				evt.addCapability(projDmg, dist);
 			}
 			else
 			{

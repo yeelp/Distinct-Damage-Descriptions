@@ -52,6 +52,7 @@ import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemPropertiesRegistry, IDDDProjectilePropertiesRegistry, IDDDDamageTypeRegistry
 {
@@ -217,7 +218,8 @@ public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResist
 	@Override
 	public boolean isProjectileRegistered(Entity projectile)
 	{
-		return projectileDist.containsKey(EntityList.getKey(projectile).toString());
+		Optional<String> oLoc = YResources.getEntityIDString(projectile);
+		return oLoc.isPresent() ? projectileDist.containsKey(oLoc.get()) : false;
 	}
 	
 	@Override
