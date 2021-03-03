@@ -9,3 +9,4 @@ public abstract class Handler
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 }
+

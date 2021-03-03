@@ -12,6 +12,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
@@ -194,6 +195,10 @@ public class ModConfig
 		public ExtraDamageDistsCategory extraDamage = new ExtraDamageDistsCategory();
 		public static class ExtraDamageDistsCategory
 		{
+			@Name("Explosion DamageDistribution")
+			@Comment("The damage distribution to use for explosion damage; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+			public String explosionDist = "[(b, 1)]";
+			
 			@Name("Cactus Distribution")
 			@Comment("Enable/disable the cactus damage distribution. Cacti inflict piercing damage with this enabled. If disabled, vanilla handles it normally.")
 			public boolean enableCactusDamage = true;
@@ -217,6 +222,34 @@ public class ModConfig
 			@Name("Falling Block Distribution")
 			@Comment("Enable/disable the falling block damage distribution. Falling Blocks inflict bludgeoning damage with this enabled, however this damage can only be reduced by helmets. Vanilla's falling blocks inflict no damage without other mods or unless they are summoned with altered NBT data. If disabled, vanilla handles it normally.")
 			public boolean enableFallingBlockDamage = true;
+
+			@Name("Lightning Distribution")
+			@Comment("Enable/disable the lightning damage distribution. Lightning bolts will inflict lightning damage with this enabled.")
+			public boolean enableLightningDamage = true;
+			
+			@Name("Wither Distribution")
+			@Comment("Enable/disable the wither damage distribution. Withering will inflict necrotic damage with this enabled. It still can't be blocked by armor, but it can be blocked by resistances")
+			public boolean enableWitherDamage = true;
+			
+			@Name("Potion Distribution")
+			@Comment("Enable/disable potion damage distribution. Thrown potions of healing will inflict radiant damage against undead, and thrown potions of harming will inflict necrotic damage against non undead when enabled. It still can't be blocked by armor, but it can be blocked by resistances")
+			public boolean enablePotionDamage = true;
+
+			@Name("Poison Effect Distribution")
+			@Comment("Enable/diable poison effect distribution. Suffering from the Poison effect will inflict poison damage when enabled. It still can't be blocked by armor, but it can be blocked by resistances")
+			public boolean enablePoisonEffectDamage = true;
+			
+			@Name("Thorns Distribution")
+			@Comment("Enable/disable thorns distribution. The Thorns enchantment will inflict force damage when enabled.")
+			public boolean enableThornsDamage = true;
+			
+			@Name("Evoker Fangs Distribution")
+			@Comment("Enable/disable evoker fangs distribution. Evoker fanges will inflict force damage when enabled.")
+			public boolean enableEvokerFangsDamage = true;
+			
+			@Name("Guardian Beam Distribution")
+			@Comment("Enable/disable guardian beam distribution. Guardian beams (not the spikes) will inflict force damage when enabled.")
+			public boolean enableGuardianDamage = true;
 		}
 	}
 	
@@ -375,7 +408,6 @@ public class ModConfig
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)
 	private static class EventHandler 
 	{
-
 		/**
 		 * Inject the new values and save to the config file when the config has been changed from the GUI.
 		 *
@@ -388,6 +420,7 @@ public class ModConfig
 			{
 				ConfigManager.sync(ModConsts.MODID, Config.Type.INSTANCE);
 				DebugLib.updateStatus();
+				DDDRegistries.damageTypes.updateExplosionDamage();
 			}
 		}
 		

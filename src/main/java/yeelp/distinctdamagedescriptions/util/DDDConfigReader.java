@@ -113,7 +113,7 @@ public final class DDDConfigReader
     	return null;
     }
 	
-	private static Iterable<Tuple<DDDDamageType, Float>> parseListOfTuples(String s)
+	public static Iterable<Tuple<DDDDamageType, Float>> parseListOfTuples(String s)
 	{
 		//s is of the form [(t, a), (t, a), ... , (t, a)]
 		if(s.equals("[]"))
@@ -129,7 +129,7 @@ public final class DDDConfigReader
 		return lst;
 	}
 	
-	private static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Iterable<Tuple<K, V>> mappings)
+	public static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Iterable<Tuple<K, V>> mappings)
 	{
 		if(mappings == null)
 		{
