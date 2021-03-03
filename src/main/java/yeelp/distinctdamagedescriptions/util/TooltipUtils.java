@@ -72,7 +72,7 @@ public final class TooltipUtils
 		return buildDistTooltip(dist, grayColour, damageTooltip.getFormattedText());
 	}
 	
-	public static final List<String> buildDamageDistTooltips(Map<String, Float> dist)
+	public static final List<String> buildDamageDistTooltips(Map<DDDDamageType, Float> dist)
 	{
 		return buildDistTooltip(dist, grayColour, damageTooltip.getFormattedText());
 	}

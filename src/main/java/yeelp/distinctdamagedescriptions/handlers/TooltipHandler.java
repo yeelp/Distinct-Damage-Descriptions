@@ -29,6 +29,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils;
@@ -60,7 +61,7 @@ public class TooltipHandler extends Handler
 		IDamageDistribution damages = DDDAPI.accessor.getDamageDistribution(evt.getItemStack());
 		IArmorDistribution armors = DDDAPI.accessor.getArmorResistances(evt.getItemStack());
 		ShieldDistribution shield = DDDAPI.accessor.getShieldDistribution(evt.getItemStack());
-		Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(YResources.getRegistryString(item));
+		IDamageDistribution projDist = DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(item));
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
 		if(armors != null)
@@ -156,6 +157,6 @@ public class TooltipHandler extends Handler
 	
 	private static boolean shouldShowDist(ItemStack stack)
 	{
-		return DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
+		return DDDConfigurations.items.configured(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
 	}
 }

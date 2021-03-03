@@ -25,9 +25,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
@@ -43,6 +43,33 @@ import yeelp.distinctdamagedescriptions.util.lib.YMath;
 public final class DDDCombatRules
 {
 	private static final Map<Integer, CombatModifiers> modifiers = new HashMap<Integer, CombatModifiers>();
+	private static Map<UUID, HitInfo> lastHit = new HashMap<UUID, HitInfo>();
+	/**
+	 * This container stores info about the last hit, used for getting death messages
+	 * @author Yeelp
+	 *
+	 */
+	public class HitInfo
+	{
+		private IDamageDistribution dist;
+		private DDDDamageSource src;
+		HitInfo(IDamageDistribution dist, DDDDamageSource src)
+		{
+			this.dist = dist;
+			this.src = src;
+		}
+		
+		public IDamageDistribution getLastDist()
+		{
+			return this.dist;
+		}
+		
+		public DDDDamageSource getLastSource()
+		{
+			return this.src;
+		}
+	}
+	
 	/**
 	 * This container stores all modifiers for that hit.
 	 * @author Yeelp
@@ -152,11 +179,11 @@ public final class DDDCombatRules
 	public static class CombatResults
 	{
 		private final boolean immunityResisted, resisted, weakness, effectiveShield;
-		private final Map<String, Float> dmgMap, resistMap;
-		private final Map<String, Tuple<Float, Float>> armorMap;
+		private final Map<DDDDamageType, Float> dmgMap, resistMap;
+		private final Map<DDDDamageType, Tuple<Float, Float>> armorMap;
 		private final IMobResistances mobResists;
 		
-		CombatResults(boolean weakness, boolean resisted, boolean immunityResisted, boolean effectiveShield, Map<String, Float> dmgMap, Map<String, Float> resistMap, Map<String, Tuple<Float, Float>> armorMap, IMobResistances mobResists)
+		CombatResults(boolean weakness, boolean resisted, boolean immunityResisted, boolean effectiveShield, Map<DDDDamageType, Float> dmgMap, Map<DDDDamageType, Float> resistMap, Map<DDDDamageType, Tuple<Float, Float>> armorMap, IMobResistances mobResists)
 		{
 			this.immunityResisted = immunityResisted;
 			this.weakness = weakness;
@@ -188,17 +215,17 @@ public final class DDDCombatRules
 			return this.effectiveShield;
 		}
 		
-		public Map<String, Float> getDamage()
+		public Map<DDDDamageType, Float> getDamage()
 		{
 			return dmgMap;
 		}
 		
-		public Map<String, Float> getResistances()
+		public Map<DDDDamageType, Float> getResistances()
 		{
 			return resistMap;
 		}
 		
-		public Map<String, Tuple<Float, Float>> getArmor()
+		public Map<DDDDamageType, Tuple<Float, Float>> getArmor()
 		{
 			return armorMap;
 		}
@@ -246,9 +273,9 @@ public final class DDDCombatRules
 	 * @param mobResists the IMobResistances capability of the defending EntityLivingBase
 	 * @return A CombatResults containing the results of the damage calculations.
 	 */
-	public static CombatResults computeNewDamage(@Nullable Entity attacker, @Nonnull EntityLivingBase defender, Map<String, Float> dmgMap, Map<String, Float> resistMap, Map<String, Tuple<Float, Float>> armors, IMobResistances mobResists)
+	public static CombatResults computeNewDamage(@Nullable Entity attacker, @Nonnull EntityLivingBase defender, Map<DDDDamageType, Float> dmgMap, Map<DDDDamageType, Float> resistMap, Map<DDDDamageType, Tuple<Float, Float>> armors, IMobResistances mobResists)
 	{
-		NonNullMap<String, Float> absorb = new NonNullMap<String, Float>(0.0f);
+		NonNullMap<DDDDamageType, Float> absorb = new NonNullMap<DDDDamageType, Float>(0.0f);
 		CombatModifiers mods = getModifiers(attacker, defender);
 		final double unmoddedDmg = YMath.sum(dmgMap.values());
 		dmgMap = computeShieldReductions(dmgMap, DDDAPI.accessor.getShieldDistribution(mods.getActiveShield()));
@@ -270,7 +297,7 @@ public final class DDDCombatRules
 						player.playSound(SoundEvents.ITEM_SHIELD_BLOCK, 1.0f, 0.8f + rand.nextFloat() * 0.4f);
 						DDDSounds.playSound(player, DDDSounds.IMMUNITY_HIT, 1.0f, 0.8f + rand.nextFloat() * 0.4f);
 					}
-					return new CombatResults(false, false, false, true, new NonNullMap<String, Float>(0.0f), resistMap, armors, mobResists);
+					return new CombatResults(false, false, false, true, new NonNullMap<DDDDamageType, Float>(0.0f), resistMap, armors, mobResists);
 				}
 				else if(!broken)
 				{
@@ -278,9 +305,9 @@ public final class DDDCombatRules
 				}
 			}
 		}
-		for(Entry<String, Float> entry : dmgMap.entrySet())
+		for(Entry<DDDDamageType, Float> entry : dmgMap.entrySet())
 		{
-			String type = entry.getKey();
+			DDDDamageType type = entry.getKey();
 			float resistance = resistMap.get(type);
 			if(mobResists.hasImmunity(type) && !mods.shouldApplySlyStrike())
 			{
@@ -322,10 +349,15 @@ public final class DDDCombatRules
 		getModifiers(attacker, defender).reset();
 	}
 	
-	public static Map<String, Tuple<Float, Float>> getApplicableArmorValues(@Nullable Entity attacker, @Nonnull EntityLivingBase defender)
+	public static Map<DDDDamageType, Tuple<Float, Float>> getApplicableArmorValues(@Nullable Entity attacker, @Nonnull EntityLivingBase defender)
 	{
 		CombatModifiers mods = getModifiers(attacker, defender);
 		return DDDAPI.accessor.getArmorValuesForEntity(defender, mods.getApplicableArmorSlots());
+	}
+	
+	public static HitInfo getLastHit(UUID uuid)
+	{
+		return lastHit.get(uuid);
 	}
 	
 	private static CombatModifiers getModifiers(@Nullable Entity attacker, @Nonnull EntityLivingBase defender)
@@ -350,7 +382,7 @@ public final class DDDCombatRules
 		return attackerID.hashCode() ^ defenderID.hashCode();
 	}
 	
-	private static Map<String, Float> computeShieldReductions(Map<String, Float> dmgMap, ShieldDistribution shieldDist)
+	private static Map<DDDDamageType, Float> computeShieldReductions(Map<DDDDamageType, Float> dmgMap, ShieldDistribution shieldDist)
 	{
 		if(shieldDist == null)
 		{
@@ -365,7 +397,7 @@ public final class DDDCombatRules
 	/*
 	 * Returns true if some armor piece was broken
 	 */
-	private static boolean damageArmor(@Nonnull EntityLivingBase defender, Map<String, Float> absorbedDamage, boolean bootsOnly, boolean helmetOnly)
+	private static boolean damageArmor(@Nonnull EntityLivingBase defender, Map<DDDDamageType, Float> absorbedDamage, boolean bootsOnly, boolean helmetOnly)
 	{
 		boolean result = false;
 		Map<EntityEquipmentSlot, IArmorDistribution> armorMap = DDDAPI.accessor.getArmorDistributionsForEntity(defender);
@@ -431,7 +463,7 @@ public final class DDDCombatRules
 					{
 						return false;
 					}
-					Set<String> damageTypes = new HashSet<String>(src.getExtendedTypes());
+					Set<DDDDamageType> damageTypes = new HashSet<DDDDamageType>(src.getExtendedTypes());
 					if(YMath.setMinus(damageTypes, dist.getCategories()).size() < damageTypes.size()) //true if shield can block at least one damage type.
 					{
 						return true;
@@ -449,7 +481,7 @@ public final class DDDCombatRules
 		return f*(1-resistance);
 	}
 	
-	private static int getArmorDamageAmount(Map<String, Float> absorption, IArmorDistribution armorDist)
+	private static int getArmorDamageAmount(Map<DDDDamageType, Float> absorption, IArmorDistribution armorDist)
 	{
 		float sum = absorption.entrySet().stream().reduce(0.0f, (a, e) -> a + e.getValue()*armorDist.getWeight(e.getKey()), (u, v) -> u + v);
 		if(sum == 0)

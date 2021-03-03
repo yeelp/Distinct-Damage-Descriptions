@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 
 public interface IDistinctDamageDescriptionsMutator
 {
@@ -15,5 +16,5 @@ public interface IDistinctDamageDescriptionsMutator
 	 * @param adaptive adaptability status
 	 * @param adaptiveAmount amount for adaptability
 	 */
-	public void setPlayerResistances(EntityPlayer player, Map<String, Float> newReists, Set<String> newImmunities, boolean adaptive, float adaptiveAmount);
+	public void setPlayerResistances(EntityPlayer player, Map<DDDDamageType, Float> newReists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount);
 }

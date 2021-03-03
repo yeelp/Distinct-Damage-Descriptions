@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -38,6 +37,7 @@ import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvi
 import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorCategories;
 import yeelp.distinctdamagedescriptions.util.DDDBuiltInDamageType;
@@ -197,7 +197,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		else
 		{
-			dist = getExtraDamageDistribution(src);
+			dist = DDDRegistries.damageTypes.getExtraDamageDistribution(src);
 			if(dist == null)
 			{
 				Set<DDDDamageType> types = DDDRegistries.damageTypes.getCustomDamageContext(src);
@@ -233,58 +233,11 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public DamageSource getDamageContext(DamageSource src)
-	{
-		Entity entity = src.getImmediateSource();
-		String type = src.getDamageType();
-		Set<String> types = new HashSet<String>();
-		if(entity instanceof EntityLivingBase)
-		{
-			EntityLivingBase livingEntity = (EntityLivingBase) entity;
-			ItemStack stack = livingEntity.getHeldItemMainhand();
-			if(!stack.isEmpty())
-			{
-				types.addAll(getDamageDistribution(stack).getCategories());
-			}
-			else
-			{
-				types.addAll(getDamageDistribution(livingEntity).getCategories());
-			}
-		}
-		else if(isValidProjectile(src))
-		{
-			types.addAll(getDamageDistribution((IProjectile) src.getImmediateSource()).getCategories());
-		}
-		else
-		{
-			IDamageDistribution dist = getExtraDamageDistribution(src);
-			if(dist != null)
-			{
-				types.addAll(dist.getCategories());
-			}
-		}
-		types.addAll(DDDRegistries.damageTypes.getCustomDamageContext(src));
-		
-		if(!ModConfig.dmg.useCustomDamageTypes)
-		{
-			//types.removeIf(s -> s.startsWith("ddd_"));
-		}
-		if(types.size() == 0)
-		{
-			return src;
-		}
-		else
-		{
-			return new DDDDamageSource(src, types.toArray(new String[] {}));
-		}
-	}
-	
-	@Override
 	public boolean isPhysicalDamageOnly(DDDDamageSource src)
 	{
-		for(String s : src.getExtendedTypes())
+		for(DDDDamageType type : src.getExtendedTypes())
 		{
-			if(isPhysicalDamage(s))
+			if(isPhysicalDamage(type))
 			{
 				continue;
 			}
@@ -301,7 +254,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		Entity entityIn = src.getImmediateSource();
 		if(entityIn instanceof IProjectile)
 		{
-			return DDDRegistries.projectileProperties.isProjectileRegistered(entityIn) || !src.isMagicDamage();
+			return DDDConfigurations.projectiles.isProjectilePairRegistered(entityIn) || !src.isMagicDamage();
 		}
 		else
 		{
@@ -309,39 +262,21 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 	}
 	
-	@Nullable
-	private IDamageDistribution getExtraDamageDistribution(DamageSource src)
-	{
-		if(src.isExplosion() && ModConfig.dmg.extraDamage.enableExplosionDamage)
-		{
-			return DamageDistribution.BLUDGEONING_DISTRIBUTION;
-		}
-		else if(extraDists.containsKey(src))
-		{
-			Tuple<Supplier<Boolean>, IDamageDistribution> t = extraDists.get(src);
-			return t.getFirst().get() ? t.getSecond() : null;
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
 	/***********
 	 * MUTATOR *
 	 ***********/
 	@Override
-	public void setPlayerResistances(EntityPlayer player, Map<String, Float> newResists, Set<String> newImmunities, boolean adaptive, float adaptiveAmount)
+	public void setPlayerResistances(EntityPlayer player, Map<DDDDamageType, Float> newResists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount)
 	{
 		IMobResistances mobResists = getMobResistances(player);
-		for(Entry<String, Float> entry : newResists.entrySet())
+		for(Entry<DDDDamageType, Float> entry : newResists.entrySet())
 		{
 			mobResists.setResistance(entry.getKey(), entry.getValue());
 		}
 		mobResists.clearImmunities();
-		for(String s : newImmunities)
+		for(DDDDamageType type : newImmunities)
 		{
-			mobResists.setImmunity(s, true);
+			mobResists.setImmunity(type, true);
 		}
 		mobResists.setAdaptiveResistance(adaptive);
 		mobResists.setAdaptiveAmount(adaptiveAmount);

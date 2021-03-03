@@ -11,6 +11,7 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
@@ -28,8 +29,8 @@ public abstract class DamageDescriptionEvent extends Event
 {
 	private final Entity attacker;
 	private final EntityLivingBase defender;
-	private final NonNullMap<String, Float> damage, resistances;
-	private final NonNullMap<String, Tuple<Float, Float>> armorMap;
+	private final NonNullMap<DDDDamageType, Float> damage, resistances;
+	private final NonNullMap<DDDDamageType, Tuple<Float, Float>> armorMap;
 	/**
 	 * Create a new DamageDescriptionEvent
 	 * @param attacker the attacking Entity. May be null.
@@ -38,12 +39,12 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param resistances a Map outlining the distribution of resistances for applicable types.
 	 * @param armor a Map that maps damage type strings to a tuple (armor, toughness) for that damage type.
 	 */
-	public DamageDescriptionEvent(Entity attacker, EntityLivingBase defender, Map<String, Float> damage, Map<String, Float> resistances, Map<String, Tuple<Float, Float>> armorMap)
+	public DamageDescriptionEvent(Entity attacker, EntityLivingBase defender, Map<DDDDamageType, Float> damage, Map<DDDDamageType, Float> resistances, Map<DDDDamageType, Tuple<Float, Float>> armorMap)
 	{
 		super();
-		this.damage = new NonNullMap<String, Float>(0.0f); 
-		this.resistances = new NonNullMap<String, Float>(0.0f);
-		this.armorMap = new NonNullMap<String, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
+		this.damage = new NonNullMap<DDDDamageType, Float>(0.0f); 
+		this.resistances = new NonNullMap<DDDDamageType, Float>(0.0f);
+		this.armorMap = new NonNullMap<DDDDamageType, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
 		this.damage.putAll(damage);
 		this.resistances.putAll(resistances);
 		this.armorMap.putAll(armorMap);
@@ -76,7 +77,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param type
 	 * @return the damage of that type
 	 */
-	public float getDamage(String type)
+	public float getDamage(DDDDamageType type)
 	{
 		return this.damage.get(type);
 	}
@@ -86,7 +87,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param type
 	 * @param amount amount to set.
 	 */
-	public void setDamage(String type, float amount)
+	public void setDamage(DDDDamageType type, float amount)
 	{
 		this.damage.put(type, amount);
 	}
@@ -96,7 +97,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param type the type of damage
 	 * @return the resistance
 	 */
-	public float getResistance(String type)
+	public float getResistance(DDDDamageType type)
 	{
 		return this.resistances.get(type);
 	}
@@ -106,7 +107,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param type the type of damage
 	 * @param newResistance
 	 */
-	public void setResistance(String type, float newResistance)
+	public void setResistance(DDDDamageType type, float newResistance)
 	{
 		this.resistances.put(type, newResistance);
 	}
@@ -116,7 +117,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param type
 	 * @return a Tuple (armor, toughness)
 	 */
-	public Tuple<Float, Float> getArmorAndToughness(String type)
+	public Tuple<Float, Float> getArmorAndToughness(DDDDamageType type)
 	{
 		return this.armorMap.get(type);
 	}
@@ -127,7 +128,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * @param armor armor to set
 	 * @param toughness toughness to set.
 	 */
-	public void setArmorAndToughness(String type, float armor, float toughness)
+	public void setArmorAndToughness(DDDDamageType type, float armor, float toughness)
 	{
 		this.armorMap.put(type, new Tuple<Float, Float>(armor, toughness));
 	}
@@ -136,7 +137,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * Get a map of all damage types.
 	 * @return the internal damage map
 	 */
-	public Map<String, Float> getAllDamages()
+	public Map<DDDDamageType, Float> getAllDamages()
 	{
 		return this.damage;
 	}
@@ -145,7 +146,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * Get a map of all resistances
 	 * @return the internal resistance map
 	 */
-	public Map<String, Float> getAllResistances()
+	public Map<DDDDamageType, Float> getAllResistances()
 	{
 		return this.resistances;
 	}
@@ -154,7 +155,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 * Get a map of all armor and toughness values
 	 * @return the internal armor map.
 	 */
-	public Map<String, Tuple<Float, Float>> getAllArmor()
+	public Map<DDDDamageType, Tuple<Float, Float>> getAllArmor()
 	{
 		return this.armorMap;
 	}
@@ -168,7 +169,7 @@ public abstract class DamageDescriptionEvent extends Event
 	@Cancelable
 	public static final class Pre extends DamageDescriptionEvent
 	{
-		public Pre(Entity attacker, EntityLivingBase defender, Map<String, Float> damage, Map<String, Float> resistances, Map<String, Tuple<Float, Float>> armorMap)
+		public Pre(Entity attacker, EntityLivingBase defender, Map<DDDDamageType, Float> damage, Map<DDDDamageType, Float> resistances, Map<DDDDamageType, Tuple<Float, Float>> armorMap)
 		{
 			super(attacker, defender, damage, resistances, armorMap);
 		}
@@ -185,7 +186,7 @@ public abstract class DamageDescriptionEvent extends Event
 	 */
 	public static final class Post extends DamageDescriptionEvent
 	{
-		public Post(Entity attacker, EntityLivingBase defender, Map<String, Float> damage, Map<String, Float> resistances, Map<String, Tuple<Float, Float>> armorMap)
+		public Post(Entity attacker, EntityLivingBase defender, Map<DDDDamageType, Float> damage, Map<DDDDamageType, Float> resistances, Map<DDDDamageType, Tuple<Float, Float>> armorMap)
 		{
 			super(attacker, defender, damage, resistances, armorMap);
 		}

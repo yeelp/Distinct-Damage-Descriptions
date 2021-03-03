@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,34 +14,40 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import yeelp.distinctdamagedescriptions.ModConfig;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public final class DDDDamageSource extends DamageSource
 {
-	private List<String> types;
+	private List<DDDDamageType> types;
 	private DamageSource parentSource;
 	/**
-	 * Make a new DDDDamageType
+	 * Make a new DDDDamageSource
 	 * @param parentSource parent source
 	 * @param types extended types.
 	 */
-	public DDDDamageSource(DamageSource parentSource, String... types)
+	public DDDDamageSource(DamageSource parentSource, DDDDamageType... types)
+	{
+		this(parentSource, Arrays.asList(types));
+	}
+	
+	/**
+	 * Make a new DDDDamageSource
+	 * @param parentSource parent source
+	 * @param types extended types
+	 */
+	public DDDDamageSource(DamageSource parentSource, Collection<DDDDamageType> types)
 	{
 		super(parentSource.damageType);
 		this.parentSource = parentSource;
-		Set<String> temp = new HashSet<String>(Arrays.asList(types));
-		temp.remove("ddd_normal");
-		this.types = new LinkedList<String>(temp);
+		Set<DDDDamageType> temp = new HashSet<DDDDamageType>(types);
+		temp.remove(DDDBuiltInDamageType.NORMAL);
+		this.types = new LinkedList<DDDDamageType>(temp);
 	}
 	
 	/**
 	 * Get all extended types.
 	 * @return list of extended types.
 	 */
-	public List<String> getExtendedTypes()
+	public List<DDDDamageType> getExtendedTypes()
 	{
 		return this.types;
 	}
@@ -171,26 +178,7 @@ public final class DDDDamageSource extends DamageSource
 	@Override
     public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
     {
-		if(ModConfig.dmg.useCustomDeathMessages && !DDDAPI.accessor.isPhysicalDamageOnly(this))
-		{
-			List<String> filteredTypes = new LinkedList<String>(types);
-			filteredTypes.removeIf((s) -> !s.startsWith("ddd_"));
-			int i = (int)(filteredTypes.size()*Math.random());
-			EntityLivingBase attacker = entityLivingBaseIn.getAttackingEntity();
-			ITextComponent comp = new TextComponentString(DDDRegistries.damageTypes.getDeathMessage(filteredTypes.get(i), entityLivingBaseIn.getName(), attacker == null? null : attacker.getName()));
-			if(comp.getUnformattedComponentText().trim().isEmpty())
-			{
-				return this.parentSource.getDeathMessage(entityLivingBaseIn);
-			}
-			else
-			{
-				return comp;
-			}
-		}
-		else
-		{
-			return this.parentSource.getDeathMessage(entityLivingBaseIn);
-		}
+		return this.parentSource.getDeathMessage(entityLivingBaseIn);
     }
 
     /**

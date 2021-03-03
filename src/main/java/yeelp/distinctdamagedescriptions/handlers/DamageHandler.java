@@ -21,6 +21,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -31,13 +32,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDCombatRules;
 import yeelp.distinctdamagedescriptions.util.DDDCombatRules.CombatResults;
+import yeelp.distinctdamagedescriptions.util.DDDCombatRules.HitInfo;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DDDEffects;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
@@ -45,29 +50,26 @@ import yeelp.distinctdamagedescriptions.util.lib.YMath;
 public class DamageHandler extends Handler
 {
 	private static Set<UUID> noKnockback = new HashSet<UUID>();
-	private static Map<UUID, ShieldDistribution> activeShield = new HashMap<UUID, ShieldDistribution>();
-	private static Random particleDisplacement = new Random();
 	
 	@SubscribeEvent
 	public void onDeath(LivingDeathEvent evt)
 	{
 		if(ModConfig.dmg.useCustomDeathMessages)
 		{
-			DamageSource source = evt.getSource();
-			if(ModConfig.dmg.useCustomDamageTypes)
+			EntityLivingBase entity = evt.getEntityLiving();
+			HitInfo info = DDDCombatRules.getLastHit(entity.getUniqueID());
+			DDDDamageSource src = info.getLastSource();
+			ITextComponent comp = DDDRegistries.damageTypes.getDeathMessage(info.getLastDist(), src, src.getTrueSource(), entity);
+			if(entity instanceof EntityPlayerMP)
 			{
-				source = DDDAPI.accessor.getDamageContext(source);
-			}
-			if(evt.getEntityLiving() instanceof EntityPlayerMP)
-			{
-				((EntityPlayerMP) evt.getEntityLiving()).mcServer.getPlayerList().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
+				((EntityPlayerMP) entity).mcServer.getPlayerList().sendMessage(comp);
 			}
 			else if(evt.getEntityLiving() instanceof EntityTameable)
 			{
-				EntityTameable entity = (EntityTameable) evt.getEntityLiving();
-				if(entity.isTamed())
+				EntityTameable tamedEntity = (EntityTameable) evt.getEntityLiving();
+				if(tamedEntity.isTamed())
 				{
-					entity.getOwner().sendMessage(source.getDeathMessage(evt.getEntityLiving()));
+					tamedEntity.getOwner().sendMessage(comp);
 				}
 			}
 		}
@@ -111,15 +113,15 @@ public class DamageHandler extends Handler
 			DistinctDamageDescriptions.debug("Damage Type: "+ dmgSource.damageType+" Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", True Attacker: "+s3+" Defender: "+s2);
 		}
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
-		Map<String, Float> dmgMap = DDDAPI.accessor.classifyDamage(dmgSource, evt.getAmount());
+		Map<DDDDamageType, Float> dmgMap = DDDAPI.accessor.classifyDamage(dmgSource, evt.getAmount());
 		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
 		DistinctDamageDescriptions.debug("Damage Total: "+DebugLib.entriesToString(dmgMap));
 		if(dmgMap == null)// couldn't classify damage, so further calculations are meaningless/undefined. Return, let vanilla handle the rest,
 		{
 			return;
 		}
-		Map<String, Float> resistMap = DDDAPI.accessor.classifyResistances(dmgMap.keySet(), mobResists);
-		Map<String, Tuple<Float, Float>> armors = DDDCombatRules.getApplicableArmorValues(attacker, defender);
+		Map<DDDDamageType, Float> resistMap = DDDAPI.accessor.classifyResistances(dmgMap.keySet(), mobResists);
+		Map<DDDDamageType, Tuple<Float, Float>> armors = DDDCombatRules.getApplicableArmorValues(attacker, defender);
 		DamageDescriptionEvent.Pre pre = new DamageDescriptionEvent.Pre(attacker, defender, dmgMap, resistMap, armors);
 		MinecraftForge.EVENT_BUS.post(pre);
 		if(pre.isCanceled())
@@ -159,7 +161,7 @@ public class DamageHandler extends Handler
 		boolean resistancesUpdated = false; 
 		if(mobResists.hasAdaptiveResistance())
 		{
-			resistancesUpdated = mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new String[0]));
+			resistancesUpdated = mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new DDDDamageType[0]));
 			DistinctDamageDescriptions.debug("Updating mob's adaptive resistance, since it is present...");
 			
 		}

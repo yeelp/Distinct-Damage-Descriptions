@@ -119,13 +119,6 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	Map<DDDDamageType, Float> classifyResistances(Set<DDDDamageType> types, IMobResistances resists);
 	
 	/**
-	 * Apply DDD modifications to a DamageSource
-	 * @param src the src to apply modifications to.
-	 * @return A new DamageSource; either a {@link DDDDamageSource} if the DamageSource had additional context, or {@code src} if no additional context could be applied.
-	 */
-	DamageSource getDamageContext(DamageSource src);
-	
-	/**
 	 * Check if a {@link DDDDamageSource} is physical (slash, pierce, bludgeoning) only. 
 	 * @param src
 	 * @return true if only physical.
