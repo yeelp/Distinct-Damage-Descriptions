@@ -81,26 +81,23 @@ public class ModConfig
 	{
 		@Name("Mob Base Damage")
 		@Comment({"Modify the base damage type distribution of mobs.",
-				  "Each entry is of the form id;s;p;b;[(t,a)] where:",
+				  "Each entry is of the form id;[(t,a)] where:",
 				  "   id is the namespaced id of the mob (e.g. minecraft:zombie)",
-				  "   s is the percent of slashing damage this mob does.",
-				  "   p is the percent of piercing damage this mob does.",
-				  "   b is the percent of bludgeoning damage this mob does.",
-				  "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of custom damage a mob does if custom damage is enabled.",
-				  "      t is the type of custom damage. Requires the 'ddd_' prefix.",
-				  "      a is the percent of this custom damage this mob does.",
-				  "      If this list is present but custom damage is disabled, the percentages here will be distributed amongst all non-zero physical damages.",
-				  "      This list may be omitted if the mob inflicts no custom damage, including the semicolon.",
-				  "   All percents ('s', 'p', 'b', and the value 'a' of every tuple) MUST add to 1",
+				  "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a mob does.",
+				  "      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning",
+				  "      a is the percent of this damage this mob does. if a = 0, it is ignored.",
+				  "      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero physical damages (Or just bludgeoning if none are non zero)",
+				  "   All percents MUST add to 1",
 				  "Mobs that aren't listed here will inflict full bludgeoning damage.",
 				  "Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] mobBaseDmg = 
 		{
-				"minecraft:cave_spider;0;1;0",
-				"minecraft:polar_bear;0.25;0;0.75",
-				"minecraft:spider;0;1;0",
-				"minecraft:wolf;0;1;0"
+				"minecraft:cave_spider;[(p, 0,75), (ddd_poison, 0.25)]",
+				"minecraft:polar_bear;[(s, 0.25), (b, 0.75)]",
+				"minecraft:spider;[(p, 1)]",
+				"minecraft:wolf;[(p, 1)]",
+				"minecraft:zombie;[(b, 0.75), (ddd_necrotic, 0.25)]"
 		};
 		
 		@Name("Weapon Base Damage")

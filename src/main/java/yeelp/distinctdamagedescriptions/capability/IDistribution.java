@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public abstract interface IDistribution extends ICapabilitySerializable<NBTTagList>
@@ -14,25 +15,25 @@ public abstract interface IDistribution extends ICapabilitySerializable<NBTTagLi
 	 * @param type
 	 * @return the weight of that type in this distribution.
 	 */
-	float getWeight(String type);
+	float getWeight(DDDDamageType type);
 	
 	/**
-	 * 
+	 * Set new weight
 	 * @param type
 	 * @param amount
 	 */
-	void setWeight(String type, float amount);
+	void setWeight(DDDDamageType type, float amount);
 	
 	/**
 	 * Set new damage distribution weights. Will overwrite existing weights and add new ones.
 	 * @param map a map containing new weights
 	 * @throws InvariantViolationException if a weight < 0.
 	 */
-	void setNewWeights(Map<String, Float> map) throws InvariantViolationException;
+	void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException;
 	
 	/**
 	 * Get the categories for this distribution.
 	 * @return
 	 */
-	Set<String> getCategories();
+	Set<DDDDamageType> getCategories();
 }

@@ -46,6 +46,10 @@ import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.init.config.IDDDItemConfiguration;
+import yeelp.distinctdamagedescriptions.init.config.IDDDMobDamageRegistry;
+import yeelp.distinctdamagedescriptions.init.config.IDDDMobResistancesRegistry;
+import yeelp.distinctdamagedescriptions.init.config.IDDDProjectilePropertiesRegistry;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
@@ -54,7 +58,8 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemPropertiesRegistry, IDDDProjectilePropertiesRegistry, IDDDDamageTypeRegistry
+@Deprecated
+public enum DDDRegistriesImpl implements IDDDCreatureTypeRegistry, IDDDMobResistancesRegistry, IDDDMobDamageRegistry, IDDDItemConfiguration, IDDDProjectilePropertiesRegistry, IDDDDamageTypeRegistry
 {
 	INSTANCE;
 	private final Map<String, MobResistanceCategories> mobResists = new NonNullMap<String, MobResistanceCategories>(new MobResistanceCategories(new NonNullMap<String, Float>(0.0f), new HashSet<String>(), 0, 0));

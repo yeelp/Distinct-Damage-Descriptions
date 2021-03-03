@@ -1,16 +1,16 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
+import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
+
 public abstract class DDDRegistries
 {
 	public static IDDDCreatureTypeRegistry creatureTypes;
-	public static IDDDMobResistancesRegistry mobResists;
-	public static IDDDMobDamageRegistry mobDamage;
-	public static IDDDItemPropertiesRegistry itemProperties;
-	public static IDDDProjectilePropertiesRegistry projectileProperties;
 	public static IDDDDamageTypeRegistry damageTypes;
 	
 	public static void init()
 	{
-		DDDRegistriesImpl.values();
+		damageTypes = new DDDDamageTypes();
+		creatureTypes = new DDDCreatureTypes();
 	}
 }

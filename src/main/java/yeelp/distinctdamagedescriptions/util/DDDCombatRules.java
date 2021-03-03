@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -258,18 +259,23 @@ public final class DDDCombatRules
 		{
 			boolean broken = damageShield(attacker, defender, mods.getActiveShield(), (float) blockedDmg, (float) ratio);
 			effectiveShield = true;
-			if(Math.abs(unmoddedDmg - blockedDmg) <= 0.001)
+			if(defender instanceof EntityPlayer)
 			{
-				if(defender instanceof EntityPlayer && !broken)
+				EntityPlayer player = (EntityPlayer) defender;
+				Random rand = defender.world.rand;
+				if(Math.abs(unmoddedDmg - blockedDmg) <= 0.001)
 				{
-					((EntityPlayer) defender).playSound(SoundEvents.ITEM_SHIELD_BLOCK, 1.0f, 0.8f + defender.world.rand.nextFloat() * 0.4f);
-					DDDSounds.playSound((EntityPlayer) defender, DDDSounds.IMMUNITY_HIT, 1.0f, 0.8f + defender.world.rand.nextFloat() * 0.4f);
+					if(!broken)
+					{
+						player.playSound(SoundEvents.ITEM_SHIELD_BLOCK, 1.0f, 0.8f + rand.nextFloat() * 0.4f);
+						DDDSounds.playSound(player, DDDSounds.IMMUNITY_HIT, 1.0f, 0.8f + rand.nextFloat() * 0.4f);
+					}
+					return new CombatResults(false, false, false, true, new NonNullMap<String, Float>(0.0f), resistMap, armors, mobResists);
 				}
-				return new CombatResults(false, false, false, true, new NonNullMap<String, Float>(0.0f), resistMap, armors, mobResists);
-			}
-			else if(!broken)
-			{
-				DDDSounds.playSound((EntityPlayer) defender, DDDSounds.HIGH_RESIST_HIT, 1.0f, 0.8f + defender.world.rand.nextFloat() * 0.4f);	
+				else if(!broken)
+				{
+					DDDSounds.playSound(player, DDDSounds.HIGH_RESIST_HIT, 1.0f, 0.8f + rand.nextFloat() * 0.4f);	
+				}
 			}
 		}
 		for(Entry<String, Float> entry : dmgMap.entrySet())

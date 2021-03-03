@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.capability;
 
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+
 /**
  * A wrapped DamageResistance with additional information about mob adaptive immunity.
  * @author Yeelp
@@ -36,5 +38,5 @@ public interface IMobResistances extends IDamageResistances
 	 * @param damageTypes new types this mob should be more resistant to.
 	 * @return true if there was a net change in any resistances
 	 */
-	boolean updateAdaptiveResistance(String...damageTypes);
+	boolean updateAdaptiveResistance(DDDDamageType...damageTypes);
 }

@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import java.util.Map;
 
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+
 /**
  * Damage Distribution capability. <p>
  * INVARIANT: all weights will always add to 1.
@@ -15,5 +17,5 @@ public interface IDamageDistribution extends IDistribution
 	 * @param dmg damage
 	 * @return a Map<String, Float> with {@code dmg} distributed across all categories
 	 */
-	Map<String, Float> distributeDamage(float dmg);
+	Map<DDDDamageType, Float> distributeDamage(float dmg);
 }

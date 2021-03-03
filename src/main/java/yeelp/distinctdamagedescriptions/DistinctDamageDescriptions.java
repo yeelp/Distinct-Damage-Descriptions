@@ -24,6 +24,7 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
+import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
@@ -50,6 +51,7 @@ public class DistinctDamageDescriptions
         srcFile = event.getSourceFile();
         DDDAPI.init();
         DDDRegistries.init();
+        DDDConfigurations.init();
         DebugLib.updateStatus();
         if(Loader.isModLoaded(ModConsts.CRAFTTWEAKER_ID))
         {

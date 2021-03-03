@@ -15,14 +15,13 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
-	public static final IDamageDistribution PIERCING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("slashing", 1.0f));
-	public static final IDamageDistribution BLUDGEONING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("piercing", 1.0f));
-	public static final IDamageDistribution SLASHING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("bludgeoning", 1.0f));
 	@Override
 	protected boolean invariantViolated(Collection<Float> weights)
 	{
@@ -36,11 +35,11 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	
 	public DamageDistribution()
 	{
-		this(new Tuple<String, Float>("bludgeoning", 1.0f));
+		this(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
 	}
 	
 	@SafeVarargs
-	public DamageDistribution(Tuple<String, Float>... weights) 
+	public DamageDistribution(Tuple<DDDDamageType, Float>... weights) 
 	{
 		super(weights);
 		if(invariantViolated(this.distMap.values()))
@@ -49,7 +48,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 		}
 	}
 	
-	public DamageDistribution(Map<String, Float> weightMap)
+	public DamageDistribution(Map<DDDDamageType, Float> weightMap)
 	{
 		super(weightMap);
 		if(invariantViolated(this.distMap.values()))
@@ -71,7 +70,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	@Override
-	public Map<String, Float> distributeDamage(float dmg)
+	public Map<DDDDamageType, Float> distributeDamage(float dmg)
 	{
 		if(ModConfig.dmg.useCustomDamageTypes)
 		{
@@ -79,23 +78,23 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 		}
 		else
 		{
-			NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
-			float remainingWeight = distMap.get(ModConsts.InternalDamageTypes.SLASHING) + distMap.get(ModConsts.InternalDamageTypes.PIERCING) + distMap.get(ModConsts.InternalDamageTypes.BLUDGEONING);
-			long physicalDamageCount = distMap.keySet().stream().filter((s) -> DDDAPI.accessor.isPhysicalDamage(s)).count();
+			NonNullMap<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+			float remainingWeight = distMap.get(DDDBuiltInDamageType.BLUDGEONING) + distMap.get(DDDBuiltInDamageType.PIERCING) + distMap.get(DDDBuiltInDamageType.BLUDGEONING);
+			long physicalDamageCount = distMap.keySet().stream().filter((s) -> s.getType() == DDDDamageType.Type.PHYSICAL).count();
 			if(physicalDamageCount > 0)
 			{
 				remainingWeight /= physicalDamageCount;
-				for(String s : ModConsts.InternalDamageTypes.PHYSICAL_DAMAGE_TYPES)
+				for(DDDDamageType type : DDDBuiltInDamageType.PHYSICAL_TYPES)
 				{
-					if(distMap.containsKey(s))
+					if(distMap.containsKey(type))
 					{
-						map.put(s, (distMap.get(s) + remainingWeight)*dmg);
+						map.put(type, (distMap.get(type) + remainingWeight)*dmg);
 					}
 				}
 			}
 			else
 			{
-				map.put(ModConsts.InternalDamageTypes.BLUDGEONING, 1.0f);
+				map.put(DDDBuiltInDamageType.BLUDGEONING, 1.0f);
 			}
 			return map;
 		}

@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 
 /**
  * Damage Resistances capability base.
@@ -15,28 +16,28 @@ public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompou
 	 * @param type
 	 * @return the resistance for that type.
 	 */
-	float getResistance(String type);
+	float getResistance(DDDDamageType type);
 	
 	/**
 	 * Set the resistance for a certain type.
 	 * @param type
 	 * @param value the resistance value to set.
 	 */
-	void setResistance(String type, float value);
+	void setResistance(DDDDamageType type, float value);
 	
 	/**
 	 * Get immunity status for a type
 	 * @param type
 	 * @return true if immune, false otherwise.
 	 */
-	boolean hasImmunity(String type);
+	boolean hasImmunity(DDDDamageType type);
 	
 	/**
 	 * Set immunity status for a certain type.
 	 * @param type
 	 * @param status true if immune, false if susceptible
 	 */
-	void setImmunity(String type, boolean status);
+	void setImmunity(DDDDamageType type, boolean status);
 	
 	/**
 	 * Clear all immunities

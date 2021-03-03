@@ -12,22 +12,23 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.capability.providers.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.ArmorCategories;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ArmorDistribution extends Distribution implements IArmorDistribution
 {
 	public ArmorDistribution()
 	{
-		this(new NonNullMap<String, Float>(0.0f));
+		this(new NonNullMap<DDDDamageType, Float>(0.0f));
 	}
 	
 	@SafeVarargs
-	public ArmorDistribution(Tuple<String, Float>...weights)
+	public ArmorDistribution(Tuple<DDDDamageType, Float>...weights)
 	{
 		super(weights);
 	}
 	
-	public ArmorDistribution(Map<String, Float> resistMap)
+	public ArmorDistribution(Map<DDDDamageType, Float> resistMap)
 	{
 		super(resistMap);
 	}

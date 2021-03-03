@@ -40,7 +40,9 @@ import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorCategories;
+import yeelp.distinctdamagedescriptions.util.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
@@ -64,11 +66,11 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		 * instead of a locally wrapped Boolean copy, which may not update if the config is changed.
 		 * We want these config values not not require a restart (because it's not needed), so Supplier seems the best way to go.
 		 */
-		extraDists.put(DamageSource.ANVIL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
-		extraDists.put(DamageSource.CACTUS, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableCactusDamage, DamageDistribution.PIERCING_DISTRIBUTION));
-		extraDists.put(DamageSource.FALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
-		extraDists.put(DamageSource.FALLING_BLOCK, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallingBlockDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
-		extraDists.put(DamageSource.FLY_INTO_WALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFlyIntoWallDamage, DamageDistribution.BLUDGEONING_DISTRIBUTION));
+		extraDists.put(DamageSource.ANVIL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
+		extraDists.put(DamageSource.CACTUS, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableCactusDamage, DDDBuiltInDamageType.PIERCING.getBaseDistribution()));
+		extraDists.put(DamageSource.FALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
+		extraDists.put(DamageSource.FALLING_BLOCK, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallingBlockDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
+		extraDists.put(DamageSource.FLY_INTO_WALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFlyIntoWallDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
 	}
 	
 	/* ***********
@@ -140,9 +142,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots)
+	public Map<DDDDamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots)
 	{
-		NonNullMap<String, Tuple<Float, Float>> map = new NonNullMap<String, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
+		NonNullMap<DDDDamageType, Tuple<Float, Float>> map = new NonNullMap<DDDDamageType, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
 		for(EntityEquipmentSlot slot : slots)
 		{
 			ItemStack stack = entity.getItemStackFromSlot(slot);
@@ -157,7 +159,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 				float armor = armorItem.damageReduceAmount;
 				float toughness = armorItem.toughness;
 				ArmorCategories cats = armorResists.distributeArmor(armor, toughness);
-				for(Tuple<String, Float> t : cats.getNonZeroArmorValues())
+				for(Tuple<DDDDamageType, Float> t : cats.getNonZeroArmorValues())
 				{
 					map.compute(t.getFirst(), (s, v) -> new Tuple<Float, Float>(v.getFirst() + t.getSecond(), v.getSecond() + cats.getToughness(s)));
 				}
@@ -168,9 +170,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	
 	@Override
 	@Nullable
-	public Map<String, Float> classifyDamage(@Nonnull DamageSource src, float damage)
+	public Map<DDDDamageType, Float> classifyDamage(@Nonnull DamageSource src, float damage)
 	{
-		Map<String, Float> map = new NonNullMap<String, Float>(0.0f);
+		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
 		boolean slyStrike = false;
 		IDamageDistribution dist;
 		if(src.getImmediateSource() instanceof EntityLivingBase)
@@ -198,18 +200,18 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			dist = getExtraDamageDistribution(src);
 			if(dist == null)
 			{
-				Set<String> types = DDDRegistries.damageTypes.getCustomDamageContext(src);
+				Set<DDDDamageType> types = DDDRegistries.damageTypes.getCustomDamageContext(src);
 				if(types.size() == 0)
 				{
 					return null;
 				}
 				else
 				{
-					NonNullMap<String, Float> custMap = new NonNullMap<String, Float>(0.0f);
+					NonNullMap<DDDDamageType, Float> custMap = new NonNullMap<DDDDamageType, Float>(0.0f);
 					float weight = 1.0f/types.size();
-					for(String s : types)
+					for(DDDDamageType t : types)
 					{
-						custMap.put(s, weight);
+						custMap.put(t, weight);
 					}
 					dist = new DamageDistribution(custMap);
 				}
@@ -220,10 +222,10 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<String, Float> classifyResistances(Set<String> types, IMobResistances resists)
+	public Map<DDDDamageType, Float> classifyResistances(Set<DDDDamageType> types, IMobResistances resists)
 	{
-		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
-		for(String s : types)
+		NonNullMap<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+		for(DDDDamageType s : types)
 		{
 			map.put(s, resists.getResistance(s));
 		}
@@ -265,7 +267,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		
 		if(!ModConfig.dmg.useCustomDamageTypes)
 		{
-			types.removeIf(s -> s.startsWith("ddd_"));
+			//types.removeIf(s -> s.startsWith("ddd_"));
 		}
 		if(types.size() == 0)
 		{

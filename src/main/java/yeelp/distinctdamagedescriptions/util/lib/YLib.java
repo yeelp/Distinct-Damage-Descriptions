@@ -60,4 +60,16 @@ public final class YLib
 			return arr;
 		}
 	}
+	
+	/**
+	 * Capitalize the first character in a String
+	 * @param s
+	 * @return a new String with the first character capitalized.
+	 */
+	public static String capitalize(String s)
+	{
+		char[] cs = s.toCharArray();
+		cs[0] = Character.toTitleCase(cs[0]);
+		return new String(cs);
+	}
 }

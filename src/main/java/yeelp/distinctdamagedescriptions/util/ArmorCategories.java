@@ -14,13 +14,13 @@ import net.minecraft.util.Tuple;
  */
 public final class ArmorCategories
 {
-	private Map<String, Float> armor, toughness;
+	private Map<DDDDamageType, Float> armor, toughness;
 	/**
 	 * Create a new base armor
 	 * @param armorMap the distribution of armor points
 	 * @param toughnessMap the distribution of toughness points.
 	 */
-	public ArmorCategories(Map<String, Float> armorMap, Map<String, Float> toughnessMap)
+	public ArmorCategories(Map<DDDDamageType, Float> armorMap, Map<DDDDamageType, Float> toughnessMap)
 	{
 		this.armor = armorMap;
 		this.toughness = toughnessMap;
@@ -31,7 +31,7 @@ public final class ArmorCategories
 	 * @param type
 	 * @return armor points
 	 */
-	public float getArmor(String type)
+	public float getArmor(DDDDamageType type)
 	{
 		return this.armor.get(type);
 	}
@@ -41,27 +41,27 @@ public final class ArmorCategories
 	 * @param type
 	 * @return toughness points.
 	 */
-	public float getToughness(String type)
+	public float getToughness(DDDDamageType type)
 	{
 		return this.toughness.get(type);
 	}
 	
-	public Iterable<Tuple<String, Float>> getNonZeroArmorValues()
+	public Iterable<Tuple<DDDDamageType, Float>> getNonZeroArmorValues()
 	{
 		return getNonZeroValues(armor);
 	}
 	
-	public Iterable<Tuple<String, Float>> getNonZeroToughnessValues()
+	public Iterable<Tuple<DDDDamageType, Float>> getNonZeroToughnessValues()
 	{
 		return getNonZeroValues(toughness);
 	}
 	
-	private Iterable<Tuple<String, Float>> getNonZeroValues(Map<String, Float> map)
+	private Iterable<Tuple<DDDDamageType, Float>> getNonZeroValues(Map<DDDDamageType, Float> map)
 	{
-		List<Tuple<String, Float>> lst = new LinkedList<Tuple<String, Float>>();
-		for(Entry<String, Float> entry : map.entrySet())
+		List<Tuple<DDDDamageType, Float>> lst = new LinkedList<Tuple<DDDDamageType, Float>>();
+		for(Entry<DDDDamageType, Float> entry : map.entrySet())
 		{
-			lst.add(new Tuple<String, Float>(entry.getKey(), entry.getValue()));
+			lst.add(new Tuple<DDDDamageType, Float>(entry.getKey(), entry.getValue()));
 		}
 		return lst;
 	}

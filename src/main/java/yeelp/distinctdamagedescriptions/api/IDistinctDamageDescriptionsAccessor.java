@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes;
 import yeelp.distinctdamagedescriptions.capability.CreatureType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
@@ -21,6 +20,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 
 public abstract interface IDistinctDamageDescriptionsAccessor
 {
@@ -88,7 +88,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @param entity
 	 * @return A Map mapping damage types to a tuple (armor, toughness)
 	 */
-	default Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity)
+	default Map<DDDDamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity)
 	{
 		return getArmorValuesForEntity(entity, ModConsts.ARMOR_SLOTS_ITERABLE);
 	}
@@ -98,7 +98,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @param slots the slots to consider. Other slots are ignored, even if they have armor in them.
 	 * @return A Map mapping damage types to a tuple (armor, toughness).
 	 */
-	Map<String, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots);
+	Map<DDDDamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots);
 	
 	/**
 	 * classify and categorize damage.
@@ -108,7 +108,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * null is returned if the damage source wasn't classified and categorized.
 	 */
 	@Nullable
-	Map<String, Float> classifyDamage(@Nonnull DamageSource src, float damage);
+	Map<DDDDamageType, Float> classifyDamage(@Nonnull DamageSource src, float damage);
 	
 	/**
 	 * Divide resistances into categories
@@ -116,7 +116,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @param resists
 	 * @return a map of relevant resistances. If a mob is immune to a damage type, {@link Float#MAX_VALUE} is put in the map.
 	 */
-	Map<String, Float> classifyResistances(Set<String> types, IMobResistances resists);
+	Map<DDDDamageType, Float> classifyResistances(Set<DDDDamageType> types, IMobResistances resists);
 	
 	/**
 	 * Apply DDD modifications to a DamageSource
@@ -137,11 +137,9 @@ public abstract interface IDistinctDamageDescriptionsAccessor
 	 * @param damageType
 	 * @return true if physical, false if not.
 	 */
-	default boolean isPhysicalDamage(String damageType)
+	default boolean isPhysicalDamage(DDDDamageType type)
 	{
-    	return damageType.equals(InternalDamageTypes.BLUDGEONING) ||
-    		   damageType.equals(InternalDamageTypes.PIERCING) ||
-    		   damageType.equals(InternalDamageTypes.SLASHING);
+    	return type.getType() == DDDDamageType.Type.PHYSICAL;
     }
 	
 }

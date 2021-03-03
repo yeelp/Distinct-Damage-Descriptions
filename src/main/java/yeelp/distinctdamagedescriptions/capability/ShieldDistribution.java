@@ -13,30 +13,31 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ShieldDistribution extends Distribution implements IDistribution
 {
 	public ShieldDistribution()
 	{
-		this(new NonNullMap<String, Float>(1.0f));
+		this(new NonNullMap<DDDDamageType, Float>(1.0f));
 	}
 	
-	public ShieldDistribution(Map<String, Float> blockMap)
+	public ShieldDistribution(Map<DDDDamageType, Float> blockMap)
 	{
 		super(blockMap);
 	}
 	
 	@SafeVarargs
-	public ShieldDistribution(Tuple<String, Float>... mappings)
+	public ShieldDistribution(Tuple<DDDDamageType, Float>... mappings)
 	{
 		super(mappings);
 	}
 	
-	public Map<String, Float> block(Map<String, Float> fullDamage)
+	public Map<DDDDamageType, Float> block(Map<DDDDamageType, Float> fullDamage)
 	{
-		Map<String, Float> remainingDamage = new NonNullMap<String, Float>(0.0f);
-		for(Entry<String, Float> entry : fullDamage.entrySet())
+		Map<DDDDamageType, Float> remainingDamage = new NonNullMap<DDDDamageType, Float>(0.0f);
+		for(Entry<DDDDamageType, Float> entry : fullDamage.entrySet())
 		{
 			remainingDamage.put(entry.getKey(), blockDamage(entry.getValue(), this.getWeight(entry.getKey())));
 		}

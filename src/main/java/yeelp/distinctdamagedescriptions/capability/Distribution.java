@@ -12,12 +12,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public abstract class Distribution implements IDistribution
 {
-	protected Map<String, Float> distMap;
+	protected Map<DDDDamageType, Float> distMap;
 	
 	protected boolean invariantViolated(Collection<Float> weights)
 	{
@@ -36,10 +38,10 @@ public abstract class Distribution implements IDistribution
 	}
 	
 	@SafeVarargs
-	Distribution(Tuple<String, Float>... weights)
+	Distribution(Tuple<DDDDamageType, Float>... weights)
 	{
-		distMap = new NonNullMap<String, Float>(0.0f);
-		for(Tuple<String, Float> t : weights)
+		distMap = new NonNullMap<DDDDamageType, Float>(0.0f);
+		for(Tuple<DDDDamageType, Float> t : weights)
 		{
 			if(t.getSecond() < 0.0f)
 			{
@@ -52,7 +54,7 @@ public abstract class Distribution implements IDistribution
 		}
 	}
 	
-	Distribution(Map<String, Float> weightMap)
+	Distribution(Map<DDDDamageType, Float> weightMap)
 	{
 		this.distMap = weightMap;
 	}
@@ -61,10 +63,10 @@ public abstract class Distribution implements IDistribution
 	public NBTTagList serializeNBT()
 	{
 		NBTTagList lst = new NBTTagList();
-		for(Entry<String, Float> entry : this.distMap.entrySet())
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
 		{
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("type", entry.getKey());
+			tag.setString("type", entry.getKey().getTypeName());
 			tag.setFloat("weight", entry.getValue());
 			lst.appendTag(tag);
 		}
@@ -74,28 +76,28 @@ public abstract class Distribution implements IDistribution
 	@Override
 	public void deserializeNBT(NBTTagList lst)
 	{
-		this.distMap = new NonNullMap<String, Float>(0.0f);
+		this.distMap = new NonNullMap<DDDDamageType, Float>(0.0f);
 		for(NBTBase nbt : lst)
 		{
 			NBTTagCompound tag = (NBTTagCompound) nbt;
-			this.distMap.put(tag.getString("type"), tag.getFloat("weight"));
+			this.distMap.put(DDDRegistries.damageTypes.get(tag.getString("type")), tag.getFloat("weight"));
 		}
 	}
 
 	@Override
-	public float getWeight(String type)
+	public float getWeight(DDDDamageType type)
 	{
 		return distMap.get(type);
 	}
 	
 	@Override
-	public void setWeight(String type, float amount)
+	public void setWeight(DDDDamageType type, float amount)
 	{
 		distMap.put(type, amount);
 	}
 	
 	@Override
-	public void setNewWeights(Map<String, Float> map) throws InvariantViolationException
+	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException
 	{
 		if(invariantViolated(map.values()))
 		{
@@ -108,12 +110,12 @@ public abstract class Distribution implements IDistribution
 	}
 	
 	@Override
-	public Set<String> getCategories()
+	public Set<DDDDamageType> getCategories()
 	{
-		HashSet<String> set = new HashSet<String>();
-		for(Entry<String, Float> entry : distMap.entrySet())
+		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
+		for(Entry<DDDDamageType, Float> entry : distMap.entrySet())
 		{
-			if((DDDAPI.accessor.isPhysicalDamage(entry.getKey()) || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
+			if((entry.getKey().getType() == DDDDamageType.Type.PHYSICAL || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
 			{
 				set.add(entry.getKey());
 			}
@@ -121,10 +123,10 @@ public abstract class Distribution implements IDistribution
 		return set;
 	}
 
-	NonNullMap<String, Float> distribute(float value)
+	NonNullMap<DDDDamageType, Float> distribute(float value)
 	{
-		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
-		for(Entry<String, Float> entry : this.distMap.entrySet())
+		NonNullMap<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
 		{
 			map.put(entry.getKey(), value * entry.getValue());
 		}

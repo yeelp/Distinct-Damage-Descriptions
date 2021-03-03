@@ -1,7 +1,11 @@
 package yeelp.distinctdamagedescriptions.util;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
  * Mob Resistances. Used on startup.
@@ -20,13 +24,13 @@ public class MobResistanceCategories extends ResistanceCategories
 	 * @param adaptiveChance chance adaptability is present
 	 * @param adaptiveAmount amount resistances change by if adaptive.
 	 */
-	public MobResistanceCategories(Map<String, Float> resistances, Collection<String> immunities, float adaptiveChance, float adaptiveAmount)
+	public MobResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, float adaptiveChance, float adaptiveAmount)
 	{
 		super(resistances, immunities);
 		this.adaptive = adaptiveChance;
 		this.adaptiveAmount = adaptiveAmount;
 	}
-	
+
 	/**
 	 * Get adaptability chance
 	 * @return adaptability chance

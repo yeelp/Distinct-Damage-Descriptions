@@ -12,6 +12,7 @@ public class ModConsts
 	public static final String VERSION = "${version}";
 	
 	public static final String CRAFTTWEAKER_ID = "crafttweaker";
+	@Deprecated
 	public static final class InternalDamageTypes
 	{
 		public static final String SLASHING = "slashing", PIERCING = "piercing", BLUDGEONING = "bludgeoning";
