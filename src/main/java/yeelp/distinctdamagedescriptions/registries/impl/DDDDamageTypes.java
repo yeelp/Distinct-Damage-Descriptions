@@ -25,12 +25,12 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.IDDDDamageTypeRegistry;
-import yeelp.distinctdamagedescriptions.util.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
@@ -157,11 +157,5 @@ public final class DDDDamageTypes extends DDDBaseRegistry<DDDDamageType> impleme
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	@Override
-	public void updateExplosionDamage()
-	{
-		
 	}
 }

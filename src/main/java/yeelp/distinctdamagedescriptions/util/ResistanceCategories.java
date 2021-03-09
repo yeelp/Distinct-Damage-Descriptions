@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+
 /**
  * A simple container for storing resistances
  * @author Yeelp

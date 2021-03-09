@@ -2,7 +2,7 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import java.util.Map;
 
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 /**
  * Damage Distribution capability. <p>

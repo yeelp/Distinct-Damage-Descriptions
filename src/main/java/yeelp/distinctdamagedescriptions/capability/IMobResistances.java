@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 /**
  * A wrapped DamageResistance with additional information about mob adaptive immunity.

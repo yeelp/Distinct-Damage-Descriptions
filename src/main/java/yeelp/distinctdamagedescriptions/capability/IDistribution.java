@@ -5,7 +5,7 @@ import java.util.Set;
 
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public abstract interface IDistribution extends ICapabilitySerializable<NBTTagList>

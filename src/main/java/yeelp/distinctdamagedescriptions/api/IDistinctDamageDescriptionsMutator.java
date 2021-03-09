@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 
 public interface IDistinctDamageDescriptionsMutator
 {

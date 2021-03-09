@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.api.impl;
 
 public class DDDCustomDamageType extends DDDAbstractDamageType
 {

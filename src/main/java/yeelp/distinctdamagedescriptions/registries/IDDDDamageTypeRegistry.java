@@ -14,9 +14,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
@@ -73,7 +74,10 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType>
 	/**
 	 * Update the explosion damage from the config
 	 */
-	void updateExplosionDamage();
+	default void updateExplosionDamage()
+	{
+		DDDExplosionDist.update();
+	}
 	
 	default ITextComponent getDeathMessage(IDamageDistribution dist, DDDDamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender)
 	{

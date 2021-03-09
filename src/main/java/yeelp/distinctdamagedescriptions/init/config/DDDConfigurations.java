@@ -2,13 +2,13 @@ package yeelp.distinctdamagedescriptions.init.config;
 
 import java.util.HashSet;
 
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 

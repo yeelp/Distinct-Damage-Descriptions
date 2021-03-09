@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 /**
  * A container to store armor and toughness values once distributed.

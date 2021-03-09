@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions;
 
+import java.util.function.Supplier;
+
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
@@ -232,7 +234,7 @@ public class ModConfig
 			public boolean enableWitherDamage = true;
 			
 			@Name("Potion Distribution")
-			@Comment("Enable/disable potion damage distribution. Thrown potions of healing will inflict radiant damage against undead, and thrown potions of harming will inflict necrotic damage against non undead when enabled. It still can't be blocked by armor, but it can be blocked by resistances")
+			@Comment("Enable/disable potion damage distribution. Thrown potions of healing will inflict radiant damage against undead, and thrown potions of harming will inflict necrotic damage against non undead when enabled. It still can't be blocked by armor, but it can be blocked by resistances. Also applies to Area of Effect clouds")
 			public boolean enablePotionDamage = true;
 
 			@Name("Poison Effect Distribution")
@@ -250,6 +252,18 @@ public class ModConfig
 			@Name("Guardian Beam Distribution")
 			@Comment("Enable/disable guardian beam distribution. Guardian beams (not the spikes) will inflict force damage when enabled.")
 			public boolean enableGuardianDamage = true;
+			
+			@Name("Fire Distribution")
+			@Comment("Enable/disable the fire damage distribution. All fire sources (fire, lava, magma etc.) will count as fire damage when enabled.")
+			public boolean enableFireDamage = true;
+			
+			@Name("Daylight Burning Distribution")
+			@Comment("Enable/disable daylight burning distribution. Undead burning in the day exposed to the sky will receive radiant damage when enabled.")
+			public boolean enableDaylightBurningDamage = true;
+
+			@Name("Guardian Thorns Damage")
+			@Comment("Enable/disable guardian thorn distribution. Guardian's thorn attack will inflict piercing damage when enabled.")
+			public boolean enableGuardianSpikesDamage = true;
 		}
 	}
 	

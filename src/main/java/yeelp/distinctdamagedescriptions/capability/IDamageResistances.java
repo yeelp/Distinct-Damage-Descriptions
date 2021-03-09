@@ -2,7 +2,7 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import yeelp.distinctdamagedescriptions.util.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 /**
  * Damage Resistances capability base.

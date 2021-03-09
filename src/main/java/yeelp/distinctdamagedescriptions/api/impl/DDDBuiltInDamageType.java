@@ -1,5 +1,6 @@
-package yeelp.distinctdamagedescriptions.util;
+package yeelp.distinctdamagedescriptions.api.impl;
 
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
 public final class DDDBuiltInDamageType extends DDDAbstractDamageType
