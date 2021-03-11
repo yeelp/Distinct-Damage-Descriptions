@@ -1,8 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries;
 
 import javax.annotation.Nonnull;
-
-import com.sun.istack.internal.Nullable;
+import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
