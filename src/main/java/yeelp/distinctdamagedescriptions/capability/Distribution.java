@@ -11,9 +11,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.ModConfig;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDAbstractMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
@@ -123,13 +123,13 @@ public abstract class Distribution implements IDistribution
 		return set;
 	}
 
-	NonNullMap<DDDDamageType, Float> distribute(float value)
+	DDDAbstractMap<Float> distribute(float value)
 	{
 		NonNullMap<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
 		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
 		{
 			map.put(entry.getKey(), value * entry.getValue());
 		}
-		return map;
+		return (DDDAbstractMap<Float>) map;
 	}
 }

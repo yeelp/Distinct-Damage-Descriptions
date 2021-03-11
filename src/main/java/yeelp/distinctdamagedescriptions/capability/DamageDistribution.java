@@ -12,13 +12,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
-import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
@@ -70,15 +68,15 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	@Override
-	public Map<DDDDamageType, Float> distributeDamage(float dmg)
+	public DamageMap distributeDamage(float dmg)
 	{
 		if(ModConfig.dmg.useCustomDamageTypes)
 		{
-			return super.distribute(dmg);
+			return (DamageMap) super.distribute(dmg);
 		}
 		else
 		{
-			NonNullMap<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+			DamageMap map = new DamageMap();
 			float remainingWeight = distMap.get(DDDBuiltInDamageType.BLUDGEONING) + distMap.get(DDDBuiltInDamageType.PIERCING) + distMap.get(DDDBuiltInDamageType.BLUDGEONING);
 			long physicalDamageCount = distMap.keySet().stream().filter((s) -> s.getType() == DDDDamageType.Type.PHYSICAL).count();
 			if(physicalDamageCount > 0)

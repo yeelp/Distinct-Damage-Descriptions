@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.init.config;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-
 /**
  * Stores values from config on startup for easy access.
  * @author dunca

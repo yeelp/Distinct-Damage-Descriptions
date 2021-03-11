@@ -1,8 +1,6 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.lwjgl.opengl.GL11;
 
@@ -30,7 +28,6 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
@@ -86,14 +83,13 @@ public class TooltipHandler extends Handler
 		{
 			ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
 			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
-			Optional<MobResistanceCategories> oMobCats = DDDRegistries.mobResists.getResistancesForMob(loc.toString());
-			MobResistanceCategories mobCats;
+			MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(loc.toString());
 			int index = 1;
-			if(oMobCats.isPresent())
+			if(mobCats != null)
 			{
 				if(ctrlHeld)
 				{
-					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(oMobCats.get()));
+					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(mobCats));
 				}
 				tooltips.add(index, mobResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 			}

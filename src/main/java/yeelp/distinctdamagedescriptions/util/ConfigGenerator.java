@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.BLUDGEONING;
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.PIERCING;
-import static yeelp.distinctdamagedescriptions.ModConsts.InternalDamageTypes.SLASHING;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;

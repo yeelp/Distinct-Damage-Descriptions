@@ -14,9 +14,9 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.capability.providers.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class CreatureType implements ICreatureType
 {

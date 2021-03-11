@@ -21,13 +21,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDCustomDistributions;
 import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
 import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
 
@@ -41,13 +41,13 @@ public final class DDDJsonIO
 	private static File[] creatureJsonFiles, damageTypeJsonFiles;
 	private static File creatureDirectory, damageTypeDirectory;
 	
-	public static void init()
+	public static DDDCustomDistributions init()
 	{
 		File mainDirectory = DistinctDamageDescriptions.getModConfigDirectory();
 		creatureDirectory = new File(mainDirectory, "creatureTypes");
 		damageTypeDirectory = new File(mainDirectory, "damageTypes");
 		checkJSON();
-		loadFromJSON();
+		return loadFromJSON();
 		
 	}
 	
@@ -123,10 +123,11 @@ public final class DDDJsonIO
 		}
 	}
 	
-	private static void loadFromJSON()
+	private static DDDCustomDistributions loadFromJSON()
 	{
-		loadDamageTypes();
+		DDDCustomDistributions dists = loadDamageTypes();
 		loadCreatureTypes();
+		return dists;
 	}
 	
 	private static void loadCreatureTypes()
@@ -198,8 +199,9 @@ public final class DDDJsonIO
 			DistinctDamageDescriptions.info("Loaded Creature Types!");
 		}
 	}
-	private static void loadDamageTypes()
+	private static DDDCustomDistributions loadDamageTypes()
 	{
+		DDDCustomDistributions dists = new DDDCustomDistributions();
 		//CUSTOM DAMAGE TYPES FROM JSON
 		if(ModConfig.dmg.useCustomDamageTypes)
 		{
@@ -254,9 +256,13 @@ public final class DDDJsonIO
 								throw e;
 							}
 						}
-						DDDDamageType type = new DDDCustomDamageType(name, displayName, false, entityMsg, otherMsg, colour);
-						DDDRegistries.damageTypes.register(type);
-						DDDRegistries.damageTypes.registerDamageTypeData(type, datas);
+						DDDDamageType type = DDDRegistries.damageTypes.get(name);
+						if(type == null)
+						{
+							type = new DDDCustomDamageType(name, displayName, false, entityMsg, otherMsg, colour);
+							DDDRegistries.damageTypes.register(type);
+						}
+						dists.registerDamageTypeData(type, datas);
 					}
 					catch(FileNotFoundException e)
 					{
@@ -266,6 +272,7 @@ public final class DDDJsonIO
 			}
 			DistinctDamageDescriptions.info("Loaded Custom Damage Types!");
 		}
+		return dists;
 	}
 	
 	private static float getJsonFloat(JsonObject obj, String memberName, File f)

@@ -7,12 +7,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.DDDMultiTypeDistribution;
+import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
 
-public final class DDDExplosionDist implements DDDMultiTypeDistribution
+public final class DDDExplosionDist implements DDDPredefinedDistribution
 {
 	private static IDamageDistribution dist;
 	
@@ -28,15 +28,21 @@ public final class DDDExplosionDist implements DDDMultiTypeDistribution
 	}
 
 	@Override
-	public Set<DDDDamageType> classify(DamageSource source, EntityLivingBase target)
+	public Set<DDDDamageType> getTypes(DamageSource source, EntityLivingBase target)
 	{
 		return source.isExplosion() && this.enabled() ? dist.getCategories() : Collections.emptySet();
 	}
-
+	
 	@Override
-	public IDamageDistribution getDamageDistribution()
+	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target)
 	{
 		return dist;
+	}
+	
+	@Override
+	public String getName()
+	{
+		return "explosion";
 	}
 	
 	public static void update()
@@ -46,5 +52,4 @@ public final class DDDExplosionDist implements DDDMultiTypeDistribution
 			dist = new DamageDistribution(DDDConfigReader.buildMap(0.0f, DDDConfigReader.parseListOfTuples(ModConfig.dmg.extraDamage.explosionDist)));
 		}
 	}
-
 }

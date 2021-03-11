@@ -13,8 +13,8 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
 public abstract class DDDBuiltInForce extends AbstractSingleTypeDist
 {
-	public static final DDDBuiltInForce GUARDIAN_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableGuardianDamage, EntityGuardian.class);
-	public static final DDDBuiltInForce EVOKER_FANGS_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableEvokerFangsDamage, EntityEvokerFangs.class);
+	public static final DDDBuiltInForce GUARDIAN_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableGuardianDamage, EntityGuardian.class, "guardian");
+	public static final DDDBuiltInForce EVOKER_FANGS_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableEvokerFangsDamage, EntityEvokerFangs.class, "evokerFangs");
 	
 	DDDBuiltInForce(Supplier<Boolean> config)
 	{
@@ -46,22 +46,36 @@ public abstract class DDDBuiltInForce extends AbstractSingleTypeDist
 		protected boolean classifyForce(DamageSource source, EntityLivingBase target)
 		{
 			return source.damageType.equals("thorns") && !(source.getTrueSource() instanceof EntityGuardian);
+		}
+
+		@Override
+		public String getName()
+		{
+			return "thorns";
 		}	
 	}
 	
 	public static final class SourceBasedForceDist extends DDDBuiltInForce
 	{
 		private final Class<? extends Entity> clazz;
-		SourceBasedForceDist(Supplier<Boolean> config, Class<? extends Entity> clazz)
+		private final String name;
+		SourceBasedForceDist(Supplier<Boolean> config, Class<? extends Entity> clazz, String name)
 		{
 			super(config);
 			this.clazz = clazz;
+			this.name = name;
 		}
 
 		@Override
 		protected boolean classifyForce(DamageSource source, EntityLivingBase target)
 		{
 			return clazz.isInstance(source.getImmediateSource());
+		}
+
+		@Override
+		public String getName()
+		{
+			return name;
 		}	
 	}
 }

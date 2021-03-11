@@ -1,8 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Map;
-
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 
 /**
  * Damage Distribution capability. <p>
@@ -15,7 +13,7 @@ public interface IDamageDistribution extends IDistribution
 	/**
 	 * Distribute damage across all categories
 	 * @param dmg damage
-	 * @return a Map<String, Float> with {@code dmg} distributed across all categories
+	 * @return a DamageMap with {@code dmg} distributed across all categories
 	 */
-	Map<DDDDamageType, Float> distributeDamage(float dmg);
+	DamageMap distributeDamage(float dmg);
 }

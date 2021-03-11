@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.registries.impl.dists;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
@@ -35,5 +33,11 @@ public final class DDDBuiltInPoison extends AbstractSingleTypeDist
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "builtInPoison";
 	}
 }

@@ -1,12 +1,10 @@
 package yeelp.distinctdamagedescriptions.init.config;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.entity.Entity;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public class DDDProjectileConfiguration extends DDDBaseConfiguration<IDamageDistribution> implements IDDDProjectileConfiguration

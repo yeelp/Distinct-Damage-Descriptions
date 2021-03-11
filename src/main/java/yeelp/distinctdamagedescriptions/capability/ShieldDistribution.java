@@ -14,6 +14,7 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ShieldDistribution extends Distribution implements IDistribution
@@ -34,9 +35,9 @@ public class ShieldDistribution extends Distribution implements IDistribution
 		super(mappings);
 	}
 	
-	public Map<DDDDamageType, Float> block(Map<DDDDamageType, Float> fullDamage)
+	public DamageMap block(DamageMap fullDamage)
 	{
-		Map<DDDDamageType, Float> remainingDamage = new NonNullMap<DDDDamageType, Float>(0.0f);
+		DamageMap remainingDamage = new DamageMap();
 		for(Entry<DDDDamageType, Float> entry : fullDamage.entrySet())
 		{
 			remainingDamage.put(entry.getKey(), blockDamage(entry.getValue(), this.getWeight(entry.getKey())));

@@ -3,9 +3,6 @@ package yeelp.distinctdamagedescriptions.init.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-
 public class DDDBaseConfiguration<T> implements IDDDConfiguration<T>
 {
 	private final Map<String, T> map = new HashMap<String, T>();

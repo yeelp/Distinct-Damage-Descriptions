@@ -3,14 +3,13 @@ package yeelp.distinctdamagedescriptions.api.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +24,6 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
-import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -37,12 +35,14 @@ import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionP
 import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
 import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
-import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorCategories;
+import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
 {
@@ -141,9 +141,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 	
 	@Override
-	public Map<DDDDamageType, Tuple<Float, Float>> getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots)
+	public ArmorMap getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots)
 	{
-		NonNullMap<DDDDamageType, Tuple<Float, Float>> map = new NonNullMap<DDDDamageType, Tuple<Float, Float>>(new Tuple<Float, Float>(0.0f, 0.0f));
+		ArmorMap map = new ArmorMap();
 		for(EntityEquipmentSlot slot : slots)
 		{
 			ItemStack stack = entity.getItemStackFromSlot(slot);
@@ -160,7 +160,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 				ArmorCategories cats = armorResists.distributeArmor(armor, toughness);
 				for(Tuple<DDDDamageType, Float> t : cats.getNonZeroArmorValues())
 				{
-					map.compute(t.getFirst(), (s, v) -> new Tuple<Float, Float>(v.getFirst() + t.getSecond(), v.getSecond() + cats.getToughness(s)));
+					map.compute(t.getFirst(), (k, v) -> v.setValues(v.getArmor() + t.getSecond(), v.getToughness() + cats.getToughness(k)));
 				}
 			}
 		}
@@ -169,61 +169,47 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	
 	@Override
 	@Nullable
-	public Map<DDDDamageType, Float> classifyDamage(@Nonnull DamageSource src, float damage)
+	public Optional<IDamageDistribution> classifyDamage(@Nonnull DamageSource src, EntityLivingBase target)
 	{
-		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
-		boolean slyStrike = false;
-		IDamageDistribution dist;
-		if(src.getImmediateSource() instanceof EntityLivingBase)
+		DamageMap map = new DamageMap();
+		IDamageDistribution dist = DDDRegistries.distributions.getDamageDistribution(src, target);
+		if(dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1)
 		{
-			EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
-			ItemStack heldItem = attacker.getHeldItemMainhand();
-			boolean hasEmptyHand = heldItem.isEmpty();
-			if(!hasEmptyHand)
+			if(src.getImmediateSource() instanceof EntityLivingBase)
 			{
-				dist = getDamageDistribution(heldItem);
-				slyStrike = EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.slyStrike, attacker) > 0;
-			}
-			else
-			{
-				dist = getDamageDistribution(attacker);
-			}
-		}
-		else if(isValidProjectile(src))
-		{
-			IProjectile projectile = (IProjectile) src.getImmediateSource();
-			dist = getDamageDistribution(projectile);
-		}
-		else
-		{
-			dist = DDDRegistries.damageTypes.getExtraDamageDistribution(src);
-			if(dist == null)
-			{
-				Set<DDDDamageType> types = DDDRegistries.damageTypes.getCustomDamageContext(src);
-				if(types.size() == 0)
+				EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
+				ItemStack heldItem = attacker.getHeldItemMainhand();
+				boolean hasEmptyHand = heldItem.isEmpty();
+				if(!hasEmptyHand)
 				{
-					return null;
+					dist = getDamageDistribution(heldItem);
 				}
 				else
 				{
-					NonNullMap<DDDDamageType, Float> custMap = new NonNullMap<DDDDamageType, Float>(0.0f);
-					float weight = 1.0f/types.size();
-					for(DDDDamageType t : types)
-					{
-						custMap.put(t, weight);
-					}
-					dist = new DamageDistribution(custMap);
+					dist = getDamageDistribution(attacker);
 				}
 			}
+			else if(isValidProjectile(src))
+			{
+				IProjectile projectile = (IProjectile) src.getImmediateSource();
+				dist = getDamageDistribution(projectile);
+			}
+			return Optional.of(dist);
 		}
-		map = dist.distributeDamage(damage);
-		return map;
+		else
+		{
+			return Optional.empty();
+		}
 	}
 	
 	@Override
-	public Map<DDDDamageType, Float> classifyResistances(Set<DDDDamageType> types, IMobResistances resists)
+	public ResistMap classifyResistances(Set<DDDDamageType> types, IMobResistances resists)
 	{
-		NonNullMap<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+		ResistMap map = new ResistMap();
+		if(types.isEmpty() || resists == null)
+		{
+			return map;
+		}
 		for(DDDDamageType s : types)
 		{
 			map.put(s, resists.getResistance(s));
@@ -250,22 +236,14 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	
 	private static boolean isValidProjectile(DamageSource src)
 	{
-		Entity entityIn = src.getImmediateSource();
-		if(entityIn instanceof IProjectile)
-		{
-			return DDDConfigurations.projectiles.isProjectilePairRegistered(entityIn) || !src.isMagicDamage();
-		}
-		else
-		{
-			return false;
-		}
+		return DDDConfigurations.projectiles.configured(YResources.getEntityIDString(src.getImmediateSource()).orElse(""));
 	}
 	
 	/***********
 	 * MUTATOR *
 	 ***********/
 	@Override
-	public void setPlayerResistances(EntityPlayer player, Map<DDDDamageType, Float> newResists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount)
+	public void setPlayerResistances(EntityPlayer player, ResistMap newResists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount)
 	{
 		IMobResistances mobResists = getMobResistances(player);
 		for(Entry<DDDDamageType, Float> entry : newResists.entrySet())

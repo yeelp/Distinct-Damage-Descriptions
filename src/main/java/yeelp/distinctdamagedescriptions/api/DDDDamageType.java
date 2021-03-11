@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.api;
 import javax.annotation.Nullable;
 
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistribution;
 
 /**
  * Basic skeleton of a DDD damage type.

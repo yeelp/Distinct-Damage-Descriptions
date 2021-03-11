@@ -1,9 +1,9 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
+import yeelp.distinctdamagedescriptions.util.ResistMap;
 
 public interface IDistinctDamageDescriptionsMutator
 {
@@ -15,5 +15,5 @@ public interface IDistinctDamageDescriptionsMutator
 	 * @param adaptive adaptability status
 	 * @param adaptiveAmount amount for adaptability
 	 */
-	public void setPlayerResistances(EntityPlayer player, Map<DDDDamageType, Float> newReists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount);
+	public void setPlayerResistances(EntityPlayer player, ResistMap newReists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount);
 }

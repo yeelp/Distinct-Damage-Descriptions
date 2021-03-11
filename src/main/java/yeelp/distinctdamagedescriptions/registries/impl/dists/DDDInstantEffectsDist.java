@@ -3,6 +3,9 @@ package yeelp.distinctdamagedescriptions.registries.impl.dists;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
@@ -19,10 +22,11 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.DDDSingleTypeDistribution;
+import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 
-public final class DDDInstantEffectsDist implements DDDSingleTypeDistribution
+public final class DDDInstantEffectsDist implements DDDPredefinedDistribution
 {	
 	private static final Field CLOUD_POTIONS = ObfuscationReflectionHelper.findField(EntityAreaEffectCloud.class, "field_184503_f");
 	
@@ -33,7 +37,24 @@ public final class DDDInstantEffectsDist implements DDDSingleTypeDistribution
 	}
 	
 	@Override
-	public DDDDamageType classify(DamageSource source, EntityLivingBase target)
+	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target)
+	{
+		return Sets.newHashSet(classify(src, target));
+	}
+
+	@Override
+	public String getName()
+	{
+		return "instantPotions";
+	}
+
+	@Override
+	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target)
+	{
+		return classify(src, target).getBaseDistribution();
+	}
+
+	private DDDDamageType classify(DamageSource source, EntityLivingBase target)
 	{
 		DDDDamageType type = DDDBuiltInDamageType.NORMAL;
 		if(enabled())
@@ -93,5 +114,4 @@ public final class DDDInstantEffectsDist implements DDDSingleTypeDistribution
 			return Collections.emptyList();
 		}
 	}
-
 }

@@ -38,4 +38,10 @@ public final class SimpleBuiltInDist extends AbstractSingleTypeDist
 	{
 		return this.src == source;
 	}
+
+	@Override
+	public String getName()
+	{
+		return this.src.damageType;
+	}
 }

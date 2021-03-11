@@ -23,6 +23,12 @@ public final class DDDBuiltInPiercing extends AbstractSingleTypeDist
 	@Override
 	protected boolean useType(DamageSource source, EntityLivingBase target)
 	{
-		return source.damageType.equals("thorns") && source.getTrueSource() instanceof EntityGuardian;
+		return source.isMagicDamage() & source.damageType.equals("thorns") && source.getTrueSource() instanceof EntityGuardian;
+	}
+
+	@Override
+	public String getName()
+	{
+		return "builtInPiercing";
 	}
 }

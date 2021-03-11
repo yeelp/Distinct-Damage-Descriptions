@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions;
 
-import java.util.function.Supplier;
-
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
@@ -14,7 +12,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
@@ -434,7 +432,7 @@ public class ModConfig
 			{
 				ConfigManager.sync(ModConsts.MODID, Config.Type.INSTANCE);
 				DebugLib.updateStatus();
-				DDDRegistries.damageTypes.updateExplosionDamage();
+				DDDExplosionDist.update();
 			}
 		}
 		

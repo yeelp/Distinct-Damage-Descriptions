@@ -19,6 +19,7 @@ import yeelp.distinctdamagedescriptions.capability.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
+import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
@@ -67,6 +68,7 @@ public class DistinctDamageDescriptions
         new TooltipHandler().register();
         new CapabilityHandler().register();
         new MobHandler().register();
+        new DaylightTracker().register();
         MobResistances.register();
         ArmorDistribution.register();
         DamageDistribution.register();
