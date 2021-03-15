@@ -232,7 +232,7 @@ public final class DDDJsonIO
 						{
 							displayName = name;
 						}
-						int colour = getJsonInt(obj, "displayColour", f);
+						int colour = Integer.parseInt(getJsonString(obj, "displayColour", f), 16);
 						JsonArray arr = getJsonArray(obj, "damageTypes", f);
 						JsonObject msgs = obj.get("deathMessages").getAsJsonObject();
 						String entityMsg = getJsonString(msgs, "deathHasAttacker", f);
@@ -261,6 +261,10 @@ public final class DDDJsonIO
 						{
 							type = new DDDCustomDamageType(name, displayName, false, entityMsg, otherMsg, colour);
 							DDDRegistries.damageTypes.register(type);
+						}
+						else
+						{
+							DistinctDamageDescriptions.info(String.format("ddd_%s is already registered with display name %s; will use this instead...", name, type.getDisplayName()));
 						}
 						dists.registerDamageTypeData(type, datas);
 					}

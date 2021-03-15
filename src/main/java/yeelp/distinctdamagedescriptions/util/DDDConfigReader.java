@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,12 +12,14 @@ import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.init.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
@@ -57,7 +60,7 @@ public final class DDDConfigReader
 				{
 					NonNullMap<DDDDamageType, Float> map = buildMap(0.0f, parseListOfTuples(arr[1]));
 					Set<DDDDamageType> immunities = parseImmunitiesFromArray(arr[2]);
-					DDDConfigurations.mobResists.put(arr[0], new MobResistanceCategories(map, immunities, Float.parseFloat(arr[2]), Float.parseFloat(arr[3])));
+					DDDConfigurations.mobResists.put(arr[0], new MobResistanceCategories(map, immunities, Float.parseFloat(arr[3]), Float.parseFloat(arr[4])));
 				}
 				catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
 				{
@@ -78,7 +81,7 @@ public final class DDDConfigReader
 			}
 			else
 			{
-				for(String str : arr[3].split(","))
+				for(String str : arr[2].split(","))
 				{
 					DDDConfigurations.projectiles.registerItemProjectilePair(str.trim(), arr[0]);
 				}
@@ -102,6 +105,7 @@ public final class DDDConfigReader
 			return null;
 		}
 		String[] contents = s.split(";");
+		DistinctDamageDescriptions.debug(Arrays.toString(contents));
     	try
 		{
     		config.put(contents[0], constructor.apply(buildMap(defaultVal, parseListOfTuples(contents[1]))));
@@ -111,6 +115,21 @@ public final class DDDConfigReader
 		{
 			DistinctDamageDescriptions.warn(s+" isn't a valid entry! Ignoring...");
 		}
+    	catch(UnsupportedOperationException f) //This occurs in NonNullMap, when the damage type isn't registered
+    	{
+    		DistinctDamageDescriptions.err(s+" references an invalid damage type! Perhaps it was spelled incorrectly?");
+    		throw f;
+    	}
+    	catch(InvariantViolationException g)
+    	{
+    		DistinctDamageDescriptions.err(s+" is formatted incorrectly! Read the config!");
+    		throw g;
+    	}
+    	catch(Exception h)
+    	{
+    		DistinctDamageDescriptions.err(s);
+    		throw h;
+    	}
     	return null;
     }
 	
@@ -124,8 +143,8 @@ public final class DDDConfigReader
 		List<Tuple<DDDDamageType, Float>> lst = new LinkedList<Tuple<DDDDamageType, Float>>();
 		for(String str : s.substring(2, s.length() - 2).split("\\),(?:\\s?)\\("))
 		{
-			String[] temp = s.split(",");
-			lst.add(new Tuple<DDDDamageType, Float>(DDDRegistries.damageTypes.get(temp[0].trim()), Float.parseFloat(temp[1].trim())));
+			String[] temp = str.split(",");
+			lst.add(new Tuple<DDDDamageType, Float>(parseDamageType(temp[0].trim()), Float.parseFloat(temp[1].trim())));
 		}
 		return lst;
 	}
@@ -159,9 +178,24 @@ public final class DDDConfigReader
 			String[] arr = s.substring(1, s.length() - 1).split(",");
 			for(String str : arr)
 			{
-				set.add(DDDRegistries.damageTypes.get(str.trim()));
+				set.add(parseDamageType(str.trim()));
 			}
 			return set;
+		}
+	}
+	
+	private static DDDDamageType parseDamageType(String s)
+	{
+		switch(s)
+		{
+			case "s":
+				return DDDBuiltInDamageType.SLASHING;
+			case "p":
+				return DDDBuiltInDamageType.PIERCING;
+			case "b":
+				return DDDBuiltInDamageType.BLUDGEONING;
+			default:
+				return DDDRegistries.damageTypes.get(s);
 		}
 	}
 }

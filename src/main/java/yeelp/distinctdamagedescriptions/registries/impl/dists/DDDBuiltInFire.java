@@ -19,7 +19,6 @@ public final class DDDBuiltInFire extends AbstractSingleTypeDist
 	public DDDBuiltInFire()
 	{
 		super(() -> ModConfig.dmg.extraDamage.enableFireDamage);
-		daylight = (DDDDaylightDist) DDDRegistries.distributions.get("daylight");
 	}
 
 	@Override
@@ -31,6 +30,10 @@ public final class DDDBuiltInFire extends AbstractSingleTypeDist
 	@Override
 	protected boolean useType(DamageSource source, EntityLivingBase target)
 	{
+		if(daylight == null)
+		{
+			daylight = (DDDDaylightDist) DDDRegistries.distributions.get("daylight");
+		}
 		if(daylight.enabled() && !daylight.useType(source, target))
 		{
 			return false;

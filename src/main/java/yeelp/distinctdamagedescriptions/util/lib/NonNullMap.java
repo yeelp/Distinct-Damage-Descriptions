@@ -72,16 +72,22 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 		return super.getOrDefault(key, defaultVal);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * <p> Since the NonNullMap disallows null keys and values, this method throws an {@link UnsupportedOperationException} if either the key or value is null.
+	 * @throws UnsupportedOperationException if the key or value is null
+	 */
 	@Override
 	public Value put(Key key, Value value) 
 	{
 		if(value == null)
 		{
-			throw new NullPointerException("Null values disallowed for NonNullMap");
+			throw new UnsupportedOperationException("Null values disallowed for NonNullMap");
 		}
 		else if(key == null)
 		{
-			throw new NullPointerException("Null keys disallowed for NonNullMap");
+			throw new UnsupportedOperationException("Null keys disallowed for NonNullMap");
 		}
 		return super.put(key, value);
 	}

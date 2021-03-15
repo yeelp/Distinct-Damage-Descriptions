@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.registries;
 
 import javax.annotation.Nullable;
 
+import yeelp.distinctdamagedescriptions.ModConfig;
+
 /**
  * Base registry for DDD
  * @author Yeelp
@@ -19,13 +21,33 @@ public interface IDDDRegistry<T>
 	 * Register an object
 	 * @param obj
 	 */
-	void register(T obj);
+	default void register(T obj)
+	{
+		register(ModConfig.suppressRegistrationInfo, obj);
+	}
+	
+	/**
+	 * Register an object
+	 * @param suppressOutput true if log output should be suppressed for this registration.
+	 * @param obj
+	 */
+	void register(boolean suppressOutput, T obj);
 	
 	/**
 	 * Register a collection of objects
 	 * @param objs
 	 */
-	void registerAll(@SuppressWarnings("unchecked") T... objs);
+	default void registerAll(@SuppressWarnings("unchecked") T... objs)
+	{
+		registerAll(ModConfig.suppressRegistrationInfo, objs);
+	}
+	
+	/**
+	 * Register a collection of objects
+	 * @param suppressOutput true if log output should be suppressed
+	 * @param objs
+	 */
+	void registerAll(boolean suppressOutput, @SuppressWarnings("unchecked") T...objs);
 	
 	/**
 	 * Check if an object is registered

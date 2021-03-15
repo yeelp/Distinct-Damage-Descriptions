@@ -115,6 +115,7 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution
 		{
 			update(type, d);
 		}
+		DistinctDamageDescriptions.info(String.format("Registered damage type info for type %s!", type.getDisplayName()));
 	}
 	
 	private void update(DDDDamageType type, DamageTypeData data)

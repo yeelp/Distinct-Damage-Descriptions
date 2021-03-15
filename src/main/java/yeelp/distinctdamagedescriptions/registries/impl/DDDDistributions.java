@@ -25,7 +25,7 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 {
 	public DDDDistributions()
 	{
-		super((dist) -> dist.getName());
+		super((dist) -> dist.getName(), "Distribution");
 	}
 
 	@Override

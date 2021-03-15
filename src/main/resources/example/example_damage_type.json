@@ -24,7 +24,7 @@
     //lightpurple
     //yellow
     //white
-    "displayColour": "green",
+    "displayColour": "00aa00",
     
     //A list of damage sources that cause this damage type
     "damageTypes": [

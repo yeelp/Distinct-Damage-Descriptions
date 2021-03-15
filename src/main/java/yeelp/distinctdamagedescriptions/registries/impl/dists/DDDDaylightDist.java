@@ -6,6 +6,7 @@ import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
 import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 
 public final class DDDDaylightDist extends AbstractSingleTypeDist
@@ -26,7 +27,7 @@ public final class DDDDaylightDist extends AbstractSingleTypeDist
 	{
 		if(source == DamageSource.ON_FIRE && target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD)
 		{
-			return DaylightTracker.isBurning(target.getUniqueID());
+			return DDDTrackers.daylight.isTracking(target.getUniqueID());
 		}
 		else
 		{

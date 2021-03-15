@@ -32,7 +32,7 @@ distinctdamagedescriptions.subtitle.immunity_hit=Attack blocked by immunity
 distinctdamagedescriptions.subtitle.adaptability_change=Adaptability changed
 distinctdamagedescriptions.subtitle.high_resist_hit=Attack nullified by resistances
 
-distinctdamagedescriptions.general.damage.mobbasedamage=Mob Base Damage
+distinctdamagedescriptions.general.damage.mobbasedmg=Mob Base Damage
 distinctdamagedescriptions.general.damage.projectiledamagetypes=Projectile Damage Types
 distinctdamagedescriptions.general.damage.itembasedamage=Item Base Damage
 distinctdamagedescriptions.general.resistance.armorresist=Armor Resistances

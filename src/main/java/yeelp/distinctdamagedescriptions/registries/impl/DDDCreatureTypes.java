@@ -14,7 +14,7 @@ public class DDDCreatureTypes extends DDDBaseRegistry<CreatureTypeData> implemen
 	private final Map<String, Set<CreatureTypeData>> typeMap = new NonNullMap<String, Set<CreatureTypeData>>(Sets.newHashSet(CreatureTypeData.UNKNOWN));
 	public DDDCreatureTypes()
 	{
-		super(d -> d.getTypeName());
+		super(d -> d.getTypeName(), "Creature Type");
 	}
 	
 	@Override

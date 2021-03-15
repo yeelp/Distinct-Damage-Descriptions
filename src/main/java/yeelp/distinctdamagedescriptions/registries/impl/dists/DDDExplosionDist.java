@@ -16,11 +16,6 @@ public final class DDDExplosionDist implements DDDPredefinedDistribution
 {
 	private static IDamageDistribution dist;
 	
-	static
-	{
-		update();
-	}
-	
 	@Override
 	public boolean enabled()
 	{

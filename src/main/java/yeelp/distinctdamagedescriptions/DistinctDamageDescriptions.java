@@ -18,6 +18,7 @@ import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
+import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
 import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
@@ -51,7 +52,7 @@ public class DistinctDamageDescriptions
         config = new Configuration(event.getSuggestedConfigurationFile());
         srcFile = event.getSourceFile();
         DDDAPI.init();
-        DDDRegistries.init();
+        DDDRegistries.preInit();  
         DDDConfigurations.init();
         DebugLib.updateStatus();
         if(Loader.isModLoaded(ModConsts.CRAFTTWEAKER_ID))
@@ -64,11 +65,12 @@ public class DistinctDamageDescriptions
 	@EventHandler
     public void init(FMLInitializationEvent event)
     {
+		DDDRegistries.init();
         new DamageHandler().register();
         new TooltipHandler().register();
         new CapabilityHandler().register();
         new MobHandler().register();
-        new DaylightTracker().register();
+        DDDTrackers.register();
         MobResistances.register();
         ArmorDistribution.register();
         DamageDistribution.register();
