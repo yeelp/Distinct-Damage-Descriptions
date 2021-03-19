@@ -12,15 +12,46 @@ import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
+/**
+ * A collection of all the configuration info DDD uses.
+ * @author Yeelp
+ *
+ */
 public abstract class DDDConfigurations
 {
+	/**
+	 * Configuration for items
+	 */
 	public static IDDDConfiguration<IDamageDistribution> items;
+	
+	/**
+	 * Configuration for armors
+	 */
 	public static IDDDConfiguration<IArmorDistribution> armors;
+	
+	/**
+	 * Configurations for shields
+	 */
 	public static IDDDConfiguration<ShieldDistribution> shields;
+	
+	/**
+	 * Configuration for mob damage
+	 */
 	public static IDDDConfiguration<IDamageDistribution> mobDamage;
+	
+	/**
+	 * Configurations for mob resistances
+	 */
 	public static IDDDConfiguration<MobResistanceCategories> mobResists;
+	
+	/**
+	 * Configuration for projectiles, which includes a method to get linked items
+	 */
 	public static IDDDProjectileConfiguration projectiles;
 	
+	/**
+	 * Initializes the configurations and reads from the config.
+	 */
 	public static void init()
 	{
 		items = new DDDBaseConfiguration<IDamageDistribution>(DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());

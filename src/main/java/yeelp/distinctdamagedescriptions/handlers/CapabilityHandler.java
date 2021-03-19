@@ -185,7 +185,10 @@ public class CapabilityHandler extends Handler
 	
 	public static void syncResistances(EntityPlayer player)
 	{
-		PacketHandler.INSTANCE.sendTo(new MobResistancesMessage(DDDAPI.accessor.getMobResistances(player)), (EntityPlayerMP) player);
+		if(!player.world.isRemote)
+		{
+			PacketHandler.INSTANCE.sendTo(new MobResistancesMessage(DDDAPI.accessor.getMobResistances(player)), (EntityPlayerMP) player);
+		}
 	}
 	
 	@Nonnull

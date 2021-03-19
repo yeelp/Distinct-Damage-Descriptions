@@ -156,12 +156,7 @@ public class DamageHandler extends Handler
 		MinecraftForge.EVENT_BUS.post(post);
 		totalDamage = (float) YMath.sum(post.getAllDamages().values());
 		DistinctDamageDescriptions.debug("new damage after deductions: "+totalDamage);
-		boolean resistancesUpdated = false; 
-		if(mobResists.hasAdaptiveResistance())
-		{
-			resistancesUpdated = mobResists.updateAdaptiveResistance(dmgMap.keySet().toArray(new DDDDamageType[0]));
-			DistinctDamageDescriptions.debug("Updating mob's adaptive resistance, since it is present...");	
-		}
+		boolean resistancesUpdated = DDDAPI.mutator.updateAdaptiveResistances(defender, dmgMap.keySet().toArray(new DDDDamageType[0])); 
 		//Only spawn particles and play sounds for players.
 		if(dmgSource.getTrueSource() instanceof EntityPlayer)
 		{

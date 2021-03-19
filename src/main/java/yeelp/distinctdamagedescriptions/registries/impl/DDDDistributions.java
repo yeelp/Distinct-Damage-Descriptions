@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.IDDDDistributionRegistry;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInFire;
@@ -66,7 +67,7 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 	{
 		T result;
 		Iterator<DDDPredefinedDistribution> it = map.values().iterator();
-		for(result = start; p.test(result) && it.hasNext(); next.apply(it.next()));
+		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()));
 		return result;
 	}
 }

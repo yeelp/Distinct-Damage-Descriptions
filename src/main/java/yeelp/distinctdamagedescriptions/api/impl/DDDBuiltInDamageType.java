@@ -3,6 +3,11 @@ package yeelp.distinctdamagedescriptions.api.impl;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
+/**
+ * Implementation of all built in damage types
+ * @author Yeelp
+ *
+ */
 public final class DDDBuiltInDamageType extends DDDAbstractDamageType
 {
 	public static final DDDDamageType UNKNOWN = new DDDBuiltInDamageType("unknown", false, null, null, 0);

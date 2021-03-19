@@ -12,9 +12,26 @@ import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 
+/**
+ * A skeletal implementation of {@link DDDPredefinedDistribution}, which makes implementing this interface easy
+ * for distributions that only use a single type. Classes that extend this need only provide implementations for
+ * {@link #getType()} which returns the DDDDamageType this dist uses and {@link #useType(DamageSource, EntityLivingBase)}
+ * Which returns {@code true} if and only if this distribution should use its type based off the given DamageSource and EntityLivingBase defender.
+ * <p>
+ * The constructor takes a {@link Supplier} of booleans, which should always return the config value that enables or disables this distribution.
+ * A Supplier is used as this abstracts away checking the config, and also allows the distribution to be enabled/disabled during gameplay.
+ * If you want the distribution to always be enabled (i.e. there is no such config values that toggles it on or off), use the no argument constructor.
+ * @author Yeelp
+ *
+ */
 public abstract class AbstractSingleTypeDist implements DDDPredefinedDistribution
 {
 	private final Supplier<Boolean> config;
+	
+	AbstractSingleTypeDist()
+	{
+		this(() -> true);
+	}
 	
 	AbstractSingleTypeDist(Supplier<Boolean> config)
 	{
@@ -27,8 +44,18 @@ public abstract class AbstractSingleTypeDist implements DDDPredefinedDistributio
 		return this.config.get();
 	}
 	
+	/**
+	 * Get the DDDDamageType this distribution uses.
+	 * @return the DDDDamageType this distribution uses.
+	 */
 	protected abstract DDDDamageType getType();
 	
+	/**
+	 * Should this distribution be used in this context?
+	 * @param source The DamageSource {@code target} was hit with
+	 * @param target The defending EntityLivingBase
+	 * @return {@code true} if the distribution should be used, {@code false} otherwise.
+	 */
 	protected abstract boolean useType(DamageSource source, EntityLivingBase target);
 	
 	@Override

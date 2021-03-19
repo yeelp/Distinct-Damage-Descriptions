@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.util;
 
-public final class ArmorMap extends DDDAbstractMap<ArmorValues>
+public final class ArmorMap extends DDDBaseMap<ArmorValues>
 {	
 	public ArmorMap()
 	{

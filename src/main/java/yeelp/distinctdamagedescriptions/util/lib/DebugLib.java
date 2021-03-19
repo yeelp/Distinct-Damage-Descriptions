@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import yeelp.distinctdamagedescriptions.ModConfig;
 
 /**
- * Organizes use methods for debug info here
+ * Organizes useful methods for debug info here
  * @author Yeelp
  *
  */
@@ -25,8 +25,7 @@ public final class DebugLib
 	
 	/**
 	 * Converts a Map to a collection of Strings, specifically a String of the form {{@code entries}}, 
-	 * where {@code entries} is a comma separated list of the map entries, of the form {@code (key<SEP>value)},
-	 * and {@code <SEP>} is the specified separator.
+	 * where {@code entries} is a comma separated list of the map entries, of the form {@code (key, value)},
 	 * @param <K> the type of keys in the map
 	 * @param <V> the type of values the keys map to
 	 * @param map the map

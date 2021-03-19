@@ -3,14 +3,17 @@ package yeelp.distinctdamagedescriptions.util;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
@@ -56,6 +59,82 @@ public final class TooltipUtils
 	private static final String grayColour = TextFormatting.GRAY.toString();
 	private static final String redColour = TextFormatting.DARK_RED.toString();
 	
+	public static class TooltipString implements Iterable<Tuple<Integer, TooltipComp>>
+	{
+		private final List<TooltipComp> comps;
+		private final int xStart, y;
+		TooltipString(int x, int y)
+		{
+			this.xStart = x;
+			this.y = y;
+			comps = new LinkedList<TooltipComp>();
+		}
+		
+		public int getY()
+		{
+			return this.y;
+		}
+		
+		public void add(TooltipComp comp)
+		{
+			comps.add(comp);
+		}
+		
+		@Override
+		public Iterator<Tuple<Integer, TooltipComp>> iterator()
+		{
+			return new TooltipIterator(this);
+		}
+		
+		private class TooltipIterator implements Iterator<Tuple<Integer, TooltipComp>>
+		{
+			private Iterator<TooltipComp> it;
+			private int x;
+			private TooltipIterator(TooltipString s)
+			{
+				this.x = xStart;
+				this.it = comps.iterator();
+			}
+
+			@Override
+			public boolean hasNext()
+			{
+				return it.hasNext();
+			}
+
+			@Override
+			public Tuple<Integer, TooltipComp> next()
+			{
+				TooltipComp comp = it.next();
+				Tuple<Integer, TooltipComp> t = new Tuple<Integer, TooltipComp>(x, comp);
+				x += Minecraft.getMinecraft().fontRenderer.getStringWidth(comp.text);
+				return t;
+			}
+			
+		}
+	}
+	
+	public static class TooltipComp
+	{
+		private String text;
+		private int colour;
+		
+		TooltipComp(String s, int colour)
+		{
+			this.text = s;
+			this.colour = colour;
+		}
+		
+		public String getText()
+		{
+			return text;
+		}
+		
+		public int getColour()
+		{
+			return colour;
+		}
+	}
 	static
 	{
 		damageTypeTooltips.put(DDDBuiltInDamageType.SLASHING.getTypeName(), slashTooltip);
@@ -68,7 +147,7 @@ public final class TooltipUtils
 		return buildDistTooltip(dist, grayColour, damageTooltip.getFormattedText());
 	}
 	
-	public static final List<String> buildDamageDistTooltips(DDDAbstractMap<Float> dist)
+	public static final List<String> buildDamageDistTooltips(DDDBaseMap<Float> dist)
 	{
 		return buildDistTooltip(dist, grayColour, damageTooltip.getFormattedText());
 	}
@@ -142,7 +221,7 @@ public final class TooltipUtils
 		return lst;
 	}
 	
-	private static List<String> buildDistTooltip(DDDAbstractMap<Float> dist, String prefix, String suffix)
+	private static List<String> buildDistTooltip(DDDBaseMap<Float> dist, String prefix, String suffix)
 	{
 		List<String> lst = new LinkedList<String>();
 		for(DDDDamageType type : dist.keySet())
@@ -259,6 +338,13 @@ public final class TooltipUtils
 		return lst;
 	}
 	
+	public static Iterable<TooltipString> getTooltipStrings(ItemStack stack, boolean ctrlHeld, boolean shiftHeld, int x)
+	{
+		LinkedList<TooltipString> strings = new LinkedList<TooltipString>();
+		//TODO finish
+		return strings;
+	}
+	
 	private static int addIcons(int currY, LinkedList<Tuple<Integer, Integer>> lst, Iterable<DDDDamageType> types)
 	{
 		for(DDDDamageType type : types)
@@ -270,5 +356,25 @@ public final class TooltipUtils
 			currY += ICON_HEIGHT;
 		}
 		return currY;
+	}
+	
+	private static int addComponents(int x, int currY, LinkedList<TooltipString> lst, IDistribution dist, Function<Float, String> suffix)
+	{
+		for(DDDDamageType type : dist.getCategories())
+		{
+			float weight = dist.getWeight(type);
+			lst.add(buildTooltipString(x, currY, type, formatNum(weight), suffix.apply(weight), weight < 0 ? 0xaa0000 : 0x555555));
+			currY += ICON_HEIGHT;
+		}
+		return currY;
+	}
+	
+	private static TooltipString buildTooltipString(int x, int y, DDDDamageType type, String prefix, String suffix, int colour)
+	{
+		TooltipString s = new TooltipString(x, y);
+		s.add(new TooltipComp(prefix, colour));
+		s.add(new TooltipComp(type.getDisplayName(), type.getColour()));
+		s.add(new TooltipComp(suffix, colour));
+		return s;
 	}
 }

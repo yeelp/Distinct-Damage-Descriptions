@@ -30,6 +30,8 @@ import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils;
+import yeelp.distinctdamagedescriptions.util.TooltipUtils.TooltipComp;
+import yeelp.distinctdamagedescriptions.util.TooltipUtils.TooltipString;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
@@ -122,6 +124,18 @@ public class TooltipHandler extends Handler
 	public void onTooltipPost(RenderTooltipEvent.PostText evt)
 	{
 		ItemStack stack = evt.getStack();
+		GL11.glPushMatrix();
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		for(TooltipString s : TooltipUtils.getTooltipStrings(stack, KeyHelper.isCtrlHeld(), KeyHelper.isShiftHeld(), evt.getX()))
+		{
+			for(Tuple<Integer, TooltipComp> t : s)
+			{
+				TooltipComp comp = t.getSecond();
+				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(comp.getText(), t.getFirst(), s.getY(), comp.getColour());
+			}
+		}
+		GL11.glPopMatrix();
+		
 		if(ModConfig.client.useIcons)
 		{
 			Minecraft mc = Minecraft.getMinecraft();

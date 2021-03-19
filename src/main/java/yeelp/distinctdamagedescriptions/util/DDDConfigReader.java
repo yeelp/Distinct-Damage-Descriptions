@@ -105,7 +105,6 @@ public final class DDDConfigReader
 			return null;
 		}
 		String[] contents = s.split(";");
-		DistinctDamageDescriptions.debug(Arrays.toString(contents));
     	try
 		{
     		config.put(contents[0], constructor.apply(buildMap(defaultVal, parseListOfTuples(contents[1]))));
@@ -124,11 +123,6 @@ public final class DDDConfigReader
     	{
     		DistinctDamageDescriptions.err(s+" is formatted incorrectly! Read the config!");
     		throw g;
-    	}
-    	catch(Exception h)
-    	{
-    		DistinctDamageDescriptions.err(s);
-    		throw h;
     	}
     	return null;
     }

@@ -38,4 +38,9 @@ public final class ArmorValues
 		this.toughness = toughness;
 		return this;
 	}
+	
+	public static ArmorValues merge(ArmorValues a1, ArmorValues a2)
+	{
+		return a1.setValues(a1.armor + a2.armor, a1.toughness + a2.toughness);
+	}
 }

@@ -44,7 +44,7 @@ public final class DDDCombatRules
 {
 	private static final Map<Integer, CombatModifiers> modifiers = new HashMap<Integer, CombatModifiers>();
 	private static Map<UUID, HitInfo> lastHit = new HashMap<UUID, HitInfo>();
-	private static final class AbsorptionMap extends DDDAbstractMap<Float>
+	private static final class AbsorptionMap extends DDDBaseMap<Float>
 	{
 		public AbsorptionMap()
 		{
@@ -300,7 +300,9 @@ public final class DDDCombatRules
 	{
 		Optional<IDamageDistribution> oDist = DDDAPI.accessor.classifyDamage(src, defender);
 		DamageSource newSrc = oDist.isPresent() ? new DDDDamageSource(src, oDist.get().getCategories()) : src;
-		return lastHit.put(defender.getUniqueID(), new HitInfo(oDist, newSrc));
+		HitInfo info = new HitInfo(oDist, newSrc);
+		lastHit.put(defender.getUniqueID(), info);
+		return info;
 	}
 	
 	/**

@@ -18,7 +18,16 @@ public abstract class DDDAbstractDamageType implements DDDDamageType
 	private final String noAttackerDeathMessage;
 	private final IDamageDistribution dist;
 	private final Type type;
+	private final int colour;
 
+	/**
+	 * Build a new damage type
+	 * @param name the internal name of the type. Will be prepended with "ddd_"
+	 * @param isPhysical true if the damage type is physical or not.
+	 * @param deathAttackerMessage The death message to display when the death was caused by an attacker
+	 * @param deathMessage The death message to display when there is no attacker
+	 * @param colour the display colour to use in tooltips.
+	 */
 	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour)
 	{
 		this.name = "ddd_"+name;
@@ -26,10 +35,11 @@ public abstract class DDDAbstractDamageType implements DDDDamageType
 		this.noAttackerDeathMessage = deathMessage;
 		this.dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(this, 1.0f));
 		this.type = isPhysical ? Type.PHYSICAL : Type.SPECIAL;
+		this.colour = colour;
 	}
 	
 	@Override
-	public String getTypeName()
+	public final String getTypeName()
 	{
 		return this.name;
 	}
@@ -53,8 +63,20 @@ public abstract class DDDAbstractDamageType implements DDDDamageType
 	}
 	
 	@Override
-	public String getDisplayName()
+	public final String getDisplayName()
 	{
 		return this.displayName;
+	}
+	
+	@Override
+	public final int getColour()
+	{
+		return this.colour;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("%s (%s, %s)", this.name, this.type.toString(), this.isCustomDamage() ? "custom" : "built-in");
 	}
 }

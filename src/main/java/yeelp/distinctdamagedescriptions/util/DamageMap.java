@@ -2,7 +2,7 @@ package yeelp.distinctdamagedescriptions.util;
 
 import net.minecraft.util.DamageSource;
 
-public final class DamageMap extends DDDAbstractMap<Float>
+public final class DamageMap extends DDDBaseMap<Float>
 {
 	public DamageMap()
 	{

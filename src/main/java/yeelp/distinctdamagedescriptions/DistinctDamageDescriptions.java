@@ -52,7 +52,7 @@ public class DistinctDamageDescriptions
         config = new Configuration(event.getSuggestedConfigurationFile());
         srcFile = event.getSourceFile();
         DDDAPI.init();
-        DDDRegistries.preInit();  
+        DDDRegistries.init();  
         DDDConfigurations.init();
         DebugLib.updateStatus();
         if(Loader.isModLoaded(ModConsts.CRAFTTWEAKER_ID))
@@ -65,7 +65,6 @@ public class DistinctDamageDescriptions
 	@EventHandler
     public void init(FMLInitializationEvent event)
     {
-		DDDRegistries.init();
         new DamageHandler().register();
         new TooltipHandler().register();
         new CapabilityHandler().register();

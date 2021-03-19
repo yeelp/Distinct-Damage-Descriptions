@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,10 +38,9 @@ import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionP
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ArmorCategories;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
+import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
@@ -155,13 +155,8 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			{
 				ItemArmor armorItem = (ItemArmor) stack.getItem();
 				IArmorDistribution armorResists = getArmorResistances(stack);
-				float armor = armorItem.damageReduceAmount;
-				float toughness = armorItem.toughness;
-				ArmorCategories cats = armorResists.distributeArmor(armor, toughness);
-				for(Tuple<DDDDamageType, Float> t : cats.getNonZeroArmorValues())
-				{
-					map.compute(t.getFirst(), (k, v) -> v.setValues(v.getArmor() + t.getSecond(), v.getToughness() + cats.getToughness(k)));
-				}
+				//merge this distribution with all previous armor distribution maps
+				armorResists.distributeArmor(armorItem.damageReduceAmount, armorItem.toughness).forEach((k, v) -> map.merge(k, v, ArmorValues::merge));
 			}
 		}
 		return map;
@@ -171,23 +166,17 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Nullable
 	public Optional<IDamageDistribution> classifyDamage(@Nonnull DamageSource src, EntityLivingBase target)
 	{
-		DamageMap map = new DamageMap();
 		IDamageDistribution dist = DDDRegistries.distributions.getDamageDistribution(src, target);
 		if(dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1)
 		{
-			if(src.getImmediateSource() instanceof EntityLivingBase)
+			Entity sourceEntity = src.getImmediateSource();
+			if(sourceEntity == null && src.getTrueSource() instanceof EntityPlayer)
 			{
-				EntityLivingBase attacker = (EntityLivingBase) src.getImmediateSource();
-				ItemStack heldItem = attacker.getHeldItemMainhand();
-				boolean hasEmptyHand = heldItem.isEmpty();
-				if(!hasEmptyHand)
-				{
-					dist = getDamageDistribution(heldItem);
-				}
-				else
-				{
-					dist = getDamageDistribution(attacker);
-				}
+				dist = getDistForLivingEntity((EntityLivingBase) src.getTrueSource());
+			}
+			else if(sourceEntity instanceof EntityLivingBase)
+			{
+				dist = getDistForLivingEntity((EntityLivingBase) sourceEntity);
 			}
 			else if(isValidProjectile(src))
 			{
@@ -236,7 +225,25 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	
 	private static boolean isValidProjectile(DamageSource src)
 	{
+		if(src.getImmediateSource() == null)
+		{
+			return false;
+		}
 		return DDDConfigurations.projectiles.configured(YResources.getEntityIDString(src.getImmediateSource()).orElse(""));
+	}
+	
+	private IDamageDistribution getDistForLivingEntity(EntityLivingBase attacker)
+	{
+		ItemStack heldItem = attacker.getHeldItemMainhand();
+		boolean hasEmptyHand = heldItem.isEmpty();
+		if(!hasEmptyHand)
+		{
+			return getDamageDistribution(heldItem);
+		}
+		else
+		{
+			return getDamageDistribution(attacker);
+		}
 	}
 	
 	/***********
@@ -258,5 +265,21 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		mobResists.setAdaptiveResistance(adaptive);
 		mobResists.setAdaptiveAmount(adaptiveAmount);
 		CapabilityHandler.syncResistances(player);
+	}
+	
+	@Override
+	public boolean updateAdaptiveResistances(EntityLivingBase entity, DDDDamageType...types)
+	{
+		IMobResistances resists = getMobResistances(entity);
+		if(resists.hasAdaptiveResistance())
+		{
+			boolean sync = resists.updateAdaptiveResistance(types);
+			if(entity instanceof EntityPlayer)
+			{
+				CapabilityHandler.syncResistances((EntityPlayer) entity);
+			}
+			return sync;
+		}
+		return false;
 	}
 }

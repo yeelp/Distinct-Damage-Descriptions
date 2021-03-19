@@ -11,10 +11,29 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
  */
 public interface DDDDamageType
 {
+	/**
+	 * The Type of a DDDDamage type. Physical or Special
+	 * @author Yeelp
+	 *
+	 */
 	public enum Type
 	{
 		PHYSICAL,
 		SPECIAL;
+		
+		@Override
+		public String toString()
+		{
+			switch(this)
+			{
+				case PHYSICAL:
+					return "Physical";
+				case SPECIAL:
+					return "Special";
+				default:
+					return "";
+			}
+		}
 	}
 	/**
 	 * Get the name of this type, with the "ddd_" prefix
@@ -52,6 +71,12 @@ public interface DDDDamageType
 	 * @return true if user defined, false if built in.
 	 */
 	public boolean isCustomDamage();
+
+	/**
+	 * Get the colour used when displaying this type name in tooltips
+	 * @return the hex colour as an int.
+	 */
+	int getColour();
 }
 
 

@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.util;
 
-public final class ResistMap extends DDDAbstractMap<Float>
+public final class ResistMap extends DDDBaseMap<Float>
 {
 	public ResistMap()
 	{

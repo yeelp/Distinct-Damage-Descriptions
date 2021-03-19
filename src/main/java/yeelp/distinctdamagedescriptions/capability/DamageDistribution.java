@@ -1,8 +1,11 @@
 package yeelp.distinctdamagedescriptions.capability;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
@@ -70,31 +73,33 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	@Override
 	public DamageMap distributeDamage(float dmg)
 	{
-		if(ModConfig.dmg.useCustomDamageTypes)
+		if(ModConfig.dmg.useCustomDamageTypes || distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0)
 		{
-			return (DamageMap) super.distribute(dmg);
+			return super.distribute(new DamageMap(), (f) -> f*dmg);
 		}
 		else
 		{
-			DamageMap map = new DamageMap();
-			float remainingWeight = distMap.get(DDDBuiltInDamageType.BLUDGEONING) + distMap.get(DDDBuiltInDamageType.PIERCING) + distMap.get(DDDBuiltInDamageType.BLUDGEONING);
-			long physicalDamageCount = distMap.keySet().stream().filter((s) -> s.getType() == DDDDamageType.Type.PHYSICAL).count();
-			if(physicalDamageCount > 0)
+			Stream<Entry<DDDDamageType, Float>> stream = distMap.entrySet().stream();
+			long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
+			if(regularTypes == 0)
 			{
-				remainingWeight /= physicalDamageCount;
-				for(DDDDamageType type : DDDBuiltInDamageType.PHYSICAL_TYPES)
-				{
-					if(distMap.containsKey(type))
-					{
-						map.put(type, (distMap.get(type) + remainingWeight)*dmg);
-					}
-				}
+				return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
 			}
 			else
 			{
-				map.put(DDDBuiltInDamageType.BLUDGEONING, 1.0f);
+				DamageMap map = new DamageMap();
+				float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0).reduce(0.0f, Float::sum);
+				float weightToAdd = lostWeight / regularTypes;
+				int count = 0;
+				for(Entry<DDDDamageType, Float> entry : distMap.entrySet())
+				{
+					if(!entry.getKey().isCustomDamage())
+					{
+						map.put(entry.getKey(), (entry.getValue() + weightToAdd)*dmg);
+					}
+				}
+				return map;
 			}
-			return map;
 		}
 	}
 	
