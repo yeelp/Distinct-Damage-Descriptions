@@ -10,8 +10,14 @@ public class ModConsts
 	public static final String MODID_SHORT = "ddd";
 	public static final String NAME = "Distinct Damage Descriptions";
 	public static final String VERSION = "${version}";
-	
+
+	/** MOD NAMES SECTION **/
+
 	public static final String CRAFTTWEAKER_ID = "crafttweaker";
+	public static final String HWYLA_ID = "waila";
+
+	/** MOD NAMES SECTION END **/
+
 	public static final class InternalDamageTypes
 	{
 		public static final String SLASHING = "slashing", PIERCING = "piercing", BLUDGEONING = "bludgeoning";

@@ -4,8 +4,10 @@ import net.minecraftforge.common.MinecraftForge;
 
 public abstract class Handler
 {
-	public void register()
+	public boolean register()
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+
+		return true;
 	}
 }
