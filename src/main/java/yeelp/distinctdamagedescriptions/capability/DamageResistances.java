@@ -10,6 +10,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
@@ -19,31 +21,31 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
  */
 public abstract class DamageResistances implements IDamageResistances
 {
-	private Map<String, Float> resistances;
-	private Set<String> immunities;
+	private Map<DDDDamageType, Float> resistances;
+	private Set<DDDDamageType> immunities;
 	
-	DamageResistances(Map<String, Float> resistances, Collection<String> immunities)
+	DamageResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities)
 	{
 		this.resistances = resistances;
-		this.immunities = new HashSet<String>(immunities);
+		this.immunities = new HashSet<DDDDamageType>(immunities);
 	}
 	
-	public float getResistance(String type)
+	public float getResistance(DDDDamageType type)
 	{
 		return this.resistances.get(type);
 	}
 	
-	public boolean hasImmunity(String type)
+	public boolean hasImmunity(DDDDamageType type)
 	{
 		return this.immunities.contains(type);
 	}
 	
-	public void setResistance(String type, float amount)
+	public void setResistance(DDDDamageType type, float amount)
 	{
 		this.resistances.put(type, amount);
 	}
 	
-	public void setImmunity(String type, boolean status)
+	public void setImmunity(DDDDamageType type, boolean status)
 	{
 		if(status)
 		{
@@ -66,17 +68,17 @@ public abstract class DamageResistances implements IDamageResistances
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagList lst = new NBTTagList();
 		NBTTagList immunities = new NBTTagList();
-		for(Entry<String, Float> entry : resistances.entrySet())
+		for(Entry<DDDDamageType, Float> entry : resistances.entrySet())
 		{
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setString("type", entry.getKey());
+			compound.setString("type", entry.getKey().getTypeName());
 			compound.setFloat("amount", entry.getValue());
 			lst.appendTag(compound);
 		}
 		tag.setTag("resistances", lst);
-		for(String s : this.immunities)
+		for(DDDDamageType type : this.immunities)
 		{
-			immunities.appendTag(new NBTTagString(s));
+			immunities.appendTag(new NBTTagString(type.getTypeName()));
 		}
 		tag.setTag("immunities", immunities);
 		return tag;
@@ -85,16 +87,16 @@ public abstract class DamageResistances implements IDamageResistances
 	@Override
 	public void deserializeNBT(NBTTagCompound tag)
 	{
-		this.resistances = new NonNullMap<String, Float>(0.0f);
-		this.immunities = new HashSet<String>();
+		this.resistances = new NonNullMap<DDDDamageType, Float>(0.0f);
+		this.immunities = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("resistances", new NBTTagCompound().getId()))
 		{
 			NBTTagCompound resist = (NBTTagCompound) nbt;
-			resistances.put(resist.getString("type"), resist.getFloat("amount"));
+			resistances.put(DDDRegistries.damageTypes.get(resist.getString("type")), resist.getFloat("amount"));
 		}
 		for(NBTBase nbt : tag.getTagList("immunities", new NBTTagString().getId()))
 		{
-			immunities.add(((NBTTagString) nbt).getString());
+			immunities.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}
 	}
 }
