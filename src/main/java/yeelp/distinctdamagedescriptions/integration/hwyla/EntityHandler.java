@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.hwyla;
 
+import java.util.List;
+import javax.annotation.Nonnull;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
@@ -9,14 +11,10 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
-
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Optional;
 
 public class EntityHandler implements IWailaEntityProvider {
     public EntityHandler() { }
@@ -53,14 +51,14 @@ public class EntityHandler implements IWailaEntityProvider {
         boolean ctrlHeld = KeyHelper.isCtrlHeld();
 
         String entityName = EntityRegistry.getEntry(entity.getClass()).getRegistryName().toString();
-        Optional<MobResistanceCategories> oMobCats = DDDRegistries.mobResists.getResistancesForMob(entityName);
+        MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(entityName);
 
         int index = 1;
-        if(oMobCats.isPresent())
+        if(mobCats != null)
         {
             if(ctrlHeld)
             {
-                currenttip.addAll(index, TooltipUtils.buildMobResistsTooltips(oMobCats.get()));
+                currenttip.addAll(index, TooltipUtils.buildMobResistsTooltips(mobCats));
             }
 
             currenttip.add(index, mobResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
