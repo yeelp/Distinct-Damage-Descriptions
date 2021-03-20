@@ -1,14 +1,22 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import java.util.Optional;
 import java.util.Set;
 
-import net.minecraft.entity.EntityList;
+import com.google.common.collect.Sets;
+
 import net.minecraft.entity.EntityLivingBase;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public interface IDDDCreatureTypeRegistry extends IDDDRegistry
+public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 {
-	
+	/**
+	 * Add a type to an entity with this ID
+	 * @param entityID
+	 * @param type
+	 */
+	void addTypeToEntity(String entityID, CreatureTypeData type);
 	
 	/**
 	 * Get the CreatureTypeData(s) for a mob
@@ -17,7 +25,16 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry
 	 */
 	default Set<CreatureTypeData> getCreatureTypeForMob(EntityLivingBase entity)
 	{
-		return getCreatureTypeForMob(EntityList.getKey(entity).toString());
+		Optional<String> oLoc = YResources.getEntityIDString(entity);
+		if(oLoc.isPresent())
+		{
+			return getCreatureTypeForMob(oLoc.get());
+		}
+		else
+		{
+			return Sets.newHashSet(CreatureTypeData.UNKNOWN);
+		}
+		
 	}
 	
 	/**
@@ -26,11 +43,4 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry
 	 * @return a Tuple of CreatureTypeData. If the first is CreatureTypeData.UNKNOWN, then this mob has no creature type.
 	 */
 	Set<CreatureTypeData> getCreatureTypeForMob(String key);
-	
-	/**
-	 * Get CreatureTypeData from it's name
-	 * @param key the name
-	 * @return the CreatureTypeData
-	 */
-	CreatureTypeData getCreatureTypeData(String key);
 }

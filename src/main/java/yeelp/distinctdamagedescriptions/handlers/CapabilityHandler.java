@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +21,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.CreatureType;
 import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
@@ -31,6 +31,8 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.init.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
@@ -70,14 +72,14 @@ public class CapabilityHandler extends Handler
 				String key = loc.toString();
 				if(entity instanceof EntityLivingBase)
 				{	
-					Optional<Map<String, Float>> oDmges = DDDRegistries.mobDamage.getMobDamage(key);
-					Optional<MobResistanceCategories> oResists = DDDRegistries.mobResists.getResistancesForMob(key);
-					IDamageDistribution dist;
+					Optional<IDamageDistribution> oDist = getConfigValue(key, DDDConfigurations.mobDamage);
+					Optional<MobResistanceCategories> oResists = getConfigValue(key, DDDConfigurations.mobResists);
 					IMobResistances mobResists;
-					if(oDmges.isPresent())
+					IDamageDistribution dist;
+					MobResistanceCategories resists;
+					if(oDist.isPresent())
 					{
-						Map<String, Float> dmges = oDmges.get();
-						dist = new DamageDistribution(dmges);
+						dist = oDist.get();
 					}
 					else
 					{
@@ -85,7 +87,7 @@ public class CapabilityHandler extends Handler
 					}
 					if(oResists.isPresent())
 					{
-						MobResistanceCategories resists = oResists.get();
+						resists = oResists.get();
 						mobResists = new MobResistances(resists.getResistanceMap(), resists.getImmunities(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount());
 					}
 					else
@@ -99,12 +101,11 @@ public class CapabilityHandler extends Handler
 				}
 				else if(entity instanceof IProjectile)
 				{
-					Optional<Map<String, Float>> oDmges = DDDRegistries.projectileProperties.getProjectileDamageTypes(key);
+					Optional<IDamageDistribution> oDmges = getConfigValue(key, DDDConfigurations.projectiles);
 					IDamageDistribution dist;
 					if(oDmges.isPresent())
 					{
-						Map<String, Float> dmges = oDmges.get();
-						dist = new DamageDistribution(dmges);
+						dist = oDmges.get();
 					}
 					else
 					{
@@ -120,18 +121,17 @@ public class CapabilityHandler extends Handler
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void attachItemCapabilities(AttachCapabilitiesEvent<ItemStack> evt)
 	{
 		Item item = evt.getObject().getItem();
 		String key = item.getRegistryName().toString();
-		Optional<Map<String, Float>> oDmges = DDDRegistries.itemProperties.getDamageDistributionForItem(key);
+		Optional<IDamageDistribution> oDmges = getConfigValue(key, DDDConfigurations.items);
 		IDamageDistribution dist;
 		if(oDmges.isPresent())
 		{
-			Map<String, Float> dmges = oDmges.get();
-			dist = new DamageDistribution(dmges);
+			dist = oDmges.get();
 		}
 		else
 		{
@@ -149,19 +149,17 @@ public class CapabilityHandler extends Handler
 			}
 			else
 			{
-				Map<String, Float> dmges = DDDRegistries.itemProperties.getDefaultDamageDistribution();
-				dist = new DamageDistribution(dmges); 
+				dist = DDDConfigurations.items.getDefaultValue(); 
 			}
 		}
 		evt.addCapability(dmg, dist);
 		if(item instanceof ItemArmor)
 		{
-			Optional<Map<String, Float>> oResists = DDDRegistries.itemProperties.getArmorDistributionForItem(key);
+			Optional<IArmorDistribution> oResists = getConfigValue(key, DDDConfigurations.armors);
 			IArmorDistribution armorResists;
 			if(oResists.isPresent())
 			{
-				Map<String, Float> resists = oResists.get();
-				armorResists = new ArmorDistribution(resists);
+				armorResists = oResists.get();
 			}
 			else
 			{
@@ -171,12 +169,11 @@ public class CapabilityHandler extends Handler
 		}
 		else if(item instanceof ItemShield)
 		{
-			Optional<Map<String, Float>> oCaps = DDDRegistries.itemProperties.getShieldDistribution(key);
+			Optional<ShieldDistribution> oCaps = getConfigValue(key, DDDConfigurations.shields);
 			ShieldDistribution shieldDist;
 			if(oCaps.isPresent())
 			{
-				Map<String, Float> caps = oCaps.get();
-				shieldDist = new ShieldDistribution(caps);
+				shieldDist = oCaps.get();
 			}
 			else
 			{
@@ -188,6 +185,27 @@ public class CapabilityHandler extends Handler
 	
 	public static void syncResistances(EntityPlayer player)
 	{
-		PacketHandler.INSTANCE.sendTo(new MobResistancesMessage(DDDAPI.accessor.getMobResistances(player)), (EntityPlayerMP) player);
+		if(!player.world.isRemote)
+		{
+			PacketHandler.INSTANCE.sendTo(new MobResistancesMessage(DDDAPI.accessor.getMobResistances(player)), (EntityPlayerMP) player);
+		}
+	}
+	
+	@Nonnull
+	private <T> Optional<T> getConfigValue(String key, IDDDConfiguration<T> config)
+	{
+		if(config.configured(key))
+		{
+			return Optional.of(config.get(key));
+		}
+		else if(ModConfig.generateStats)
+		{
+			return Optional.empty();
+		}
+		else
+		{
+			return Optional.of(config.getDefaultValue());
+		}
+		
 	}
 }

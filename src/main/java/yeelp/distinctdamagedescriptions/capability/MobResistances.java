@@ -17,26 +17,28 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class MobResistances extends DamageResistances implements IMobResistances
 {
 	private boolean adaptive;
 	private float adaptiveAmount;
-	private Set<String> adaptiveTo;
+	private Set<DDDDamageType> adaptiveTo;
 	
 	public MobResistances()
 	{
-		this(new NonNullMap<String, Float>(0.0f), new HashSet<String>(), false, 0.0f);
+		this(new NonNullMap<DDDDamageType, Float>(0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
 	}
 	
-	public MobResistances(Map<String, Float> resistances, Collection<String> immunities, boolean adaptitability, float adaptiveAmount)
+	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, boolean adaptitability, float adaptiveAmount)
 	{
 		super(resistances, immunities);
 		this.adaptive = adaptitability;
 		this.adaptiveAmount = adaptiveAmount;
-		this.adaptiveTo = new HashSet<String>();
+		this.adaptiveTo = new HashSet<DDDDamageType>();
 	}
 
 	@Override
@@ -76,38 +78,38 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	@Override
-	public boolean updateAdaptiveResistance(String... damageTypes)
+	public boolean updateAdaptiveResistance(DDDDamageType... damageTypes)
 	{
 		boolean changed = false;
-		for(String s : damageTypes)
+		for(DDDDamageType type : damageTypes)
 		{
-			if(ModConfig.resist.adaptToCustom || DDDAPI.accessor.isPhysicalDamage(s))
+			if(ModConfig.resist.adaptToCustom || DDDAPI.accessor.isPhysicalDamage(type))
 			{
-				if(adaptiveTo.contains(s))
+				if(adaptiveTo.contains(type))
 				{
 					continue;
 				}
 				else
 				{
 					changed = true;
-					this.adaptiveTo.add(s);
-					this.setResistance(s, this.getResistance(s) + adaptiveAmount);
+					this.adaptiveTo.add(type);
+					this.setResistance(type, this.getResistance(type) + adaptiveAmount);
 				}
 			}
 		}
-		Set<String> temp = new HashSet<String>(Arrays.asList(damageTypes));
-		Set<String> iter = new HashSet<String>(adaptiveTo);
-		for(String s : iter)
+		Set<DDDDamageType> temp = new HashSet<DDDDamageType>(Arrays.asList(damageTypes));
+		Set<DDDDamageType> iter = new HashSet<DDDDamageType>(adaptiveTo);
+		for(DDDDamageType type : iter)
 		{
-			if(temp.contains(s))
+			if(temp.contains(type))
 			{
 				continue;
 			}
 			else
 			{
 				changed = true;
-				adaptiveTo.remove(s);
-				this.setResistance(s, this.getResistance(s) - adaptiveAmount);
+				adaptiveTo.remove(type);
+				this.setResistance(type, this.getResistance(type) - adaptiveAmount);
 			}
 		}
 		return changed;
@@ -120,9 +122,9 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		NBTTagList adaptabilityStatus = new NBTTagList();
 		tag.setBoolean("adaptive", adaptive);
 		tag.setFloat("adaptiveAmount", adaptiveAmount);
-		for(String s : adaptiveTo)
+		for(DDDDamageType type : adaptiveTo)
 		{
-			adaptabilityStatus.appendTag(new NBTTagString(s));
+			adaptabilityStatus.appendTag(new NBTTagString(type.getTypeName()));
 		}
 		tag.setTag("adaptabilityStatus", adaptabilityStatus);
 		return tag;
@@ -134,10 +136,10 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		super.deserializeNBT(tag);
 		adaptive = tag.getBoolean("adaptive");
 		adaptiveAmount = tag.getFloat("adaptiveAmount");
-		adaptiveTo = new HashSet<String>();
+		adaptiveTo = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("adaptabilityStatus", new NBTTagString().getId()))
 		{
-			adaptiveTo.add(((NBTTagString) nbt).getString());
+			adaptiveTo.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}
 	}
 	

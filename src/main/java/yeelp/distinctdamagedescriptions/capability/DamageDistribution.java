@@ -2,7 +2,9 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
@@ -12,17 +14,14 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
-import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution
 {	
-	public static final IDamageDistribution PIERCING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("slashing", 1.0f));
-	public static final IDamageDistribution BLUDGEONING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("piercing", 1.0f));
-	public static final IDamageDistribution SLASHING_DISTRIBUTION = new DamageDistribution(new Tuple<String, Float>("bludgeoning", 1.0f));
 	@Override
 	protected boolean invariantViolated(Collection<Float> weights)
 	{
@@ -36,11 +35,11 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	
 	public DamageDistribution()
 	{
-		this(new Tuple<String, Float>("bludgeoning", 1.0f));
+		this(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
 	}
 	
 	@SafeVarargs
-	public DamageDistribution(Tuple<String, Float>... weights) 
+	public DamageDistribution(Tuple<DDDDamageType, Float>... weights) 
 	{
 		super(weights);
 		if(invariantViolated(this.distMap.values()))
@@ -49,7 +48,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 		}
 	}
 	
-	public DamageDistribution(Map<String, Float> weightMap)
+	public DamageDistribution(Map<DDDDamageType, Float> weightMap)
 	{
 		super(weightMap);
 		if(invariantViolated(this.distMap.values()))
@@ -71,33 +70,35 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	@Override
-	public Map<String, Float> distributeDamage(float dmg)
+	public DamageMap distributeDamage(float dmg)
 	{
-		if(ModConfig.dmg.useCustomDamageTypes)
+		if(ModConfig.dmg.useCustomDamageTypes || distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0)
 		{
-			return super.distribute(dmg);
+			return super.distribute(new DamageMap(), (f) -> f*dmg);
 		}
 		else
 		{
-			NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
-			float remainingWeight = distMap.get(ModConsts.InternalDamageTypes.SLASHING) + distMap.get(ModConsts.InternalDamageTypes.PIERCING) + distMap.get(ModConsts.InternalDamageTypes.BLUDGEONING);
-			long physicalDamageCount = distMap.keySet().stream().filter((s) -> DDDAPI.accessor.isPhysicalDamage(s)).count();
-			if(physicalDamageCount > 0)
+			Stream<Entry<DDDDamageType, Float>> stream = distMap.entrySet().stream();
+			long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
+			if(regularTypes == 0)
 			{
-				remainingWeight /= physicalDamageCount;
-				for(String s : ModConsts.InternalDamageTypes.PHYSICAL_DAMAGE_TYPES)
-				{
-					if(distMap.containsKey(s))
-					{
-						map.put(s, (distMap.get(s) + remainingWeight)*dmg);
-					}
-				}
+				return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
 			}
 			else
 			{
-				map.put(ModConsts.InternalDamageTypes.BLUDGEONING, 1.0f);
+				DamageMap map = new DamageMap();
+				float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
+				float weightToAdd = lostWeight / regularTypes;
+				int count = 0;
+				for(Entry<DDDDamageType, Float> entry : distMap.entrySet())
+				{
+					if(!entry.getKey().isCustomDamage())
+					{
+						map.put(entry.getKey(), (entry.getValue() + weightToAdd)*dmg);
+					}
+				}
+				return map;
 			}
-			return map;
 		}
 	}
 	

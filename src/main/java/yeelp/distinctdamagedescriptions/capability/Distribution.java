@@ -5,19 +5,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.ModConfig;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public abstract class Distribution implements IDistribution
 {
-	protected Map<String, Float> distMap;
+	protected DDDBaseMap<Float> distMap = new DDDBaseMap<Float>(0.0f);
 	
 	protected boolean invariantViolated(Collection<Float> weights)
 	{
@@ -36,14 +38,17 @@ public abstract class Distribution implements IDistribution
 	}
 	
 	@SafeVarargs
-	Distribution(Tuple<String, Float>... weights)
+	Distribution(Tuple<DDDDamageType, Float>... weights)
 	{
-		distMap = new NonNullMap<String, Float>(0.0f);
-		for(Tuple<String, Float> t : weights)
+		for(Tuple<DDDDamageType, Float> t : weights)
 		{
 			if(t.getSecond() < 0.0f)
 			{
 				throw new InvariantViolationException("New weights are invalid!");
+			}
+			else if(t.getSecond() == 0.0f) // ignore 0 weighted entries.
+			{
+				continue;
 			}
 			else
 			{
@@ -52,19 +57,19 @@ public abstract class Distribution implements IDistribution
 		}
 	}
 	
-	Distribution(Map<String, Float> weightMap)
+	Distribution(Map<DDDDamageType, Float> weightMap)
 	{
-		this.distMap = weightMap;
+		setNewMap(weightMap);
 	}
 
 	@Override
 	public NBTTagList serializeNBT()
 	{
 		NBTTagList lst = new NBTTagList();
-		for(Entry<String, Float> entry : this.distMap.entrySet())
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
 		{
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("type", entry.getKey());
+			tag.setString("type", entry.getKey().getTypeName());
 			tag.setFloat("weight", entry.getValue());
 			lst.appendTag(tag);
 		}
@@ -74,28 +79,28 @@ public abstract class Distribution implements IDistribution
 	@Override
 	public void deserializeNBT(NBTTagList lst)
 	{
-		this.distMap = new NonNullMap<String, Float>(0.0f);
+		this.distMap = new DDDBaseMap<Float>(0.0f);
 		for(NBTBase nbt : lst)
 		{
 			NBTTagCompound tag = (NBTTagCompound) nbt;
-			this.distMap.put(tag.getString("type"), tag.getFloat("weight"));
+			this.distMap.put(DDDRegistries.damageTypes.get(tag.getString("type")), tag.getFloat("weight"));
 		}
 	}
 
 	@Override
-	public float getWeight(String type)
+	public float getWeight(DDDDamageType type)
 	{
 		return distMap.get(type);
 	}
 	
 	@Override
-	public void setWeight(String type, float amount)
+	public void setWeight(DDDDamageType type, float amount)
 	{
 		distMap.put(type, amount);
 	}
 	
 	@Override
-	public void setNewWeights(Map<String, Float> map) throws InvariantViolationException
+	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException
 	{
 		if(invariantViolated(map.values()))
 		{
@@ -103,17 +108,17 @@ public abstract class Distribution implements IDistribution
 		}
 		else
 		{
-			this.distMap = map;
+			setNewMap(map);
 		}
 	}
 	
 	@Override
-	public Set<String> getCategories()
+	public Set<DDDDamageType> getCategories()
 	{
-		HashSet<String> set = new HashSet<String>();
-		for(Entry<String, Float> entry : distMap.entrySet())
+		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
+		for(Entry<DDDDamageType, Float> entry : distMap.entrySet())
 		{
-			if((DDDAPI.accessor.isPhysicalDamage(entry.getKey()) || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
+			if((entry.getKey().getType() == DDDDamageType.Type.PHYSICAL || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
 			{
 				set.add(entry.getKey());
 			}
@@ -121,13 +126,17 @@ public abstract class Distribution implements IDistribution
 		return set;
 	}
 
-	NonNullMap<String, Float> distribute(float value)
+	<R, T extends DDDBaseMap<R>> T distribute(T map, Function<Float, R> valueFunc)
 	{
-		NonNullMap<String, Float> map = new NonNullMap<String, Float>(0.0f);
-		for(Entry<String, Float> entry : this.distMap.entrySet())
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
 		{
-			map.put(entry.getKey(), value * entry.getValue());
+			map.put(entry.getKey(), valueFunc.apply(entry.getValue()));
 		}
 		return map;
+	}
+	
+	private final void setNewMap(Map<DDDDamageType, Float> map)
+	{
+		map.entrySet().stream().filter((e) -> e.getValue() > 0).forEach((e) -> this.distMap.put(e.getKey(), e.getValue()));
 	}
 }

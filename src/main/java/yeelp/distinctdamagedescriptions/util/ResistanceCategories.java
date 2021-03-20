@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+
 /**
  * A simple container for storing resistances
  * @author Yeelp
@@ -12,13 +14,13 @@ import java.util.Set;
  */
 public abstract class ResistanceCategories
 {
-	private Map<String, Float> resistMap;
-	private Set<String> dmgImmunities;
+	private Map<DDDDamageType, Float> resistMap;
+	private Set<DDDDamageType> dmgImmunities;
 	
-	public ResistanceCategories(Map<String, Float> resistances, Collection<String> immunities)
+	public ResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities)
 	{
 		this.resistMap = resistances;
-		this.dmgImmunities = new HashSet<String>(immunities);
+		this.dmgImmunities = new HashSet<DDDDamageType>(immunities);
 	}
 	
 	/**
@@ -26,7 +28,7 @@ public abstract class ResistanceCategories
 	 * @param type
 	 * @return resistance to that damage type.
 	 */
-	public float getResistance(String type)
+	public float getResistance(DDDDamageType type)
 	{
 		return this.resistMap.get(type);
 	}
@@ -36,7 +38,7 @@ public abstract class ResistanceCategories
 	 * @param type
 	 * @return true if immune, false if not.
 	 */
-	public boolean hasImmunity(String type)
+	public boolean hasImmunity(DDDDamageType type)
 	{
 		return this.dmgImmunities.contains(type);
 	}
@@ -45,7 +47,7 @@ public abstract class ResistanceCategories
 	 * Get the map of resistances
 	 * @return the map of resistances
 	 */
-	public Map<String, Float> getResistanceMap()
+	public Map<DDDDamageType, Float> getResistanceMap()
 	{
 		return this.resistMap;
 	}
@@ -54,7 +56,7 @@ public abstract class ResistanceCategories
 	 * get the set of immunities
 	 * @return the set of immunities
 	 */
-	public Set<String> getImmunities()
+	public Set<DDDDamageType> getImmunities()
 	{
 		return this.dmgImmunities;
 	}

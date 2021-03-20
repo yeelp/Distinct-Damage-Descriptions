@@ -10,24 +10,26 @@ import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.ArmorDistributionProvider;
-import yeelp.distinctdamagedescriptions.util.ArmorCategories;
+import yeelp.distinctdamagedescriptions.util.ArmorMap;
+import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ArmorDistribution extends Distribution implements IArmorDistribution
 {
 	public ArmorDistribution()
 	{
-		this(new NonNullMap<String, Float>(0.0f));
+		this(new NonNullMap<DDDDamageType, Float>(0.0f));
 	}
 	
 	@SafeVarargs
-	public ArmorDistribution(Tuple<String, Float>...weights)
+	public ArmorDistribution(Tuple<DDDDamageType, Float>...weights)
 	{
 		super(weights);
 	}
 	
-	public ArmorDistribution(Map<String, Float> resistMap)
+	public ArmorDistribution(Map<DDDDamageType, Float> resistMap)
 	{
 		super(resistMap);
 	}
@@ -45,9 +47,9 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	}
 
 	@Override
-	public ArmorCategories distributeArmor(float armor, float toughness)
+	public ArmorMap distributeArmor(float armor, float toughness)
 	{
-		return new ArmorCategories(super.distribute(armor), super.distribute(toughness));
+		return super.distribute(new ArmorMap(), (f) -> new ArmorValues(armor*f, toughness*f));
 	}
 
 	public static void register()

@@ -41,4 +41,21 @@ public final class YMath
 		}
 		return result;
 	}
+
+	/**
+	 * Performs set union on two Sets. Specifically, {@code setUnion(a, b)} is the set {{@code x | a.contains(x) || b.contains(x)}}
+	 * @param <X> the type of the members of the sets
+	 * @param a set A
+	 * @param b set B
+	 * @return a new Set that is the result of the set union of a and b
+	 */
+	public static final <X> Set<X> setUnion(Set<X> a, Set<X> b)
+	{
+		HashSet<X> result = new HashSet<X>(a);
+		for(X x : b)
+		{
+			result.add(x);
+		}
+		return result;
+	}
 }

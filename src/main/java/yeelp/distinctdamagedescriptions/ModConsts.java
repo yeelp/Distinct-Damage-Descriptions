@@ -17,12 +17,6 @@ public class ModConsts
 	public static final String HWYLA_ID = "waila";
 
 	/** MOD NAMES SECTION END **/
-
-	public static final class InternalDamageTypes
-	{
-		public static final String SLASHING = "slashing", PIERCING = "piercing", BLUDGEONING = "bludgeoning";
-		public static final String[] PHYSICAL_DAMAGE_TYPES = {SLASHING, PIERCING, BLUDGEONING};
-	}
 	
 	public static final EntityEquipmentSlot[] ARMOR_SLOTS = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
 	public static final Iterable<EntityEquipmentSlot> ARMOR_SLOTS_ITERABLE = ImmutableList.copyOf(ARMOR_SLOTS);

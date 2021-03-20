@@ -1,8 +1,6 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.lwjgl.opengl.GL11;
 
@@ -29,9 +27,11 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils;
+import yeelp.distinctdamagedescriptions.util.TooltipUtils.TooltipComp;
+import yeelp.distinctdamagedescriptions.util.TooltipUtils.TooltipString;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
@@ -60,7 +60,7 @@ public class TooltipHandler extends Handler
 		IDamageDistribution damages = DDDAPI.accessor.getDamageDistribution(evt.getItemStack());
 		IArmorDistribution armors = DDDAPI.accessor.getArmorResistances(evt.getItemStack());
 		ShieldDistribution shield = DDDAPI.accessor.getShieldDistribution(evt.getItemStack());
-		Map<String, Float> projDist = DDDRegistries.projectileProperties.getProjectileDamageTypesFromItemID(YResources.getRegistryString(item));
+		IDamageDistribution projDist = DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(item));
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
 		if(armors != null)
@@ -85,14 +85,13 @@ public class TooltipHandler extends Handler
 		{
 			ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
 			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
-			Optional<MobResistanceCategories> oMobCats = DDDRegistries.mobResists.getResistancesForMob(loc.toString());
-			MobResistanceCategories mobCats;
+			MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(loc.toString());
 			int index = 1;
-			if(oMobCats.isPresent())
+			if(mobCats != null)
 			{
 				if(ctrlHeld)
 				{
-					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(oMobCats.get()));
+					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(mobCats));
 				}
 				tooltips.add(index, mobResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 			}
@@ -125,6 +124,18 @@ public class TooltipHandler extends Handler
 	public void onTooltipPost(RenderTooltipEvent.PostText evt)
 	{
 		ItemStack stack = evt.getStack();
+		GL11.glPushMatrix();
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		for(TooltipString s : TooltipUtils.getTooltipStrings(stack, KeyHelper.isCtrlHeld(), KeyHelper.isShiftHeld(), evt.getX()))
+		{
+			for(Tuple<Integer, TooltipComp> t : s)
+			{
+				TooltipComp comp = t.getSecond();
+				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(comp.getText(), t.getFirst(), s.getY(), comp.getColour());
+			}
+		}
+		GL11.glPopMatrix();
+		
 		if(ModConfig.client.useIcons)
 		{
 			Minecraft mc = Minecraft.getMinecraft();
@@ -156,6 +167,6 @@ public class TooltipHandler extends Handler
 	
 	private static boolean shouldShowDist(ItemStack stack)
 	{
-		return DDDRegistries.itemProperties.doesItemHaveCustomDamageDistribution(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
+		return DDDConfigurations.items.configured(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
 	}
 }
