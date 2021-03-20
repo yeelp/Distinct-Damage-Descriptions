@@ -182,13 +182,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			{
 				IProjectile projectile = (IProjectile) src.getImmediateSource();
 				dist = getDamageDistribution(projectile);
-			}
-			return Optional.of(dist);
+			}			
 		}
-		else
-		{
-			return Optional.empty();
-		}
+		return Optional.of(dist);
 	}
 	
 	@Override

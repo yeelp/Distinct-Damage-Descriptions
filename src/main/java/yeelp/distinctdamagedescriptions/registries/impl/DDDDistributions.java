@@ -20,6 +20,7 @@ import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInPoison;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDDaylightDist;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDInstantEffectsDist;
+import yeelp.distinctdamagedescriptions.registries.impl.dists.ParrotPoisonDist;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.SimpleBuiltInDist;
 
 public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistribution> implements IDDDDistributionRegistry
@@ -46,7 +47,8 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 						 new DDDBuiltInFire(), 
 						 new DDDBuiltInPiercing(),
 						 new DDDBuiltInPoison(), 
-						 new DDDInstantEffectsDist(), 
+						 new DDDInstantEffectsDist(),
+						 new ParrotPoisonDist(),
 						 new DDDExplosionDist());
 	}
 
@@ -60,7 +62,7 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 	@Override
 	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target)
 	{
-		return checkDists(null, (dist) -> dist == null, (dist) -> dist.getDamageDistribution(src, target), src, target);
+		return checkDists(DDDBuiltInDamageType.NORMAL.getBaseDistribution(), (dist) -> dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1, (dist) -> dist.getDamageDistribution(src, target), src, target);
 	}
 	
 	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next, DamageSource src, EntityLivingBase entity)

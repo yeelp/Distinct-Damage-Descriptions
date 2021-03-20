@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.util;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DDDBaseMap<T> extends NonNullMap<DDDDamageType, T>

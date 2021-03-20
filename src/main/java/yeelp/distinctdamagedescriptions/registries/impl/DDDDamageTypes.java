@@ -1,13 +1,8 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.registries.IDDDDamageTypeRegistry;
-import yeelp.distinctdamagedescriptions.util.DamageTypeData;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public final class DDDDamageTypes extends DDDBaseRegistry<DDDDamageType> implements IDDDDamageTypeRegistry
 {

@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
@@ -88,7 +87,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 			else
 			{
 				DamageMap map = new DamageMap();
-				float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0).reduce(0.0f, Float::sum);
+				float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
 				float weightToAdd = lostWeight / regularTypes;
 				int count = 0;
 				for(Entry<DDDDamageType, Float> entry : distMap.entrySet())

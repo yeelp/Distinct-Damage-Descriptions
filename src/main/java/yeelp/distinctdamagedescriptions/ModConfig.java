@@ -269,6 +269,10 @@ public class ModConfig
 			@Name("Guardian Thorns Damage")
 			@Comment("Enable/disable guardian thorn distribution. Guardian's thorn attack will inflict piercing damage when enabled.")
 			public boolean enableGuardianSpikesDamage = true;
+			
+			@Name("Parrot Poison Damage")
+			@Comment("Enable/disable parrot cookie distribution. Parrots take poison damage when fed cookies")
+			public boolean enableParrotPoisonDamage = true;
 		}
 	}
 	

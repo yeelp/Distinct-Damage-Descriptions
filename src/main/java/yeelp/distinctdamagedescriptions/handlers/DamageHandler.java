@@ -29,6 +29,7 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
@@ -111,7 +112,7 @@ public class DamageHandler extends Handler
 			DistinctDamageDescriptions.debug("Damage Type: "+ dmgSource.damageType+" Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", True Attacker: "+s3+" Defender: "+s2);
 		}
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
-		DamageMap dmgMap = DDDCombatRules.getLastHit(defender.getUniqueID()).getLastDist().map((dist) -> dist.distributeDamage(evt.getAmount())).orElse(null);
+		DamageMap dmgMap = DDDCombatRules.getLastHit(defender.getUniqueID()).getLastDist().map((dist) -> dist.distributeDamage(evt.getAmount())).orElse(DDDBuiltInDamageType.UNKNOWN.getBaseDistribution().distributeDamage(evt.getAmount()));
 		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
 		DistinctDamageDescriptions.debug("Damage Total: "+DebugLib.entriesToString(dmgMap));
 		if(dmgMap == null)// couldn't classify damage, so further calculations are meaningless/undefined. Return, let vanilla handle the rest,

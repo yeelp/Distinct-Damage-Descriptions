@@ -1,6 +1,5 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;

@@ -1,13 +1,7 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public final class DaylightTracker extends AbstractTracker
 {

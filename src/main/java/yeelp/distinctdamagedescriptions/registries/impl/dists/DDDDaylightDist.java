@@ -7,7 +7,6 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
-import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 
 public final class DDDDaylightDist extends AbstractSingleTypeDist
 {

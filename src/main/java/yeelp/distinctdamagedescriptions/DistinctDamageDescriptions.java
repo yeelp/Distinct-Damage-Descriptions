@@ -20,7 +20,6 @@ import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
-import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;

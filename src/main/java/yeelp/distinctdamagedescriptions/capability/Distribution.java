@@ -16,7 +16,6 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public abstract class Distribution implements IDistribution
 {
