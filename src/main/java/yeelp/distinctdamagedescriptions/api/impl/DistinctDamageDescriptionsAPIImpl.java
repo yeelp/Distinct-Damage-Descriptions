@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,8 +18,6 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Tuple;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
@@ -49,27 +46,11 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	INSTANCE;
 	
 	private static final EntityEquipmentSlot[] armorSlots = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
-	private final Map<DamageSource, Tuple<Supplier<Boolean>, IDamageDistribution>> extraDists = new HashMap<DamageSource, Tuple<Supplier<Boolean>, IDamageDistribution>>();
-	
+
 	private DistinctDamageDescriptionsAPIImpl()
 	{
 		DDDAPI.accessor = this;
 		DDDAPI.mutator = this;
-		/* setting up extraDists:
-		 * All we need to do is make a supplier that checks the corresponding config value 
-		 * and associate that supplier with the DamageDistribution used (in a Tuple).
-		 * When the DamageSource maps to the Tuple, we can get the value from the Supplier in the Tuple,
-		 * returning the DamageDistribution on a pass, and null on a fail.
-		 * 
-		 * Using a Supplier to ensure the actual boolean value from the config is checked, 
-		 * instead of a locally wrapped Boolean copy, which may not update if the config is changed.
-		 * We want these config values not not require a restart (because it's not needed), so Supplier seems the best way to go.
-		 */
-		extraDists.put(DamageSource.ANVIL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
-		extraDists.put(DamageSource.CACTUS, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableCactusDamage, DDDBuiltInDamageType.PIERCING.getBaseDistribution()));
-		extraDists.put(DamageSource.FALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
-		extraDists.put(DamageSource.FALLING_BLOCK, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFallingBlockDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
-		extraDists.put(DamageSource.FLY_INTO_WALL, new Tuple<Supplier<Boolean>, IDamageDistribution>(() -> ModConfig.dmg.extraDamage.enableFlyIntoWallDamage, DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()));
 	}
 	
 	/* ***********
