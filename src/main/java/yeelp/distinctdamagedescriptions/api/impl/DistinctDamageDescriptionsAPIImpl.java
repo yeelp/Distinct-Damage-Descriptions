@@ -44,7 +44,7 @@ import yeelp.distinctdamagedescriptions.util.lib.YResources;
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator
 {
 	INSTANCE;
-	
+
 	private static final EntityEquipmentSlot[] armorSlots = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
 
 	private DistinctDamageDescriptionsAPIImpl()
@@ -52,11 +52,11 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		DDDAPI.accessor = this;
 		DDDAPI.mutator = this;
 	}
-	
+
 	/* ***********
 	 * ACCESSOR *
 	 ************/
-	
+
 	@Override
 	@Nullable
 	public IDamageDistribution getDamageDistribution(ItemStack stack)
@@ -75,7 +75,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	{
 		return DamageDistributionProvider.getDamageDistribution(projectile);
 	}
-	
+
 	@Override
 	@Nullable
 	public IArmorDistribution getArmorResistances(ItemStack stack)
@@ -92,13 +92,13 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	{
 		return MobResistancesProvider.getMobResistances(entity);
 	}
-	
+
 	@Override
 	public ICreatureType getMobCreatureType(EntityLivingBase entity)
 	{
 		return CreatureTypeProvider.getCreatureType(entity);
 	}
-	
+
 	@Override
 	@Nullable
 	public ShieldDistribution getShieldDistribution(ItemStack stack)
@@ -109,7 +109,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		return ShieldDistributionProvider.getShieldDistribution(stack);
 	}
-	
+
 	@Override
 	public Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity)
 	{
@@ -120,7 +120,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		return map;
 	}
-	
+
 	@Override
 	public ArmorMap getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots)
 	{
@@ -142,7 +142,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		return map;
 	}
-	
+
 	@Override
 	@Nullable
 	public Optional<IDamageDistribution> classifyDamage(@Nonnull DamageSource src, EntityLivingBase target)
@@ -163,11 +163,11 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			{
 				IProjectile projectile = (IProjectile) src.getImmediateSource();
 				dist = getDamageDistribution(projectile);
-			}			
+			}
 		}
 		return Optional.of(dist);
 	}
-	
+
 	@Override
 	public ResistMap classifyResistances(Set<DDDDamageType> types, IMobResistances resists)
 	{
@@ -182,7 +182,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		return map;
 	}
-	
+
 	@Override
 	public boolean isPhysicalDamageOnly(DDDDamageSource src)
 	{
@@ -199,7 +199,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		return true;
 	}
-	
+
 	private static boolean isValidProjectile(DamageSource src)
 	{
 		if(src.getImmediateSource() == null)
@@ -208,7 +208,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		return DDDConfigurations.projectiles.configured(YResources.getEntityIDString(src.getImmediateSource()).orElse(""));
 	}
-	
+
 	private IDamageDistribution getDistForLivingEntity(EntityLivingBase attacker)
 	{
 		ItemStack heldItem = attacker.getHeldItemMainhand();
@@ -222,7 +222,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			return getDamageDistribution(attacker);
 		}
 	}
-	
+
 	/***********
 	 * MUTATOR *
 	 ***********/
@@ -243,7 +243,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		mobResists.setAdaptiveAmount(adaptiveAmount);
 		CapabilityHandler.syncResistances(player);
 	}
-	
+
 	@Override
 	public boolean updateAdaptiveResistances(EntityLivingBase entity, DDDDamageType...types)
 	{
