@@ -28,12 +28,14 @@ public class Hwyla implements IWailaPlugin, IModIntegration {
      * @param registrar - An instance of IWailaRegistrar to register your providers with.
      */
     @Override
-    public void register(IWailaRegistrar registrar) {
+    public void register(IWailaRegistrar registrar) 
+    {
         registrar.registerBodyProvider(new EntityHandler(), Entity.class);
     }
 
     @Override
-    public String getModID() {
+    public String getModID() 
+    {
         return ModConsts.HWYLA_ID;
     }
 }
