@@ -59,7 +59,7 @@ public abstract interface IDDDEvent extends IEntityEvent
 	 * @return the resistance
 	 */
 	@ZenMethod
-	abstract float getResistance(String type);
+	float getResistance(String type);
 	
 	/**
 	 * Set the resistance the defender will use for a damage type
@@ -67,5 +67,27 @@ public abstract interface IDDDEvent extends IEntityEvent
 	 * @param resistance the new resistance
 	 */
 	@ZenMethod
-	abstract void setResistance(String type, float resistance);
+	void setResistance(String type, float resistance);
+	
+	/**
+	 * Get the armor value versus a certain type
+	 * @param type the damage type
+	 * @return the armor amount
+	 */
+	@ZenMethod
+	float getArmor(String type);
+	
+	/**
+	 * Set the armor amount for a certain type
+	 * @param type the damage type
+	 * @param armor the armor amount.
+	 */
+	@ZenMethod
+	void setArmor(String type, float armor);
+	
+	@ZenMethod
+	float getToughness(String type);
+	
+	@ZenMethod
+	void setToughness(String type, float toughness);
 }
