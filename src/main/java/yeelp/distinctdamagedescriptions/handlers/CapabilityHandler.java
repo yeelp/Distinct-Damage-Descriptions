@@ -126,9 +126,14 @@ public class CapabilityHandler extends Handler
 	public void attachItemCapabilities(AttachCapabilitiesEvent<ItemStack> evt)
 	{
 		Item item = evt.getObject().getItem();
+		IDamageDistribution dist;
+		ResourceLocation itemLoc = item.getRegistryName();
+		if (itemLoc == null)
+		{
+			dist = DDDConfigurations.items.getDefaultValue();
+		}
 		String key = item.getRegistryName().toString();
 		Optional<IDamageDistribution> oDmges = getConfigValue(key, DDDConfigurations.items);
-		IDamageDistribution dist;
 		if(oDmges.isPresent())
 		{
 			dist = oDmges.get();

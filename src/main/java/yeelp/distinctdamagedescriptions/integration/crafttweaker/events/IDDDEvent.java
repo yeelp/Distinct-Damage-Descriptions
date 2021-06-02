@@ -29,7 +29,7 @@ public abstract interface IDDDEvent extends IEntityEvent
 	/**
 	 * Get the attacker. Merely syntactic sugar for those who want
 	 * more readable scripts and wish to distinguish attacker and defender as such. Merely calls {@link IEntityEvent#getEntity()}
-	 * @return
+	 * @return The IEntity attacker
 	 */
 	@ZenGetter("attacker")
 	default IEntity getAttacker()
@@ -85,9 +85,19 @@ public abstract interface IDDDEvent extends IEntityEvent
 	@ZenMethod
 	void setArmor(String type, float armor);
 	
+	/**
+	 * Get the toughness amount for a certain type
+	 * @param type the damage type
+	 * @return The total toughness value for a certain damage type.
+	 */
 	@ZenMethod
 	float getToughness(String type);
 	
+	/**
+	 * Set the toughness amount for a certain type
+	 * @param type the damage type
+	 * @param toughness the new toughness value to set.
+	 */
 	@ZenMethod
 	void setToughness(String type, float toughness);
 }

@@ -50,4 +50,28 @@ public abstract class CTDDDEvent implements IDDDEvent
 	{
 		this.internal.setResistance(DDDRegistries.damageTypes.get(type), resistance);
 	}
+
+	@Override
+	public float getArmor(String type)
+	{
+		return this.internal.getArmorAndToughness(DDDRegistries.damageTypes.get(type)).getArmor();
+	}
+
+	@Override
+	public void setArmor(String type, float armor)
+	{
+		this.internal.setArmorAndToughness(DDDRegistries.damageTypes.get(type), armor, getToughness(type));
+	}
+
+	@Override
+	public float getToughness(String type)
+	{
+		return this.internal.getArmorAndToughness(DDDRegistries.damageTypes.get(type)).getToughness();
+	}
+
+	@Override
+	public void setToughness(String type, float toughness)
+	{
+		this.internal.setArmorAndToughness(DDDRegistries.damageTypes.get(type), getArmor(type), toughness);
+	}
 }

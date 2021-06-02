@@ -129,17 +129,9 @@ public class DamageHandler extends Handler
 		}
 		CombatResults results = DDDCombatRules.computeNewDamage(attacker, defender, pre.getAllDamages(), pre.getAllResistances(), pre.getAllArmor(), mobResists);
 		//determine if knockback should occur
-		if(results.wasImmunityTriggered())
+		if(results.wasImmunityTriggered() && results.getDamage().values().stream().anyMatch((f) -> f > 0))
 		{
 			noKnockback.add(defender.getUniqueID());
-			for(Float f : results.getDamage().values())
-			{
-				if(f != null && f.floatValue() > 0)
-				{
-					noKnockback.remove(defender.getUniqueID());
-					break;
-				}
-			}
 		}
 		else if(results.wasShieldEffective())
 		{
