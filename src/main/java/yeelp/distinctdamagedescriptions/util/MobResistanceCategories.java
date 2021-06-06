@@ -23,8 +23,7 @@ public class MobResistanceCategories extends ResistanceCategories {
 	 * @param adaptiveChance chance adaptability is present
 	 * @param adaptiveAmount amount resistances change by if adaptive.
 	 */
-	public MobResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities,
-			float adaptiveChance, float adaptiveAmount) {
+	public MobResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, float adaptiveChance, float adaptiveAmount) {
 		super(resistances, immunities);
 		this.adaptive = adaptiveChance;
 		this.adaptiveAmount = adaptiveAmount;

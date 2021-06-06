@@ -27,8 +27,7 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 	public static final DDDDamageType THUNDER = new DDDBuiltInDamageType("thunder", false, "#defender was blasted to bits by #attacker", "#defender had their body blown apart", 0xc9c9c9);
 	public static final DDDDamageType[] PHYSICAL_TYPES = {SLASHING, PIERCING, BLUDGEONING};
 
-	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage,
-			int colour) {
+	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		super(name, isPhysical, deathAttackerMessage, deathMessage, colour);
 		this.displayName = YLib.capitalize(this.getTypeName().substring("ddd_".length()));
 	}

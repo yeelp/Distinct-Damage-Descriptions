@@ -31,8 +31,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		this(new NonNullMap<DDDDamageType, Float>(0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
 	}
 
-	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities,
-			boolean adaptitability, float adaptiveAmount) {
+	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, boolean adaptitability, float adaptiveAmount) {
 		super(resistances, immunities);
 		this.adaptive = adaptitability;
 		this.adaptiveAmount = adaptiveAmount;

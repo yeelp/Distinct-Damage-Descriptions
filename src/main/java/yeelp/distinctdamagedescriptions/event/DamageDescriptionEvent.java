@@ -44,8 +44,7 @@ public abstract class DamageDescriptionEvent extends Event {
 	 * @param armor       a Map that maps damage type strings to a tuple (armor,
 	 *                    toughness) for that damage type.
 	 */
-	public DamageDescriptionEvent(Entity attacker, EntityLivingBase defender, DamageMap damage, ResistMap resistances,
-			ArmorMap armorMap) {
+	public DamageDescriptionEvent(Entity attacker, EntityLivingBase defender, DamageMap damage, ResistMap resistances, ArmorMap armorMap) {
 		super();
 		this.damage = new DamageMap();
 		this.resistances = new ResistMap();
@@ -177,8 +176,7 @@ public abstract class DamageDescriptionEvent extends Event {
 	 */
 	@Cancelable
 	public static final class Pre extends DamageDescriptionEvent {
-		public Pre(Entity attacker, EntityLivingBase defender, DamageMap damage, ResistMap resistances,
-				ArmorMap armorMap) {
+		public Pre(Entity attacker, EntityLivingBase defender, DamageMap damage, ResistMap resistances, ArmorMap armorMap) {
 			super(attacker, defender, damage, resistances, armorMap);
 		}
 	}
@@ -196,8 +194,7 @@ public abstract class DamageDescriptionEvent extends Event {
 	 *
 	 */
 	public static final class Post extends DamageDescriptionEvent {
-		public Post(Entity attacker, EntityLivingBase defender, DamageMap damage, ResistMap resistances,
-				ArmorMap armorMap) {
+		public Post(Entity attacker, EntityLivingBase defender, DamageMap damage, ResistMap resistances, ArmorMap armorMap) {
 			super(attacker, defender, damage, resistances, armorMap);
 		}
 	}

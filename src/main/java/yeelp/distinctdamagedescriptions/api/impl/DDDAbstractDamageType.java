@@ -32,8 +32,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	 *                             attacker
 	 * @param colour               the display colour to use in tooltips.
 	 */
-	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage,
-			int colour) {
+	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		this.name = "ddd_" + name;
 		this.attackerDeathMessage = deathAttackerMessage;
 		this.noAttackerDeathMessage = deathMessage;

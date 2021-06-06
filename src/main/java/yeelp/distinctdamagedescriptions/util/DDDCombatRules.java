@@ -194,8 +194,7 @@ public final class DDDCombatRules {
 		private final ArmorMap armorMap;
 		private final IMobResistances mobResists;
 
-		CombatResults(boolean weakness, boolean resisted, boolean immunityResisted, boolean effectiveShield,
-				DamageMap dmgMap, ResistMap resistMap, ArmorMap armorMap, IMobResistances mobResists) {
+		CombatResults(boolean weakness, boolean resisted, boolean immunityResisted, boolean effectiveShield, DamageMap dmgMap, ResistMap resistMap, ArmorMap armorMap, IMobResistances mobResists) {
 			this.immunityResisted = immunityResisted;
 			this.weakness = weakness;
 			this.resisted = resisted;

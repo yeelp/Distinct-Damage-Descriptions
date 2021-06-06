@@ -26,8 +26,7 @@ public class DDDParticle extends Particle {
 	private static TextureAtlasSprite sprite;
 	private DDDParticleType type;
 
-	public DDDParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn,
-			double ySpeedIn, double zSpeedIn, DDDParticleType particleType) {
+	public DDDParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, DDDParticleType particleType) {
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 		this.type = particleType;
 
