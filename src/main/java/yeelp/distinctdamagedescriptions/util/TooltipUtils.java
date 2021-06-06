@@ -35,8 +35,7 @@ import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public final class TooltipUtils
-{
+public final class TooltipUtils {
 	private static final int ICON_HEIGHT = 10;
 	private static final DecimalFormat formatter = new DecimalFormat("##.##%");
 	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
@@ -49,7 +48,7 @@ public final class TooltipUtils
 	private static final ITextComponent bludgeTooltip = new TextComponentTranslation("damagetypes.distinctdamagedescriptions.bludgeoning").setStyle(WHITE);
 	private static final ITextComponent damageTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damage").setStyle(GRAY);
 	private static final ITextComponent resistanceTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.resistance").setStyle(GRAY);
-	private static final ITextComponent weaknessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.weakness").setStyle(DARK_RED); 
+	private static final ITextComponent weaknessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.weakness").setStyle(DARK_RED);
 	private static final ITextComponent effectivenessTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(GRAY);
 	private static final ITextComponent mobImmunityTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.immunities").setStyle(AQUA);
 	private static final ITextComponent mobAdaptiveTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptivechance").setStyle(LIGHT_PURPLE);
@@ -58,319 +57,265 @@ public final class TooltipUtils
 	private static final Map<String, ITextComponent> damageTypeTooltips = new HashMap<String, ITextComponent>();
 	private static final String grayColour = TextFormatting.GRAY.toString();
 	private static final String redColour = TextFormatting.DARK_RED.toString();
-	
-	public static class TooltipString implements Iterable<Tuple<Integer, TooltipComp>>
-	{
+
+	public static class TooltipString implements Iterable<Tuple<Integer, TooltipComp>> {
 		private final List<TooltipComp> comps;
 		private final int xStart, y;
-		TooltipString(int x, int y)
-		{
+
+		TooltipString(int x, int y) {
 			this.xStart = x;
 			this.y = y;
 			comps = new LinkedList<TooltipComp>();
 		}
-		
-		public int getY()
-		{
+
+		public int getY() {
 			return this.y;
 		}
-		
-		public void add(TooltipComp comp)
-		{
+
+		public void add(TooltipComp comp) {
 			comps.add(comp);
 		}
-		
+
 		@Override
-		public Iterator<Tuple<Integer, TooltipComp>> iterator()
-		{
+		public Iterator<Tuple<Integer, TooltipComp>> iterator() {
 			return new TooltipIterator(this);
 		}
-		
-		private class TooltipIterator implements Iterator<Tuple<Integer, TooltipComp>>
-		{
+
+		private class TooltipIterator implements Iterator<Tuple<Integer, TooltipComp>> {
 			private Iterator<TooltipComp> it;
 			private int x;
-			private TooltipIterator(TooltipString s)
-			{
+
+			private TooltipIterator(TooltipString s) {
 				this.x = xStart;
 				this.it = comps.iterator();
 			}
 
 			@Override
-			public boolean hasNext()
-			{
+			public boolean hasNext() {
 				return it.hasNext();
 			}
 
 			@Override
-			public Tuple<Integer, TooltipComp> next()
-			{
+			public Tuple<Integer, TooltipComp> next() {
 				TooltipComp comp = it.next();
 				Tuple<Integer, TooltipComp> t = new Tuple<Integer, TooltipComp>(x, comp);
 				x += Minecraft.getMinecraft().fontRenderer.getStringWidth(comp.text);
 				return t;
 			}
-			
+
 		}
 	}
-	
-	public static class TooltipComp
-	{
+
+	public static class TooltipComp {
 		private String text;
 		private int colour;
-		
-		TooltipComp(String s, int colour)
-		{
+
+		TooltipComp(String s, int colour) {
 			this.text = s;
 			this.colour = colour;
 		}
-		
-		public String getText()
-		{
+
+		public String getText() {
 			return text;
 		}
-		
-		public int getColour()
-		{
+
+		public int getColour() {
 			return colour;
 		}
 	}
-	static
-	{
+
+	static {
 		damageTypeTooltips.put(DDDBuiltInDamageType.SLASHING.getTypeName(), slashTooltip);
 		damageTypeTooltips.put(DDDBuiltInDamageType.PIERCING.getTypeName(), pierceTooltip);
 		damageTypeTooltips.put(DDDBuiltInDamageType.BLUDGEONING.getTypeName(), bludgeTooltip);
 	}
-	
-	public static final List<String> buildDamageDistTooltips(IDamageDistribution dist)
-	{
+
+	public static final List<String> buildDamageDistTooltips(IDamageDistribution dist) {
 		return buildDistTooltip(dist, grayColour, damageTooltip.getFormattedText());
 	}
-	
-	public static final List<String> buildDamageDistTooltips(DDDBaseMap<Float> dist)
-	{
+
+	public static final List<String> buildDamageDistTooltips(DDDBaseMap<Float> dist) {
 		return buildDistTooltip(dist, grayColour, damageTooltip.getFormattedText());
 	}
-	
-	public static final List<String> buildArmorDistTooltips(IArmorDistribution dist)
-	{
+
+	public static final List<String> buildArmorDistTooltips(IArmorDistribution dist) {
 		return buildDistTooltip(dist, grayColour, effectivenessTooltip.getFormattedText());
 	}
-	
-	public static final List<String> buildShieldDistTooltips(ShieldDistribution dist)
-	{
+
+	public static final List<String> buildShieldDistTooltips(ShieldDistribution dist) {
 		return buildDistTooltip(dist, grayColour, effectivenessTooltip.getFormattedText());
 	}
-	
-	public static final List<String> buildMobResistsTooltips(MobResistanceCategories resists)
-	{
+
+	public static final List<String> buildMobResistsTooltips(MobResistanceCategories resists) {
 		List<String> lst = new LinkedList<String>();
-		for(Entry<DDDDamageType, Float> entry : resists.getResistanceMap().entrySet())
-		{
+		for(Entry<DDDDamageType, Float> entry : resists.getResistanceMap().entrySet()) {
 			lst.add(makeOneMobResistString(entry.getValue(), getDamageName(entry.getKey())));
 		}
-		if(lst.isEmpty())
-		{
+		if(lst.isEmpty()) {
 			lst.add(noResists.getFormattedText());
 		}
 		String immunities = makeMobImmunityTooltip(resists.getImmunities());
-		if(immunities != null)
-		{
+		if(immunities != null) {
 			lst.add(immunities);
 		}
 		lst.addAll(makeMobAdaptiveTooltip(resists.adaptiveChance(), resists.getAdaptiveAmount()));
 		return lst;
 	}
-	
-	private static String makeMobImmunityTooltip(Set<DDDDamageType> immunities)
-	{
-		if(immunities.isEmpty())
-		{
+
+	private static String makeMobImmunityTooltip(Set<DDDDamageType> immunities) {
+		if(immunities.isEmpty()) {
 			return null;
 		}
-		String str = mobImmunityTooltip.getFormattedText()+" ";
+		String str = mobImmunityTooltip.getFormattedText() + " ";
 		String[] strings = new String[immunities.size()];
 		int index = 0;
-		for(DDDDamageType type : immunities)
-		{
+		for(DDDDamageType type : immunities) {
 			strings[index++] = getDamageName(type, false);
 		}
 		return str + YLib.joinNiceString(true, ",", strings);
 	}
-	
-	private static List<String> makeMobAdaptiveTooltip(float adaptiveChance, float adaptiveAmount)
-	{
-		if(adaptiveChance == 0 && adaptiveAmount == 0)
-		{
+
+	private static List<String> makeMobAdaptiveTooltip(float adaptiveChance, float adaptiveAmount) {
+		if(adaptiveChance == 0 && adaptiveAmount == 0) {
 			return Collections.emptyList();
 		}
 		String str1 = String.format("%s %s", mobAdaptiveTooltip.getFormattedText(), formatNum(adaptiveChance));
 		String str2 = String.format("   %s %s", mobAdaptiveAmountTooltip.getFormattedText(), formatNum(adaptiveAmount));
 		return Lists.newArrayList(str1, str2);
 	}
-	
-	private static List<String> buildDistTooltip(IDistribution dist, String prefix, String suffix)
-	{
+
+	private static List<String> buildDistTooltip(IDistribution dist, String prefix, String suffix) {
 		List<String> lst = new LinkedList<String>();
-		for(DDDDamageType type : dist.getCategories())
-		{
+		for(DDDDamageType type : dist.getCategories()) {
 			float percent = dist.getWeight(type);
 			String name = getDamageName(type);
 			lst.add(makeOneTooltipString(percent, name, prefix, name.isEmpty() ? "" : suffix));
 		}
 		return lst;
 	}
-	
-	private static List<String> buildDistTooltip(DDDBaseMap<Float> dist, String prefix, String suffix)
-	{
+
+	private static List<String> buildDistTooltip(DDDBaseMap<Float> dist, String prefix, String suffix) {
 		List<String> lst = new LinkedList<String>();
-		for(DDDDamageType type : dist.keySet())
-		{
+		for(DDDDamageType type : dist.keySet()) {
 			float percent = dist.get(type);
 			String name = getDamageName(type);
 			lst.add(makeOneTooltipString(percent, name, prefix, name.isEmpty() ? "" : suffix));
 		}
 		return lst;
 	}
-	
-	private static String makeOneTooltipString(float percent, String damageName, String prefix, String suffix)
-	{
+
+	private static String makeOneTooltipString(float percent, String damageName, String prefix, String suffix) {
 		return String.format("   %s%s %s %s", prefix, formatNum(percent), damageName, suffix);
 	}
-	
-	private static String makeOneMobResistString(float percent, String damageType)
-	{
+
+	private static String makeOneMobResistString(float percent, String damageType) {
 		boolean isNegative = percent < 0;
 		return makeOneTooltipString(percent, damageType, isNegative ? redColour : grayColour, isNegative ? weaknessTooltip.getFormattedText() : resistanceTooltip.getFormattedText());
 	}
-	
-	private static String formatNum(float num)
-	{
+
+	private static String formatNum(float num) {
 		return String.format("%s%s", num < 0 ? "" : "+", formatter.format(num)).substring(1);
 	}
-	
-	private static String getDamageName(DDDDamageType type, boolean usingIcons)
-	{
-		if(DDDAPI.accessor.isPhysicalDamage(type))
-		{
-			if(usingIcons)
-			{
+
+	private static String getDamageName(DDDDamageType type, boolean usingIcons) {
+		if(DDDAPI.accessor.isPhysicalDamage(type)) {
+			if(usingIcons) {
 				return "";
 			}
-			else
-			{
+			else {
 				return damageTypeTooltips.get(type.getTypeName()).getFormattedText();
 			}
 		}
 		return type.getDisplayName();
 	}
-	
-	private static String getDamageName(DDDDamageType type)
-	{
+
+	private static String getDamageName(DDDDamageType type) {
 		return getDamageName(type, ModConfig.client.useIcons);
 	}
-	
-	private static int getIndex(DDDDamageType type)
-	{
+
+	private static int getIndex(DDDDamageType type) {
 		int index = 0;
-		for(DDDDamageType damageType : DDDBuiltInDamageType.PHYSICAL_TYPES)
-		{
-			if(damageType.getTypeName().equals(type.getTypeName()))
-			{
+		for(DDDDamageType damageType : DDDBuiltInDamageType.PHYSICAL_TYPES) {
+			if(damageType.getTypeName().equals(type.getTypeName())) {
 				break;
 			}
 			index++;
 		}
-		return ICON_HEIGHT*index;
+		return ICON_HEIGHT * index;
 	}
-	
+
 	/**
 	 * Get the icon y locations and type
-	 * @param stack stack to check
+	 * 
+	 * @param stack     stack to check
 	 * @param shiftHeld
 	 * @param ctrlHeld
 	 * @return an iterable of y positions and type (index)
 	 */
-	public static Iterable<Tuple<Integer, Integer>> getIconsToDraw(ItemStack stack, boolean shiftHeld, boolean ctrlHeld)
-	{
+	public static Iterable<Tuple<Integer, Integer>> getIconsToDraw(ItemStack stack, boolean shiftHeld, boolean ctrlHeld) {
 		LinkedList<Tuple<Integer, Integer>> lst = new LinkedList<Tuple<Integer, Integer>>();
 		int currY = 21;
-		if(stack.isEmpty())
-		{
+		if(stack.isEmpty()) {
 			return lst;
 		}
 		Item item = stack.getItem();
 		boolean offsetFlag = DDDConfigurations.items.configured(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
-		if(shiftHeld && offsetFlag)
-		{
+		if(shiftHeld && offsetFlag) {
 			IDamageDistribution dist = DDDAPI.accessor.getDamageDistribution(stack);
 			currY = addIcons(currY, lst, dist.getCategories());
 		}
 		currY += offsetFlag ? 11 : 0;
-		if(ctrlHeld)
-		{
+		if(ctrlHeld) {
 			IDamageDistribution projDist = DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(item));
 			IArmorDistribution armorDist = DDDAPI.accessor.getArmorResistances(stack);
 			ShieldDistribution shieldDist = DDDAPI.accessor.getShieldDistribution(stack);
-			if(projDist != null)
-			{
+			if(projDist != null) {
 				addIcons(currY, lst, projDist.getCategories());
 			}
-			else if(armorDist != null)
-			{
+			else if(armorDist != null) {
 				addIcons(currY, lst, armorDist.getCategories());
 			}
-			else if(shieldDist != null)
-			{
+			else if(shieldDist != null) {
 				addIcons(currY, lst, shieldDist.getCategories());
 			}
-			else if(item instanceof ItemMonsterPlacer)
-			{
+			else if(item instanceof ItemMonsterPlacer) {
 				ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
 				ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
 				MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(loc.toString());
-				if(mobCats != null)
-				{
+				if(mobCats != null) {
 					addIcons(currY, lst, mobCats.getResistanceMap().keySet());
 				}
 			}
 		}
 		return lst;
 	}
-	
-	public static Iterable<TooltipString> getTooltipStrings(ItemStack stack, boolean ctrlHeld, boolean shiftHeld, int x)
-	{
+
+	public static Iterable<TooltipString> getTooltipStrings(ItemStack stack, boolean ctrlHeld, boolean shiftHeld, int x) {
 		LinkedList<TooltipString> strings = new LinkedList<TooltipString>();
-		//TODO finish
+		// TODO finish
 		return strings;
 	}
-	
-	private static int addIcons(int currY, LinkedList<Tuple<Integer, Integer>> lst, Iterable<DDDDamageType> types)
-	{
-		for(DDDDamageType type : types)
-		{
-			if(DDDAPI.accessor.isPhysicalDamage(type))
-			{
+
+	private static int addIcons(int currY, LinkedList<Tuple<Integer, Integer>> lst, Iterable<DDDDamageType> types) {
+		for(DDDDamageType type : types) {
+			if(DDDAPI.accessor.isPhysicalDamage(type)) {
 				lst.add(new Tuple<Integer, Integer>(currY, getIndex(type)));
 			}
 			currY += ICON_HEIGHT;
 		}
 		return currY;
 	}
-	
-	private static int addComponents(int x, int currY, LinkedList<TooltipString> lst, IDistribution dist, Function<Float, String> suffix)
-	{
-		for(DDDDamageType type : dist.getCategories())
-		{
+
+	private static int addComponents(int x, int currY, LinkedList<TooltipString> lst, IDistribution dist, Function<Float, String> suffix) {
+		for(DDDDamageType type : dist.getCategories()) {
 			float weight = dist.getWeight(type);
 			lst.add(buildTooltipString(x, currY, type, formatNum(weight), suffix.apply(weight), weight < 0 ? 0xaa0000 : 0x555555));
 			currY += ICON_HEIGHT;
 		}
 		return currY;
 	}
-	
-	private static TooltipString buildTooltipString(int x, int y, DDDDamageType type, String prefix, String suffix, int colour)
-	{
+
+	private static TooltipString buildTooltipString(int x, int y, DDDDamageType type, String prefix, String suffix, int colour) {
 		TooltipString s = new TooltipString(x, y);
 		s.add(new TooltipComp(prefix, colour));
 		s.add(new TooltipComp(type.getDisplayName(), type.getColour()));

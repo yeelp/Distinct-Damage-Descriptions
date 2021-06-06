@@ -7,16 +7,14 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 
-public class ArmorDistributionProvider
-{
+public class ArmorDistributionProvider {
 	@CapabilityInject(IArmorDistribution.class)
 	public static Capability<IArmorDistribution> armorResist = null;
-	
+
 	private IArmorDistribution instance = armorResist.getDefaultInstance();
-	
+
 	@Nullable
-	public static IArmorDistribution getArmorResistances(ItemStack stack)
-	{
+	public static IArmorDistribution getArmorResistances(ItemStack stack) {
 		return stack.getCapability(armorResist, null);
 	}
 }

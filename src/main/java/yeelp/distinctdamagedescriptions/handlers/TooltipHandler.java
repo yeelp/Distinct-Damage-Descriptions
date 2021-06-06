@@ -35,8 +35,7 @@ import yeelp.distinctdamagedescriptions.util.TooltipUtils.TooltipString;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public class TooltipHandler extends Handler
-{
+public class TooltipHandler extends Handler {
 	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
 	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
 	private static final Style YELLOW = new Style().setColor(TextFormatting.YELLOW);
@@ -48,11 +47,10 @@ public class TooltipHandler extends Handler
 	private static final ITextComponent shieldDistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(GRAY);
 	private static final ITextComponent mobResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobresistances").setStyle(GRAY);
 	private static final ITextComponent notGenerated = new TextComponentTranslation("tooltips.distinctdamagedescriptions.notgenerated").setStyle(new Style().setColor(TextFormatting.GOLD).setBold(true));
-	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	@SideOnly(value = Side.CLIENT)
-	public void onTooltip(ItemTooltipEvent evt)
-	{
+	public void onTooltip(ItemTooltipEvent evt) {
 		ItemStack stack = evt.getItemStack();
 		Item item = evt.getItemStack().getItem();
 		List<String> tooltips = evt.getToolTip();
@@ -63,110 +61,89 @@ public class TooltipHandler extends Handler
 		IDamageDistribution projDist = DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(item));
 		boolean shiftHeld = KeyHelper.isShiftHeld();
 		boolean ctrlHeld = KeyHelper.isCtrlHeld();
-		if(armors != null)
-		{
+		if(armors != null) {
 			int index = 1;
-			if(ctrlHeld)
-			{
+			if(ctrlHeld) {
 				tooltips.addAll(index, TooltipUtils.buildArmorDistTooltips(armors));
 			}
 			tooltips.add(index, armorResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 		}
-		else if(shield != null)
-		{
+		else if(shield != null) {
 			int index = 1;
-			if(ctrlHeld)
-			{
+			if(ctrlHeld) {
 				tooltips.addAll(index, TooltipUtils.buildShieldDistTooltips(shield));
 			}
 			tooltips.add(index, shieldDistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 		}
-		else if(item instanceof ItemMonsterPlacer)
-		{
+		else if(item instanceof ItemMonsterPlacer) {
 			ItemMonsterPlacer spawnegg = (ItemMonsterPlacer) item;
 			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
 			MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(loc.toString());
 			int index = 1;
-			if(mobCats != null)
-			{
-				if(ctrlHeld)
-				{
+			if(mobCats != null) {
+				if(ctrlHeld) {
 					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(mobCats));
 				}
 				tooltips.add(index, mobResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 			}
-			else
-			{
+			else {
 				tooltips.add(index, notGenerated.getFormattedText());
 			}
 		}
-		if(damages != null && shouldShowDist(stack))
-		{
+		if(damages != null && shouldShowDist(stack)) {
 			int index = 1;
-			if(projDist != null)
-			{
-				if(ctrlHeld)
-				{
+			if(projDist != null) {
+				if(ctrlHeld) {
 					tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(projDist));
 				}
 				tooltips.add(index, projDistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
 			}
-			if(shiftHeld)
-			{
+			if(shiftHeld) {
 				tooltips.addAll(index, TooltipUtils.buildDamageDistTooltips(damages));
 			}
 			tooltips.add(index, damageDistTooltip.getFormattedText() + getShiftText(shiftHeld));
 		}
 	}
-	
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onTooltipPost(RenderTooltipEvent.PostText evt)
-	{
+	public void onTooltipPost(RenderTooltipEvent.PostText evt) {
 		ItemStack stack = evt.getStack();
 		GL11.glPushMatrix();
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for(TooltipString s : TooltipUtils.getTooltipStrings(stack, KeyHelper.isCtrlHeld(), KeyHelper.isShiftHeld(), evt.getX()))
-		{
-			for(Tuple<Integer, TooltipComp> t : s)
-			{
+		for(TooltipString s : TooltipUtils.getTooltipStrings(stack, KeyHelper.isCtrlHeld(), KeyHelper.isShiftHeld(), evt.getX())) {
+			for(Tuple<Integer, TooltipComp> t : s) {
 				TooltipComp comp = t.getSecond();
 				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(comp.getText(), t.getFirst(), s.getY(), comp.getColour());
 			}
 		}
 		GL11.glPopMatrix();
-		
-		if(ModConfig.client.useIcons)
-		{
+
+		if(ModConfig.client.useIcons) {
 			Minecraft mc = Minecraft.getMinecraft();
 			GL11.glPushMatrix();
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			mc.getTextureManager().bindTexture(ICONS);
-			for(Tuple<Integer, Integer> t : TooltipUtils.getIconsToDraw(evt.getStack(), KeyHelper.isShiftHeld(), KeyHelper.isCtrlHeld()))
-			{
+			for(Tuple<Integer, Integer> t : TooltipUtils.getIconsToDraw(evt.getStack(), KeyHelper.isShiftHeld(), KeyHelper.isCtrlHeld())) {
 				Gui.drawModalRectWithCustomSizedTexture(evt.getX() - 2, evt.getY() + t.getFirst(), t.getSecond(), 0, 10, 10, 256, 256);
-			}	
+			}
 			GL11.glPopMatrix();
 		}
 	}
-	
-	private static String getShiftText(boolean held)
-	{
+
+	private static String getShiftText(boolean held) {
 		return getWhenNotHeld(held, shiftTooltip);
 	}
-	
-	private static String getCtrlText(boolean held)
-	{
+
+	private static String getCtrlText(boolean held) {
 		return getWhenNotHeld(held, ctrlTooltip);
 	}
-	
-	private static String getWhenNotHeld(boolean held, ITextComponent tooltip)
-	{
-		return held ? "" : " "+tooltip.getFormattedText();
+
+	private static String getWhenNotHeld(boolean held, ITextComponent tooltip) {
+		return held ? "" : " " + tooltip.getFormattedText();
 	}
-	
-	private static boolean shouldShowDist(ItemStack stack)
-	{
+
+	private static boolean shouldShowDist(ItemStack stack) {
 		return DDDConfigurations.items.configured(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
 	}
 }

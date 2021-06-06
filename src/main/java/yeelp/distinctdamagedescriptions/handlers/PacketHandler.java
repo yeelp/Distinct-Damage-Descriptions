@@ -7,13 +7,12 @@ import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.network.ParticleMessage;
 import yeelp.distinctdamagedescriptions.network.SoundMessage;
 
-public class PacketHandler
-{
+public class PacketHandler {
 	public static final SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(ModConsts.MODID_SHORT);
 	public static int id = 0;
-	public static final void init()
-	{
-		//create dummy message to get their handlers.
+
+	public static final void init() {
+		// create dummy message to get their handlers.
 		MobResistancesMessage mobMsg = new MobResistancesMessage();
 		INSTANCE.registerMessage(mobMsg.getMessageHandler(), MobResistancesMessage.class, id++, Side.CLIENT);
 		INSTANCE.registerMessage(SoundMessage.Handler.class, SoundMessage.class, id++, Side.CLIENT);

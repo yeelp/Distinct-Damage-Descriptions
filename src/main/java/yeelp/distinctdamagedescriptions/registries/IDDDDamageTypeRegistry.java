@@ -10,36 +10,34 @@ import net.minecraft.util.text.TextComponentString;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 
-public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType>
-{	
+public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	/**
 	 * Get the display name for a custom damage type
+	 * 
 	 * @param name the internal name, with the "ddd_" prefix.
 	 * @return the display name
 	 */
-	default String getDisplayName(String name)
-	{
+	default String getDisplayName(String name) {
 		return get(name).getDisplayName();
 	}
-	
+
 	/**
 	 * Get the death message for a damage type
-	 * @param type type
-	 * @param src the DDDDamageSource to fall back too if type has no death message
+	 * 
+	 * @param type     type
+	 * @param src      the DDDDamageSource to fall back too if type has no death
+	 *                 message
 	 * @param attacker attacking Entity
 	 * @param defender defending EntityLivingBase
 	 * @return the ITextComponent death message
 	 */
-	default ITextComponent getDeathMessageForType(DDDDamageType type, DDDDamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender)
-	{
+	default ITextComponent getDeathMessageForType(DDDDamageType type, DDDDamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
 		boolean hasAttacker = attacker != null;
 		String msg = type.getDeathMessage(hasAttacker);
-		if(msg == null)
-		{
+		if(msg == null) {
 			return src.getDeathMessage(defender);
 		}
-		if(hasAttacker)
-		{
+		if(hasAttacker) {
 			msg.replaceAll("#attacker", attacker.getName());
 		}
 		msg.replaceAll("#defender", defender.getName());

@@ -13,40 +13,33 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public final class ParrotPoisonDamageHandler extends Handler
-{
+public final class ParrotPoisonDamageHandler extends Handler {
 	private final HashSet<UUID> poisoned = new HashSet<UUID>();
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void onParrotAttacked(LivingAttackEvent evt)
-	{
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onParrotAttacked(LivingAttackEvent evt) {
 		EntityLivingBase entity = evt.getEntityLiving();
-		if(entity instanceof EntityParrot)
-		{
+		if(entity instanceof EntityParrot) {
 			DamageSource src = evt.getSource();
 			float amount = evt.getAmount();
-			if(src.damageType.equals("player") && amount == Float.MAX_VALUE)
-			{
+			if(src.damageType.equals("player") && amount == Float.MAX_VALUE) {
 				PotionEffect effect = entity.getActivePotionEffect(MobEffects.POISON);
-				if(effect != null)
-				{
+				if(effect != null) {
 					int dur = effect.getDuration();
-					if(850 <= dur && dur <= 900)
-					{
+					if(850 <= dur && dur <= 900) {
 						poisoned.add(entity.getUniqueID());
 					}
 				}
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
-	public void onParrotDeath(LivingDeathEvent evt)
-	{
+	public void onParrotDeath(LivingDeathEvent evt) {
 		poisoned.remove(evt.getEntityLiving().getUniqueID());
 	}
-	
-	public boolean wasPoisonedByCookie(UUID id)
-	{
+
+	public boolean wasPoisonedByCookie(UUID id) {
 		return poisoned.contains(id);
 	}
 }

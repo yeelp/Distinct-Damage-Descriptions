@@ -5,12 +5,12 @@ import stanhebben.zenscript.annotations.ZenClass;
 
 /**
  * CraftTweaker Pre damage event
+ * 
  * @author Yeelp
  *
  */
 @ZenClass("mods.ddd.events.Pre")
 @ZenRegister
-public interface IPre extends IDDDEvent
-{
-	
+public interface IPre extends IDDDEvent {
+
 }

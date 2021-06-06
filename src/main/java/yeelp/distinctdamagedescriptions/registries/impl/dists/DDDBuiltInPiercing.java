@@ -7,28 +7,23 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
-public final class DDDBuiltInPiercing extends AbstractSingleTypeDist
-{
-	public DDDBuiltInPiercing()
-	{
+public final class DDDBuiltInPiercing extends AbstractSingleTypeDist {
+	public DDDBuiltInPiercing() {
 		super(() -> ModConfig.dmg.extraDamage.enableGuardianSpikesDamage);
 	}
 
 	@Override
-	protected DDDDamageType getType()
-	{
+	protected DDDDamageType getType() {
 		return DDDBuiltInDamageType.PIERCING;
 	}
 
 	@Override
-	protected boolean useType(DamageSource source, EntityLivingBase target)
-	{
+	protected boolean useType(DamageSource source, EntityLivingBase target) {
 		return source.isMagicDamage() & source.damageType.equals("thorns") && source.getTrueSource() instanceof EntityGuardian;
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "builtInPiercing";
 	}
 }

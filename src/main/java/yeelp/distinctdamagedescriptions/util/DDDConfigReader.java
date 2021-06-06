@@ -23,13 +23,12 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**
  * Read configuration entries from Config
+ * 
  * @author Yeelp
  *
  */
-public final class DDDConfigReader
-{
-	public static void readConfig()
-	{
+public final class DDDConfigReader {
+	public static void readConfig() {
 		readBasicConfigEntry(ModConfig.dmg.mobBaseDmg, 0.0f, DDDConfigurations.mobDamage, (map -> new DamageDistribution(map)));
 		DistinctDamageDescriptions.info("Mob damage loaded!");
 		readBasicConfigEntry(ModConfig.dmg.itemBaseDamage, 0.0f, DDDConfigurations.items, (map -> new DamageDistribution(map)));
@@ -43,144 +42,114 @@ public final class DDDConfigReader
 		readProjectileDamage();
 		DistinctDamageDescriptions.info("Projectile Damage loaded!");
 	}
-	private static void readMobResistances()
-	{
-		for(String s : ModConfig.resist.mobBaseResist)
-		{
-			if(s.endsWith(";"))
-			{
-				DistinctDamageDescriptions.err("Config entry "+s+" shouldn't end in a semicolon! Please remove!");
+
+	private static void readMobResistances() {
+		for(String s : ModConfig.resist.mobBaseResist) {
+			if(s.endsWith(";")) {
+				DistinctDamageDescriptions.err("Config entry " + s + " shouldn't end in a semicolon! Please remove!");
 				continue;
 			}
-			else
-			{
+			else {
 				String[] arr = s.split(";");
-				try
-				{
+				try {
 					NonNullMap<DDDDamageType, Float> map = buildMap(0.0f, parseListOfTuples(arr[1]));
 					Set<DDDDamageType> immunities = parseImmunitiesFromArray(arr[2]);
 					DDDConfigurations.mobResists.put(arr[0], new MobResistanceCategories(map, immunities, Float.parseFloat(arr[3]), Float.parseFloat(arr[4])));
 				}
-				catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
-				{
-					DistinctDamageDescriptions.warn(s+" isn't a valid entry! Ignoring...");
+				catch(NumberFormatException | ArrayIndexOutOfBoundsException e) {
+					DistinctDamageDescriptions.warn(s + " isn't a valid entry! Ignoring...");
 				}
 			}
 		}
 	}
-	
-	private static void readProjectileDamage()
-	{
-		for(String s : ModConfig.dmg.projectileDamageTypes)
-		{
+
+	private static void readProjectileDamage() {
+		for(String s : ModConfig.dmg.projectileDamageTypes) {
 			String[] arr = tryPut(0.0f, s, DDDConfigurations.projectiles, (map -> new DamageDistribution(map)));
-			if(arr == null || arr.length == 2)
-			{
+			if(arr == null || arr.length == 2) {
 				continue;
 			}
-			else
-			{
-				for(String str : arr[2].split(","))
-				{
+			else {
+				for(String str : arr[2].split(",")) {
 					DDDConfigurations.projectiles.registerItemProjectilePair(str.trim(), arr[0]);
 				}
 			}
 		}
 	}
-	
-	private static <T> void readBasicConfigEntry(String[] arr, float defaultVal, IDDDConfiguration<T> config, Function<NonNullMap<DDDDamageType, Float>, T> constructor)
-	{
-		for(String s : arr)
-		{
+
+	private static <T> void readBasicConfigEntry(String[] arr, float defaultVal, IDDDConfiguration<T> config, Function<NonNullMap<DDDDamageType, Float>, T> constructor) {
+		for(String s : arr) {
 			tryPut(defaultVal, s, config, constructor);
 		}
 	}
-	
-	private static <T> String[] tryPut(float defaultVal, String s, IDDDConfiguration<T> config, Function<NonNullMap<DDDDamageType, Float>, T> constructor)
-    {
-		if(s.endsWith(";"))
-		{
-			DistinctDamageDescriptions.err("Config entry "+s+" shouldn't end in a semicolon! Please remove!");
+
+	private static <T> String[] tryPut(float defaultVal, String s, IDDDConfiguration<T> config, Function<NonNullMap<DDDDamageType, Float>, T> constructor) {
+		if(s.endsWith(";")) {
+			DistinctDamageDescriptions.err("Config entry " + s + " shouldn't end in a semicolon! Please remove!");
 			return null;
 		}
 		String[] contents = s.split(";");
-    	try
-		{
-    		config.put(contents[0], constructor.apply(buildMap(defaultVal, parseListOfTuples(contents[1]))));
+		try {
+			config.put(contents[0], constructor.apply(buildMap(defaultVal, parseListOfTuples(contents[1]))));
 			return contents;
 		}
-		catch(NumberFormatException | ArrayIndexOutOfBoundsException e)
-		{
-			DistinctDamageDescriptions.warn(s+" isn't a valid entry! Ignoring...");
+		catch(NumberFormatException | ArrayIndexOutOfBoundsException e) {
+			DistinctDamageDescriptions.warn(s + " isn't a valid entry! Ignoring...");
 		}
-    	catch(UnsupportedOperationException f) //This occurs in NonNullMap, when the damage type isn't registered
-    	{
-    		DistinctDamageDescriptions.err(s+" references an invalid damage type! Perhaps it was spelled incorrectly?");
-    		throw f;
-    	}
-    	catch(InvariantViolationException g)
-    	{
-    		DistinctDamageDescriptions.err(s+" is formatted incorrectly! Read the config!");
-    		throw g;
-    	}
-    	return null;
-    }
-	
-	public static Iterable<Tuple<DDDDamageType, Float>> parseListOfTuples(String s)
-	{
-		//s is of the form [(t, a), (t, a), ... , (t, a)]
-		if(s.equals("[]"))
+		catch(UnsupportedOperationException f) // This occurs in NonNullMap, when the damage type isn't registered
 		{
+			DistinctDamageDescriptions.err(s + " references an invalid damage type! Perhaps it was spelled incorrectly?");
+			throw f;
+		}
+		catch(InvariantViolationException g) {
+			DistinctDamageDescriptions.err(s + " is formatted incorrectly! Read the config!");
+			throw g;
+		}
+		return null;
+	}
+
+	public static Iterable<Tuple<DDDDamageType, Float>> parseListOfTuples(String s) {
+		// s is of the form [(t, a), (t, a), ... , (t, a)]
+		if(s.equals("[]")) {
 			return Collections.emptyList();
 		}
 		List<Tuple<DDDDamageType, Float>> lst = new LinkedList<Tuple<DDDDamageType, Float>>();
-		for(String str : s.substring(2, s.length() - 2).split("\\),(?:\\s?)\\("))
-		{
+		for(String str : s.substring(2, s.length() - 2).split("\\),(?:\\s?)\\(")) {
 			String[] temp = str.split(",");
 			lst.add(new Tuple<DDDDamageType, Float>(parseDamageType(temp[0].trim()), Float.parseFloat(temp[1].trim())));
 		}
 		return lst;
 	}
-	
-	public static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Iterable<Tuple<K, V>> mappings)
-	{
-		if(mappings == null)
-		{
+
+	public static <K, V> NonNullMap<K, V> buildMap(V defaultVal, Iterable<Tuple<K, V>> mappings) {
+		if(mappings == null) {
 			return new NonNullMap<K, V>(defaultVal);
 		}
-		else
-		{
+		else {
 			NonNullMap<K, V> map = new NonNullMap<K, V>(defaultVal);
-			for(Tuple<K, V> t : mappings)
-			{
+			for(Tuple<K, V> t : mappings) {
 				map.put(t.getFirst(), t.getSecond());
 			}
 			return map;
 		}
 	}
-	
-	private static Set<DDDDamageType> parseImmunitiesFromArray(String s)
-	{
+
+	private static Set<DDDDamageType> parseImmunitiesFromArray(String s) {
 		Set<DDDDamageType> set = new HashSet<DDDDamageType>();
-		if(s.equals("") || s.equals("[]"))
-		{
+		if(s.equals("") || s.equals("[]")) {
 			return set;
 		}
-		else
-		{
+		else {
 			String[] arr = s.substring(1, s.length() - 1).split(",");
-			for(String str : arr)
-			{
+			for(String str : arr) {
 				set.add(parseDamageType(str.trim()));
 			}
 			return set;
 		}
 	}
-	
-	private static DDDDamageType parseDamageType(String s)
-	{
-		switch(s)
-		{
+
+	private static DDDDamageType parseDamageType(String s) {
+		switch(s) {
 			case "s":
 				return DDDBuiltInDamageType.SLASHING;
 			case "p":

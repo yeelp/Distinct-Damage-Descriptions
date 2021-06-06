@@ -8,41 +8,35 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
 /**
  * The Brute Force enchantment. Reduces resistances by 10% per level
+ * 
  * @author Yeelp
  *
  */
-public class EnchantmentBruteForce extends Enchantment
-{
+public class EnchantmentBruteForce extends Enchantment {
 
-	public EnchantmentBruteForce()
-	{
+	public EnchantmentBruteForce() {
 		super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {EntityEquipmentSlot.MAINHAND});
 		this.setRegistryName("bruteforce");
-		this.setName(ModConsts.MODID+".bruteforce");
+		this.setName(ModConsts.MODID + ".bruteforce");
 	}
 
-	public int getMinEnchantability(int level)
-	{
-		return 7*level + 24;
+	public int getMinEnchantability(int level) {
+		return 7 * level + 24;
 	}
-	
-	public int getMaxEnchantability(int level)
-	{
-		return 8*level + 35;
+
+	public int getMaxEnchantability(int level) {
+		return 8 * level + 35;
 	}
-	
-	public boolean isTreasureEnchantment()
-	{
+
+	public boolean isTreasureEnchantment() {
 		return true;
 	}
-	
-	public int getMaxLevel()
-	{
+
+	public int getMaxLevel() {
 		return 5;
 	}
-	
-	public boolean canApplyTogether(Enchantment ench)
-	{
+
+	public boolean canApplyTogether(Enchantment ench) {
 		return super.canApplyTogether(ench) && ench != DDDEnchantments.slyStrike;
 	}
 }

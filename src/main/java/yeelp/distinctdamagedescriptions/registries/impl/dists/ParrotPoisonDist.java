@@ -7,28 +7,23 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
 
-public class ParrotPoisonDist extends AbstractSingleTypeDist
-{
-	public ParrotPoisonDist()
-	{
+public class ParrotPoisonDist extends AbstractSingleTypeDist {
+	public ParrotPoisonDist() {
 		super(() -> ModConfig.dmg.extraDamage.enableParrotPoisonDamage);
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "parrotPoison";
 	}
 
 	@Override
-	protected DDDDamageType getType()
-	{
+	protected DDDDamageType getType() {
 		return DDDBuiltInDamageType.POISON;
 	}
 
 	@Override
-	protected boolean useType(DamageSource source, EntityLivingBase target)
-	{
+	protected boolean useType(DamageSource source, EntityLivingBase target) {
 		return DDDTrackers.parrot.wasPoisonedByCookie(target.getUniqueID());
 	}
 

@@ -22,19 +22,17 @@ import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvi
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
-public class MobResistances extends DamageResistances implements IMobResistances
-{
+public class MobResistances extends DamageResistances implements IMobResistances {
 	private boolean adaptive;
 	private float adaptiveAmount;
 	private Set<DDDDamageType> adaptiveTo;
-	
-	public MobResistances()
-	{
+
+	public MobResistances() {
 		this(new NonNullMap<DDDDamageType, Float>(0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
 	}
-	
-	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, boolean adaptitability, float adaptiveAmount)
-	{
+
+	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities,
+			boolean adaptitability, float adaptiveAmount) {
 		super(resistances, immunities);
 		this.adaptive = adaptitability;
 		this.adaptiveAmount = adaptiveAmount;
@@ -42,55 +40,44 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return capability == MobResistancesProvider.mobResist;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		return capability == MobResistancesProvider.mobResist ? MobResistancesProvider.mobResist.<T> cast(this) : null;
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		return capability == MobResistancesProvider.mobResist ? MobResistancesProvider.mobResist.<T>cast(this) : null;
 	}
 
 	@Override
-	public boolean hasAdaptiveResistance()
-	{
+	public boolean hasAdaptiveResistance() {
 		return this.adaptive;
 	}
 
 	@Override
-	public void setAdaptiveResistance(boolean status)
-	{
+	public void setAdaptiveResistance(boolean status) {
 		this.adaptive = status;
 	}
-	
+
 	@Override
-	public float getAdaptiveAmount()
-	{
+	public float getAdaptiveAmount() {
 		return this.adaptiveAmount;
 	}
-	
+
 	@Override
-	public void setAdaptiveAmount(float amount)
-	{
+	public void setAdaptiveAmount(float amount) {
 		this.adaptiveAmount = amount;
 	}
 
 	@Override
-	public boolean updateAdaptiveResistance(DDDDamageType... damageTypes)
-	{
+	public boolean updateAdaptiveResistance(DDDDamageType... damageTypes) {
 		boolean changed = false;
-		for(DDDDamageType type : damageTypes)
-		{
-			if(ModConfig.resist.adaptToCustom || DDDAPI.accessor.isPhysicalDamage(type))
-			{
-				if(adaptiveTo.contains(type))
-				{
+		for(DDDDamageType type : damageTypes) {
+			if(ModConfig.resist.adaptToCustom || DDDAPI.accessor.isPhysicalDamage(type)) {
+				if(adaptiveTo.contains(type)) {
 					continue;
 				}
-				else
-				{
+				else {
 					changed = true;
 					this.adaptiveTo.add(type);
 					this.setResistance(type, this.getResistance(type) + adaptiveAmount);
@@ -99,14 +86,11 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		}
 		Set<DDDDamageType> temp = new HashSet<DDDDamageType>(Arrays.asList(damageTypes));
 		Set<DDDDamageType> iter = new HashSet<DDDDamageType>(adaptiveTo);
-		for(DDDDamageType type : iter)
-		{
-			if(temp.contains(type))
-			{
+		for(DDDDamageType type : iter) {
+			if(temp.contains(type)) {
 				continue;
 			}
-			else
-			{
+			else {
 				changed = true;
 				adaptiveTo.remove(type);
 				this.setResistance(type, this.getResistance(type) - adaptiveAmount);
@@ -116,58 +100,48 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT()
-	{
+	public NBTTagCompound serializeNBT() {
 		NBTTagCompound tag = super.serializeNBT();
 		NBTTagList adaptabilityStatus = new NBTTagList();
 		tag.setBoolean("adaptive", adaptive);
 		tag.setFloat("adaptiveAmount", adaptiveAmount);
-		for(DDDDamageType type : adaptiveTo)
-		{
+		for(DDDDamageType type : adaptiveTo) {
 			adaptabilityStatus.appendTag(new NBTTagString(type.getTypeName()));
 		}
 		tag.setTag("adaptabilityStatus", adaptabilityStatus);
 		return tag;
 	}
-	
+
 	@Override
-	public void deserializeNBT(NBTTagCompound tag)
-	{
+	public void deserializeNBT(NBTTagCompound tag) {
 		super.deserializeNBT(tag);
 		adaptive = tag.getBoolean("adaptive");
 		adaptiveAmount = tag.getFloat("adaptiveAmount");
 		adaptiveTo = new HashSet<DDDDamageType>();
-		for(NBTBase nbt : tag.getTagList("adaptabilityStatus", new NBTTagString().getId()))
-		{
+		for(NBTBase nbt : tag.getTagList("adaptabilityStatus", new NBTTagString().getId())) {
 			adaptiveTo.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}
 	}
-	
-	public static void register()
-	{
+
+	public static void register() {
 		CapabilityManager.INSTANCE.register(IMobResistances.class, new MobResistancesStorage(), new MobResistancesFactory());
 	}
 
-	private static class MobResistancesFactory implements Callable<IMobResistances>
-	{
+	private static class MobResistancesFactory implements Callable<IMobResistances> {
 		@Override
-		public IMobResistances call() throws Exception
-		{
+		public IMobResistances call() throws Exception {
 			return new MobResistances();
 		}
 	}
-	
-	private static class MobResistancesStorage implements IStorage<IMobResistances>
-	{
+
+	private static class MobResistancesStorage implements IStorage<IMobResistances> {
 		@Override
-		public NBTBase writeNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side)
-		{
+		public NBTBase writeNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side) {
 			return instance.serializeNBT();
 		}
 
 		@Override
-		public void readNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side, NBTBase nbt)
-		{
+		public void readNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side, NBTBase nbt) {
 			instance.deserializeNBT((NBTTagCompound) nbt);
 		}
 	}

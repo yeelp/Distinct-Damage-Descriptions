@@ -45,77 +45,70 @@ import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
-public class DamageHandler extends Handler
-{
+public class DamageHandler extends Handler {
 	private static Set<UUID> noKnockback = new HashSet<UUID>();
-	
+
 	@SubscribeEvent
-	public void onDeath(LivingDeathEvent evt)
-	{
-		if(ModConfig.dmg.useCustomDeathMessages)
-		{
+	public void onDeath(LivingDeathEvent evt) {
+		if(ModConfig.dmg.useCustomDeathMessages) {
 			EntityLivingBase entity = evt.getEntityLiving();
 			HitInfo info = DDDCombatRules.getLastHit(entity.getUniqueID());
 			DamageSource src = info.getLastSource();
 			ITextComponent comp = DDDRegistries.distributions.getDeathMessageForDist(info.getLastDist().orElse(null), src, src.getTrueSource(), entity);
-			if(entity instanceof EntityPlayerMP)
-			{
+			if(entity instanceof EntityPlayerMP) {
 				((EntityPlayerMP) entity).mcServer.getPlayerList().sendMessage(comp);
 			}
-			else if(evt.getEntityLiving() instanceof EntityTameable)
-			{
+			else if(evt.getEntityLiving() instanceof EntityTameable) {
 				EntityTameable tamedEntity = (EntityTameable) evt.getEntityLiving();
-				if(tamedEntity.isTamed())
-				{
+				if(tamedEntity.isTamed()) {
 					tamedEntity.getOwner().sendMessage(comp);
 				}
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
-	public void onAttack(LivingAttackEvent evt)
-	{
+	public void onAttack(LivingAttackEvent evt) {
 		EntityLivingBase defender = evt.getEntityLiving();
 		DamageSource src = evt.getSource();
 		Entity attacker = src.getImmediateSource();
 		HitInfo info = DDDCombatRules.setLastHit(src, defender);
 		DDDCombatRules.setModifiers(src, defender);
-		if(info.getLastSource() instanceof DDDDamageSource)
-		{
-			//Let the damage bypass armor so the shield can't block it normally.
+		if(info.getLastSource() instanceof DDDDamageSource) {
+			// Let the damage bypass armor so the shield can't block it normally.
 			evt.getSource().setDamageBypassesArmor();
-			if(attacker instanceof EntityLivingBase && defender instanceof EntityPlayer)
-			{
+			if(attacker instanceof EntityLivingBase && defender instanceof EntityPlayer) {
 				EntityLivingBase livingAttacker = (EntityLivingBase) attacker;
 				EntityPlayer defendingPlayer = (EntityPlayer) defender;
 				ItemStack weapon = livingAttacker.getHeldItemMainhand();
-				if(defender.isActiveItemStackBlocking() && weapon.getItem().canDisableShield(weapon, defender.getActiveItemStack(), defender, livingAttacker))
-				{
+				if(defender.isActiveItemStackBlocking() && weapon.getItem().canDisableShield(weapon, defender.getActiveItemStack(), defender, livingAttacker)) {
 					defendingPlayer.disableShield(true);
 				}
 			}
 		}
 	}
-	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void onHit(LivingHurtEvent evt)
-	{
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onHit(LivingHurtEvent evt) {
 		EntityLivingBase defender = evt.getEntityLiving();
 		DamageSource dmgSource = evt.getSource();
 		Entity attacker = dmgSource.getImmediateSource();
-		if(ModConfig.showDotsOn)
-		{
+		if(ModConfig.showDotsOn) {
 			Entity trueAttacker = dmgSource.getTrueSource();
-			ResourceLocation attackerLoc = attacker == null || attacker instanceof EntityPlayer ? null : EntityList.getKey(attacker), defendLoc = defender == null ? null : EntityList.getKey(defender), trueAttackerLoc = trueAttacker == null ? null : EntityList.getKey(trueAttacker);
-			String s1 = attackerLoc != null ? attackerLoc.toString() : "null", s2 = defendLoc != null ? defendLoc.toString() : "null", s3 = trueAttackerLoc != null ? trueAttackerLoc.toString() : "null";
-			DistinctDamageDescriptions.debug("Damage Type: "+ dmgSource.damageType+" Attacker: "+ (attacker != null && attacker instanceof EntityPlayer ? "player" : s1)+", True Attacker: "+s3+" Defender: "+s2);
+			ResourceLocation attackerLoc = attacker == null || attacker instanceof EntityPlayer ? null : EntityList.getKey(attacker),
+					defendLoc = defender == null ? null : EntityList.getKey(defender),
+					trueAttackerLoc = trueAttacker == null ? null : EntityList.getKey(trueAttacker);
+			String s1 = attackerLoc != null ? attackerLoc.toString() : "null",
+					s2 = defendLoc != null ? defendLoc.toString() : "null",
+					s3 = trueAttackerLoc != null ? trueAttackerLoc.toString() : "null";
+			DistinctDamageDescriptions.debug("Damage Type: " + dmgSource.damageType + " Attacker: " + (attacker != null && attacker instanceof EntityPlayer ? "player" : s1) + ", True Attacker: " + s3 + " Defender: " + s2);
 		}
 		IMobResistances mobResists = DDDAPI.accessor.getMobResistances(defender);
 		DamageMap dmgMap = DDDCombatRules.getLastHit(defender.getUniqueID()).getLastDist().map((dist) -> dist.distributeDamage(evt.getAmount())).orElse(DDDBuiltInDamageType.UNKNOWN.getBaseDistribution().distributeDamage(evt.getAmount()));
-		DistinctDamageDescriptions.debug("starting damage: "+evt.getAmount());
-		DistinctDamageDescriptions.debug("Damage Total: "+DebugLib.entriesToString(dmgMap));
-		if(dmgMap == null)// couldn't classify damage, so further calculations are meaningless/undefined. Return, let vanilla handle the rest,
+		DistinctDamageDescriptions.debug("starting damage: " + evt.getAmount());
+		DistinctDamageDescriptions.debug("Damage Total: " + DebugLib.entriesToString(dmgMap));
+		if(dmgMap == null)// couldn't classify damage, so further calculations are meaningless/undefined.
+							// Return, let vanilla handle the rest,
 		{
 			return;
 		}
@@ -123,40 +116,34 @@ public class DamageHandler extends Handler
 		ArmorMap armors = DDDCombatRules.getApplicableArmorValues(attacker, defender);
 		DamageDescriptionEvent.Pre pre = new DamageDescriptionEvent.Pre(attacker, defender, dmgMap, resistMap, armors);
 		MinecraftForge.EVENT_BUS.post(pre);
-		if(pre.isCanceled())
-		{
+		if(pre.isCanceled()) {
 			return;
 		}
 		CombatResults results = DDDCombatRules.computeNewDamage(attacker, defender, pre.getAllDamages(), pre.getAllResistances(), pre.getAllArmor(), mobResists);
-		//determine if knockback should occur
-		if(results.wasImmunityTriggered() && results.getDamage().values().stream().anyMatch((f) -> f > 0))
-		{
+		// determine if knockback should occur
+		if(results.wasImmunityTriggered() && results.getDamage().values().stream().anyMatch((f) -> f > 0)) {
 			noKnockback.add(defender.getUniqueID());
 		}
-		else if(results.wasShieldEffective())
-		{
+		else if(results.wasShieldEffective()) {
 			noKnockback.add(defender.getUniqueID());
 		}
-		
-		//One more reduction for natural armor/enchants/potions
+
+		// One more reduction for natural armor/enchants/potions
 		float totalDamage = CombatRules.getDamageAfterAbsorb((float) YMath.sum(results.getDamage().values()), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue(), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
 		int enchantMods = EnchantmentHelper.getEnchantmentModifierDamage(defender.getArmorInventoryList(), dmgSource);
-		if(enchantMods > 0)
-		{
+		if(enchantMods > 0) {
 			totalDamage = CombatRules.getDamageAfterMagicAbsorb(totalDamage, enchantMods);
 		}
 		DamageDescriptionEvent.Post post = new DamageDescriptionEvent.Post(attacker, defender, results.getDamage(), results.getResistances(), results.getArmor());
 		MinecraftForge.EVENT_BUS.post(post);
 		totalDamage = (float) YMath.sum(post.getAllDamages().values());
-		DistinctDamageDescriptions.debug("new damage after deductions: "+totalDamage);
-		boolean resistancesUpdated = DDDAPI.mutator.updateAdaptiveResistances(defender, dmgMap.keySet().toArray(new DDDDamageType[0])); 
-		//Only spawn particles and play sounds for players.
-		if(dmgSource.getTrueSource() instanceof EntityPlayer)
-		{
+		DistinctDamageDescriptions.debug("new damage after deductions: " + totalDamage);
+		boolean resistancesUpdated = DDDAPI.mutator.updateAdaptiveResistances(defender, dmgMap.keySet().toArray(new DDDDamageType[0]));
+		// Only spawn particles and play sounds for players.
+		if(dmgSource.getTrueSource() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) dmgSource.getTrueSource();
-			evt.setCanceled(DDDEffects.doEffects(player, defender, results, MathHelper.clamp(totalDamage/evt.getAmount(), 0, Float.MAX_VALUE)) && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
-			if(resistancesUpdated)
-			{
+			evt.setCanceled(DDDEffects.doEffects(player, defender, results, MathHelper.clamp(totalDamage / evt.getAmount(), 0, Float.MAX_VALUE)) && ModConfig.dmg.cancelLivingHurtEventOnImmunity);
+			if(resistancesUpdated) {
 				DDDSounds.playSound(player, DDDSounds.ADAPTABILITY_CHANGE, 2.0f, 1.0f);
 			}
 		}
@@ -164,13 +151,11 @@ public class DamageHandler extends Handler
 		dmgSource.setDamageBypassesArmor();
 		DDDCombatRules.wipeModifiers(attacker, defender);
 	}
-	
+
 	@SubscribeEvent
-	public void onKnockback(LivingKnockBackEvent evt)
-	{
+	public void onKnockback(LivingKnockBackEvent evt) {
 		UUID uuid = evt.getEntityLiving().getUniqueID();
-		if(noKnockback.contains(uuid))
-		{
+		if(noKnockback.contains(uuid)) {
 			evt.setCanceled(noKnockback.remove(uuid));
 		}
 	}
