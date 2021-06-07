@@ -28,6 +28,7 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.util.DDDFontRenderer;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils;
 import yeelp.distinctdamagedescriptions.util.TooltipUtils.TooltipComp;
@@ -104,20 +105,26 @@ public class TooltipHandler extends Handler {
 			tooltips.add(index, damageDistTooltip.getFormattedText() + getShiftText(shiftHeld));
 		}
 	}
-
+	
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onToolTipPre(RenderTooltipEvent.Pre evt) {
+		evt.setFontRenderer(DDDFontRenderer.getInstance(evt.getFontRenderer()));
+	}
+	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onTooltipPost(RenderTooltipEvent.PostText evt) {
 		ItemStack stack = evt.getStack();
-		GL11.glPushMatrix();
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		for(TooltipString s : TooltipUtils.getTooltipStrings(stack, KeyHelper.isCtrlHeld(), KeyHelper.isShiftHeld(), evt.getX())) {
-			for(Tuple<Integer, TooltipComp> t : s) {
-				TooltipComp comp = t.getSecond();
-				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(comp.getText(), t.getFirst(), s.getY(), comp.getColour());
-			}
-		}
-		GL11.glPopMatrix();
+//		GL11.glPushMatrix();
+//		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+//		for(TooltipString s : TooltipUtils.getTooltipStrings(stack, KeyHelper.isCtrlHeld(), KeyHelper.isShiftHeld(), evt.getX())) {
+//			for(Tuple<Integer, TooltipComp> t : s) {
+//				TooltipComp comp = t.getSecond();
+//				Minecraft.getMinecraft().fontRenderer.drawStringWithShadow(comp.getText(), t.getFirst(), s.getY(), comp.getColour());
+//			}
+//		}
+//		GL11.glPopMatrix();
 
 		if(ModConfig.client.useIcons) {
 			Minecraft mc = Minecraft.getMinecraft();

@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.api;
 import javax.annotation.Nullable;
 
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.DDDFontColour;
 
 /**
  * Basic skeleton of a DDD damage type.
@@ -39,14 +40,22 @@ public interface DDDDamageType {
 	 * 
 	 * @return the type name, with the "ddd_" prefix.
 	 */
-	public String getTypeName();
+	String getTypeName();
 
 	/**
-	 * Get the display name for this DDDDamageType
+	 * Get the display name for this DDDDamageType, without colour
 	 * 
 	 * @return the display name
 	 */
-	public String getDisplayName();
+	String getDisplayName();
+	
+	/**
+	 * Get the display name of this damage type for use in tooltips. Combines the colour of the type with the display name.
+	 * @return the formatted display name
+	 */
+	default String getFormattedDisplayName() {
+		return DDDFontColour.encodeColour(getColour())+getDisplayName().replaceAll(" ", DDDFontColour.Marker.SPACE.replaceWith())+DDDFontColour.Marker.END.getC();
+	}
 
 	/**
 	 * Get the base damage distribution for this type
@@ -54,14 +63,14 @@ public interface DDDDamageType {
 	 * @return and IDistribution that distributes the damage to the type returned by
 	 *         {@link #getTypeName()}
 	 */
-	public IDamageDistribution getBaseDistribution();
+	IDamageDistribution getBaseDistribution();
 
 	/**
 	 * Get the type of this damage
 	 * 
 	 * @return a Type enum, that is either PHYSICAL or SPECIAL
 	 */
-	public Type getType();
+	Type getType();
 
 	/**
 	 * Get the death message for this damage type
@@ -69,14 +78,14 @@ public interface DDDDamageType {
 	 * @param hasAttacker true if the damage type had an attacker
 	 * @return the corresponding death message
 	 */
-	public @Nullable String getDeathMessage(boolean hasAttacker);
+	@Nullable String getDeathMessage(boolean hasAttacker);
 
 	/**
 	 * Is this damage type a custom defined one, or built in?
 	 * 
 	 * @return true if user defined, false if built in.
 	 */
-	public boolean isCustomDamage();
+	boolean isCustomDamage();
 
 	/**
 	 * Get the colour used when displaying this type name in tooltips
