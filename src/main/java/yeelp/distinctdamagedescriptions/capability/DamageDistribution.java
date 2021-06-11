@@ -108,4 +108,9 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 			instance.deserializeNBT((NBTTagList) nbt);
 		}
 	}
+
+	@Override
+	public IDistribution copy() {
+		return new DamageDistribution(super.copyMap(0));
+	}
 }

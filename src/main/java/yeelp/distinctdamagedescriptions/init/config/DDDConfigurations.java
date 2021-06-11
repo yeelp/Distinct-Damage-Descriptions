@@ -19,6 +19,7 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
  *
  */
 public abstract class DDDConfigurations {
+	
 	/**
 	 * Configuration for items
 	 */
@@ -48,7 +49,6 @@ public abstract class DDDConfigurations {
 	 * Configuration for projectiles, which includes a method to get linked items
 	 */
 	public static IDDDProjectileConfiguration projectiles;
-
 	/**
 	 * Initializes the configurations and reads from the config.
 	 */

@@ -84,8 +84,8 @@ public class CapabilityHandler extends Handler {
 						mobResists = ConfigGenerator.getOrGenerateMobResistances((EntityLivingBase) entity, loc);
 					}
 					Set<CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
-					evt.addCapability(dmg, dist);
-					evt.addCapability(mobs, mobResists);
+					evt.addCapability(dmg, dist.copy());
+					evt.addCapability(mobs, mobResists.copy());
 					evt.addCapability(creatureType, new CreatureType(types));
 				}
 				else if(entity instanceof IProjectile) {
@@ -97,7 +97,7 @@ public class CapabilityHandler extends Handler {
 					else {
 						dist = ConfigGenerator.getOrGenerateProjectileDistribution((IProjectile) entity, loc);
 					}
-					evt.addCapability(projDmg, dist);
+					evt.addCapability(projDmg, dist.copy());
 
 				}
 			}
@@ -134,7 +134,7 @@ public class CapabilityHandler extends Handler {
 				dist = DDDConfigurations.items.getDefaultValue();
 			}
 		}
-		evt.addCapability(dmg, dist);
+		evt.addCapability(dmg, dist.copy());
 		if(item instanceof ItemArmor) {
 			Optional<IArmorDistribution> oResists = getConfigValue(key, DDDConfigurations.armors);
 			IArmorDistribution armorResists;
@@ -144,7 +144,7 @@ public class CapabilityHandler extends Handler {
 			else {
 				armorResists = ConfigGenerator.getOrGenerateArmorResistances((ItemArmor) item, evt.getObject());
 			}
-			evt.addCapability(armor, armorResists);
+			evt.addCapability(armor, armorResists.copy());
 		}
 		else if(item instanceof ItemShield) {
 			Optional<ShieldDistribution> oCaps = getConfigValue(key, DDDConfigurations.shields);
@@ -155,7 +155,7 @@ public class CapabilityHandler extends Handler {
 			else {
 				shieldDist = ConfigGenerator.getOrGenerateShieldDistribution((ItemShield) item, evt.getObject());
 			}
-			evt.addCapability(shield, shieldDist);
+			evt.addCapability(shield, shieldDist.copy());
 		}
 	}
 

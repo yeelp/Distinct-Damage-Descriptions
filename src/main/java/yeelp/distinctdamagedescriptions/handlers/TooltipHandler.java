@@ -105,13 +105,13 @@ public class TooltipHandler extends Handler {
 			tooltips.add(index, damageDistTooltip.getFormattedText() + getShiftText(shiftHeld));
 		}
 	}
-	
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onToolTipPre(RenderTooltipEvent.Pre evt) {
 		evt.setFontRenderer(DDDFontRenderer.getInstance(evt.getFontRenderer()));
 	}
-	
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onTooltipPost(RenderTooltipEvent.PostText evt) {

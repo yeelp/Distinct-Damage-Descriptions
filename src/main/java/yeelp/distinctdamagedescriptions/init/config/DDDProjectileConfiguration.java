@@ -7,8 +7,7 @@ import net.minecraft.entity.Entity;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public class DDDProjectileConfiguration extends DDDBaseConfiguration<IDamageDistribution>
-		implements IDDDProjectileConfiguration {
+public class DDDProjectileConfiguration extends DDDBaseConfiguration<IDamageDistribution> implements IDDDProjectileConfiguration {
 	private final HashMap<String, String> itemProjMap = new HashMap<String, String>();
 
 	public DDDProjectileConfiguration(IDamageDistribution defaultDist) {

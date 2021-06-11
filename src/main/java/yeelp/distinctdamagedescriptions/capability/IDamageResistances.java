@@ -47,5 +47,11 @@ public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompou
 	 * Clear all immunities
 	 */
 	void clearImmunities();
+	
+	/**
+	 * Copy this instance
+	 * @return a copy
+	 */
+	IDamageResistances copy();
 
 }

@@ -67,4 +67,9 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 			instance.deserializeNBT((NBTTagList) nbt);
 		}
 	}
+
+	@Override
+	public IDistribution copy() {
+		return new ArmorDistribution(super.copyMap(0));
+	}
 }

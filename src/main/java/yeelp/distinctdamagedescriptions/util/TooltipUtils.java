@@ -226,7 +226,7 @@ public final class TooltipUtils {
 				return damageTypeTooltips.get(type.getTypeName()).getFormattedText();
 			}
 		}
-		return type.getDisplayName();
+		return type.getFormattedDisplayName();
 	}
 
 	private static String getDamageName(DDDDamageType type) {

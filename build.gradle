@@ -105,4 +105,10 @@ processResources {
         exclude 'mcmod.info'
         exclude 'example/**.json'
     }
+} 
+  
+jar {
+    manifest {
+        attributes 'FMLAT': 'ddd_at.cfg'
+    }
 }

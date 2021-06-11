@@ -81,19 +81,98 @@ public class ModConfig {
 
 	public static class DamageCategory {
 		@Name("Mob Base Damage")
-		@Comment({"Modify the base damage type distribution of mobs.", "Each entry is of the form id;[(t,a)] where:", "   id is the namespaced id of the mob (e.g. minecraft:zombie)", "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a mob does.", "      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning", "      a is the percent of this damage this mob does. if a = 0, it is ignored.", "      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)", "   All percents MUST add to 1", "Mobs that aren't listed here will inflict full bludgeoning damage.", "Malformed entries in this list will be ignored."})
+		@Comment({
+				"Modify the base damage type distribution of mobs.",
+				"Each entry is of the form id;[(t,a)] where:",
+				"   id is the namespaced id of the mob (e.g. minecraft:zombie)",
+				"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a mob does.",
+				"      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning",
+				"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
+				"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
+				"   All percents MUST add to 1",
+				"Mobs that aren't listed here will inflict full bludgeoning damage.",
+				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseDmg = {"minecraft:cave_spider;[(p, 0.75), (ddd_poison, 0.25)]", "minecraft:polar_bear;[(s, 0.25), (b, 0.75)]", "minecraft:spider;[(p, 1)]", "minecraft:wolf;[(p, 1)]", "minecraft:zombie;[(b, 0.75), (ddd_necrotic, 0.25)]", "minecraft:zombie_villager;[(b, 0.75), (ddd_necrotic, 0.25)]", "minecraft:zombie_pigman;[(b, 0.75), (ddd_necrotic, 0.25)]", "minecraft:wither_skeleton;[(b, 0.5), (ddd_necrotic, 0.5)]", "minecraft:blaze;[(b, 0.25), (ddd_fire, 0.75)]", "minecraft:vex;[(ddd_psychic, 1)]", "minecraft:silverfish;[(p, 1)]", "minecraft:endermite;[(p, 1)]", "minecraft:magma_cube;[(b, 0.75), (ddd_fire, 0.25)]"};
+		public String[] mobBaseDmg = {
+				"minecraft:cave_spider;[(p, 0.75), (ddd_poison, 0.25)]",
+				"minecraft:polar_bear;[(s, 0.25), (b, 0.75)]",
+				"minecraft:spider;[(p, 1)]",
+				"minecraft:wolf;[(p, 1)]",
+				"minecraft:zombie;[(b, 0.75), (ddd_necrotic, 0.25)]",
+				"minecraft:zombie_villager;[(b, 0.75), (ddd_necrotic, 0.25)]",
+				"minecraft:zombie_pigman;[(b, 0.75), (ddd_necrotic, 0.25)]",
+				"minecraft:wither_skeleton;[(b, 0.5), (ddd_necrotic, 0.5)]",
+				"minecraft:blaze;[(b, 0.25), (ddd_fire, 0.75)]",
+				"minecraft:vex;[(ddd_psychic, 1)]",
+				"minecraft:silverfish;[(p, 1)]",
+				"minecraft:endermite;[(p, 1)]",
+				"minecraft:magma_cube;[(b, 0.75), (ddd_fire, 0.25)]"};
 
 		@Name("Weapon Base Damage")
-		@Comment({"Modify the base damage type distribution of weapons/items.", "Each entry is of the form id;[(t,a)] where:", "   id is the namespaced id of the item (e.g. minecraft:diamond_sword)", "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type an item does.", "      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning", "      a is the percent of this damage this mob does. if a = 0, it is ignored.", "      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)", "   All percents MUST add to 1", "Items that aren't listed here will inflict 100% bludgeoning damage, no matter the item.", "Malformed entries in this list will be ignored."})
+		@Comment({
+				"Modify the base damage type distribution of weapons/items.",
+				"Each entry is of the form id;[(t,a)] where:",
+				"   id is the namespaced id of the item (e.g. minecraft:diamond_sword)",
+				"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type an item does.",
+				"      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning",
+				"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
+				"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
+				"   All percents MUST add to 1",
+				"Items that aren't listed here will inflict 100% bludgeoning damage, no matter the item.",
+				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] itemBaseDamage = {"minecraft:blaze_rod;[(ddd_fire, 1)]", "minecraft:torch;[(ddd_fire, 1)]", "minecraft:redstone_torch;[(b, 0.9), (ddd_lightning, 0.1)]", "minecraft:arrow;[(p, 1)]", "minecraft:tipped_arrow;[(p, 1)]", "minecraft:spectral_arrow;[(p, 1)]", "minecraft:wooden_sword;[(s, 0.5), (b, 0.5)]", "minecraft:wooden_axe;[(s, 0.3), (b, 0.7)]", "minecraft:wooden_pickaxe;[(p, 0.5), (b, 0.5)]", "minecraft:wooden_shovel;[(b, 1)]", "minecraft:wooden_hoe;[(p, 0.5), (b, 0.5)]", "minecraft:stone_sword;[(b, 1)]", "minecraft:stone_axe;[(b, 1)]", "minecraft:stone_pickaxe;[(p, 0.2), (b, 0.8)]", "minecraft:stone_shovel;[(b, 1)]", "minecraft:stone_hoe;[(p, 0.2), (b, 0.8)]", "minecraft:iron_sword;[(s, 0.8), (p, 0.2)]", "minecraft:iron_axe;[(s, 0.6), (b, 0.4)]", "minecraft:iron_pickaxe;[(p, 0.9), (b, 0.1)]", "minecraft:iron_shovel;[(p, 0.1), (b, 0.9)]", "minecraft:iron_hoe;[(p, 1)]", "minecraft:golden_sword;[(s, 1)]", "minecraft:golden_axe;[(s, 1)]", "minecraft:golden_pickaxe;[(p, 1)]", "minecraft:golden_shovel;[(b, 1)]", "minecraft:golden_hoe;[(p, 1)]", "minecraft:diamond_sword;[(s, 1)]", "minecraft:diamond_axe;[(s, 0.8), (b, 0.2)]", "minecraft:diamond_pickaxe;[(p, 1)]", "minecraft:diamond_shovel;[(b, 1)]", "minecraft:diamond_hoe;[(p, 1)]"};
+		public String[] itemBaseDamage = {
+				"minecraft:blaze_rod;[(ddd_fire, 1)]",
+				"minecraft:torch;[(ddd_fire, 1)]",
+				"minecraft:redstone_torch;[(b, 0.9), (ddd_lightning, 0.1)]",
+				"minecraft:arrow;[(p, 1)]",
+				"minecraft:tipped_arrow;[(p, 1)]",
+				"minecraft:spectral_arrow;[(p, 1)]",
+				"minecraft:wooden_sword;[(s, 0.5), (b, 0.5)]",
+				"minecraft:wooden_axe;[(s, 0.3), (b, 0.7)]",
+				"minecraft:wooden_pickaxe;[(p, 0.5), (b, 0.5)]",
+				"minecraft:wooden_shovel;[(b, 1)]",
+				"minecraft:wooden_hoe;[(p, 0.5), (b, 0.5)]",
+				"minecraft:stone_sword;[(b, 1)]",
+				"minecraft:stone_axe;[(b, 1)]",
+				"minecraft:stone_pickaxe;[(p, 0.2), (b, 0.8)]",
+				"minecraft:stone_shovel;[(b, 1)]",
+				"minecraft:stone_hoe;[(p, 0.2), (b, 0.8)]",
+				"minecraft:iron_sword;[(s, 0.8), (p, 0.2)]",
+				"minecraft:iron_axe;[(s, 0.6), (b, 0.4)]",
+				"minecraft:iron_pickaxe;[(p, 0.9), (b, 0.1)]",
+				"minecraft:iron_shovel;[(p, 0.1), (b, 0.9)]",
+				"minecraft:iron_hoe;[(p, 1)]",
+				"minecraft:golden_sword;[(s, 1)]",
+				"minecraft:golden_axe;[(s, 1)]",
+				"minecraft:golden_pickaxe;[(p, 1)]",
+				"minecraft:golden_shovel;[(b, 1)]",
+				"minecraft:golden_hoe;[(p, 1)]",
+				"minecraft:diamond_sword;[(s, 1)]",
+				"minecraft:diamond_axe;[(s, 0.8), (b, 0.2)]",
+				"minecraft:diamond_pickaxe;[(p, 1)]",
+				"minecraft:diamond_shovel;[(b, 1)]",
+				"minecraft:diamond_hoe;[(p, 1)]"};
 
 		@Name("Projectile Damage Type")
-		@Comment({"Modify the damage type of projectiles", "Each entry is of the form id;[(t,a)];items where:", "   id is the namespaced id of the projectile ENTITY (e.g. minecraft:arrow)", "   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a projectile does.", "      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning", "      a is the percent of this damage this mob does. if a = 0, it is ignored.", "      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)", "   All percents MUST add to 1", "   items are the item ids associated with this projectile, separated by a comma (For example, arrow entities are associated with the item ids minecraft:arrow and minecraft:tipped_arrow). This is used for tooltips.", "      If the projectile has no item form, omit this part, including the semicolon.", "Projectiles that aren't listed here will inflict piercing damage, no matter the projectile.", "Malformed entries in this list will be ignored."})
+		@Comment({
+				"Modify the damage type of projectiles",
+				"Each entry is of the form id;[(t,a)];items where:",
+				"   id is the namespaced id of the projectile ENTITY (e.g. minecraft:arrow)",
+				"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a projectile does.",
+				"      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning",
+				"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
+				"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
+				"   All percents MUST add to 1",
+				"   items are the item ids associated with this projectile, separated by a comma (For example, arrow entities are associated with the item ids minecraft:arrow and minecraft:tipped_arrow). This is used for tooltips.",
+				"      If the projectile has no item form, omit this part, including the semicolon.",
+				"Projectiles that aren't listed here will inflict piercing damage, no matter the projectile.",
+				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] projectileDamageTypes = {"minecraft:arrow;[(p, 1)];minecraft:arrow,minecraft:tipped_arrow", "minecraft:spectral_arrow;[(p, 1)];minecraft:spectral_arrow", "minecraft:llama_spit;[(b, 1)]"};
+		public String[] projectileDamageTypes = {
+				"minecraft:arrow;[(p, 1)];minecraft:arrow,minecraft:tipped_arrow",
+				"minecraft:spectral_arrow;[(p, 1)];minecraft:spectral_arrow",
+				"minecraft:llama_spit;[(b, 1)]"};
 
 		@Name("Use Custom Damage Types")
 		@Comment("If true, Distinct Damage Descriptions will load and enable custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
@@ -101,7 +180,10 @@ public class ModConfig {
 		public boolean useCustomDamageTypes = false;
 
 		@Name("Use Custom Death Messages")
-		@Comment({"If custom damage types are enabled and this is turned on, the JSON specified death messages will be used.", "This config option sets the showDeathMessages gamerule to false when enabled when worlds are loaded.", "The gamerule will be set to true when disabled of course. However, if the mod is uninstalled, this gamerule will have to be manually set back."})
+		@Comment({
+				"If custom damage types are enabled and this is turned on, the JSON specified death messages will be used.",
+				"This config option sets the showDeathMessages gamerule to false when enabled when worlds are loaded.",
+				"The gamerule will be set to true when disabled of course. However, if the mod is uninstalled, this gamerule will have to be manually set back."})
 		@RequiresWorldRestart
 		public boolean useCustomDeathMessages = false;
 
@@ -194,22 +276,125 @@ public class ModConfig {
 		public boolean adaptToCustom = false;
 
 		@Name("Mob Base Resistance/Weakness")
-		@Comment({"Modify the base resistance/weakness of mobs.", "Each entry is of the form id;[(t,a)];[immunities];adaptive;amount where:", "   id is the namespaced id of the mob (e.g. minecraft:zombie)", "   [(t,a)] is a list of comma separated tuples (t,a), of damage types this mob resists.", "      t is the damage type this mob resists. Requires the 'ddd_' prefix. Can use s, p, b instead as shorthand for slashing, piercing, or bludgeoning.", "      a is the base percent of resistance this mob has to that damage type.", "   [immunities] is a comma separated list of damage types that this mob is immune to. Requires the 'ddd_' prefix for each damage type.", "   adaptive is a decimal in the range [0,1] indicating the percent chance that this mob has adaptive immunity, with 0 being never, and 1 being always.", "   amount is the amount resistances change for this mob when adaptability triggers", "Mobs that aren't listed here will have no resistances. Positive values indicate a resistance, negative values indicate a weakness.", "Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type", "Malformed entries in this list will be ignored."})
+		@Comment({
+				"Modify the base resistance/weakness of mobs.",
+				"Each entry is of the form id;[(t,a)];[immunities];adaptive;amount where:",
+				"   id is the namespaced id of the mob (e.g. minecraft:zombie)",
+				"   [(t,a)] is a list of comma separated tuples (t,a), of damage types this mob resists.",
+				"      t is the damage type this mob resists. Requires the 'ddd_' prefix. Can use s, p, b instead as shorthand for slashing, piercing, or bludgeoning.",
+				"      a is the base percent of resistance this mob has to that damage type.",
+				"   [immunities] is a comma separated list of damage types that this mob is immune to. Requires the 'ddd_' prefix for each damage type.",
+				"   adaptive is a decimal in the range [0,1] indicating the percent chance that this mob has adaptive immunity, with 0 being never, and 1 being always.",
+				"   amount is the amount resistances change for this mob when adaptability triggers",
+				"Mobs that aren't listed here will have no resistances. Positive values indicate a resistance, negative values indicate a weakness.",
+				"Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type",
+				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseResist = {"minecraft:bat;[(b, -0.5)];[];0;0", "minecraft:blaze;[];[];0;0", "minecraft:cave_spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25", "minecraft:chicken;[(b, -0.25)];[];0;0", "minecraft:cow;[];[];0;0", "minecraft:creeper;[(ddd_lightning, 0.3)];[ddd_thunder];0;0", "minecraft:donkey;[];[];0;0", "minecraft:elder_guardian;[(s, 0.25), (p, 0.25), (b, 0.25)];[];1.0;0.75", "minecraft:enderman;[(ddd_psychic, 0.5)];[];0.7;0.5", "minecraft:endermite;[(ddd_psychic, 0.7)];[];0.9;0.75", "minecraft:evoker;[];[];0;0", "minecraft:ghast;[(b, 0.5)];[ddd_psychic];0;0", "minecraft:guardian;[];[];0.25;0.25", "minecraft:horse;[];[];0;0", "minecraft:husk;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.25)];[];0;0", "minecraft:llama;[];[];0;0", "minecraft:magma_cube;[(s, 0.25), (p, 0.25), (b, 0.25)];[b, ddd_acid, ddd_psychic, ddd_thunder, ddd_fire];0;0", "minecraft:mooshroom;[];[];0;0", "minecraft:mule;[];[];0;0", "minecraft:ocelot;[];[];0;0", "minecraft:parrot;[(b, -0.5)];[];0;0", "minecraft:pig;[];[];0;0", "minecraft:polar_bear;[(b, 0.25)];[ddd_cold];0;0", "minecraft:rabbit;[];[];0;0", "minecraft:sheep;[];[];0;0", "minecraft:shulker;[(s, 0.5), (p, -0.5), (b, 0.75)];[];0.25;0.5", "minecraft:silverfish;[(b, -0.25), (ddd_fire, -0.1), (ddd_poison, 0.5)];[];0.95;1.0", "minecraft:skeleton;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[];0;0", "minecraft:skeleton_horse;[(s, 0.25), (ddd_necrotic, 0.75)];[];0;0", "minecraft:slime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0", "minecraft:spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25", "minecraft:squid;[];[];0;0", "minecraft:stray;[(s, 0.25), (ddd_radiant, -0.5)];[ddd_cold];0;0", "minecraft:vex;[];[];0;0", "minecraft:villager;[];[];0;0", "minecraft:vindication_illager;[];[];0;0", "minecraft:witch;[];[];0.1;0.25", "minecraft:wither_skeleton;[(s, 0.25), (ddd_radiant, -1)];[ddd_necrotic];0;0", "minecraft:wolf;[];[];0;0", "minecraft:zombie;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0", "minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0", "minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0", "minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0", "minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65)];[ddd_poison, ddd_psychic];0;0", "minecraft:wither;[(s, 0.25), (ddd_radiant, -0.25)];[ddd_necrotic];0;0"};
+		public String[] mobBaseResist = {
+				"minecraft:bat;[(b, -0.5)];[];0;0",
+				"minecraft:blaze;[];[];0;0",
+				"minecraft:cave_spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25",
+				"minecraft:chicken;[(b, -0.25)];[];0;0",
+				"minecraft:cow;[];[];0;0",
+				"minecraft:creeper;[(ddd_lightning, 0.3)];[ddd_thunder];0;0",
+				"minecraft:donkey;[];[];0;0",
+				"minecraft:elder_guardian;[(s, 0.25), (p, 0.25), (b, 0.25)];[];1.0;0.75",
+				"minecraft:enderman;[(ddd_psychic, 0.5)];[];0.7;0.5",
+				"minecraft:endermite;[(ddd_psychic, 0.7)];[];0.9;0.75",
+				"minecraft:evoker;[];[];0;0",
+				"minecraft:ghast;[(b, 0.5)];[ddd_psychic];0;0",
+				"minecraft:guardian;[];[];0.25;0.25",
+				"minecraft:horse;[];[];0;0",
+				"minecraft:husk;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.25)];[];0;0",
+				"minecraft:llama;[];[];0;0",
+				"minecraft:magma_cube;[(s, 0.25), (p, 0.25), (b, 0.25)];[b, ddd_acid, ddd_psychic, ddd_thunder, ddd_fire];0;0",
+				"minecraft:mooshroom;[];[];0;0",
+				"minecraft:mule;[];[];0;0",
+				"minecraft:ocelot;[];[];0;0",
+				"minecraft:parrot;[(b, -0.5)];[];0;0",
+				"minecraft:pig;[];[];0;0",
+				"minecraft:polar_bear;[(b, 0.25)];[ddd_cold];0;0",
+				"minecraft:rabbit;[];[];0;0",
+				"minecraft:sheep;[];[];0;0",
+				"minecraft:shulker;[(s, 0.5), (p, -0.5), (b, 0.75)];[];0.25;0.5",
+				"minecraft:silverfish;[(b, -0.25), (ddd_fire, -0.1), (ddd_poison, 0.5)];[];0.95;1.0",
+				"minecraft:skeleton;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[];0;0",
+				"minecraft:skeleton_horse;[(s, 0.25), (ddd_necrotic, 0.75)];[];0;0",
+				"minecraft:slime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
+				"minecraft:spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25",
+				"minecraft:squid;[];[];0;0",
+				"minecraft:stray;[(s, 0.25), (ddd_radiant, -0.5)];[ddd_cold];0;0",
+				"minecraft:vex;[];[];0;0",
+				"minecraft:villager;[];[];0;0",
+				"minecraft:vindication_illager;[];[];0;0",
+				"minecraft:witch;[];[];0.1;0.25",
+				"minecraft:wither_skeleton;[(s, 0.25), (ddd_radiant, -1)];[ddd_necrotic];0;0",
+				"minecraft:wolf;[];[];0;0",
+				"minecraft:zombie;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65)];[ddd_poison, ddd_psychic];0;0",
+				"minecraft:wither;[(s, 0.25), (ddd_radiant, -0.25)];[ddd_necrotic];0;0"};
 
 		@Name("Shield Effectiveness")
-		@Comment({"Modify how shields block damage.", "Each entry is of the form id;s;p;b;[(t,a)] where:", "   id is the namespaced id of the item (e.g. minecraft:shield)", "   [(t,a)] is a list of comma separated tuples of damage types this shield blocks.", "      t is the type this shield blocks. Requires the 'ddd_' prefix.", "      a is the effectiveness the shield has against that damage type.", "Shields not listed here will act as normal shields (will block all damage they can interact with).", "Shield effectiveness determines how much physical damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.", "Blocking damage will still knock the attacker back, but the knockback strength is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by about 33% of the vanilla amount).", "Malformed entries in this list will be ignored."})
+		@Comment({
+				"Modify how shields block damage.",
+				"Each entry is of the form id;s;p;b;[(t,a)] where:",
+				"   id is the namespaced id of the item (e.g. minecraft:shield)",
+				"   [(t,a)] is a list of comma separated tuples of damage types this shield blocks.",
+				"      t is the type this shield blocks. Requires the 'ddd_' prefix.",
+				"      a is the effectiveness the shield has against that damage type.",
+				"Shields not listed here will act as normal shields (will block all damage they can interact with).",
+				"Shield effectiveness determines how much physical damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
+				"Blocking damage will still knock the attacker back, but the knockback strength is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by about 33% of the vanilla amount).",
+				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] shieldResist = {"minecraft:shield;[(s, 0.8), (p, 0.5), (b, 0.2)]"};
+		public String[] shieldResist = {
+				"minecraft:shield;[(s, 0.8), (p, 0.5), (b, 0.2)]"};
 
 		@Name("Armor Resistance")
-		@Comment({"Modify the base resistance effectiveness of armor", "Each entry is of the form id;s;p;b;[(t,a)] where:", "   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)", "   s is the base slashing effectiveness of this armor.", "   p is the base piercing effectiveness of this armor.", "   b is the base bludgeoning effectiveness of this armor.", "   [(t,a)] is a list of comma separated tuples of custom damage types this armor resists (if enabled).", "      t is the damage type this armor resists. Requires the 'ddd_' prefix.", "      a is the armor's effectiveness against that damage type.", "      You can omit this list if the armor resists no custom damage.", "Armors that aren't listed here will have no effectiveness (this doesn't mean the armor does nothing).", "Resistances effectiveness determines how armor points are distributed. That is, an value of 0.5 means that armor only uses 50% of its usual armor points when defending against that type", "Malformed entries in this list will be ignored."})
+		@Comment({
+				"Modify the base resistance effectiveness of armor",
+				"Each entry is of the form id;s;p;b;[(t,a)] where:",
+				"   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
+				"   s is the base slashing effectiveness of this armor.",
+				"   p is the base piercing effectiveness of this armor.",
+				"   b is the base bludgeoning effectiveness of this armor.",
+				"   [(t,a)] is a list of comma separated tuples of custom damage types this armor resists (if enabled).",
+				"      t is the damage type this armor resists. Requires the 'ddd_' prefix.",
+				"      a is the armor's effectiveness against that damage type.",
+				"      You can omit this list if the armor resists no custom damage.",
+				"Armors that aren't listed here will have no effectiveness (this doesn't mean the armor does nothing).",
+				"Resistances effectiveness determines how armor points are distributed. That is, an value of 0.5 means that armor only uses 50% of its usual armor points when defending against that type",
+				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] armorResist = {"minecraft:leather_helmet;[(s, 0.3), (p, 0.05), (b, 1.0)]", "minecraft:leather_chestplate;[(s, 0.3), (p, 0.05), (b, 1.0)]", "minecraft:leather_leggings;[(s, 0.3), (p, 0.05), (b, 1.0)]", "minecraft:leather_boots;[(s, 0.3), (p, 0.05), (b, 1.0)]", "minecraft:chainmail_helmet;[(s, 0.6), (b, 0.8)]", "minecraft:chainmail_chestplate;[(s, 0.6), (b, 0.8)]", "minecraft:chainmail_leggings;[(s, 0.6), (b, 0.8)]", "minecraft:chainmail_boots;[(s, 0.6), (b, 0.8)]", "minecraft:iron_helmet;[(s, 1.0), (p, 0.7), (b, 0.3)]", "minecraft:iron_chestplate;[(s, 1.0), (p, 0.7), (b, 0.3)]", "minecraft:iron_leggings;[(s, 1.0), (p, 0.7), (b, 0.3)]", "minecraft:iron_boots;[(s, 1.0), (p, 0.7), (b, 0.3)]", "minecraft:golden_helmet;[(s, 1.0), (p, 0.6), (b, 0.25)]", "minecraft:golden_chestplate;[(s, 1.0), (p, 0.6), (b, 0.25)]", "minecraft:golden_leggings;[(s, 1.0), (p, 0.6), (b, 0.25)]", "minecraft:golden_boots;[(s, 1.0), (p, 0.6), (b, 0.25)]", "minecraft:diamond_helmet;[(s, 0.15), (p, 1.0), (b, 0.7)]", "minecraft:diamond_chestplate;[(s, 0.15), (p, 1.0), (b, 0.7)]", "minecraft:diamond_leggings;[(s, 0.15), (p, 1.0), (b, 0.7)]", "minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]"};
+		public String[] armorResist = {
+				"minecraft:leather_helmet;[(s, 0.3), (p, 0.05), (b, 1.0)]",
+				"minecraft:leather_chestplate;[(s, 0.3), (p, 0.05), (b, 1.0)]",
+				"minecraft:leather_leggings;[(s, 0.3), (p, 0.05), (b, 1.0)]",
+				"minecraft:leather_boots;[(s, 0.3), (p, 0.05), (b, 1.0)]",
+				"minecraft:chainmail_helmet;[(s, 0.6), (b, 0.8)]",
+				"minecraft:chainmail_chestplate;[(s, 0.6), (b, 0.8)]",
+				"minecraft:chainmail_leggings;[(s, 0.6), (b, 0.8)]",
+				"minecraft:chainmail_boots;[(s, 0.6), (b, 0.8)]",
+				"minecraft:iron_helmet;[(s, 1.0), (p, 0.7), (b, 0.3)]",
+				"minecraft:iron_chestplate;[(s, 1.0), (p, 0.7), (b, 0.3)]",
+				"minecraft:iron_leggings;[(s, 1.0), (p, 0.7), (b, 0.3)]",
+				"minecraft:iron_boots;[(s, 1.0), (p, 0.7), (b, 0.3)]",
+				"minecraft:golden_helmet;[(s, 1.0), (p, 0.6), (b, 0.25)]",
+				"minecraft:golden_chestplate;[(s, 1.0), (p, 0.6), (b, 0.25)]",
+				"minecraft:golden_leggings;[(s, 1.0), (p, 0.6), (b, 0.25)]",
+				"minecraft:golden_boots;[(s, 1.0), (p, 0.6), (b, 0.25)]",
+				"minecraft:diamond_helmet;[(s, 0.15), (p, 1.0), (b, 0.7)]",
+				"minecraft:diamond_chestplate;[(s, 0.15), (p, 1.0), (b, 0.7)]",
+				"minecraft:diamond_leggings;[(s, 0.15), (p, 1.0), (b, 0.7)]",
+				"minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]"};
 
 		@Name("Use Creature Types")
-		@Comment({"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.", "These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usuable in CraftTweaker."})
+		@Comment({
+				"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
+				"These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usuable in CraftTweaker."})
 		@RequiresMcRestart
 		public boolean useCreatureTypes = false;
 	}
@@ -220,7 +405,9 @@ public class ModConfig {
 		public boolean alwaysShowDamageDistTooltip = true;
 
 		@Name("Use Damage Type Icons")
-		@Comment({"If true, Distinct Damage Descriptions will use icons for built in damage types (slashing, piercing, bludgeoning).", "These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
+		@Comment({
+				"If true, Distinct Damage Descriptions will use icons for built in damage types (slashing, piercing, bludgeoning).",
+				"These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
 		public boolean useIcons = false;
 
 	}

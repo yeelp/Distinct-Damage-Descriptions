@@ -8,6 +8,7 @@ import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
@@ -27,7 +28,7 @@ public final class DDDExplosionDist implements DDDPredefinedDistribution {
 
 	@Override
 	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return dist;
+		return src.isExplosion() ? dist : DDDBuiltInDamageType.NORMAL.getBaseDistribution();
 	}
 
 	@Override

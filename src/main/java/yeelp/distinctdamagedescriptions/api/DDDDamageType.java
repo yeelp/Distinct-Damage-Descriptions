@@ -48,13 +48,15 @@ public interface DDDDamageType {
 	 * @return the display name
 	 */
 	String getDisplayName();
-	
+
 	/**
-	 * Get the display name of this damage type for use in tooltips. Combines the colour of the type with the display name.
+	 * Get the display name of this damage type for use in tooltips. Combines the
+	 * colour of the type with the display name.
+	 * 
 	 * @return the formatted display name
 	 */
 	default String getFormattedDisplayName() {
-		return DDDFontColour.encodeColour(getColour())+getDisplayName().replaceAll(" ", DDDFontColour.Marker.SPACE.replaceWith())+DDDFontColour.Marker.END.getC();
+		return DDDFontColour.encodeColour(getColour()) + getDisplayName().replaceAll(" ", String.valueOf(DDDFontColour.Marker.SPACE.getC())) + DDDFontColour.Marker.END.getC();
 	}
 
 	/**
@@ -78,7 +80,8 @@ public interface DDDDamageType {
 	 * @param hasAttacker true if the damage type had an attacker
 	 * @return the corresponding death message
 	 */
-	@Nullable String getDeathMessage(boolean hasAttacker);
+	@Nullable
+	String getDeathMessage(boolean hasAttacker);
 
 	/**
 	 * Is this damage type a custom defined one, or built in?

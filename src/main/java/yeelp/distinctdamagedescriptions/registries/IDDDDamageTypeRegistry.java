@@ -38,9 +38,9 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 			return src.getDeathMessage(defender);
 		}
 		if(hasAttacker) {
-			msg.replaceAll("#attacker", attacker.getName());
+			msg = msg.replaceAll("#attacker", attacker.getName());
 		}
-		msg.replaceAll("#defender", defender.getName());
+		msg = msg.replaceAll("#defender", defender.getName());
 		return new TextComponentString(msg);
 	}
 }

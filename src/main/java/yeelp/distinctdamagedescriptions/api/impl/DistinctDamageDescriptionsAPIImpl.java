@@ -127,7 +127,6 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 
 	@Override
-	@Nullable
 	public Optional<IDamageDistribution> classifyDamage(@Nonnull DamageSource src, EntityLivingBase target) {
 		IDamageDistribution dist = DDDRegistries.distributions.getDamageDistribution(src, target);
 		if(dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1) {
@@ -143,7 +142,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 				dist = getDamageDistribution(projectile);
 			}
 		}
-		return Optional.of(dist);
+		return Optional.ofNullable(dist);
 	}
 
 	@Override

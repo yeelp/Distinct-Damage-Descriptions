@@ -144,4 +144,11 @@ public class MobResistances extends DamageResistances implements IMobResistances
 			instance.deserializeNBT((NBTTagCompound) nbt);
 		}
 	}
+
+	@Override
+	public IDamageResistances copy() {
+		MobResistances copy = new MobResistances(super.copyMap(), super.copyImmunities(), this.adaptive, this.adaptiveAmount);
+		copy.adaptiveTo = new HashSet<DDDDamageType>(this.adaptiveTo);
+		return copy;
+	}
 }

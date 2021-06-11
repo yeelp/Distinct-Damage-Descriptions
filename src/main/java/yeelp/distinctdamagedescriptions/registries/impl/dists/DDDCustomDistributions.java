@@ -67,8 +67,12 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 			DDDDamageType directType = sMap.direct.get(direct.orElse(""));
 			DDDDamageType indirectType = sMap.indirect.get(indirect.orElse(""));
 			DistinctDamageDescriptions.debug(directType.getTypeName() + ", " + indirectType.getTypeName());
-			set.add(directType);
-			set.add(indirectType);
+			boolean altered = false;
+			altered = set.add(directType) || set.add(indirectType);
+			if(altered) {
+				//if altered, we don't need normal any more, as we have different types in it.
+				set.remove(DDDBuiltInDamageType.NORMAL);
+			}
 		}
 		return set;
 	}
@@ -105,10 +109,10 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 		if(data.includeAll()) {
 			this.includeAllMap.put(data.getOriginalSource(), type);
 		}
-		if(!this.srcMap.containsKey(data.getOriginalSource())) // this.srcMap.putIfAbsent would still require the
-																// compute a new SourceMap every time, so it's less
-																// efficient
-		{
+		if(!this.srcMap.containsKey(data.getOriginalSource())) {
+			// this.srcMap.putIfAbsent would still require the
+			// computing of a new SourceMap every time, so it's less
+			// efficient
 			this.srcMap.put(data.getOriginalSource(), new SourceMap());
 		}
 		this.srcMap.get(data.getOriginalSource()).update(type, data);

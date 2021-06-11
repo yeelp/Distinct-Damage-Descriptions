@@ -85,4 +85,12 @@ public abstract class DamageResistances implements IDamageResistances {
 			immunities.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}
 	}
+	
+	protected Set<DDDDamageType> copyImmunities() {
+		return new HashSet<DDDDamageType>(this.immunities);
+	}
+	
+	protected Map<DDDDamageType, Float> copyMap() {
+		return this.resistances.entrySet().stream().collect(() -> new NonNullMap<>(0.0f), (m, e) -> m.put(e.getKey(), e.getValue()), NonNullMap<DDDDamageType, Float>::putAll);
+	}
 }

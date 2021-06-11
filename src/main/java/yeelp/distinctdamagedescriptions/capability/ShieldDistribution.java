@@ -75,4 +75,9 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 			instance.deserializeNBT((NBTTagList) nbt);
 		}
 	}
+
+	@Override
+	public IDistribution copy() {
+		return new ShieldDistribution(super.copyMap(1.0f));
+	}
 }

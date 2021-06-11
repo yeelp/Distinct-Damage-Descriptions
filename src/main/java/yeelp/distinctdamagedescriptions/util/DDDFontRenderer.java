@@ -2,15 +2,19 @@ package yeelp.distinctdamagedescriptions.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.actors.threadpool.Arrays;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.util.DDDFontColour.Marker;
 
@@ -25,14 +29,13 @@ import yeelp.distinctdamagedescriptions.util.DDDFontColour.Marker;
 public final class DDDFontRenderer extends FontRenderer {
 
 	private FontRenderer internal;
-	private byte colourState, red, green, blue;
+	private byte colourState;
+	private int red, green, blue;
 	private static DDDFontRenderer instance;
 	private int numChars = 0;
 	private boolean dropShadow;
-	private static final Method renderString = ObfuscationReflectionHelper.findMethod(FontRenderer.class, "func_180455_b", int.class, String.class, float.class, float.class, int.class, boolean.class);
-	private static final Method resetStyles = ObfuscationReflectionHelper.findMethod(FontRenderer.class, "func_78265_b", Void.TYPE, new Class<?>[] {});
-	private static final Method enableAlpha = ObfuscationReflectionHelper.findMethod(FontRenderer.class, "func_179141_d", Void.TYPE, new Class<?>[] {});
-	
+	private static final Method renderUnicodeChar = ObfuscationReflectionHelper.findMethod(FontRenderer.class, "func_78277_a", float.class, char.class, boolean.class);
+
 	private DDDFontRenderer(FontRenderer fr) {
 		super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine, true);
 		this.internal = fr;
@@ -47,15 +50,15 @@ public final class DDDFontRenderer extends FontRenderer {
 					this.colourState = 1;
 					break;
 				case SPACE:
-					return this.renderUnicodeChar(' ', italic);
+					return this.renderUnicodeChar(marker.get().replaceWith().charAt(0), italic);
 				case END:
-					this.setColor(1f, 1f, 1f, 1f);
+					this.setColourState(255, 255, 255);
 				default:
 					break;
 			}
 		}
-		else if (this.colourState > 0) {
-			byte val = (byte) (ch & 0xFF);
+		else if(this.colourState > 0) {
+			int val = (ch & 0xFF);
 			switch(this.colourState++) {
 				case 1:
 					red = val;
@@ -75,32 +78,33 @@ public final class DDDFontRenderer extends FontRenderer {
 			}
 		}
 		else {
-			return super.renderUnicodeChar(ch, italic);
+			try {
+				return (Float) renderUnicodeChar.invoke(internal, ch, italic);
+				// return super.renderUnicodeChar(ch, italic);
+			}
+			catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				DistinctDamageDescriptions.err("Encountered problem invoking renderUnicodeChar(char, boolean)!");
+				Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).forEach(DistinctDamageDescriptions::err);
+				DistinctDamageDescriptions.warn("Will attempt to try to salvage the situation, calling super.renderUnicodeChar(char, boolean). If problems arise, open an issue at https://github.com/yeelp/Distinct-Damage-Descriptions/issues");
+				return super.renderUnicodeChar(ch, italic);
+			}
 		}
 		return 0;
 	}
 
 	@Override
-	public int drawString(String text, float x, float y, int color, boolean dropShadow) {
-		try {
-			enableAlpha.invoke(internal, new Object[] {});
-			resetStyles.invoke(internal, new Object[] {});
-			int i = Integer.MIN_VALUE;
-			if(dropShadow) {
-				this.dropShadow = true;
-				i = ((Integer)renderString.invoke(internal, text, x + 1, y + 1, color, true));
-				this.dropShadow = false;
-			}
-			return Math.max(i, (Integer)renderString.invoke(internal, text, x, y, color, false));
-		}
-		catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			DistinctDamageDescriptions.fatal("Could not draw string by reflection!");
-			DistinctDamageDescriptions.fatal(Arrays.toString(e.getStackTrace()));
-			throw new RuntimeException(e);
-		}
+	public List<String> listFormattedStringToWidth(String str, int wrapWidth) {
+		return internal.listFormattedStringToWidth(str, wrapWidth);
 	}
-	
-	private void setColourState(byte red, byte green, byte blue) {
+
+	@Override
+	public int renderString(String text, float x, float y, int color, boolean dropShadow) {
+		this.dropShadow = dropShadow;
+		internal.renderString("", x, y, color, dropShadow);
+		return super.renderString(text, x, y, color, dropShadow);
+	}
+
+	private void setColourState(int red, int green, int blue) {
 		int colour = (red << 16) | (green << 8) | blue | (0xFF << 24);
 		if((colour & -67108864) == 0) {
 			colour |= -16777216;
@@ -112,10 +116,10 @@ public final class DDDFontRenderer extends FontRenderer {
 	}
 
 	/**
-	 * Resets and returns the current custom FontRenderer instance which wraps the current
-	 * FontRenderer adding additional functionality, if it exists. Else, a new one
-	 * is created. The passed {@code currentFontRender} is updated in the instance
-	 * to reflect the current FontRenderer that was supposed to be used.
+	 * Resets and returns the current custom FontRenderer instance which wraps the
+	 * current FontRenderer adding additional functionality, if it exists. Else, a
+	 * new one is created. The passed {@code currentFontRender} is updated in the
+	 * instance to reflect the current FontRenderer that was supposed to be used.
 	 * 
 	 * @param currentFontRenderer
 	 * @return The DDDFontRender instance which wraps the specified font renderer
@@ -123,9 +127,21 @@ public final class DDDFontRenderer extends FontRenderer {
 	public static FontRenderer getInstance(FontRenderer currentFontRenderer) {
 		if(instance == null) {
 			instance = new DDDFontRenderer(currentFontRenderer);
+			Minecraft mc = Minecraft.getMinecraft();
+			LanguageManager lm = mc.getLanguageManager();
+			((IReloadableResourceManager) mc.getResourceManager()).registerReloadListener(instance);
 		}
 		instance.internal = currentFontRenderer;
 		instance.numChars = 0;
 		return instance;
+	}
+
+	@Override
+	public void onResourceManagerReload(IResourceManager resourceManager) {
+		super.onResourceManagerReload(resourceManager);
+		Minecraft mc = Minecraft.getMinecraft();
+		LanguageManager lm = mc.getLanguageManager();
+		this.setUnicodeFlag(lm.isCurrentLocaleUnicode() || mc.gameSettings.forceUnicodeFont);
+		this.setBidiFlag(lm.isCurrentLanguageBidirectional());
 	}
 }

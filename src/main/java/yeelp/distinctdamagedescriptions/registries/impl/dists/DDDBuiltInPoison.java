@@ -22,7 +22,7 @@ public final class DDDBuiltInPoison extends AbstractSingleTypeDist {
 	protected boolean useType(DamageSource source, EntityLivingBase target) {
 		if(target.isPotionActive(MobEffects.POISON)) {
 			PotionEffect effect = target.getActivePotionEffect(MobEffects.POISON);
-			if(effect.getPotion().isReady(effect.getDuration() + 1, effect.getAmplifier())) {
+			if(effect.getPotion().isReady(effect.getDuration(), effect.getAmplifier())) {
 				return true;
 			}
 		}

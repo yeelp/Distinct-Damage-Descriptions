@@ -40,4 +40,10 @@ public abstract interface IDistribution extends ICapabilitySerializable<NBTTagLi
 	 * @return
 	 */
 	Set<DDDDamageType> getCategories();
+	
+	/**
+	 * Copy this instance
+	 * @return a copy
+	 */
+	IDistribution copy();
 }

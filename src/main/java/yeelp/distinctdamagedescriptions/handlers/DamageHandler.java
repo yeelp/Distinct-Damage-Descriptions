@@ -107,9 +107,9 @@ public class DamageHandler extends Handler {
 		DamageMap dmgMap = DDDCombatRules.getLastHit(defender.getUniqueID()).getLastDist().map((dist) -> dist.distributeDamage(evt.getAmount())).orElse(DDDBuiltInDamageType.UNKNOWN.getBaseDistribution().distributeDamage(evt.getAmount()));
 		DistinctDamageDescriptions.debug("starting damage: " + evt.getAmount());
 		DistinctDamageDescriptions.debug("Damage Total: " + DebugLib.entriesToString(dmgMap));
-		if(dmgMap == null)// couldn't classify damage, so further calculations are meaningless/undefined.
-							// Return, let vanilla handle the rest,
-		{
+		if(dmgMap == null) {
+			// couldn't classify damage, so further calculations are meaningless/undefined.
+			// Return, let vanilla handle the rest,
 			return;
 		}
 		ResistMap resistMap = DDDAPI.accessor.classifyResistances(dmgMap.keySet(), mobResists);

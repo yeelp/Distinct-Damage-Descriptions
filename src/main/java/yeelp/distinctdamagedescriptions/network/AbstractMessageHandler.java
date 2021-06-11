@@ -16,8 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @param <T> NBT type sent in the REQ of the IMessageHandler
  */
-public abstract class AbstractMessageHandler<T extends NBTBase>
-		implements IMessageHandler<AbstractCapabilityMessage<T>, IMessage> {
+public abstract class AbstractMessageHandler<T extends NBTBase> implements IMessageHandler<AbstractCapabilityMessage<T>, IMessage> {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IMessage onMessage(AbstractCapabilityMessage<T> msg, MessageContext ctx) {

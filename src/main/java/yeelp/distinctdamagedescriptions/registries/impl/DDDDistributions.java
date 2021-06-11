@@ -23,8 +23,7 @@ import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDInstantEffectsD
 import yeelp.distinctdamagedescriptions.registries.impl.dists.ParrotPoisonDist;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.SimpleBuiltInDist;
 
-public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistribution>
-		implements IDDDDistributionRegistry {
+public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistribution> implements IDDDDistributionRegistry {
 	public DDDDistributions() {
 		super((dist) -> dist.getName(), "Distribution");
 	}
@@ -48,8 +47,7 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next, DamageSource src, EntityLivingBase entity) {
 		T result;
 		Iterator<DDDPredefinedDistribution> it = map.values().iterator();
-		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()))
-			;
+		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()));
 		return result;
 	}
 }

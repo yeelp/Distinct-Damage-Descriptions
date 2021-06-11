@@ -97,7 +97,7 @@ public abstract class Distribution implements IDistribution {
 	public Set<DDDDamageType> getCategories() {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
 		for(Entry<DDDDamageType, Float> entry : distMap.entrySet()) {
-			if((entry.getKey().getType() == DDDDamageType.Type.PHYSICAL || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0) {
+			if((!entry.getKey().isCustomDamage() || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0) {
 				set.add(entry.getKey());
 			}
 		}
@@ -113,5 +113,9 @@ public abstract class Distribution implements IDistribution {
 
 	private final void setNewMap(Map<DDDDamageType, Float> map) {
 		map.entrySet().stream().filter((e) -> e.getValue() > 0).forEach((e) -> this.distMap.put(e.getKey(), e.getValue()));
+	}
+	
+	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
+		return distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
 	}
 }

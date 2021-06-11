@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 	private final Map<String, T> map = new HashMap<String, T>();
-	private final T defaultVal;
+	protected final T defaultVal;
 
 	DDDBaseConfiguration(T defaultVal) {
 		this.defaultVal = defaultVal;
