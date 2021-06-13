@@ -148,6 +148,9 @@ public final class TooltipUtils {
 
 	public static final List<String> buildMobResistsTooltips(MobResistanceCategories resists) {
 		List<String> lst = new LinkedList<String>();
+		if(resists == null) {
+			lst.add(noResists.getFormattedText());
+		}
 		for(Entry<DDDDamageType, Float> entry : resists.getResistanceMap().entrySet()) {
 			lst.add(makeOneMobResistString(entry.getValue(), getDamageName(entry.getKey())));
 		}
@@ -218,13 +221,8 @@ public final class TooltipUtils {
 	}
 
 	private static String getDamageName(DDDDamageType type, boolean usingIcons) {
-		if(DDDAPI.accessor.isPhysicalDamage(type)) {
-			if(usingIcons) {
-				return "";
-			}
-			else {
-				return damageTypeTooltips.get(type.getTypeName()).getFormattedText();
-			}
+		if(!type.isCustomDamage() && usingIcons) {
+			return "";
 		}
 		return type.getFormattedDisplayName();
 	}
@@ -235,7 +233,7 @@ public final class TooltipUtils {
 
 	private static int getIndex(DDDDamageType type) {
 		int index = 0;
-		for(DDDDamageType damageType : DDDBuiltInDamageType.PHYSICAL_TYPES) {
+		for(DDDDamageType damageType : DDDBuiltInDamageType.BUILT_IN_TYPES) {
 			if(damageType.getTypeName().equals(type.getTypeName())) {
 				break;
 			}
@@ -298,7 +296,7 @@ public final class TooltipUtils {
 
 	private static int addIcons(int currY, LinkedList<Tuple<Integer, Integer>> lst, Iterable<DDDDamageType> types) {
 		for(DDDDamageType type : types) {
-			if(DDDAPI.accessor.isPhysicalDamage(type)) {
+			if(!type.isCustomDamage()) {
 				lst.add(new Tuple<Integer, Integer>(currY, getIndex(type)));
 			}
 			currY += ICON_HEIGHT;

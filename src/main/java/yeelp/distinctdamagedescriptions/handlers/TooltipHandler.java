@@ -81,7 +81,7 @@ public class TooltipHandler extends Handler {
 			ResourceLocation loc = ItemMonsterPlacer.getNamedIdFrom(stack);
 			MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(loc.toString());
 			int index = 1;
-			if(mobCats != null) {
+			if(mobCats != null || !ModConfig.generateStats) {
 				if(ctrlHeld) {
 					tooltips.addAll(index, TooltipUtils.buildMobResistsTooltips(mobCats));
 				}

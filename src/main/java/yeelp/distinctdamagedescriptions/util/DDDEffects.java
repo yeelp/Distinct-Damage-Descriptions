@@ -97,10 +97,10 @@ public class DDDEffects {
 		}
 		if(results.wasImmunityTriggered()) {
 			addParticles(player, defender, DDDParticleType.IMMUNITY, particles);
-			soundInfo = new SoundInfo(player, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f);
 			result = ratio == 0;
+			soundInfo = result ? new SoundInfo(player, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f) : null;
 		}
-		else if(ratio != 0) {
+		if(ratio != 0) {
 			if(ratio > 1) {
 				soundInfo = new SoundInfo(player, DDDSounds.WEAKNESS_HIT, 0.6f, 1.0f);
 			}
@@ -108,7 +108,7 @@ public class DDDEffects {
 				soundInfo = new SoundInfo(player, DDDSounds.RESIST_DING, 1.7f, 1.0f);
 			}
 		}
-		else {
+		else if (soundInfo == null){
 			soundInfo = new SoundInfo(player, DDDSounds.HIGH_RESIST_HIT, 1.7f, 1.0f);
 		}
 		sendEffectPackets(player, particles, soundInfo);

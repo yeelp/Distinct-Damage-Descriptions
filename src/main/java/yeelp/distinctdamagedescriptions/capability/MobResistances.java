@@ -16,7 +16,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
@@ -72,7 +71,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	public boolean updateAdaptiveResistance(DDDDamageType... damageTypes) {
 		boolean changed = false;
 		for(DDDDamageType type : damageTypes) {
-			if(ModConfig.resist.adaptToCustom || DDDAPI.accessor.isPhysicalDamage(type)) {
+			if(ModConfig.resist.adaptToCustom || !type.isCustomDamage()) {
 				if(adaptiveTo.contains(type)) {
 					continue;
 				}

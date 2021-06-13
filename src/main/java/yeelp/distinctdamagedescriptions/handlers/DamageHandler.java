@@ -121,7 +121,8 @@ public class DamageHandler extends Handler {
 		}
 		CombatResults results = DDDCombatRules.computeNewDamage(attacker, defender, pre.getAllDamages(), pre.getAllResistances(), pre.getAllArmor(), mobResists);
 		// determine if knockback should occur
-		if(results.wasImmunityTriggered() && results.getDamage().values().stream().anyMatch((f) -> f > 0)) {
+		float totalDamage = (float) YMath.sum(results.getDamage().values());
+		if(results.wasImmunityTriggered() && totalDamage == 0.0) {
 			noKnockback.add(defender.getUniqueID());
 		}
 		else if(results.wasShieldEffective()) {
@@ -129,7 +130,7 @@ public class DamageHandler extends Handler {
 		}
 
 		// One more reduction for natural armor/enchants/potions
-		float totalDamage = CombatRules.getDamageAfterAbsorb((float) YMath.sum(results.getDamage().values()), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue(), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
+		totalDamage = CombatRules.getDamageAfterAbsorb(totalDamage, (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR).getAttributeValue(), (float) defender.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
 		int enchantMods = EnchantmentHelper.getEnchantmentModifierDamage(defender.getArmorInventoryList(), dmgSource);
 		if(enchantMods > 0) {
 			totalDamage = CombatRules.getDamageAfterMagicAbsorb(totalDamage, enchantMods);

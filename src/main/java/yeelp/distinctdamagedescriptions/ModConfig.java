@@ -94,19 +94,24 @@ public class ModConfig {
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] mobBaseDmg = {
+				"minecraft:blaze;[(b, 0.5), (ddd_fire, 0.5)]",
 				"minecraft:cave_spider;[(p, 0.75), (ddd_poison, 0.25)]",
+				"minecraft:magma_cube;[(b, 0.8), (ddd_fire, 0.2))]",
+				"minecraft:ocelot;[(p, 0.3), (s, 0.7)]",
 				"minecraft:polar_bear;[(s, 0.25), (b, 0.75)]",
+				"minecraft:slime;[(b, 0.4), (ddd_acid, 0.6)]",
 				"minecraft:spider;[(p, 1)]",
 				"minecraft:wolf;[(p, 1)]",
 				"minecraft:zombie;[(b, 0.75), (ddd_necrotic, 0.25)]",
 				"minecraft:zombie_villager;[(b, 0.75), (ddd_necrotic, 0.25)]",
 				"minecraft:zombie_pigman;[(b, 0.75), (ddd_necrotic, 0.25)]",
 				"minecraft:wither_skeleton;[(b, 0.5), (ddd_necrotic, 0.5)]",
+				"minecraft:wither;[(b, 0.1), (ddd_necrotic, 0.9)]",
 				"minecraft:blaze;[(b, 0.25), (ddd_fire, 0.75)]",
 				"minecraft:vex;[(ddd_psychic, 1)]",
 				"minecraft:silverfish;[(p, 1)]",
 				"minecraft:endermite;[(p, 1)]",
-				"minecraft:magma_cube;[(b, 0.75), (ddd_fire, 0.25)]"};
+				"tconstruct:blueslime;[(b, 0.4), (ddd_acid, 0.6)]"};
 
 		@Name("Weapon Base Damage")
 		@Comment({
@@ -123,6 +128,7 @@ public class ModConfig {
 		@RequiresMcRestart
 		public String[] itemBaseDamage = {
 				"minecraft:blaze_rod;[(ddd_fire, 1)]",
+				"minecraft:nether_star;[(ddd_necrotic, 0.5), (ddd_force, 0.5)]",
 				"minecraft:torch;[(ddd_fire, 1)]",
 				"minecraft:redstone_torch;[(b, 0.9), (ddd_lightning, 0.1)]",
 				"minecraft:arrow;[(p, 1)]",
@@ -152,7 +158,9 @@ public class ModConfig {
 				"minecraft:diamond_axe;[(s, 0.8), (b, 0.2)]",
 				"minecraft:diamond_pickaxe;[(p, 1)]",
 				"minecraft:diamond_shovel;[(b, 1)]",
-				"minecraft:diamond_hoe;[(p, 1)]"};
+				"minecraft:diamond_hoe;[(p, 1)]",
+				"tconstruct:stone_torch;[(ddd_fire, 1)]",
+				"tconstruct:slimesling;[(b, 0.9), (ddd_acid, 0.1)]"};
 
 		@Name("Projectile Damage Type")
 		@Comment({
@@ -291,23 +299,24 @@ public class ModConfig {
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
 		public String[] mobBaseResist = {
-				"minecraft:bat;[(b, -0.5)];[];0;0",
-				"minecraft:blaze;[];[];0;0",
+				"minecraft:bat;[(b, -0.5), (ddd_poison, 0.2)];[];0;0",
+				"minecraft:blaze;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_fire, 1), (ddd_poison, 0.5), (ddd_cold, -1)];[ddd_fire];0;0",
 				"minecraft:cave_spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25",
 				"minecraft:chicken;[(b, -0.25)];[];0;0",
 				"minecraft:cow;[];[];0;0",
 				"minecraft:creeper;[(ddd_lightning, 0.3)];[ddd_thunder];0;0",
 				"minecraft:donkey;[];[];0;0",
-				"minecraft:elder_guardian;[(s, 0.25), (p, 0.25), (b, 0.25)];[];1.0;0.75",
+				"minecraft:elder_guardian;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_lightning, -0.15)];[];1.0;0.75",
+				"minecraft:ender_dragon;[][ddd_psychic];0;0",
 				"minecraft:enderman;[(ddd_psychic, 0.5)];[];0.7;0.5",
 				"minecraft:endermite;[(ddd_psychic, 0.7)];[];0.9;0.75",
-				"minecraft:evoker;[];[];0;0",
+				"minecraft:evocation_illager;[(ddd_psychic, 0.3), (ddd_force, 0.4)];[];0;0",
 				"minecraft:ghast;[(b, 0.5)];[ddd_psychic];0;0",
-				"minecraft:guardian;[];[];0.25;0.25",
+				"minecraft:guardian;[(ddd_lightning, -0.2)];[];0.25;0.25",
 				"minecraft:horse;[];[];0;0",
-				"minecraft:husk;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.25)];[];0;0",
+				"minecraft:husk;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.5), (ddd_radiant, -0.25)];[];0;0",
 				"minecraft:llama;[];[];0;0",
-				"minecraft:magma_cube;[(s, 0.25), (p, 0.25), (b, 0.25)];[b, ddd_acid, ddd_psychic, ddd_thunder, ddd_fire];0;0",
+				"minecraft:magma_cube;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_fire, 1), (ddd_cold, -0.5), (ddd_poison, 0.2)];[b, ddd_acid, ddd_psychic, ddd_thunder, ddd_fire];0;0",
 				"minecraft:mooshroom;[];[];0;0",
 				"minecraft:mule;[];[];0;0",
 				"minecraft:ocelot;[];[];0;0",
@@ -316,26 +325,30 @@ public class ModConfig {
 				"minecraft:polar_bear;[(b, 0.25)];[ddd_cold];0;0",
 				"minecraft:rabbit;[];[];0;0",
 				"minecraft:sheep;[];[];0;0",
-				"minecraft:shulker;[(s, 0.5), (p, -0.5), (b, 0.75)];[];0.25;0.5",
+				"minecraft:shulker;[(s, 0.5), (p, -0.5), (b, 0.75), (ddd_psychic, 0.6), (ddd_thunder, 0.8)];[ddd_force];0.25;0.5",
 				"minecraft:silverfish;[(b, -0.25), (ddd_fire, -0.1), (ddd_poison, 0.5)];[];0.95;1.0",
-				"minecraft:skeleton;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[];0;0",
-				"minecraft:skeleton_horse;[(s, 0.25), (ddd_necrotic, 0.75)];[];0;0",
-				"minecraft:slime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
+				"minecraft:skeleton;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[ddd_poison];0;0",
+				"minecraft:skeleton_horse;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[ddd_poison];0;0",
+				"minecraft:slime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
 				"minecraft:spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25",
 				"minecraft:squid;[];[];0;0",
-				"minecraft:stray;[(s, 0.25), (ddd_radiant, -0.5)];[ddd_cold];0;0",
-				"minecraft:vex;[];[];0;0",
+				"minecraft:stray;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[ddd_poison, ddd_cold];0;0",
+				"minecraft:vex;[];[ddd_psychic, ddd_force];0;0",
 				"minecraft:villager;[];[];0;0",
 				"minecraft:vindication_illager;[];[];0;0",
-				"minecraft:witch;[];[];0.1;0.25",
-				"minecraft:wither_skeleton;[(s, 0.25), (ddd_radiant, -1)];[ddd_necrotic];0;0",
+				"minecraft:witch;[(ddd_acid, 0.2), (ddd_poison, 0.3)];[];0.1;0.25",
+				"minecraft:wither_skeleton;[(s, 0.25), (ddd_necrotic, 1), (ddd_radiant, -1)];[ddd_poison, ddd_fire, ddd_necrotic];0;0",
 				"minecraft:wolf;[];[];0;0",
-				"minecraft:zombie;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
-				"minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
-				"minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
-				"minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:zombie;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
+				"minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[ddd_fire];0;0",
+				"minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
 				"minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65)];[ddd_poison, ddd_psychic];0;0",
-				"minecraft:wither;[(s, 0.25), (ddd_radiant, -0.25)];[ddd_necrotic];0;0"};
+				"minecraft:wither;[(s, 0.25), (ddd_necrotic, 1.25), (ddd_poison, 0.8), (ddd_radiant, -0.25)];[ddd_necrotic];0;0",
+				"tconstruct:blueslime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
+				"thermalfoundation:blizz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_cold, 1), (ddd_poison, 0.5), (ddd_fire, -1)];[ddd_cold];0;0",
+				"thermalfoundation:basalz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_force, 1), (ddd_poison, 0.5), (ddd_thunder, -1)];[ddd_force];0;0",
+				"thermalfoundation:blitz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_thunder, 1), (ddd_poison, 0.5), (ddd_force, -1)];[ddd_thunder];0;0"};
 
 		@Name("Shield Effectiveness")
 		@Comment({
