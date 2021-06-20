@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
+import yeelp.distinctdamagedescriptions.ModConfig;
+
 /**
  * An abstract content formatter whose content depends on a KeyTooltip
  * @author Yeelp
@@ -20,16 +22,16 @@ public abstract class AbstractKeyTooltipFormatter extends AbstractTooltipFormatt
 	 * @return true if the content should be shown.
 	 */
 	public boolean shouldShow() {
-		return this.keyTooltip.checkKeyIsHeld();
+		return this.keyTooltip.checkKeyIsHeld() || ModConfig.client.neverHideInfo;
 	}
 	
 	/**
-	 * Get the text for the key that needs to be held. Just calls {@code KeyTooltip.getKeyText()}
-	 * @return The String from the same call to the internal KeyTooltip.
+	 * Get the text for the key that needs to be held, if holding it actually changes tooltip content. Just calls {@code KeyTooltip.getKeyText()}
+	 * @return The String from the same call to the internal KeyTooltip, if the "Never Hide Info" config option is set to false, otherwise an empty String
 	 * @see KeyTooltip#getKeyText()
 	 */
 	public String getKeyText() {
-		return this.keyTooltip.getKeyText();
+		return !ModConfig.client.neverHideInfo ? this.keyTooltip.getKeyText() : "";
 	}
 
 }

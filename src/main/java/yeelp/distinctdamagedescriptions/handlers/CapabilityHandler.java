@@ -57,7 +57,8 @@ public class CapabilityHandler extends Handler {
 		}
 		if(entity instanceof EntityPlayer) {
 			evt.addCapability(dmg, new DamageDistribution());
-			evt.addCapability(mobs, new MobResistances());
+			IMobResistances resists = getConfigValue("player", DDDConfigurations.mobResists).map((c) -> new MobResistances(c.getResistanceMap(), c.getImmunities(), c.getAdaptiveAmount() > 0, c.getAdaptiveAmount())).orElse(new MobResistances());
+			evt.addCapability(mobs, resists);
 			evt.addCapability(creatureType, CreatureType.UNKNOWN);
 		}
 		else {

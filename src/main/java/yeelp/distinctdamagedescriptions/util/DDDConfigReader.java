@@ -51,14 +51,21 @@ public final class DDDConfigReader {
 			}
 			String[] arr = s.split(";");
 			try {
-				NonNullMap<DDDDamageType, Float> map = buildMap(0.0f, parseListOfTuples(arr[1]));
-				Set<DDDDamageType> immunities = parseImmunitiesFromArray(arr[2]);
-				DDDConfigurations.mobResists.put(arr[0], new MobResistanceCategories(map, immunities, Float.parseFloat(arr[3]), Float.parseFloat(arr[4])));
+				readResistVals(arr[0], arr);
 			}
 			catch(NumberFormatException | ArrayIndexOutOfBoundsException e) {
 				DistinctDamageDescriptions.warn(s + " isn't a valid entry! Ignoring...");
 			}
 		}
+		if(!ModConfig.resist.playerResists.equals("[];[];0;0")) {
+			readResistVals("player", ("player;"+ModConfig.resist.playerResists).split(";"));
+		}
+	}
+	
+	private static void readResistVals(String key, String[] vals) {
+		NonNullMap<DDDDamageType, Float> map = buildMap(0.0f, parseListOfTuples(vals[1]));
+		Set<DDDDamageType> immunities = parseImmunitiesFromArray(vals[2]);
+		DDDConfigurations.mobResists.put(key, new MobResistanceCategories(map, immunities, Float.parseFloat(vals[3]), Float.parseFloat(vals[4])));
 	}
 
 	private static void readProjectileDamage() {

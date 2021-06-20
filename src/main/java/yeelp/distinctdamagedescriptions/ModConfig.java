@@ -351,6 +351,13 @@ public class ModConfig {
 				"thermalfoundation:basalz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_force, 1), (ddd_poison, 0.5), (ddd_thunder, -1)];[ddd_force];0;0",
 				"thermalfoundation:blitz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_thunder, 1), (ddd_poison, 0.5), (ddd_force, -1)];[ddd_thunder];0;0"};
 
+		@Name("Player Base Resistance")
+		@Comment({"Set the base resistance values for the player",
+				  "This is likely only applicable to new worlds! Old worlds may not reflect this change!",
+				  "The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part. All properties are usuable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
+		@RequiresMcRestart
+		public String playerResists = "[];[];0;0";
+		
 		@Name("Shield Effectiveness")
 		@Comment({
 				"Modify how shields block damage.",
@@ -417,6 +424,10 @@ public class ModConfig {
 		@Name("Show Damage Distribution Tooltip for all items")
 		@Comment("If true, the Damage Distribution tooltip appears for all items. If false, it only appears for items with a damage distribution manually set.")
 		public boolean alwaysShowDamageDistTooltip = true;
+		
+		@Name("Never Hide Info")
+		@Comment("If true, All Distint Damage Descriptions related tooltip information will always be shown (Basically, SHIFT or CTRL never need to be held on tooltips).")
+		public boolean neverHideInfo = false;
 
 		@Name("Use Damage Type Icons")
 		@Comment({
