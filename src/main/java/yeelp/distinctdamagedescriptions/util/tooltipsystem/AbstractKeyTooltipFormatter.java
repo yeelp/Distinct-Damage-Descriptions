@@ -14,7 +14,11 @@ public abstract class AbstractKeyTooltipFormatter extends AbstractTooltipFormatt
 		this.keyTooltip = keyTooltip;
 	}
 
-	@Override
+	/**
+	 * Should the content of this formatter be shown? This does not need to indicate that no text is to be shown, simple text indicating "Hold KEY for info" is an expected use case.
+	 * This merely indicates if additional content (the actual content) should be shown
+	 * @return true if the content should be shown.
+	 */
 	public boolean shouldShow() {
 		return this.keyTooltip.checkKeyIsHeld();
 	}

@@ -16,6 +16,7 @@ import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 
 @Config(modid = ModConsts.MODID)
 public class ModConfig {
@@ -423,6 +424,12 @@ public class ModConfig {
 				"These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
 		public boolean useIcons = false;
 
+		@Name("Use Numerical Values When Possible")
+		@Comment({
+				"If true, Distinct Damage Descriptions will try to show numerical values when possible instead of percent values.",
+				"This works for armor and items only. Projectiles and resistances don't have numerical values to use, so the config doesn't apply here."})
+		public boolean showNumberValuesWhenPossible = false;
+
 	}
 
 	@Mod.EventBusSubscriber(modid = ModConsts.MODID)
@@ -439,6 +446,7 @@ public class ModConfig {
 				ConfigManager.sync(ModConsts.MODID, Config.Type.INSTANCE);
 				DebugLib.updateStatus();
 				DDDExplosionDist.update();
+				TooltipMaker.updateFormatters();
 			}
 		}
 

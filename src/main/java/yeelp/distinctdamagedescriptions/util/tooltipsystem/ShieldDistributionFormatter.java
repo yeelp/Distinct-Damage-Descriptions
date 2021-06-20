@@ -20,7 +20,7 @@ import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
  */
 public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormatter<ShieldDistribution> {
 	
-	private final ITextComponent shieldEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(new Style().setColor(TextFormatting.GRAY));
+	private final ITextComponent shieldEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ShieldDistributionFormatter instance;
 	
 	protected ShieldDistributionFormatter() {
@@ -50,7 +50,7 @@ public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormat
 		if(cap == null) {
 			return Optional.empty();
 		}
-		return Optional.of(cap.getCategories().stream().collect(LinkedList<String>::new, (l, d) -> l.add(makeOneShieldDistString(cap.getWeight(d), d)), LinkedList<String>::addAll));
+		return Optional.of(cap.getCategories().stream().sorted().collect(LinkedList<String>::new, (l, d) -> l.add(makeOneShieldDistString(cap.getWeight(d), d)), LinkedList<String>::addAll));
 	}
 	
 	private String makeOneShieldDistString(float amount, DDDDamageType type) {

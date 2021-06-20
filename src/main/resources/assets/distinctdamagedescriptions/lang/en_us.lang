@@ -19,8 +19,8 @@ tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
 tooltips.distinctdamagedescriptions.shielddist=Shield Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:
 tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is on and Mob Capabilities not generated yet! Spawn this mob to generate capabilities (may need to restart)!
-tooltips.distinctdamagedescriptions.effectiveArmor=Effective Armor
-tooltips.distinctdamagedescriptions.effectiveToughness=Effective Toughness
+tooltips.distinctdamagedescriptions.effectiveArmor=Armor
+tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force

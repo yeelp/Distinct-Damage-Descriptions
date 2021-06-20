@@ -1,20 +1,23 @@
 package yeelp.distinctdamagedescriptions.integration.hwyla;
 
 import java.util.List;
+
 import javax.annotation.Nonnull;
+
 import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
-import yeelp.distinctdamagedescriptions.util.TooltipUtils;
-import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
+import net.minecraft.world.World;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 
 public class EntityHandler implements IWailaEntityProvider {
 	public EntityHandler() {
@@ -55,24 +58,7 @@ public class EntityHandler implements IWailaEntityProvider {
 	@Nonnull
 	@Override
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
-		boolean ctrlHeld = KeyHelper.isCtrlHeld();
-
-		String entityName = EntityRegistry.getEntry(entity.getClass()).getRegistryName().toString();
-		MobResistanceCategories mobCats = DDDConfigurations.mobResists.get(entityName);
-
-		int index = 1;
-		if(mobCats != null) {
-			if(ctrlHeld) {
-				currenttip.addAll(index, TooltipUtils.buildMobResistsTooltips(mobCats));
-			}
-
-			currenttip.add(index, mobResistTooltip.getFormattedText() + getCtrlText(ctrlHeld));
-		}
-		else {
-			currenttip.add(index, notGenerated.getFormattedText());
-		}
-
-		return currenttip;
+		return TooltipMaker.makeHwylaTooltipStrings(entity);
 	}
 
 	private static String getCtrlText(boolean held) {

@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Map;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 
 /**
- * Mob Resistances. Used on startup.
+ * Mob Resistances. Holds general species specific resistance information, but <em>NOT</em> individual resistance information, use {@link IMobResistances} for that
  * 
  * @author Yeelp
  *
+ * @see IMobResistances
  */
 public class MobResistanceCategories extends ResistanceCategories {
 	private float adaptive;

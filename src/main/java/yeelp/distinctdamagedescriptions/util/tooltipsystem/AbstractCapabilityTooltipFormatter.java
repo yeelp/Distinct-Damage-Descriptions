@@ -39,10 +39,19 @@ public abstract class AbstractCapabilityTooltipFormatter<T> extends AbstractKeyT
 		result.add(typeText.getFormattedText() + super.getKeyText());
 		if(this.shouldShow()) {
 			Optional<List<String>> formattedCap = formatCapabilityFor(stack, capExtractor.apply(stack));
-			if(formattedCap.isPresent()) {
-				result.addAll(formattedCap.get());
-			}
+			formattedCap.ifPresent((l) -> {
+				if(this.getDamageFormatter() == DDDDamageFormatter.ICON) {
+					l.stream().map((s) -> new StringBuilder(" ").append(s.replaceAll("  ", " ")).toString()).forEach(result::add);
+				}
+				else {
+					result.addAll(l);
+				}
+			});
 		}
 		return result;
+	}
+	
+	public ITextComponent getTypeText() {
+		return this.typeText;
 	}
 }

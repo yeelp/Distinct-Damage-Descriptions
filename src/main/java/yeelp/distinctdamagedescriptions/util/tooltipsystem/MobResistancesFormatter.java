@@ -1,10 +1,13 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 
@@ -28,7 +31,7 @@ import yeelp.distinctdamagedescriptions.util.lib.YLib;
  */
 public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<MobResistanceCategories> {
 
-	protected static MobResistancesFormatter instance;
+	private static MobResistancesFormatter instance;
 
 	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY),
 							   WHITE = new Style().setColor(TextFormatting.WHITE), 
@@ -79,7 +82,7 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 			return Optional.of(ImmutableList.of(notGenerated.getFormattedText()));
 		}
 		else if (cap != null) {
-			List<String> lst = cap.getResistanceMap().entrySet().stream().collect(LinkedList<String>::new, (l, e) -> makeOneMobResistString(e.getValue(), e.getKey()), LinkedList<String>::addAll);
+			List<String> lst = cap.getResistanceMap().entrySet().stream().sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(makeOneMobResistString(e.getValue(), e.getKey())), LinkedList<String>::addAll);
 			if(lst.isEmpty()) {
 				lst.add(noResists.getFormattedText());
 			}
@@ -102,9 +105,7 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 		String str = immunityPrefix.getFormattedText() + " ";
 		String[] strings = new String[immunities.size()];
 		int index = 0;
-		for(DDDDamageType type : immunities) {
-			strings[index++] = DDDDamageFormatter.COLOURED.format(type);
-		}
+		strings = immunities.stream().sorted().map(DDDDamageFormatter.COLOURED::format).collect(Collectors.toList()).toArray(strings);
 		return Optional.of(str + YLib.joinNiceString(true, ",", strings));
 	}
 	

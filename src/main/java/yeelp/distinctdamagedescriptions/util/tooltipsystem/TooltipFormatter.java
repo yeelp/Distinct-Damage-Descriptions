@@ -46,9 +46,4 @@ public interface TooltipFormatter {
 	 */
 	List<String> format(ItemStack stack);
 	
-	/**
-	 * Should information be shown for this formatter?
-	 * @return true if content should be shown, false if not.
-	 */
-	boolean shouldShow();
 }

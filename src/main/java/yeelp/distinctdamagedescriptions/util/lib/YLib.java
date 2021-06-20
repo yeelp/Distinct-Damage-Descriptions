@@ -16,15 +16,19 @@ public final class YLib {
 	 * @return a String that is the result of nicely joining the {@code strings}
 	 */
 	public static String joinNiceString(boolean addSpace, String sep, String... strings) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		if(strings.length != 0) {
 			String last = strings[strings.length - 1];
 			for(int i = 0; i <= strings.length - 2; i++) {
-				result += strings[i] + sep + (addSpace ? " " : "");
+				result.append(strings[i]);
+				result.append(sep);
+				if(addSpace) {
+					result.append(" ");
+				}
 			}
-			result += last;
+			result.append(last);
 		}
-		return result;
+		return result.toString();
 	}
 
 	/**

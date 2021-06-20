@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
+import java.util.Comparator;
+
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
@@ -12,6 +14,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
  *
  */
 public abstract class DDDAbstractDamageType implements DDDDamageType {
+	private static final Comparator<DDDDamageType> DAMAGE_TYPE_COMPARATOR = Comparator.comparing(DDDDamageType::getType).thenComparing(DDDDamageType::getDisplayName);
 	protected String displayName;
 	private final String name;
 	private final String attackerDeathMessage;
@@ -74,5 +77,14 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	@Override
 	public String toString() {
 		return String.format("%s (%s, %s)", this.name, this.type.toString(), this.isCustomDamage() ? "custom" : "built-in");
+	}
+
+	/**
+	 * @implNote The ordering is done via a {@link Comparator} that first compares this {@link DDDDamageType}'s {@link DDDDamageType.Type} by ordinal, then comparing type name lexicographically.
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compareTo(DDDDamageType o) {
+		return DAMAGE_TYPE_COMPARATOR.compare(this, o);
 	}
 }

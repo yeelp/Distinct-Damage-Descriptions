@@ -17,7 +17,7 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	private static ProjectileDistributionFormatter instance;
 	
 	private ProjectileDistributionFormatter() {	
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s.getItem())), new TextComponentTranslation("tooltips.distinctdamagedescriptions.damagedistribution").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s.getItem())), new TextComponentTranslation("tooltips.distinctdamagedescriptions.projectiledistribution").setStyle(new Style().setColor(TextFormatting.GRAY)));
 	}
 	
 	/**

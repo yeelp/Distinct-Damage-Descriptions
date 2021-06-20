@@ -58,7 +58,7 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 				double dmg = base;
 				Collection<AttributeModifier> mods = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND).get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
 				dmg += mods.stream().filter((m) -> m.getOperation() == 0).mapToDouble((m) -> m.getAmount()).sum();
-				dmg *= mods.stream().filter((m) -> m.getOperation() == 1).mapToDouble((m) -> m.getAmount()).sum();
+				dmg *= mods.stream().filter((m) -> m.getOperation() == 1).mapToDouble((m) -> m.getAmount()).reduce(Double::sum).orElse(1);
 				dmg *= mods.stream().filter((m) -> m.getOperation() == 2).mapToDouble((m) -> m.getAmount()).reduce((d1, d2) -> d1 * d2).orElse(1);
 				return cap.distributeDamage((float) (dmg + EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED))).values().iterator();
 			case PERCENT:

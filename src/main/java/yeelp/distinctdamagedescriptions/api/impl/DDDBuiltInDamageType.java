@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
+import java.util.Arrays;
+
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
@@ -28,6 +30,10 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 	public static final DDDDamageType[] PHYSICAL_TYPES = {SLASHING, PIERCING, BLUDGEONING};
 	public static final DDDDamageType[] BUILT_IN_TYPES = {SLASHING, PIERCING, BLUDGEONING, ACID, COLD, FIRE, FORCE, LIGHTNING, NECROTIC, POISON, PSYCHIC, RADIANT, THUNDER};
 
+	static {
+		Arrays.sort(BUILT_IN_TYPES);
+	}
+	
 	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		super(name, isPhysical, deathAttackerMessage, deathMessage, colour);
 		this.displayName = YLib.capitalize(this.getTypeName().substring("ddd_".length()));

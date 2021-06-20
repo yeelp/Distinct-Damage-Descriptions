@@ -7,6 +7,8 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
  */
 public class HwylaTooltipFormatter extends MobResistancesFormatter {
 	
+	private static HwylaTooltipFormatter instance;
+	
 	private HwylaTooltipFormatter() {
 		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD);
 	}

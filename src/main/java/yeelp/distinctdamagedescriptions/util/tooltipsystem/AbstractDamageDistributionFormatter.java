@@ -34,12 +34,12 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IDamageDistribution cap) {
-		if(cap == null || this.shouldShowDist(stack)) {
+		if(cap == null || !this.shouldShowDist(stack)) {
 			return Optional.empty();
 		}
 		List<String> lst = new LinkedList<String>();
 		final Iterator<Float> vals = getVals(stack, cap);
-		cap.getCategories().forEach((d) -> lst.add(makeOneDamageString(vals.next(), d)));
+		cap.getCategories().stream().sorted().forEach((d) -> lst.add(makeOneDamageString(vals.next(), d)));
 		return Optional.of(lst);
 	}
 	

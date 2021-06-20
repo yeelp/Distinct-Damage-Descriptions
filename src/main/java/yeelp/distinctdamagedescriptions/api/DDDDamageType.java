@@ -11,7 +11,7 @@ import yeelp.distinctdamagedescriptions.util.DDDFontColour;
  * @author Yeelp
  *
  */
-public interface DDDDamageType {
+public interface DDDDamageType extends Comparable<DDDDamageType> {
 	/**
 	 * The Type of a DDDDamage type. Physical or Special
 	 * 
