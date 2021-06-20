@@ -20,14 +20,12 @@ import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 public abstract class Distribution implements IDistribution {
 	protected DDDBaseMap<Float> distMap = new DDDBaseMap<Float>(0.0f);
 
-	protected boolean invariantViolated(Collection<Float> weights) {
+	protected static boolean invariantViolated(Collection<Float> weights) {
 		for(float f : weights) {
 			if(f >= 0.0f) {
 				continue;
 			}
-			else {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -43,7 +41,7 @@ public abstract class Distribution implements IDistribution {
 				continue;
 			}
 			else {
-				distMap.put(t.getFirst(), t.getSecond());
+				this.distMap.put(t.getFirst(), t.getSecond());
 			}
 		}
 	}
@@ -75,12 +73,12 @@ public abstract class Distribution implements IDistribution {
 
 	@Override
 	public float getWeight(DDDDamageType type) {
-		return distMap.get(type);
+		return this.distMap.get(type);
 	}
 
 	@Override
 	public void setWeight(DDDDamageType type, float amount) {
-		distMap.put(type, amount);
+		this.distMap.put(type, amount);
 	}
 
 	@Override
@@ -88,15 +86,13 @@ public abstract class Distribution implements IDistribution {
 		if(invariantViolated(map.values())) {
 			throw new InvariantViolationException("Weights are either non positive or do not add to 1!");
 		}
-		else {
-			setNewMap(map);
-		}
+		setNewMap(map);
 	}
 
 	@Override
 	public Set<DDDDamageType> getCategories() {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
-		for(Entry<DDDDamageType, Float> entry : distMap.entrySet()) {
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
 			if((!entry.getKey().isCustomDamage() || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0) {
 				set.add(entry.getKey());
 			}
@@ -116,6 +112,6 @@ public abstract class Distribution implements IDistribution {
 	}
 	
 	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
-		return distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
+		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
 	}
 }

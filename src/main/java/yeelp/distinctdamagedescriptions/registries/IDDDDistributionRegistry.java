@@ -37,8 +37,6 @@ public interface IDDDDistributionRegistry extends IDDDRegistry<DDDPredefinedDist
 			}
 			return DDDRegistries.damageTypes.getDeathMessageForType(lst.get(0), dSrc, attacker, defender);
 		}
-		else {
-			return src.getDeathMessage(defender);
-		}
+		return src.getDeathMessage(defender);
 	}
 }

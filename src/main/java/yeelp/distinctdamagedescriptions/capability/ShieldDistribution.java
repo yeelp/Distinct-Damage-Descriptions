@@ -53,11 +53,14 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 		return capability == ShieldDistributionProvider.shieldDist ? ShieldDistributionProvider.shieldDist.<T>cast(this) : null;
 	}
 
-	private float blockDamage(float damage, float weight) {
+	private static float blockDamage(float damage, float weight) {
 		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
 	}
 
 	private static class ShieldDistributionFactory implements Callable<ShieldDistribution> {
+		public ShieldDistributionFactory() {
+		}
+
 		@Override
 		public ShieldDistribution call() throws Exception {
 			return new ShieldDistribution();
@@ -65,6 +68,9 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 
 	private static class ShieldDistributionStorage implements IStorage<ShieldDistribution> {
+		public ShieldDistributionStorage() {
+		}
+
 		@Override
 		public NBTBase writeNBT(Capability<ShieldDistribution> capability, ShieldDistribution instance, EnumFacing side) {
 			return instance.serializeNBT();

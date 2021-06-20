@@ -8,6 +8,9 @@ package yeelp.distinctdamagedescriptions.util.lib;
  *
  */
 public class InvariantViolationException extends IllegalArgumentException {
+
+	private static final long serialVersionUID = -3720243747151548334L;
+
 	/**
 	 * Construct a new InvariantViolationException with no error message.
 	 */

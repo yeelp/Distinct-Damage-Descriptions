@@ -32,7 +32,6 @@ public final class DDDFontRenderer extends FontRenderer {
 	private byte colourState;
 	private int red, green, blue;
 	private static DDDFontRenderer instance;
-	private int numChars = 0;
 	private boolean dropShadow;
 	private static final Method renderUnicodeChar = ObfuscationReflectionHelper.findMethod(FontRenderer.class, "func_78277_a", float.class, char.class, boolean.class);
 
@@ -61,25 +60,25 @@ public final class DDDFontRenderer extends FontRenderer {
 			int val = (ch & 0xFF);
 			switch(this.colourState++) {
 				case 1:
-					red = val;
+					this.red = val;
 					break;
 				case 2:
-					green = val;
+					this.green = val;
 					break;
 				case 3:
-					blue = val;
+					this.blue = val;
 					break;
 				default:
 					break;
 			}
 			this.colourState %= 4;
 			if(this.colourState == 0) {
-				this.setColourState(red, green, blue);
+				this.setColourState(this.red, this.green, this.blue);
 			}
 		}
 		else {
 			try {
-				return (Float) renderUnicodeChar.invoke(internal, ch, italic);
+				return (Float) renderUnicodeChar.invoke(this.internal, ch, italic);
 				// return super.renderUnicodeChar(ch, italic);
 			}
 			catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -94,13 +93,13 @@ public final class DDDFontRenderer extends FontRenderer {
 
 	@Override
 	public List<String> listFormattedStringToWidth(String str, int wrapWidth) {
-		return internal.listFormattedStringToWidth(str, wrapWidth);
+		return this.internal.listFormattedStringToWidth(str, wrapWidth);
 	}
 
 	@Override
 	public int renderString(String text, float x, float y, int color, boolean dropShadow) {
 		this.dropShadow = dropShadow;
-		internal.renderString("", x, y, color, dropShadow);
+		this.internal.renderString("", x, y, color, dropShadow);
 		return super.renderString(text, x, y, color, dropShadow);
 	}
 
@@ -109,7 +108,7 @@ public final class DDDFontRenderer extends FontRenderer {
 		if((colour & -67108864) == 0) {
 			colour |= -16777216;
 		}
-		if(dropShadow) {
+		if(this.dropShadow) {
 			colour = (colour & 16579836) >> 2 | colour & -16777216;
 		}
 		this.setColor(((colour >> 16) & 255) / 255f, ((colour >> 8) & 255) / 255f, ((colour >> 0) & 255) / 255f, ((colour >> 24) & 255) / 255f);
@@ -128,11 +127,9 @@ public final class DDDFontRenderer extends FontRenderer {
 		if(instance == null) {
 			instance = new DDDFontRenderer(currentFontRenderer);
 			Minecraft mc = Minecraft.getMinecraft();
-			LanguageManager lm = mc.getLanguageManager();
 			((IReloadableResourceManager) mc.getResourceManager()).registerReloadListener(instance);
 		}
 		instance.internal = currentFontRenderer;
-		instance.numChars = 0;
 		return instance;
 	}
 

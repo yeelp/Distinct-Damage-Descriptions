@@ -12,6 +12,7 @@ import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 @WailaPlugin
 public class Hwyla implements IWailaPlugin, IModIntegration {
 
+	@Override
 	public boolean register() {
 		return FMLInterModComms.sendMessage(new Hwyla().getModID(), "register", "yeelp.distinctdamagedescriptions.integration.hwyla.register");
 	}

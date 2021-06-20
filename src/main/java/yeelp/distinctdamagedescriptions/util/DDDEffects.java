@@ -36,7 +36,7 @@ public class DDDEffects {
 		}
 
 		public double[] getCoordinates() {
-			return new double[] {x, y, z};
+			return new double[] {this.x, this.y, this.z};
 		}
 
 		public DDDParticleType getType() {
@@ -44,10 +44,10 @@ public class DDDEffects {
 		}
 
 		public void toBytes(PacketBuffer pakBuf) {
-			pakBuf.writeDouble(x);
-			pakBuf.writeDouble(y);
-			pakBuf.writeDouble(z);
-			pakBuf.writeInt(type.ordinal());
+			pakBuf.writeDouble(this.x);
+			pakBuf.writeDouble(this.y);
+			pakBuf.writeDouble(this.z);
+			pakBuf.writeInt(this.type.ordinal());
 		}
 
 		private void fromBytes(PacketBuffer pakBuf) {
@@ -71,7 +71,7 @@ public class DDDEffects {
 		}
 
 		boolean playSound() {
-			return DDDSounds.playSound(target, evt, vol, pitch);
+			return DDDSounds.playSound(this.target, this.evt, this.vol, this.pitch);
 		}
 	}
 
@@ -90,13 +90,13 @@ public class DDDEffects {
 		SoundInfo soundInfo = null;
 		boolean result = false;
 		if(results.wasResistanceHit()) {
-			addParticles(player, defender, DDDParticleType.RESISTANCE, particles);
+			addParticles(defender, DDDParticleType.RESISTANCE, particles);
 		}
 		if(results.wasWeaknessHit()) {
-			addParticles(player, defender, DDDParticleType.WEAKNESS, particles);
+			addParticles(defender, DDDParticleType.WEAKNESS, particles);
 		}
 		if(results.wasImmunityTriggered()) {
-			addParticles(player, defender, DDDParticleType.IMMUNITY, particles);
+			addParticles(defender, DDDParticleType.IMMUNITY, particles);
 			result = ratio == 0;
 			soundInfo = result ? new SoundInfo(player, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f) : null;
 		}
@@ -127,7 +127,7 @@ public class DDDEffects {
 		}
 	}
 
-	private static void addParticles(EntityPlayer player, EntityLivingBase origin, DDDParticleType type, List<ParticleInfo> particles) {
+	private static void addParticles(EntityLivingBase origin, DDDParticleType type, List<ParticleInfo> particles) {
 		int amount = (int) (2 * Math.random()) + 2;
 		for(int i = 0; i < amount; i++) {
 			double x = origin.posX + origin.width * particleDisplacement.nextDouble() - origin.width / 2;

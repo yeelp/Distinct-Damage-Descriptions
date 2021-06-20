@@ -12,23 +12,12 @@ import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 
 public class EntityHandler implements IWailaEntityProvider {
 	public EntityHandler() {
 	}
-
-	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
-	private static final Style YELLOW = new Style().setColor(TextFormatting.YELLOW);
-
-	private static final ITextComponent mobResistTooltip = new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobresistances").setStyle(GRAY);
-	private static final ITextComponent ctrlTooltip = new TextComponentTranslation("keys.distinctdamagedescriptions.ctrl").setStyle(YELLOW);
-	private static final ITextComponent notGenerated = new TextComponentTranslation("tooltips.distinctdamagedescriptions.notgenerated").setStyle(new Style().setColor(TextFormatting.GOLD).setBold(true));
 
 	/**
 	 * Callback used to add lines to one of the three sections of the tooltip (Head,
@@ -59,13 +48,5 @@ public class EntityHandler implements IWailaEntityProvider {
 	@Override
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
 		return TooltipMaker.makeHwylaTooltipStrings(entity);
-	}
-
-	private static String getCtrlText(boolean held) {
-		return getWhenNotHeld(held, ctrlTooltip);
-	}
-
-	private static String getWhenNotHeld(boolean held, ITextComponent tooltip) {
-		return held ? "" : " " + tooltip.getFormattedText();
 	}
 }

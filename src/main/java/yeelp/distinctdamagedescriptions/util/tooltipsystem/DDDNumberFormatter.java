@@ -26,6 +26,6 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 
 	@Override
 	public String format(Float t) {
-		return String.format("%s%s", t < 0 ? "" : "+", formatter.format(t)).substring(1);
+		return String.format("%s%s", t < 0 ? "" : "+", this.formatter.format(t)).substring(1);
 	}
 }

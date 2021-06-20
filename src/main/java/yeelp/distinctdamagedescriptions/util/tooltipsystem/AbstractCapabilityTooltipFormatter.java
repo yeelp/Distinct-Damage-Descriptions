@@ -36,9 +36,9 @@ public abstract class AbstractCapabilityTooltipFormatter<T> extends AbstractKeyT
 	@Override
 	public List<String> format(ItemStack stack) {
 		List<String> result = new LinkedList<String>();
-		result.add(typeText.getFormattedText() + super.getKeyText());
+		result.add(this.typeText.getFormattedText() + super.getKeyText());
 		if(this.shouldShow()) {
-			Optional<List<String>> formattedCap = formatCapabilityFor(stack, capExtractor.apply(stack));
+			Optional<List<String>> formattedCap = formatCapabilityFor(stack, this.capExtractor.apply(stack));
 			formattedCap.ifPresent((l) -> {
 				if(this.getDamageFormatter() == DDDDamageFormatter.ICON) {
 					l.stream().map((s) -> new StringBuilder(" ").append(s.replaceAll("  ", " ")).toString()).forEach(result::add);

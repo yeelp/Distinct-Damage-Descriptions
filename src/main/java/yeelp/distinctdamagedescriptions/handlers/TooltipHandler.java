@@ -19,18 +19,21 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 public class TooltipHandler extends Handler {
 	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	@SideOnly(value = Side.CLIENT)
 	public void onTooltip(ItemTooltipEvent evt) {
 		evt.getToolTip().addAll(1, TooltipMaker.makeTooltipStrings(evt.getItemStack()));
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onToolTipPre(RenderTooltipEvent.Pre evt) {
 		evt.setFontRenderer(DDDFontRenderer.getInstance(evt.getFontRenderer()));
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onTooltipPost(RenderTooltipEvent.PostText evt) {

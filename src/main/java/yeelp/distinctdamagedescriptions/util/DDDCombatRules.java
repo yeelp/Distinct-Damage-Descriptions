@@ -46,6 +46,8 @@ public final class DDDCombatRules {
 	private static Map<UUID, HitInfo> lastHit = new HashMap<UUID, HitInfo>();
 
 	private static final class AbsorptionMap extends DDDBaseMap<Float> {
+		private static final long serialVersionUID = 1295880082452814495L;
+
 		public AbsorptionMap() {
 			super(0.0f);
 		}
@@ -88,79 +90,83 @@ public final class DDDCombatRules {
 		private float bruteForce = 0.0f, hungerDamage = 0.0f;
 		private ItemStack activeShield;
 
+		public CombatModifiers() {
+		}
+
 		public void reset() {
-			slyStrike = false;
-			applyAnvilReductionCap = false;
-			bootsOnly = false;
-			helmetOnly = false;
-			bypassArmor = false;
-			activeShield = null;
-			bruteForce = 0.0f;
-			hungerDamage = 0.0f;
+			this.slyStrike = false;
+			this.applyAnvilReductionCap = false;
+			this.bootsOnly = false;
+			this.helmetOnly = false;
+			this.bypassArmor = false;
+			this.activeShield = null;
+			this.bruteForce = 0.0f;
+			this.hungerDamage = 0.0f;
 		}
 
 		public boolean shouldApplySlyStrike() {
-			return slyStrike;
+			return this.slyStrike;
 		}
 
 		public boolean shouldApplyAnvilReductionCap() {
-			return applyAnvilReductionCap;
+			return this.applyAnvilReductionCap;
 		}
 
 		public boolean isBootsOnly() {
-			return bootsOnly;
+			return this.bootsOnly;
 		}
 
 		public boolean isHelmetOnly() {
-			return helmetOnly;
+			return this.helmetOnly;
 		}
 
 		public ItemStack getActiveShield() {
-			return activeShield;
+			return this.activeShield;
 		}
 
 		public float getBruteForceAmount() {
-			return bruteForce;
+			return this.bruteForce;
 		}
 
 		public boolean shouldBypassArmor() {
-			return bypassArmor;
+			return this.bypassArmor;
 		}
 
+		@SuppressWarnings("unused")
 		public float getHungerDamage() {
-			return hungerDamage;
+			return this.hungerDamage;
 		}
 
 		public void setSlyStrike(boolean status) {
-			slyStrike = status;
+			this.slyStrike = status;
 		}
 
 		public void setAnvilReductionCap(boolean status) {
-			applyAnvilReductionCap = status;
+			this.applyAnvilReductionCap = status;
 		}
 
 		public void setBootsOnly(boolean status) {
-			bootsOnly = status;
+			this.bootsOnly = status;
 		}
 
 		public void setHelmetOnly(boolean status) {
-			helmetOnly = status;
+			this.helmetOnly = status;
 		}
 
 		public void setActiveShield(ItemStack shield) {
-			activeShield = shield;
+			this.activeShield = shield;
 		}
 
 		public void setBruteForceAmount(float amount) {
-			bruteForce = amount;
+			this.bruteForce = amount;
 		}
 
 		public void setBypassArmor(boolean bypassesArmor) {
-			bypassArmor = bypassesArmor;
+			this.bypassArmor = bypassesArmor;
 		}
 
 		public void setHungerDamage(float amount) {
-			hungerDamage = amount;
+			this.hungerDamage = amount;
 		}
 
 		public Iterable<EntityEquipmentSlot> getApplicableArmorSlots() {
@@ -206,15 +212,15 @@ public final class DDDCombatRules {
 		}
 
 		public boolean wasImmunityTriggered() {
-			return immunityResisted;
+			return this.immunityResisted;
 		}
 
 		public boolean wasResistanceHit() {
-			return resisted;
+			return this.resisted;
 		}
 
 		public boolean wasWeaknessHit() {
-			return weakness;
+			return this.weakness;
 		}
 
 		public boolean wasShieldEffective() {
@@ -222,19 +228,19 @@ public final class DDDCombatRules {
 		}
 
 		public DamageMap getDamage() {
-			return dmgMap;
+			return this.dmgMap;
 		}
 
 		public ResistMap getResistances() {
-			return resistMap;
+			return this.resistMap;
 		}
 
 		public ArmorMap getArmor() {
-			return armorMap;
+			return this.armorMap;
 		}
 
 		public IMobResistances getIMobResistances() {
-			return mobResists;
+			return this.mobResists;
 		}
 	}
 
@@ -244,6 +250,7 @@ public final class DDDCombatRules {
 	 * @param src      the DamageSource
 	 * @param defender the EntityLivingBase being attacked
 	 */
+
 	public static void setModifiers(@Nonnull DamageSource src, @Nonnull EntityLivingBase defender) {
 		Entity attacker = src.getImmediateSource();
 		CombatModifiers mods = getModifiers(attacker, defender);
@@ -257,7 +264,7 @@ public final class DDDCombatRules {
 			mods.setBruteForceAmount(0.1f * EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.bruteForce, entity));
 			mods.setSlyStrike(EnchantmentHelper.getMaxEnchantmentLevel(DDDEnchantments.slyStrike, entity) > 0);
 		}
-		if(src instanceof DDDDamageSource && canBlockDamage(attacker, defender, (DDDDamageSource) src)) {
+		if(src instanceof DDDDamageSource && canBlockDamage(defender, (DDDDamageSource) src)) {
 			mods.setActiveShield(defender.getActiveItemStack());
 		}
 		// needed if getModifiers returned default value
@@ -288,6 +295,7 @@ public final class DDDCombatRules {
 	 *                   EntityLivingBase
 	 * @return A CombatResults containing the results of the damage calculations.
 	 */
+
 	public static CombatResults computeNewDamage(@Nullable Entity attacker, @Nonnull EntityLivingBase defender, DamageMap dmgMap, ResistMap resistMap, ArmorMap armors, IMobResistances mobResists) {
 		AbsorptionMap absorb = new AbsorptionMap();
 		CombatModifiers mods = getModifiers(attacker, defender);
@@ -329,7 +337,7 @@ public final class DDDCombatRules {
 				float damage = entry.getValue();
 				float newDmg = damage;
 				if(!mods.shouldBypassArmor()) {
-					newDmg = applyDamageCalcs(damage, resistance, armors.get(type), mods.shouldApplyAnvilReductionCap());
+					newDmg = applyDamageCalcs(damage, armors.get(type), mods.shouldApplyAnvilReductionCap());
 				}
 				absorb.put(type, damage - newDmg);
 				newDmg *= (1 - resistance);
@@ -387,9 +395,7 @@ public final class DDDCombatRules {
 		if(shieldDist == null) {
 			return dmgMap;
 		}
-		else {
-			return shieldDist.block(dmgMap);
-		}
+		return shieldDist.block(dmgMap);
 	}
 
 	/*
@@ -434,7 +440,7 @@ public final class DDDCombatRules {
 		return broken;
 	}
 
-	private static boolean canBlockDamage(Entity attacker, EntityLivingBase defender, DDDDamageSource src) {
+	private static boolean canBlockDamage(EntityLivingBase defender, DDDDamageSource src) {
 		if(defender.isActiveItemStackBlocking()) {
 			Vec3d srcVec = src.getDamageLocation();
 			if(srcVec != null) {
@@ -447,11 +453,8 @@ public final class DDDCombatRules {
 						return false;
 					}
 					Set<DDDDamageType> damageTypes = new HashSet<DDDDamageType>(src.getExtendedTypes());
-					if(YMath.setMinus(damageTypes, dist.getCategories()).size() < damageTypes.size()) // true if shield
-																										// can block at
-																										// least one
-																										// damage type.
-					{
+					// true if shield can block at least one damage type
+					if(YMath.setMinus(damageTypes, dist.getCategories()).size() < damageTypes.size()) {
 						return true;
 					}
 				}
@@ -460,7 +463,7 @@ public final class DDDCombatRules {
 		return false;
 	}
 
-	private static float applyDamageCalcs(float damage, float resistance, ArmorValues armors, boolean applyAnvilReductionCap) {
+	private static float applyDamageCalcs(float damage, ArmorValues armors, boolean applyAnvilReductionCap) {
 		float armor = armors.getArmor(), toughness = armors.getToughness();
 		return (float) MathHelper.clamp(damage * (1 - Math.max(armor / 5.0f, armor - damage / (6 + toughness / 4.0f)) / 25.0f), 0.0f, applyAnvilReductionCap ? 0.75 * damage : Float.MAX_VALUE);
 	}

@@ -30,7 +30,7 @@ public abstract class AbstractCapabilityIconAggregator extends AbstractIconAggre
 		Iterator<String> it = currTooltip.iterator();
 		while(it.hasNext()) {
 			String s = it.next();
-			if(s.startsWith(regex)) {
+			if(s.startsWith(this.regex)) {
 				break;
 			}
 			initialY += AbstractIconAggregator.ICON_HEIGHT;

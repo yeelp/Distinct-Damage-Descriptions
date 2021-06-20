@@ -461,7 +461,7 @@ public class ModConfig {
 		}
 
 		@SubscribeEvent
-		public static void onWorldSave(final WorldEvent.Save evt) {
+		public static void onWorldSave(@SuppressWarnings("unused") final WorldEvent.Save evt) {
 			if(generateStats && ConfigGenerator.hasUpdated()) {
 				DistinctDamageDescriptions.debug("Adding new config values...");
 				Configuration config = DistinctDamageDescriptions.getConfiguration();

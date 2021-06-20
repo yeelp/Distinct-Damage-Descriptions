@@ -12,6 +12,7 @@ public class DamageDistributionProvider {
 	@CapabilityInject(IDamageDistribution.class)
 	public static Capability<IDamageDistribution> damageDist = null;
 
+	@SuppressWarnings("unused")
 	private IDamageDistribution instance = damageDist.getDefaultInstance();
 
 	public static IDamageDistribution getDamageDistribution(ItemStack stack) {
@@ -26,8 +27,6 @@ public class DamageDistributionProvider {
 		if(projectile instanceof Entity) {
 			return ((Entity) projectile).getCapability(damageDist, null);
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 }

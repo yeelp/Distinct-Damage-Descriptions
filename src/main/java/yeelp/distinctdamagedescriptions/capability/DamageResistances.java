@@ -29,18 +29,22 @@ public abstract class DamageResistances implements IDamageResistances {
 		this.immunities = new HashSet<DDDDamageType>(immunities);
 	}
 
+	@Override
 	public float getResistance(DDDDamageType type) {
 		return this.resistances.get(type);
 	}
 
+	@Override
 	public boolean hasImmunity(DDDDamageType type) {
 		return this.immunities.contains(type);
 	}
 
+	@Override
 	public void setResistance(DDDDamageType type, float amount) {
 		this.resistances.put(type, amount);
 	}
 
+	@Override
 	public void setImmunity(DDDDamageType type, boolean status) {
 		if(status) {
 			this.immunities.add(type);
@@ -50,6 +54,7 @@ public abstract class DamageResistances implements IDamageResistances {
 		}
 	}
 
+	@Override
 	public void clearImmunities() {
 		this.immunities.clear();
 	}
@@ -59,7 +64,7 @@ public abstract class DamageResistances implements IDamageResistances {
 		NBTTagCompound tag = new NBTTagCompound();
 		NBTTagList lst = new NBTTagList();
 		NBTTagList immunities = new NBTTagList();
-		for(Entry<DDDDamageType, Float> entry : resistances.entrySet()) {
+		for(Entry<DDDDamageType, Float> entry : this.resistances.entrySet()) {
 			NBTTagCompound compound = new NBTTagCompound();
 			compound.setString("type", entry.getKey().getTypeName());
 			compound.setFloat("amount", entry.getValue());
@@ -79,10 +84,10 @@ public abstract class DamageResistances implements IDamageResistances {
 		this.immunities = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("resistances", new NBTTagCompound().getId())) {
 			NBTTagCompound resist = (NBTTagCompound) nbt;
-			resistances.put(DDDRegistries.damageTypes.get(resist.getString("type")), resist.getFloat("amount"));
+			this.resistances.put(DDDRegistries.damageTypes.get(resist.getString("type")), resist.getFloat("amount"));
 		}
 		for(NBTBase nbt : tag.getTagList("immunities", new NBTTagString().getId())) {
-			immunities.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
+			this.immunities.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}
 	}
 	

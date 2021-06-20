@@ -9,11 +9,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 
 public class MobHandler extends Handler {
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onPotionApplyEvent(PotionEvent.PotionApplicableEvent evt) {
 		evt.setResult(DDDAPI.accessor.getMobCreatureType(evt.getEntityLiving()).isImmuneToPotionEffect(evt.getPotionEffect()) ? Result.DENY : Result.DEFAULT);
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onCrit(CriticalHitEvent evt) {
 		Entity target = evt.getTarget();

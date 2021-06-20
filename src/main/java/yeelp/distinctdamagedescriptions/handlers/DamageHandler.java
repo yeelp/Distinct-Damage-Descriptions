@@ -48,6 +48,7 @@ import yeelp.distinctdamagedescriptions.util.lib.YMath;
 public class DamageHandler extends Handler {
 	private static Set<UUID> noKnockback = new HashSet<UUID>();
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onDeath(LivingDeathEvent evt) {
 		if(ModConfig.dmg.useCustomDeathMessages) {
@@ -67,6 +68,7 @@ public class DamageHandler extends Handler {
 		}
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onAttack(LivingAttackEvent evt) {
 		EntityLivingBase defender = evt.getEntityLiving();
@@ -88,15 +90,19 @@ public class DamageHandler extends Handler {
 		}
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onHit(LivingHurtEvent evt) {
 		EntityLivingBase defender = evt.getEntityLiving();
+		if(defender == null) {
+			return;
+		}
 		DamageSource dmgSource = evt.getSource();
 		Entity attacker = dmgSource.getImmediateSource();
 		if(ModConfig.showDotsOn) {
 			Entity trueAttacker = dmgSource.getTrueSource();
 			ResourceLocation attackerLoc = attacker == null || attacker instanceof EntityPlayer ? null : EntityList.getKey(attacker),
-					defendLoc = defender == null ? null : EntityList.getKey(defender),
+					defendLoc = EntityList.getKey(defender),
 					trueAttackerLoc = trueAttacker == null ? null : EntityList.getKey(trueAttacker);
 			String s1 = attackerLoc != null ? attackerLoc.toString() : "null",
 					s2 = defendLoc != null ? defendLoc.toString() : "null",
@@ -153,6 +159,7 @@ public class DamageHandler extends Handler {
 		DDDCombatRules.wipeModifiers(attacker, defender);
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onKnockback(LivingKnockBackEvent evt) {
 		UUID uuid = evt.getEntityLiving().getUniqueID();

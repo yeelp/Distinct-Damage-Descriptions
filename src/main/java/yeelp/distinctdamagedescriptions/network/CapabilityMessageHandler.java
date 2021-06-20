@@ -27,6 +27,6 @@ public final class CapabilityMessageHandler<T extends NBTBase> extends AbstractM
 	@SideOnly(Side.CLIENT)
 	public void handle(AbstractCapabilityMessage<T> msg, MessageContext ctx) {
 		EntityPlayer player = NetworkHelper.getSidedPlayer(ctx);
-		handler.accept(msg, player);
+		this.handler.accept(msg, player);
 	}
 }

@@ -21,7 +21,7 @@ public abstract class AbstractCapabilityMessage<T extends NBTBase> implements IM
 	}
 
 	public AbstractCapabilityMessage(ICapabilitySerializable<T> capability) {
-		nbt = capability.serializeNBT();
+		this.nbt = capability.serializeNBT();
 	}
 
 	public T serializeNBT() {

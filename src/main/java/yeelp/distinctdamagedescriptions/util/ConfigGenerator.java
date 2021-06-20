@@ -86,30 +86,25 @@ public final class ConfigGenerator {
 		if(MOB_DAMAGE_CACHE.containsKey(loc)) {
 			return MOB_DAMAGE_CACHE.get(loc);
 		}
-		else {
-			IDamageDistribution damageDist;
+		IDamageDistribution damageDist;
 
-			boolean isArthropod = false;
-
-			switch(entity.getCreatureAttribute()) {
-				case ARTHROPOD:
-					// Arthropods typically bite, so give them piercing usually. Up to 20% of their
-					// damage can be bludgeoning instead.
-					float bludgeAmount = rng.nextInt(20) / 100.0f;
-					float pierceAmount = 1 - bludgeAmount;
-					damageDist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierceAmount), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludgeAmount));
-					isArthropod = true;
-					break;
-				default:
-					damageDist = new DamageDistribution();
-					break;
-			}
-
-			MOB_DAMAGE_CACHE.put(loc, damageDist);
-			updated = true;
-
-			return damageDist;
+		switch(entity.getCreatureAttribute()) {
+			case ARTHROPOD:
+				// Arthropods typically bite, so give them piercing usually. Up to 20% of their
+				// damage can be bludgeoning instead.
+				float bludgeAmount = rng.nextInt(20) / 100.0f;
+				float pierceAmount = 1 - bludgeAmount;
+				damageDist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierceAmount), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludgeAmount));
+				break;
+			default:
+				damageDist = new DamageDistribution();
+				break;
 		}
+
+		MOB_DAMAGE_CACHE.put(loc, damageDist);
+		updated = true;
+
+		return damageDist;
 	}
 
 	public static final IMobResistances getOrGenerateMobResistances(EntityLivingBase entity, ResourceLocation loc) {
@@ -260,6 +255,7 @@ public final class ConfigGenerator {
 					pierceImmune = true;
 					break;
 				case 2:
+				default:
 					bludgeImmune = true;
 					break;
 			}
@@ -277,6 +273,7 @@ public final class ConfigGenerator {
 						pierce += bonusResist;
 						break;
 					case 2:
+					default:
 						bludge += bonusResist;
 						break;
 				}
@@ -288,6 +285,7 @@ public final class ConfigGenerator {
 						pierce -= bonusResist;
 						break;
 					case 2:
+					default:
 						bludge -= bonusResist;
 						break;
 				}
@@ -333,70 +331,68 @@ public final class ConfigGenerator {
 		if(WEAPON_CACHE.containsKey(tool.getRegistryName())) {
 			return WEAPON_CACHE.get(tool.getRegistryName());
 		}
-		else {
-			/*
-			 * We take a look at a tool's durability, enchantability, harvest level and
-			 * efficiency to determine how 'good' of a tool it is. This determines how
-			 * narrow a spread we give it.
-			 * 
-			 * 
-			 * Then we check to see which tool type we have. We give precedence to pickaxes,
-			 * axes and shovels in that order. pickaxes get a piercing biased distribution.
-			 * Then, favor bludgeoning axes get a slashing biased distribution. Then, favor
-			 * bludgeoning. shovels get a bludgeoning biased distribution Then, ever so
-			 * lightly favor piercing.
-			 */
-			int durability = tool.getMaxDamage(stack);
-			int enchantability = tool.getItemEnchantability(stack);
-			Set<String> classes = tool.getToolClasses(stack);
-			float avgHarvestLevel = 0;
-			for(String s : classes) {
-				avgHarvestLevel += tool.getHarvestLevel(stack, s, null, null);
-			}
-			avgHarvestLevel /= classes.size();
-			float efficiency = 0;
-			try {
-				efficiency = efficiencyField.getFloat(tool);
-			}
-			catch(IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-
-			// Use this information to get a tool rating in (0,1]. First, convert the values
-			// to z scores, then add 3.5 to each value (this will make negative values small
-			// positive values and positive values even larger)
-			// Then, combine the z scores in a 4D vector and get the Euclidean norm.
-			// Finally, squash the values into the range (0,1] using tanh.
-			double rating = Math.pow(2, 2 * getDurabilityZScore(durability)) + Math.pow(2, 2 * getHarvestLevelZScore(avgHarvestLevel)) + Math.pow(2, 2 * getEfficiencyZScore(efficiency)) + Math.pow(2, 2 * getEnchantabilityZScore(enchantability));
-			rating = Math.tanh(Math.sqrt(rating));
-
-			// Now we choose our bias. We can use Forge's getToolClasses() set as
-			// ItemPickaxe, ItemAxe and ItemShovel set this string to "pickaxe", "axe" and
-			// "shovel" respectively. No instanceof checks needed.
-			float slash = 0, pierce = 0, bludge = 0;
-			if(classes.contains("pickaxe")) {
-				pierce = roundToTwoDecimals(rating);
-				bludge = 1 - pierce;
-			}
-			else if(classes.contains("axe")) {
-				slash = roundToTwoDecimals(rating);
-				bludge = 1 - slash;
-			}
-			else if(classes.contains("shovel")) {
-				bludge = roundToTwoDecimals(rating);
-				float rem = (1 - bludge) / 2;
-				bludge += rem;
-				pierce = 1 - bludge;
-			}
-			else {
-				bludge = roundToTwoDecimals(rating);
-				pierce = 1 - bludge;
-			}
-			IDamageDistribution dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, slash), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
-			WEAPON_CACHE.put(tool.getRegistryName(), dist);
-			updated = true;
-			return dist;
+		/*
+		 * We take a look at a tool's durability, enchantability, harvest level and
+		 * efficiency to determine how 'good' of a tool it is. This determines how
+		 * narrow a spread we give it.
+		 * 
+		 * 
+		 * Then we check to see which tool type we have. We give precedence to pickaxes,
+		 * axes and shovels in that order. pickaxes get a piercing biased distribution.
+		 * Then, favor bludgeoning axes get a slashing biased distribution. Then, favor
+		 * bludgeoning. shovels get a bludgeoning biased distribution Then, ever so
+		 * lightly favor piercing.
+		 */
+		int durability = tool.getMaxDamage(stack);
+		int enchantability = tool.getItemEnchantability(stack);
+		Set<String> classes = tool.getToolClasses(stack);
+		float avgHarvestLevel = 0;
+		for(String s : classes) {
+			avgHarvestLevel += tool.getHarvestLevel(stack, s, null, null);
 		}
+		avgHarvestLevel /= classes.size();
+		float efficiency = 0;
+		try {
+			efficiency = efficiencyField.getFloat(tool);
+		}
+		catch(IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		// Use this information to get a tool rating in (0,1]. First, convert the values
+		// to z scores, then add 3.5 to each value (this will make negative values small
+		// positive values and positive values even larger)
+		// Then, combine the z scores in a 4D vector and get the Euclidean norm.
+		// Finally, squash the values into the range (0,1] using tanh.
+		double rating = Math.pow(2, 2 * getDurabilityZScore(durability)) + Math.pow(2, 2 * getHarvestLevelZScore(avgHarvestLevel)) + Math.pow(2, 2 * getEfficiencyZScore(efficiency)) + Math.pow(2, 2 * getEnchantabilityZScore(enchantability));
+		rating = Math.tanh(Math.sqrt(rating));
+
+		// Now we choose our bias. We can use Forge's getToolClasses() set as
+		// ItemPickaxe, ItemAxe and ItemShovel set this string to "pickaxe", "axe" and
+		// "shovel" respectively. No instanceof checks needed.
+		float slash = 0, pierce = 0, bludge = 0;
+		if(classes.contains("pickaxe")) {
+			pierce = roundToTwoDecimals(rating);
+			bludge = 1 - pierce;
+		}
+		else if(classes.contains("axe")) {
+			slash = roundToTwoDecimals(rating);
+			bludge = 1 - slash;
+		}
+		else if(classes.contains("shovel")) {
+			bludge = roundToTwoDecimals(rating);
+			float rem = (1 - bludge) / 2;
+			bludge += rem;
+			pierce = 1 - bludge;
+		}
+		else {
+			bludge = roundToTwoDecimals(rating);
+			pierce = 1 - bludge;
+		}
+		IDamageDistribution dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, slash), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
+		WEAPON_CACHE.put(tool.getRegistryName(), dist);
+		updated = true;
+		return dist;
 	}
 
 	/**
@@ -410,15 +406,13 @@ public final class ConfigGenerator {
 		if(WEAPON_CACHE.containsKey(hoe.getRegistryName())) {
 			return WEAPON_CACHE.get(hoe.getRegistryName());
 		}
-		else {
-			double rating = Math.tanh(Math.pow(2, getDurabilityZScore(hoe.getMaxDamage(stack))));
-			float pierce = roundToTwoDecimals(rating);
-			float bludge = 1 - pierce;
-			IDamageDistribution dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
-			WEAPON_CACHE.put(hoe.getRegistryName(), dist);
-			updated = true;
-			return dist;
-		}
+		double rating = Math.tanh(Math.pow(2, getDurabilityZScore(hoe.getMaxDamage(stack))));
+		float pierce = roundToTwoDecimals(rating);
+		float bludge = 1 - pierce;
+		IDamageDistribution dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
+		WEAPON_CACHE.put(hoe.getRegistryName(), dist);
+		updated = true;
+		return dist;
 	}
 
 	/**
@@ -432,22 +426,20 @@ public final class ConfigGenerator {
 		if(WEAPON_CACHE.containsKey(sword.getRegistryName())) {
 			return WEAPON_CACHE.get(sword.getRegistryName());
 		}
-		else {
-			int durability = sword.getMaxDamage(stack), enchantability = sword.getItemEnchantability();
-			double rating = Math.pow(2, 2 * getDurabilityZScore(durability)) + Math.pow(2, getEnchantabilityZScore(enchantability));
-			rating = Math.tanh(Math.sqrt(rating));
-			float slash = roundToTwoDecimals(rating), pierce = 0, bludge = 0;
-			if(rating < 0.4) {
-				bludge = 1 - slash;
-			}
-			else {
-				pierce = 1 - slash;
-			}
-			IDamageDistribution dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, slash), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
-			WEAPON_CACHE.put(sword.getRegistryName(), dist);
-			updated = true;
-			return dist;
+		int durability = sword.getMaxDamage(stack), enchantability = sword.getItemEnchantability();
+		double rating = Math.pow(2, 2 * getDurabilityZScore(durability)) + Math.pow(2, getEnchantabilityZScore(enchantability));
+		rating = Math.tanh(Math.sqrt(rating));
+		float slash = roundToTwoDecimals(rating), pierce = 0, bludge = 0;
+		if(rating < 0.4) {
+			bludge = 1 - slash;
 		}
+		else {
+			pierce = 1 - slash;
+		}
+		IDamageDistribution dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, slash), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
+		WEAPON_CACHE.put(sword.getRegistryName(), dist);
+		updated = true;
+		return dist;
 	}
 
 	/**
@@ -461,18 +453,16 @@ public final class ConfigGenerator {
 		if(PROJECTILE_CACHE.containsKey(loc)) {
 			return PROJECTILE_CACHE.get(loc);
 		}
-		else {
-			IDamageDistribution dist = null;
-			if(projectile instanceof EntityArrow) {
-				dist = DDDBuiltInDamageType.PIERCING.getBaseDistribution();
-			}
-			else {
-				dist = DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution();
-			}
-			PROJECTILE_CACHE.put(loc, dist);
-			updated = true;
-			return dist;
+		IDamageDistribution dist = null;
+		if(projectile instanceof EntityArrow) {
+			dist = DDDBuiltInDamageType.PIERCING.getBaseDistribution();
 		}
+		else {
+			dist = DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution();
+		}
+		PROJECTILE_CACHE.put(loc, dist);
+		updated = true;
+		return dist;
 	}
 
 	/**
@@ -486,19 +476,17 @@ public final class ConfigGenerator {
 		if(ARMOR_CACHE.containsKey(armor.getRegistryName())) {
 			return ARMOR_CACHE.get(armor.getRegistryName());
 		}
-		else {
-			int durability = armor.getMaxDamage(stack);
-			int enchantability = armor.getItemEnchantability(stack);
-			float toughness = armor.toughness;
+		int durability = armor.getMaxDamage(stack);
+		int enchantability = armor.getItemEnchantability(stack);
+		float toughness = armor.toughness;
 
-			float bludge = 0.1f + MathHelper.clamp(0.01f * durability, 0.0f, 0.9f);
-			float pierce = 0.1f + MathHelper.clamp(toughness / 20.0f, 0.0f, 0.9f);
-			float slash = 0.15f + MathHelper.clamp(0.01f * enchantability, 0.0f, 0.85f);
-			IArmorDistribution dist = new ArmorDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, slash), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
-			ARMOR_CACHE.put(armor.getRegistryName(), dist);
-			updated = true;
-			return dist;
-		}
+		float bludge = 0.1f + MathHelper.clamp(0.01f * durability, 0.0f, 0.9f);
+		float pierce = 0.1f + MathHelper.clamp(toughness / 20.0f, 0.0f, 0.9f);
+		float slash = 0.15f + MathHelper.clamp(0.01f * enchantability, 0.0f, 0.85f);
+		IArmorDistribution dist = new ArmorDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, slash), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, pierce), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, bludge));
+		ARMOR_CACHE.put(armor.getRegistryName(), dist);
+		updated = true;
+		return dist;
 	}
 
 	/**
@@ -513,11 +501,9 @@ public final class ConfigGenerator {
 		if(SHIELD_CACHE.containsKey(shield.getRegistryName())) {
 			return SHIELD_CACHE.get(shield.getRegistryName());
 		}
-		else {
-			ShieldDistribution dist = new ShieldDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, generateResistance(1.0f)), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, generateResistance(1.0f)), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, generateResistance(1.0f)));
-			SHIELD_CACHE.put(shield.getRegistryName(), dist);
-			return dist;
-		}
+		ShieldDistribution dist = new ShieldDistribution(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.SLASHING, generateResistance(1.0f)), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.PIERCING, generateResistance(1.0f)), new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, generateResistance(1.0f)));
+		SHIELD_CACHE.put(shield.getRegistryName(), dist);
+		return dist;
 	}
 
 	public static final String[] getNewMobResistanceConfigValues() {
@@ -594,7 +580,7 @@ public final class ConfigGenerator {
 	}
 
 	private static final float roundToTwoDecimals(double a) {
-		return (float) (Math.round(a * 100) / 100.f);
+		return (Math.round(a * 100) / 100.f);
 	}
 
 	private static String getImmunitiesForConfig(IMobResistances resists) {

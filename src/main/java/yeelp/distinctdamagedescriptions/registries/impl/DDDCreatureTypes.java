@@ -23,7 +23,7 @@ public class DDDCreatureTypes extends DDDBaseRegistry<CreatureTypeData> implemen
 
 	@Override
 	public Set<CreatureTypeData> getCreatureTypeForMob(String key) {
-		return typeMap.get(key);
+		return this.typeMap.get(key);
 	}
 
 	@Override

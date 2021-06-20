@@ -49,18 +49,14 @@ public final class DDDSounds {
 			PacketHandler.INSTANCE.sendTo(new SoundMessage(encodeSoundID(name.getRegistryName().toString()), vol, pitch), (EntityPlayerMP) player);
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	public static byte encodeSoundID(String id) {
 		if(ID_LIST.contains(id)) {
 			return (byte) ID_LIST.indexOf(id);
 		}
-		else {
-			throw new RuntimeException(String.format("Can't encode Distinct Damage Description SoundID %s!", id));
-		}
+		throw new RuntimeException(String.format("Can't encode Distinct Damage Description SoundID %s!", id));
 	}
 
 	public static String decodeSoundID(byte id) {
@@ -68,8 +64,6 @@ public final class DDDSounds {
 		{
 			return ID_LIST.get(id);
 		}
-		else {
-			throw new RuntimeException(String.format("Can't decode Distinct Damage Descriptions SoundID %d, should be no higher than %d", id, ID_LIST.size() - 1));
-		}
+		throw new RuntimeException(String.format("Can't decode Distinct Damage Descriptions SoundID %d, should be no higher than %d", id, ID_LIST.size() - 1));
 	}
 }

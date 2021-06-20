@@ -79,32 +79,31 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 			return Optional.empty();
 		}
 		if(cap == null && ModConfig.generateStats) {
-			return Optional.of(ImmutableList.of(notGenerated.getFormattedText()));
+			return Optional.of(ImmutableList.of(this.notGenerated.getFormattedText()));
 		}
 		else if (cap != null) {
 			List<String> lst = cap.getResistanceMap().entrySet().stream().sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(makeOneMobResistString(e.getValue(), e.getKey())), LinkedList<String>::addAll);
 			if(lst.isEmpty()) {
-				lst.add(noResists.getFormattedText());
+				lst.add(this.noResists.getFormattedText());
 			}
 			makeImmunityString(cap.getImmunities()).ifPresent(lst::add);
 			lst.addAll(makeAdaptiveString(cap.adaptiveChance(), cap.getAdaptiveAmount()));
 			return Optional.of(lst);
 		}
-		return Optional.of(ImmutableList.of(noResists.getFormattedText()));
+		return Optional.of(ImmutableList.of(this.noResists.getFormattedText()));
 	}
 	
 	private String makeOneMobResistString(float amount, DDDDamageType type) {
 		boolean isNegative = amount < 0;
-		return String.format("   %s%s %s %s", isNegative ? TextFormatting.DARK_RED.toString() : TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), isNegative ? weaknessSuffix.getFormattedText() : resistanceSuffix.getFormattedText());
+		return String.format("   %s%s %s %s", isNegative ? TextFormatting.DARK_RED.toString() : TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), isNegative ? this.weaknessSuffix.getFormattedText() : this.resistanceSuffix.getFormattedText());
 	}
 	
 	private Optional<String> makeImmunityString(Set<DDDDamageType> immunities) {
 		if(immunities.isEmpty()) {
 			return Optional.empty();
 		}
-		String str = immunityPrefix.getFormattedText() + " ";
+		String str = this.immunityPrefix.getFormattedText() + " ";
 		String[] strings = new String[immunities.size()];
-		int index = 0;
 		strings = immunities.stream().sorted().map(DDDDamageFormatter.COLOURED::format).collect(Collectors.toList()).toArray(strings);
 		return Optional.of(str + YLib.joinNiceString(true, ",", strings));
 	}
@@ -113,8 +112,8 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 		if(chance == 0 && amount == 0) {
 			return Collections.emptyList();
 		}
-		String str1 = String.format("%s %s", adaptabilityPrefix.getFormattedText(), this.getNumberFormatter().format(chance));
-		String str2 = String.format("   %s %s", adaptabilityAmountPrefix.getFormattedText(), this.getNumberFormatter().format(amount));
+		String str1 = String.format("%s %s", this.adaptabilityPrefix.getFormattedText(), this.getNumberFormatter().format(chance));
+		String str2 = String.format("   %s %s", this.adaptabilityAmountPrefix.getFormattedText(), this.getNumberFormatter().format(amount));
 		return ImmutableList.of(str1, str2);
 	}
 	

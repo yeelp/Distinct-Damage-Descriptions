@@ -8,11 +8,13 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 
 public class CTEventHandler extends Handler implements IModIntegration {
+	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void preDamage(DamageDescriptionEvent.Pre evt) {
 		CTDDDEventManager.PRE_DAMAGE.publish(new CTPreDamageEvent(evt));
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void postDamage(DamageDescriptionEvent.Post evt) {
 		CTDDDEventManager.POST_DAMAGE.publish(new CTPostDamageEvent(evt));

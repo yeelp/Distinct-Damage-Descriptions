@@ -23,9 +23,7 @@ public final class DDDDaylightDist extends AbstractSingleTypeDist {
 		if(source == DamageSource.ON_FIRE && target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD) {
 			return DDDTrackers.daylight.isTracking(target.getUniqueID());
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	@Override

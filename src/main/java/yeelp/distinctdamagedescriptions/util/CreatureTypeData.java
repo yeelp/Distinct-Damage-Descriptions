@@ -35,9 +35,9 @@ public final class CreatureTypeData {
 	}
 
 	private CreatureTypeData() {
-		type = "unknown";
-		potionImmunities = new HashSet<String>();
-		criticalImmunity = false;
+		this.type = "unknown";
+		this.potionImmunities = new HashSet<String>();
+		this.criticalImmunity = false;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public final class CreatureTypeData {
 	 * @return type name
 	 */
 	public String getTypeName() {
-		return type;
+		return this.type;
 	}
 
 	/**
@@ -64,6 +64,6 @@ public final class CreatureTypeData {
 	 * @return true if immune, false if not
 	 */
 	public boolean isImmuneToCriticals() {
-		return criticalImmunity;
+		return this.criticalImmunity;
 	}
 }

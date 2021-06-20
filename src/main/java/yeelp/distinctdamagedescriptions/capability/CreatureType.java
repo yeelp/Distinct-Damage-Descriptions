@@ -25,12 +25,12 @@ public class CreatureType implements ICreatureType {
 	private boolean critImmunity = false;
 
 	public CreatureType(Set<CreatureTypeData> datas) {
-		types = new HashSet<String>();
-		potionImmunities = new HashSet<String>();
+		this.types = new HashSet<String>();
+		this.potionImmunities = new HashSet<String>();
 		for(CreatureTypeData data : datas) {
-			types.add(data.getTypeName());
-			potionImmunities.addAll(data.getPotionImmunities());
-			critImmunity = critImmunity || data.isImmuneToCriticals();
+			this.types.add(data.getTypeName());
+			this.potionImmunities.addAll(data.getPotionImmunities());
+			this.critImmunity = this.critImmunity || data.isImmuneToCriticals();
 		}
 	}
 
@@ -65,31 +65,31 @@ public class CreatureType implements ICreatureType {
 		}
 		tag.setTag("types", types);
 		tag.setTag("potionImmunities", potImmunities);
-		tag.setBoolean("critImmunity", critImmunity);
+		tag.setBoolean("critImmunity", this.critImmunity);
 		return tag;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		types = new HashSet<String>();
-		potionImmunities = new HashSet<String>();
-		critImmunity = nbt.getBoolean("critImmunity");
+		this.types = new HashSet<String>();
+		this.potionImmunities = new HashSet<String>();
+		this.critImmunity = nbt.getBoolean("critImmunity");
 		for(NBTBase s : nbt.getTagList("types", new NBTTagString().getId())) {
-			types.add(((NBTTagString) s).getString());
+			this.types.add(((NBTTagString) s).getString());
 		}
 		for(NBTBase s : nbt.getTagList("potionImmunities", new NBTTagString().getId())) {
-			potionImmunities.add(((NBTTagString) s).getString());
+			this.potionImmunities.add(((NBTTagString) s).getString());
 		}
 	}
 
 	@Override
 	public boolean isImmuneToPotionEffect(PotionEffect effect) {
-		return potionImmunities.contains(effect.getPotion().getRegistryName().toString());
+		return this.potionImmunities.contains(effect.getPotion().getRegistryName().toString());
 	}
 
 	@Override
 	public boolean isImmuneToCriticalHits() {
-		return critImmunity;
+		return this.critImmunity;
 	}
 
 	public static void register() {
@@ -97,6 +97,9 @@ public class CreatureType implements ICreatureType {
 	}
 
 	private static class CreatureTypeFactory implements Callable<ICreatureType> {
+		public CreatureTypeFactory() {
+		}
+
 		@Override
 		public ICreatureType call() throws Exception {
 			return CreatureType.UNKNOWN;
@@ -104,6 +107,9 @@ public class CreatureType implements ICreatureType {
 	}
 
 	private static class CreatureTypeStorage implements IStorage<ICreatureType> {
+		public CreatureTypeStorage() {
+		}
+
 		@Override
 		public NBTBase writeNBT(Capability<ICreatureType> capability, ICreatureType instance, EnumFacing side) {
 			return instance.serializeNBT();

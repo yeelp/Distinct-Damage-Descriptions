@@ -12,6 +12,10 @@ public class ModIntegrationKernel {
 	 */
 	public static final ImmutableList<IModIntegration> loadedMods = ImmutableList.of(new CTEventHandler(), new Hwyla());
 
+	/**
+	 * Load
+	 */
+	@SuppressWarnings("static-method")
 	public void load() {
 		for(IModIntegration mod : loadedMods) {
 			String modID = mod.getModID();

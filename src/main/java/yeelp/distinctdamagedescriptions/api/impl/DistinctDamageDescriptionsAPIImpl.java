@@ -163,9 +163,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			if(isPhysicalDamage(type)) {
 				continue;
 			}
-			else {
-				return false;
-			}
+			return false;
 		}
 		return true;
 	}
@@ -183,9 +181,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		if(!hasEmptyHand) {
 			return getDamageDistribution(heldItem);
 		}
-		else {
-			return getDamageDistribution(attacker);
-		}
+		return getDamageDistribution(attacker);
 	}
 
 	/***********

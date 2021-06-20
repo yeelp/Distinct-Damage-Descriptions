@@ -43,8 +43,6 @@ public final class YResources {
 		if(loc.isPresent()) {
 			return Optional.of(loc.get().toString());
 		}
-		else {
-			return Optional.empty();
-		}
+		return Optional.empty();
 	}
 }

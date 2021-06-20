@@ -59,12 +59,12 @@ public abstract class DDDBuiltInForce extends AbstractSingleTypeDist {
 
 		@Override
 		protected boolean classifyForce(DamageSource source, EntityLivingBase target) {
-			return clazz.isInstance(source.getImmediateSource());
+			return this.clazz.isInstance(source.getImmediateSource());
 		}
 
 		@Override
 		public String getName() {
-			return name;
+			return this.name;
 		}
 	}
 }

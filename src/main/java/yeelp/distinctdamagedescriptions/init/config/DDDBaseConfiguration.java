@@ -23,13 +23,13 @@ public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 
 	@Override
 	public boolean put(String key, T val) {
-		boolean present = map.containsKey(key);
-		map.put(key, val);
+		boolean present = this.map.containsKey(key);
+		this.map.put(key, val);
 		return present;
 	}
 
 	@Override
 	public boolean configured(String key) {
-		return map.containsKey(key);
+		return this.map.containsKey(key);
 	}
 }

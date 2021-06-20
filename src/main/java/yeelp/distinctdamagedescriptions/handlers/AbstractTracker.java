@@ -23,10 +23,10 @@ public abstract class AbstractTracker extends Handler {
 		EntityLivingBase entity = evt.getEntityLiving();
 		UUID id = entity.getUniqueID();
 		if(isTracking(id) && shouldStopTracking(entity)) {
-			tracking.remove(id);
+			this.tracking.remove(id);
 		}
 		else if(shouldStartTracking(entity)) {
-			tracking.add(id);
+			this.tracking.add(id);
 		}
 	}
 
@@ -35,7 +35,7 @@ public abstract class AbstractTracker extends Handler {
 	public abstract boolean shouldStopTracking(EntityLivingBase entity);
 
 	public boolean isTracking(UUID id) {
-		return tracking.contains(id);
+		return this.tracking.contains(id);
 	}
 
 	public boolean isTracking(EntityLivingBase entity) {

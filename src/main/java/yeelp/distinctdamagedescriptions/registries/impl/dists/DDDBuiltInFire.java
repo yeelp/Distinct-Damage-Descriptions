@@ -27,10 +27,10 @@ public final class DDDBuiltInFire extends AbstractSingleTypeDist {
 
 	@Override
 	protected boolean useType(DamageSource source, EntityLivingBase target) {
-		if(daylight == null) {
-			daylight = (DDDDaylightDist) DDDRegistries.distributions.get("daylight");
+		if(this.daylight == null) {
+			this.daylight = (DDDDaylightDist) DDDRegistries.distributions.get("daylight");
 		}
-		if(daylight.enabled() && !daylight.useType(source, target)) {
+		if(this.daylight.enabled() && !this.daylight.useType(source, target)) {
 			return false;
 		}
 		return validSources.contains(source);

@@ -30,31 +30,31 @@ public final class SoundMessage implements IMessage {
 	}
 
 	public byte getSoundID() {
-		return id;
+		return this.id;
 	}
 
 	public float getVolume() {
-		return volume;
+		return this.volume;
 	}
 
 	public float getPitch() {
-		return pitch;
+		return this.pitch;
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		id = pakBuf.readByte();
-		volume = pakBuf.readFloat();
-		pitch = pakBuf.readFloat();
+		this.id = pakBuf.readByte();
+		this.volume = pakBuf.readFloat();
+		this.pitch = pakBuf.readFloat();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		pakBuf.writeByte(id);
-		pakBuf.writeFloat(volume);
-		pakBuf.writeFloat(pitch);
+		pakBuf.writeByte(this.id);
+		pakBuf.writeFloat(this.volume);
+		pakBuf.writeFloat(this.pitch);
 	}
 
 	public static final class Handler implements IMessageHandler<SoundMessage, IMessage> {
@@ -66,7 +66,7 @@ public final class SoundMessage implements IMessage {
 		}
 
 		@SideOnly(Side.CLIENT)
-		public void handle(SoundMessage msg, MessageContext ctx) {
+		public static void handle(SoundMessage msg, MessageContext ctx) {
 			EntityPlayer player = NetworkHelper.getSidedPlayer(ctx);
 			if(player != null) {
 				SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(DDDSounds.decodeSoundID(msg.getSoundID())));

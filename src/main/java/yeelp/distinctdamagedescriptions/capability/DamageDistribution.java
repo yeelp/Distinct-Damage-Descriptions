@@ -21,13 +21,13 @@ import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution {
-	@Override
-	protected boolean invariantViolated(Collection<Float> weights) {
+
+	protected static boolean invariantViolated(Collection<Float> weights) {
 		float sum = 0.0f;
 		for(float f : weights) {
 			sum += f;
 		}
-		return !(Math.abs(sum - 1) <= 0.01) || super.invariantViolated(weights);
+		return !(Math.abs(sum - 1) <= 0.01) || Distribution.invariantViolated(weights);
 	}
 
 	public DamageDistribution() {
@@ -61,28 +61,23 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@Override
 	public DamageMap distributeDamage(float dmg) {
-		if(ModConfig.dmg.useCustomDamageTypes || distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0) {
+		if(ModConfig.dmg.useCustomDamageTypes || this.distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0) {
 			return super.distribute(new DamageMap(), (f) -> f * dmg);
 		}
-		else {
-			Stream<Entry<DDDDamageType, Float>> stream = distMap.entrySet().stream();
-			long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
-			if(regularTypes == 0) {
-				return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
-			}
-			else {
-				DamageMap map = new DamageMap();
-				float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
-				float weightToAdd = lostWeight / regularTypes;
-				int count = 0;
-				for(Entry<DDDDamageType, Float> entry : distMap.entrySet()) {
-					if(!entry.getKey().isCustomDamage()) {
-						map.put(entry.getKey(), (entry.getValue() + weightToAdd) * dmg);
-					}
-				}
-				return map;
+		Stream<Entry<DDDDamageType, Float>> stream = this.distMap.entrySet().stream();
+		long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
+		if(regularTypes == 0) {
+			return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
+		}
+		DamageMap map = new DamageMap();
+		float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
+		float weightToAdd = lostWeight / regularTypes;
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
+			if(!entry.getKey().isCustomDamage()) {
+				map.put(entry.getKey(), (entry.getValue() + weightToAdd) * dmg);
 			}
 		}
+		return map;
 	}
 
 	public static void register() {
@@ -90,6 +85,9 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	private static class DamageDistributionFactory implements Callable<IDamageDistribution> {
+		public DamageDistributionFactory() {
+		}
+
 		@Override
 		public IDamageDistribution call() throws Exception {
 			return new DamageDistribution();
@@ -97,6 +95,9 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	private static class DamageDistributionStorage implements IStorage<IDamageDistribution> {
+
+		public DamageDistributionStorage() {
+		}
 
 		@Override
 		public NBTBase writeNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side) {

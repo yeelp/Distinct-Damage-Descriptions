@@ -36,17 +36,17 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 	@Override
 	public Set<DDDDamageType> getDamageTypes(DamageSource src, EntityLivingBase target) {
 		Set<DDDDamageType> types = Collections.emptySet();
-		return checkDists(types, (set) -> set.isEmpty(), (dist) -> dist.getTypes(src, target), src, target);
+		return checkDists(types, (set) -> set.isEmpty(), (dist) -> dist.getTypes(src, target));
 	}
 
 	@Override
 	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return checkDists(DDDBuiltInDamageType.NORMAL.getBaseDistribution(), (dist) -> dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1, (dist) -> dist.getDamageDistribution(src, target), src, target);
+		return checkDists(DDDBuiltInDamageType.NORMAL.getBaseDistribution(), (dist) -> dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1, (dist) -> dist.getDamageDistribution(src, target));
 	}
 
-	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next, DamageSource src, EntityLivingBase entity) {
+	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
 		T result;
-		Iterator<DDDPredefinedDistribution> it = map.values().iterator();
+		Iterator<DDDPredefinedDistribution> it = this.map.values().iterator();
 		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()));
 		return result;
 	}

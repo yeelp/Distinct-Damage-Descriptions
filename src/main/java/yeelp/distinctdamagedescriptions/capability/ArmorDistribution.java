@@ -50,6 +50,9 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	}
 
 	private static class ArmorResistancesFactory implements Callable<IArmorDistribution> {
+		public ArmorResistancesFactory() {
+		}
+
 		@Override
 		public IArmorDistribution call() throws Exception {
 			return new ArmorDistribution();
@@ -57,6 +60,9 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	}
 
 	private static class ArmorResistancesStorage implements IStorage<IArmorDistribution> {
+		public ArmorResistancesStorage() {
+		}
+
 		@Override
 		public NBTBase writeNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side) {
 			return instance.serializeNBT();

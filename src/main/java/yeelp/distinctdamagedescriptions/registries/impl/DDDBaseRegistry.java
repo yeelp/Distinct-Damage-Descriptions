@@ -23,12 +23,10 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 		if(this.isRegistered(obj)) {
 			throw new RuntimeException(obj.toString() + "was already registered!");
 		}
-		else {
-			String key = keyFunc.apply(obj);
-			this.map.put(key, obj);
-			if(!suppressOutput) {
-				DistinctDamageDescriptions.info(String.format("Registering %s: %s", name, key));
-			}
+		String key = this.keyFunc.apply(obj);
+		this.map.put(key, obj);
+		if(!suppressOutput) {
+			DistinctDamageDescriptions.info(String.format("Registering %s: %s", this.name, key));
 		}
 	}
 
@@ -41,11 +39,11 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 
 	@Override
 	public T get(String key) {
-		return map.get(key);
+		return this.map.get(key);
 	}
 
 	@Override
 	public boolean isRegistered(T obj) {
-		return this.map.containsKey(keyFunc.apply(obj));
+		return this.map.containsKey(this.keyFunc.apply(obj));
 	}
 }

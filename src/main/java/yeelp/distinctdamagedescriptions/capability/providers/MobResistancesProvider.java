@@ -9,6 +9,7 @@ public class MobResistancesProvider {
 	@CapabilityInject(IMobResistances.class)
 	public static Capability<IMobResistances> mobResist = null;
 
+	@SuppressWarnings("unused")
 	private IMobResistances instance = mobResist.getDefaultInstance();
 
 	public static IMobResistances getMobResistances(EntityLivingBase entity) {

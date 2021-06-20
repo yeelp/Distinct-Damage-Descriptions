@@ -38,6 +38,7 @@ public class DistinctDamageDescriptions {
 	public static DistinctDamageDescriptions instance;
 	public static File srcFile;
 
+	@SuppressWarnings("static-method")
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
@@ -50,8 +51,9 @@ public class DistinctDamageDescriptions {
 		DebugLib.updateStatus();
 	}
 
+	@SuppressWarnings("static-method")
 	@EventHandler
-	public void init(FMLInitializationEvent event) {
+	public void init(@SuppressWarnings("unused") FMLInitializationEvent event) {
 		new DamageHandler().register();
 		new TooltipHandler().register();
 		new CapabilityHandler().register();

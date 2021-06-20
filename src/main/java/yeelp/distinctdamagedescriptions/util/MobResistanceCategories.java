@@ -37,7 +37,7 @@ public class MobResistanceCategories extends ResistanceCategories {
 	 * @return adaptability chance
 	 */
 	public float adaptiveChance() {
-		return adaptive;
+		return this.adaptive;
 	}
 
 	/**
@@ -46,6 +46,6 @@ public class MobResistanceCategories extends ResistanceCategories {
 	 * @return the amount resistances change on adaptability.
 	 */
 	public float getAdaptiveAmount() {
-		return adaptiveAmount;
+		return this.adaptiveAmount;
 	}
 }

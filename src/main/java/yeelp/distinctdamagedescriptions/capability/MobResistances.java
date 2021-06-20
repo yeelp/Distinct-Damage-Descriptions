@@ -72,27 +72,23 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		boolean changed = false;
 		for(DDDDamageType type : damageTypes) {
 			if(ModConfig.resist.adaptToCustom || !type.isCustomDamage()) {
-				if(adaptiveTo.contains(type)) {
+				if(this.adaptiveTo.contains(type)) {
 					continue;
 				}
-				else {
-					changed = true;
-					this.adaptiveTo.add(type);
-					this.setResistance(type, this.getResistance(type) + adaptiveAmount);
-				}
+				changed = true;
+				this.adaptiveTo.add(type);
+				this.setResistance(type, this.getResistance(type) + this.adaptiveAmount);
 			}
 		}
 		Set<DDDDamageType> temp = new HashSet<DDDDamageType>(Arrays.asList(damageTypes));
-		Set<DDDDamageType> iter = new HashSet<DDDDamageType>(adaptiveTo);
+		Set<DDDDamageType> iter = new HashSet<DDDDamageType>(this.adaptiveTo);
 		for(DDDDamageType type : iter) {
 			if(temp.contains(type)) {
 				continue;
 			}
-			else {
-				changed = true;
-				adaptiveTo.remove(type);
-				this.setResistance(type, this.getResistance(type) - adaptiveAmount);
-			}
+			changed = true;
+			this.adaptiveTo.remove(type);
+			this.setResistance(type, this.getResistance(type) - this.adaptiveAmount);
 		}
 		return changed;
 	}
@@ -101,9 +97,9 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound tag = super.serializeNBT();
 		NBTTagList adaptabilityStatus = new NBTTagList();
-		tag.setBoolean("adaptive", adaptive);
-		tag.setFloat("adaptiveAmount", adaptiveAmount);
-		for(DDDDamageType type : adaptiveTo) {
+		tag.setBoolean("adaptive", this.adaptive);
+		tag.setFloat("adaptiveAmount", this.adaptiveAmount);
+		for(DDDDamageType type : this.adaptiveTo) {
 			adaptabilityStatus.appendTag(new NBTTagString(type.getTypeName()));
 		}
 		tag.setTag("adaptabilityStatus", adaptabilityStatus);
@@ -113,11 +109,11 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	@Override
 	public void deserializeNBT(NBTTagCompound tag) {
 		super.deserializeNBT(tag);
-		adaptive = tag.getBoolean("adaptive");
-		adaptiveAmount = tag.getFloat("adaptiveAmount");
-		adaptiveTo = new HashSet<DDDDamageType>();
+		this.adaptive = tag.getBoolean("adaptive");
+		this.adaptiveAmount = tag.getFloat("adaptiveAmount");
+		this.adaptiveTo = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("adaptabilityStatus", new NBTTagString().getId())) {
-			adaptiveTo.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
+			this.adaptiveTo.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}
 	}
 
@@ -126,6 +122,9 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	private static class MobResistancesFactory implements Callable<IMobResistances> {
+		public MobResistancesFactory() {
+		}
+
 		@Override
 		public IMobResistances call() throws Exception {
 			return new MobResistances();
@@ -133,6 +132,9 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	private static class MobResistancesStorage implements IStorage<IMobResistances> {
+		public MobResistancesStorage() {
+		}
+
 		@Override
 		public NBTBase writeNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side) {
 			return instance.serializeNBT();

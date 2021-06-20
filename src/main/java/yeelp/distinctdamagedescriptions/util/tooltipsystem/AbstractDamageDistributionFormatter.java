@@ -38,7 +38,7 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 			return Optional.empty();
 		}
 		List<String> lst = new LinkedList<String>();
-		final Iterator<Float> vals = getVals(stack, cap);
+		final Iterator<Float> vals = this.getVals(stack, cap);
 		cap.getCategories().stream().sorted().forEach((d) -> lst.add(makeOneDamageString(vals.next(), d)));
 		return Optional.of(lst);
 	}
@@ -59,6 +59,7 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	 * @param cap the capability instance
 	 * @return an Iterator iterating over the weights or the distributed damage values.
 	 */
+	@SuppressWarnings("static-method")
 	protected Iterator<Float> getVals(ItemStack stack, IDamageDistribution cap) {
 		return cap.distributeDamage(1).values().iterator();
 	}

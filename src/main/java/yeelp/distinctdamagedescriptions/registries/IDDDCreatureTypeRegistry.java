@@ -30,9 +30,7 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 		if(oLoc.isPresent()) {
 			return getCreatureTypeForMob(oLoc.get());
 		}
-		else {
-			return Sets.newHashSet(CreatureTypeData.UNKNOWN);
-		}
+		return Sets.newHashSet(CreatureTypeData.UNKNOWN);
 
 	}
 

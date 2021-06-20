@@ -43,6 +43,16 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 				this.indirect.put(s, type);
 			}
 		}
+
+		Map<String, DDDDamageType> getDirect() {
+			return this.direct;
+		}
+
+		Map<String, DDDDamageType> getIndirect() {
+			return this.indirect;
+		}
+		
+		
 	}
 
 	public DDDCustomDistributions() {
@@ -58,14 +68,14 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 	@Override
 	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
-		set.add(includeAllMap.get(src.getDamageType()));
-		if(srcMap.containsKey(src.getDamageType())) {
+		set.add(this.includeAllMap.get(src.getDamageType()));
+		if(this.srcMap.containsKey(src.getDamageType())) {
 			Optional<String> direct = YResources.getEntityIDString(src.getImmediateSource());
 			Optional<String> indirect = YResources.getEntityIDString(src.getTrueSource());
 			DistinctDamageDescriptions.debug(direct.orElse("") + ", " + indirect.orElse(""));
-			SourceMap sMap = srcMap.get(src.getDamageType());
-			DDDDamageType directType = sMap.direct.get(direct.orElse(""));
-			DDDDamageType indirectType = sMap.indirect.get(indirect.orElse(""));
+			SourceMap sMap = this.srcMap.get(src.getDamageType());
+			DDDDamageType directType = sMap.getDirect().get(direct.orElse(""));
+			DDDDamageType indirectType = sMap.getIndirect().get(indirect.orElse(""));
 			DistinctDamageDescriptions.debug(directType.getTypeName() + ", " + indirectType.getTypeName());
 			boolean altered = false;
 			altered = set.add(directType) || set.add(indirectType);
@@ -88,14 +98,12 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 		if(types.size() == 1) {
 			return types.iterator().next().getBaseDistribution();
 		}
-		else {
-			Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
-			float weight = 1.0f / types.size();
-			for(DDDDamageType type : types) {
-				map.put(type, weight);
-			}
-			return new DamageDistribution(map);
+		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+		float weight = 1.0f / types.size();
+		for(DDDDamageType type : types) {
+			map.put(type, weight);
 		}
+		return new DamageDistribution(map);
 	}
 
 	public void registerDamageTypeData(DDDDamageType type, DamageTypeData[] datas) {

@@ -16,22 +16,22 @@ public class DDDProjectileConfiguration extends DDDBaseConfiguration<IDamageDist
 
 	@Override
 	public IDamageDistribution getFromItemID(String itemID) {
-		return this.get(itemProjMap.get(itemID));
+		return this.get(this.itemProjMap.get(itemID));
 	}
 
 	@Override
 	public boolean isProjectilePairRegistered(Entity projectile) {
 		Optional<String> oLoc = YResources.getEntityIDString(projectile);
-		return oLoc.isPresent() ? itemProjMap.containsValue(oLoc.get()) : false;
+		return oLoc.isPresent() ? this.itemProjMap.containsValue(oLoc.get()) : false;
 	}
 
 	@Override
 	public boolean isProjectilePairRegistered(String itemID) {
-		return itemProjMap.containsKey(itemID);
+		return this.itemProjMap.containsKey(itemID);
 	}
 
 	@Override
 	public void registerItemProjectilePair(String itemID, String projID) {
-		itemProjMap.put(itemID, projID);
+		this.itemProjMap.put(itemID, projID);
 	}
 }

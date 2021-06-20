@@ -61,7 +61,7 @@ public final class DDDDamageSource extends DamageSource {
 	 */
 	@Override
 	public boolean isProjectile() {
-		return parentSource.isProjectile();
+		return this.parentSource.isProjectile();
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class DDDDamageSource extends DamageSource {
 
 	@Override
 	public boolean isExplosion() {
-		return parentSource.isExplosion();
+		return this.parentSource.isExplosion();
 	}
 
 	@Override

@@ -48,6 +48,7 @@ public class CapabilityHandler extends Handler {
 	private static final ResourceLocation projDmg = new ResourceLocation(ModConsts.MODID, "projectileDmgDistribution");
 	private static final ResourceLocation creatureType = new ResourceLocation(ModConsts.MODID, "creatureTypes");
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> evt) {
 		Entity entity = evt.getObject();
@@ -107,6 +108,7 @@ public class CapabilityHandler extends Handler {
 		}
 	}
 
+	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void attachItemCapabilities(AttachCapabilitiesEvent<ItemStack> evt) {
 		Item item = evt.getObject().getItem();
@@ -166,7 +168,7 @@ public class CapabilityHandler extends Handler {
 	}
 
 	@Nonnull
-	private <T> Optional<T> getConfigValue(String key, IDDDConfiguration<T> config) {
+	private static <T> Optional<T> getConfigValue(String key, IDDDConfiguration<T> config) {
 		if(config.configured(key)) {
 			return Optional.of(config.get(key));
 		}

@@ -11,8 +11,18 @@ public final class DDDFontColour {
 	 *
 	 */
 	public static enum Marker {
-		START('\u222b'),
-		END('\u222e'),
+		START('\u222b') {
+			@Override
+			public String replaceWith() {
+				return "";
+			}
+		},
+		END('\u222e') {
+			@Override
+			public String replaceWith() {
+				return "";
+			}
+		},
 		SPACE('\u222c') {
 			@Override
 			public String replaceWith() {
@@ -55,9 +65,7 @@ public final class DDDFontColour {
 		 * 
 		 * @return The String to replace all marker occurrences with.
 		 */
-		public String replaceWith() {
-			return "";
-		}
+		public abstract String replaceWith();
 	}
 
 	private DDDFontColour() {
@@ -67,7 +75,7 @@ public final class DDDFontColour {
 		int r = ((colour >> 16) & 255);
 		int g = ((colour >> 8) & 255);
 		int b = ((colour >> 0) & 255);
-		return String.format("%c%c%c%c", Marker.START.c, encode(r), encode(g), encode(b));
+		return String.format("%c%c%c%c", Marker.START.getC(), encode(r), encode(g), encode(b));
 	}
 
 	private static char encode(int i) {

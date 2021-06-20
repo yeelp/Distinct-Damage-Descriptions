@@ -127,9 +127,7 @@ public enum TooltipMaker {
 			HwylaTooltipFormatter.getInstance().formatCapabilityFor(null, cats.get()).ifPresent(tip::addAll);
 			return tip;
 		}
-		else {
-			return ImmutableList.of();
-		}
+		return ImmutableList.of();
 	}
 	
 	/**

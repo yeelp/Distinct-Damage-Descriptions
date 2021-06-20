@@ -14,8 +14,11 @@ import javax.annotation.Nullable;
  * @param <Value> the type of values stored in the map
  */
 public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<Key, Value> {
+
+	private static final long serialVersionUID = -7597325545229879253L;
 	private Value defaultVal;
 
+	@SuppressWarnings("unused")
 	private NonNullMap() {
 		throw new UnsupportedOperationException("A default value must be specifed for the NonNullMap");
 	}
@@ -59,7 +62,7 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 
 	@Override
 	public boolean containsValue(Object value) {
-		return value.equals(defaultVal) || super.containsValue(value);
+		return value.equals(this.defaultVal) || super.containsValue(value);
 	}
 
 	/**
@@ -72,7 +75,7 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 */
 	@Override
 	public Value get(Object key) {
-		return super.getOrDefault(key, defaultVal);
+		return super.getOrDefault(key, this.defaultVal);
 	}
 
 	/**
@@ -105,6 +108,6 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 */
 	@Nullable
 	public Value setDefault(Key key) {
-		return super.put(key, defaultVal);
+		return super.put(key, this.defaultVal);
 	}
 }

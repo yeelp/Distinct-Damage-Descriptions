@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.network;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -37,7 +36,7 @@ public class MobResistancesMessage extends AbstractCapabilityMessage<NBTTagCompo
 
 	@Override
 	public IMessageHandler<AbstractCapabilityMessage<NBTTagCompound>, IMessage> getMessageHandler() {
-		return new CapabilityMessageHandler<NBTTagCompound>((msg, plyer) -> DDDAPI.accessor.getMobResistances((EntityLivingBase) plyer).deserializeNBT(((AbstractCapabilityMessage<NBTTagCompound>) msg).serializeNBT()));
+		return new CapabilityMessageHandler<NBTTagCompound>((msg, plyer) -> DDDAPI.accessor.getMobResistances(plyer).deserializeNBT(msg.serializeNBT()));
 	}
 
 }

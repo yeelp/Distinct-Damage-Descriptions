@@ -9,6 +9,7 @@ public class CreatureTypeProvider {
 	@CapabilityInject(ICreatureType.class)
 	public static Capability<ICreatureType> creatureType = null;
 
+	@SuppressWarnings("unused")
 	private ICreatureType instance = creatureType.getDefaultInstance();
 
 	public static ICreatureType getCreatureType(EntityLivingBase entity) {

@@ -21,18 +21,18 @@ public final class DamageTypeData {
 	}
 
 	public String getOriginalSource() {
-		return originalSource;
+		return this.originalSource;
 	}
 
 	public Set<String> getDirectSources() {
-		return directSources;
+		return this.directSources;
 	}
 
 	public Set<String> getIndirectSources() {
-		return indirectSources;
+		return this.indirectSources;
 	}
 
 	public boolean includeAll() {
-		return includeAll;
+		return this.includeAll;
 	}
 }

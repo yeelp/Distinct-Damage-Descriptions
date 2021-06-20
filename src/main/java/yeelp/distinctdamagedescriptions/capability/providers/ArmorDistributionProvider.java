@@ -11,6 +11,7 @@ public class ArmorDistributionProvider {
 	@CapabilityInject(IArmorDistribution.class)
 	public static Capability<IArmorDistribution> armorResist = null;
 
+	@SuppressWarnings("unused")
 	private IArmorDistribution instance = armorResist.getDefaultInstance();
 
 	@Nullable

@@ -70,25 +70,22 @@ public final class DDDJsonIO {
 			File dest = new File(parentDirectory, filename);
 			try {
 				boolean shouldOverwrite = shouldOverwriteExampleJSON(dest);
+				boolean result = false;
 				if(DistinctDamageDescriptions.srcFile != null && DistinctDamageDescriptions.srcFile.isDirectory()) {
 					File source = new File(DistinctDamageDescriptions.srcFile, relativePath);
 					return FileHelper.copyFile(source, dest, shouldOverwrite);
 				}
-				else {
-					InputStream stream = DDDJsonIO.class.getClassLoader().getResourceAsStream(relativePath);
-					boolean result = FileHelper.copyFile(stream, dest, shouldOverwrite);
-					stream.close();
-					return result;
+				try (InputStream stream = DDDJsonIO.class.getClassLoader().getResourceAsStream(relativePath)) {
+					result = FileHelper.copyFile(stream, dest, shouldOverwrite);
 				}
+				return result;
 			}
 			catch(IOException e) {
 				e.printStackTrace();
 				return false;
 			}
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	private static boolean shouldOverwriteExampleJSON(File json) {
@@ -122,8 +119,7 @@ public final class DDDJsonIO {
 				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json")) {
 					continue;
 				}
-				try {
-					JsonReader reader = new JsonReader(new FileReader(f));
+				try (JsonReader reader = new JsonReader(new FileReader(f))){
 					reader.setLenient(true);
 					JsonElement elem = parser.parse(reader);
 					JsonObject obj = elem.getAsJsonObject();
@@ -131,37 +127,38 @@ public final class DDDJsonIO {
 					if(type.equals("unknown")) {
 						throw new IllegalArgumentException("unknown is an invaild creature type!");
 					}
-					else {
-						boolean critImmunity = getJsonBoolean(obj, "critical_hit_immunity", f);
-						// We use a HashSet as that most likely guarantees a fast containment check.
-						HashSet<String> potionImmunities = new HashSet<String>();
-						for(JsonElement j : getJsonArray(obj, "potion_immunities", f)) {
-							if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString()) {
-								potionImmunities.add(j.getAsString());
-							}
-							else {
-								throw new SyntaxException("Invalid potion immunity in JSON " + f.getName());
-							}
+					boolean critImmunity = getJsonBoolean(obj, "critical_hit_immunity", f);
+					// We use a HashSet as that most likely guarantees a fast containment check.
+					HashSet<String> potionImmunities = new HashSet<String>();
+					for(JsonElement j : getJsonArray(obj, "potion_immunities", f)) {
+						if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString()) {
+							potionImmunities.add(j.getAsString());
 						}
-						CreatureTypeData creatureType = new CreatureTypeData(type, potionImmunities, critImmunity);
-						DDDRegistries.creatureTypes.register(creatureType);
-						// Update map with new info
-						for(JsonElement j : getJsonArray(obj, "mobs", f)) {
-							if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString()) {
-								DDDRegistries.creatureTypes.addTypeToEntity(j.getAsString(), creatureType);
-							}
-							else {
-								throw new SyntaxException("Invalid Entity ID for main type in JSON " + f.getName());
-							}
+						else {
+							throw new SyntaxException("Invalid potion immunity in JSON " + f.getName());
 						}
-						DistinctDamageDescriptions.debug("registered creature type: " + type);
 					}
+					CreatureTypeData creatureType = new CreatureTypeData(type, potionImmunities, critImmunity);
+					DDDRegistries.creatureTypes.register(creatureType);
+					// Update map with new info
+					for(JsonElement j : getJsonArray(obj, "mobs", f)) {
+						if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString()) {
+							DDDRegistries.creatureTypes.addTypeToEntity(j.getAsString(), creatureType);
+						}
+						else {
+							throw new SyntaxException("Invalid Entity ID for main type in JSON " + f.getName());
+						}
+					}
+					DistinctDamageDescriptions.debug("registered creature type: " + type);
 				}
 				catch(FileNotFoundException e) {
 					DistinctDamageDescriptions.err("Could not find JSON!");
 				}
-				catch(IllegalStateException | ClassCastException e1) {
+				catch(IllegalStateException | ClassCastException e) {
 					DistinctDamageDescriptions.err("Could not parse " + f.getName() + " as a CreatureType!");
+				}
+				catch(IOException e) {
+					DistinctDamageDescriptions.err("IO Exception occured!");
 				}
 			}
 			DistinctDamageDescriptions.info("Loaded Creature Types!");
@@ -178,64 +175,59 @@ public final class DDDJsonIO {
 				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json")) {
 					continue;
 				}
-				else {
-					JsonReader reader;
+				try (JsonReader reader = new JsonReader(new FileReader(f))){
+					reader.setLenient(true);
+					JsonElement elem = parser.parse(reader);
+					JsonObject obj = elem.getAsJsonObject();
+					String name = getJsonString(obj, "name", f);
+					String displayName;
 					try {
-						reader = new JsonReader(new FileReader(f));
-						reader.setLenient(true);
-						JsonElement elem = parser.parse(reader);
-						JsonObject obj = elem.getAsJsonObject();
-						String name = getJsonString(obj, "name", f);
-						String displayName;
+						displayName = getJsonString(obj, "displayName", f);
+					}
+					catch(Exception e) {
+						displayName = name;
+					}
+					int colour = Integer.parseInt(getJsonString(obj, "displayColour", f), 16);
+					JsonArray arr = getJsonArray(obj, "damageTypes", f);
+					JsonObject msgs = obj.get("deathMessages").getAsJsonObject();
+					String entityMsg = getJsonString(msgs, "deathHasAttacker", f);
+					String otherMsg = getJsonString(msgs, "deathHasNoAttacker", f);
+					DamageTypeData[] datas = new DamageTypeData[arr.size()];
+					int i = 0;
+					for(JsonElement j : arr) {
 						try {
-							displayName = getJsonString(obj, "displayName", f);
+							JsonObject dmgObj = j.getAsJsonObject();
+							String damageName = getJsonString(dmgObj, "dmgSource", f);
+							boolean includeAll = getJsonBoolean(dmgObj, "includeAll", f);
+							Set<String> indirectSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "indirectSources", f));
+							Set<String> directSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "directSources", f));
+							datas[i++] = new DamageTypeData(damageName, directSources, indirectSources, includeAll);
 						}
-						catch(Exception e) {
-							displayName = name;
+						catch(IllegalStateException e) {
+							DistinctDamageDescriptions.err("Invalid Json for damage type in file " + f.getName());
+							throw e;
 						}
-						int colour = Integer.parseInt(getJsonString(obj, "displayColour", f), 16);
-						JsonArray arr = getJsonArray(obj, "damageTypes", f);
-						JsonObject msgs = obj.get("deathMessages").getAsJsonObject();
-						String entityMsg = getJsonString(msgs, "deathHasAttacker", f);
-						String otherMsg = getJsonString(msgs, "deathHasNoAttacker", f);
-						DamageTypeData[] datas = new DamageTypeData[arr.size()];
-						int i = 0;
-						for(JsonElement j : arr) {
-							try {
-								JsonObject dmgObj = j.getAsJsonObject();
-								String damageName = getJsonString(dmgObj, "dmgSource", f);
-								boolean includeAll = getJsonBoolean(dmgObj, "includeAll", f);
-								Set<String> indirectSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "indirectSources", f));
-								Set<String> directSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "directSources", f));
-								datas[i++] = new DamageTypeData(damageName, directSources, indirectSources, includeAll);
-							}
-							catch(IllegalStateException e) {
-								DistinctDamageDescriptions.err("Invalid Json for damage type in file " + f.getName());
-								throw e;
-							}
-						}
-						DDDDamageType type = DDDRegistries.damageTypes.get(name);
-						if(type == null) {
-							type = new DDDCustomDamageType(name, displayName, false, entityMsg, otherMsg, colour);
-							DDDRegistries.damageTypes.register(type);
-						}
-						else {
-							DistinctDamageDescriptions.info(String.format("ddd_%s is already registered with display name %s; will use this instead...", name, type.getDisplayName()));
-						}
-						dists.registerDamageTypeData(type, datas);
 					}
-					catch(FileNotFoundException e) {
-						DistinctDamageDescriptions.err("Could not find JSON!");
+					DDDDamageType type = DDDRegistries.damageTypes.get(name);
+					if(type == null) {
+						type = new DDDCustomDamageType(name, displayName, false, entityMsg, otherMsg, colour);
+						DDDRegistries.damageTypes.register(type);
 					}
+					else {
+						DistinctDamageDescriptions.info(String.format("ddd_%s is already registered with display name %s; will use this instead...", name, type.getDisplayName()));
+					}
+					dists.registerDamageTypeData(type, datas);
+				}
+				catch(FileNotFoundException e) {
+					DistinctDamageDescriptions.err("Could not find JSON!");
+				}
+				catch(IOException e) {
+					DistinctDamageDescriptions.err("IO Exception occured!");
 				}
 			}
 			DistinctDamageDescriptions.info("Loaded Custom Damage Types!");
 		}
 		return dists;
-	}
-
-	private static float getJsonFloat(JsonObject obj, String memberName, File f) {
-		return getJsonElement(obj, memberName, f).getAsFloat();
 	}
 
 	private static String getJsonString(JsonObject obj, String memberName, File f) {
@@ -244,10 +236,6 @@ public final class DDDJsonIO {
 
 	private static boolean getJsonBoolean(JsonObject obj, String memberName, File f) {
 		return getJsonElement(obj, memberName, f).getAsBoolean();
-	}
-
-	private static int getJsonInt(JsonObject obj, String memberName, File f) {
-		return getJsonElement(obj, memberName, f).getAsInt();
 	}
 
 	private static JsonArray getJsonArray(JsonObject obj, String memberName, File f) {
@@ -260,9 +248,7 @@ public final class DDDJsonIO {
 		if(e == null) {
 			throw new SyntaxException(memberName + " not found in JSON file " + f.getName() + "! Verify it's present and spelled correctly.");
 		}
-		else {
-			return e;
-		}
+		return e;
 	}
 
 	private static Set<String> parsePrimitiveJsonArrayAsSet(JsonArray arr) {

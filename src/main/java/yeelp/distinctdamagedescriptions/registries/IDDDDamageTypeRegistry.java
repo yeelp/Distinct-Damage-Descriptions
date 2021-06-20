@@ -31,6 +31,7 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	 * @param defender defending EntityLivingBase
 	 * @return the ITextComponent death message
 	 */
+	@SuppressWarnings("null")
 	default ITextComponent getDeathMessageForType(DDDDamageType type, DDDDamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
 		boolean hasAttacker = attacker != null;
 		String msg = type.getDeathMessage(hasAttacker);

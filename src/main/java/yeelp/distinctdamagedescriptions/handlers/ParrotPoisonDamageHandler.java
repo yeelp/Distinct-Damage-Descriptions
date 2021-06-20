@@ -27,7 +27,7 @@ public final class ParrotPoisonDamageHandler extends Handler {
 				if(effect != null) {
 					int dur = effect.getDuration();
 					if(850 <= dur && dur <= 900) {
-						poisoned.add(entity.getUniqueID());
+						this.poisoned.add(entity.getUniqueID());
 					}
 				}
 			}
@@ -36,10 +36,10 @@ public final class ParrotPoisonDamageHandler extends Handler {
 
 	@SubscribeEvent
 	public void onParrotDeath(LivingDeathEvent evt) {
-		poisoned.remove(evt.getEntityLiving().getUniqueID());
+		this.poisoned.remove(evt.getEntityLiving().getUniqueID());
 	}
 
 	public boolean wasPoisonedByCookie(UUID id) {
-		return poisoned.contains(id);
+		return this.poisoned.contains(id);
 	}
 }

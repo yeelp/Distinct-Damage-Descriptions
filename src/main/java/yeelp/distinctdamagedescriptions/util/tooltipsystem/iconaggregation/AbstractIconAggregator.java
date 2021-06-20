@@ -34,7 +34,7 @@ public abstract class AbstractIconAggregator implements IconAggregator {
 			final int xVal = this.getStartX(x, tooltips);
 			Iterator<Integer> ys = Stream.iterate(this.getStartY(y, tooltips), (i) -> i + ICON_HEIGHT).iterator();
 			Predicate<DDDDamageType> p = DDDDamageType::isCustomDamage;
-			return this.getOrderedTypes(stack).filter(p.negate()).collect(LinkedList<Icon>::new, (l, d) -> l.add(new Icon(xVal, ys.next(), this.getUFromType(d))), List<Icon>::addAll);
+			return this.getOrderedTypes(stack).filter(p.negate()).collect(LinkedList<Icon>::new, (l, d) -> l.add(new Icon(xVal, ys.next(), getUFromType(d))), List<Icon>::addAll);
 		}
 		return ImmutableList.of();
 	}
@@ -67,7 +67,7 @@ public abstract class AbstractIconAggregator implements IconAggregator {
 	 */
 	protected abstract Stream<DDDDamageType> getOrderedTypes(ItemStack stack);
 
-	private int getUFromType(DDDDamageType type) {
+	private static int getUFromType(DDDDamageType type) {
 		return ICON_HEIGHT * Arrays.binarySearch(DDDBuiltInDamageType.BUILT_IN_TYPES, type);
 	}
 }

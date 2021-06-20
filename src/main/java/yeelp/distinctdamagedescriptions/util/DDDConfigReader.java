@@ -49,16 +49,14 @@ public final class DDDConfigReader {
 				DistinctDamageDescriptions.err("Config entry " + s + " shouldn't end in a semicolon! Please remove!");
 				continue;
 			}
-			else {
-				String[] arr = s.split(";");
-				try {
-					NonNullMap<DDDDamageType, Float> map = buildMap(0.0f, parseListOfTuples(arr[1]));
-					Set<DDDDamageType> immunities = parseImmunitiesFromArray(arr[2]);
-					DDDConfigurations.mobResists.put(arr[0], new MobResistanceCategories(map, immunities, Float.parseFloat(arr[3]), Float.parseFloat(arr[4])));
-				}
-				catch(NumberFormatException | ArrayIndexOutOfBoundsException e) {
-					DistinctDamageDescriptions.warn(s + " isn't a valid entry! Ignoring...");
-				}
+			String[] arr = s.split(";");
+			try {
+				NonNullMap<DDDDamageType, Float> map = buildMap(0.0f, parseListOfTuples(arr[1]));
+				Set<DDDDamageType> immunities = parseImmunitiesFromArray(arr[2]);
+				DDDConfigurations.mobResists.put(arr[0], new MobResistanceCategories(map, immunities, Float.parseFloat(arr[3]), Float.parseFloat(arr[4])));
+			}
+			catch(NumberFormatException | ArrayIndexOutOfBoundsException e) {
+				DistinctDamageDescriptions.warn(s + " isn't a valid entry! Ignoring...");
 			}
 		}
 	}
@@ -69,10 +67,8 @@ public final class DDDConfigReader {
 			if(arr == null || arr.length == 2) {
 				continue;
 			}
-			else {
-				for(String str : arr[2].split(",")) {
-					DDDConfigurations.projectiles.registerItemProjectilePair(str.trim(), arr[0]);
-				}
+			for(String str : arr[2].split(",")) {
+				DDDConfigurations.projectiles.registerItemProjectilePair(str.trim(), arr[0]);
 			}
 		}
 	}
@@ -125,13 +121,11 @@ public final class DDDConfigReader {
 		if(mappings == null) {
 			return new NonNullMap<K, V>(defaultVal);
 		}
-		else {
-			NonNullMap<K, V> map = new NonNullMap<K, V>(defaultVal);
-			for(Tuple<K, V> t : mappings) {
-				map.put(t.getFirst(), t.getSecond());
-			}
-			return map;
+		NonNullMap<K, V> map = new NonNullMap<K, V>(defaultVal);
+		for(Tuple<K, V> t : mappings) {
+			map.put(t.getFirst(), t.getSecond());
 		}
+		return map;
 	}
 
 	private static Set<DDDDamageType> parseImmunitiesFromArray(String s) {
@@ -139,13 +133,11 @@ public final class DDDConfigReader {
 		if(s.equals("") || s.equals("[]")) {
 			return set;
 		}
-		else {
-			String[] arr = s.substring(1, s.length() - 1).split(",");
-			for(String str : arr) {
-				set.add(parseDamageType(str.trim()));
-			}
-			return set;
+		String[] arr = s.substring(1, s.length() - 1).split(",");
+		for(String str : arr) {
+			set.add(parseDamageType(str.trim()));
 		}
+		return set;
 	}
 
 	private static DDDDamageType parseDamageType(String s) {

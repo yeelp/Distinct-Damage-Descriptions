@@ -63,7 +63,7 @@ public abstract class DamageDescriptionEvent extends Event {
 	 */
 	@Nullable
 	public Entity getAttacker() {
-		return attacker;
+		return this.attacker;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public abstract class DamageDescriptionEvent extends Event {
 	 */
 	@Nonnull
 	public EntityLivingBase getDefender() {
-		return defender;
+		return this.defender;
 	}
 
 	/**

@@ -43,8 +43,8 @@ public final class ParticleMessage implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		PacketBuffer pakBuf = new PacketBuffer(buf);
-		pakBuf.writeInt(infos.length);
-		for(ParticleInfo info : infos) {
+		pakBuf.writeInt(this.infos.length);
+		for(ParticleInfo info : this.infos) {
 			info.toBytes(pakBuf);
 		}
 	}
@@ -58,7 +58,7 @@ public final class ParticleMessage implements IMessage {
 		}
 
 		@SideOnly(Side.CLIENT)
-		public void handle(ParticleMessage msg, MessageContext ctx) {
+		public static void handle(ParticleMessage msg, MessageContext ctx) {
 			EntityPlayer receivingPlayer = NetworkHelper.getSidedPlayer(ctx);
 			if(receivingPlayer.world.isRemote) {
 				for(ParticleInfo info : msg.getInfos()) {

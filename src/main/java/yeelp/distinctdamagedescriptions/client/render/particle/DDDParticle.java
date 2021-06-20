@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -22,22 +21,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Mod.EventBusSubscriber(Side.CLIENT)
 @SideOnly(Side.CLIENT)
 public class DDDParticle extends Particle {
-	private static Random particleDisplacement = new Random();
-	private static TextureAtlasSprite sprite;
 	private DDDParticleType type;
 
 	public DDDParticle(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, DDDParticleType particleType) {
 		super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
 		this.type = particleType;
 
-		this.setParticleTexture(Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(type.getResourceLocation().toString()));
+		this.setParticleTexture(Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.type.getResourceLocation().toString()));
 	}
 
 	public DDDParticle(Entity origin, double dx, double dy, double dz, DDDParticleType type) {
 		this(origin.getEntityWorld(), origin.posX, origin.posY, origin.posZ, dx, dy, dz, type);
 	}
 
-	public DDDParticle(Entity origin, double dx, double dy, double dz, DDDParticleType type, Random displacementSeed) {
+	public DDDParticle(Entity origin, double dx, double dy, DDDParticleType type, Random displacementSeed) {
 		this(origin.getEntityWorld(), origin.posX + origin.width * displacementSeed.nextDouble() - origin.width / 2, origin.posY + origin.getEyeHeight() + origin.height * displacementSeed.nextDouble() - origin.height / 2, origin.posZ + origin.width * displacementSeed.nextDouble() - origin.width / 2, dx, dy, dx, type);
 	}
 
