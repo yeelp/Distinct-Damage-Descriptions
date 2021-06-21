@@ -6,20 +6,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ArmorDistributionIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.MobDamageDistributionIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.MobResistanceIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ProjectileDamageDistributionIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ShieldDistributionIconAggregator;
@@ -35,7 +32,13 @@ public enum TooltipMaker {
 	ITEM(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance()) {
 		@Override
 		protected boolean isApplicable(ItemStack stack, String registryString) {
-			return DDDConfigurations.items.configured(registryString) || ModConfig.client.alwaysShowDamageDistTooltip;
+			return DDDConfigurations.items.configured(registryString) || (!MOB_DAMAGE.isApplicable(stack, registryString) && ModConfig.client.alwaysShowDamageDistTooltip);
+		}
+	},
+	MOB_DAMAGE(MobDamageDistributionFormatter.getInstance(), MobDamageDistributionIconAggregator.getInstance()) {
+		@Override
+		protected boolean isApplicable(ItemStack stack, String registryString) {
+			return ModConfig.client.showMobDamage && stack.getItem() instanceof ItemMonsterPlacer;
 		}
 	},
 	PROJECTILE(ProjectileDistributionFormatter.getInstance(), ProjectileDamageDistributionIconAggregator.getInstance()) {
@@ -63,22 +66,20 @@ public enum TooltipMaker {
 			boolean underlyingMobIsConfigured = Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(stack)).map(ResourceLocation::toString).map(DDDConfigurations.mobResists::configured).orElse(false);
 			return isMonsterPlacer && underlyingMobIsConfigured;
 		}
-	},
-	HWYLA(HwylaTooltipFormatter.getInstance(), null) {
-		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
-			return false;
-		}
 	};
 	
 	static {
 		updateFormatters();
 	}
 
-	private TooltipFormatter formatter;
+	private TooltipFormatter<ItemStack> formatter;
 	private IconAggregator aggregator;
 	
-	private TooltipMaker(TooltipFormatter formatter, IconAggregator aggregator) {
+	private TooltipMaker() {
+		this(null, null);
+	}
+	
+	private TooltipMaker(TooltipFormatter<ItemStack> formatter, IconAggregator aggregator) {
 		this.formatter = formatter;
 		this.aggregator = aggregator;
 	}
@@ -109,28 +110,6 @@ public enum TooltipMaker {
 	}
 	
 	/**
-	 * Make a tooltip addition for HWYLA.
-	 * 
-	 *<p>
-	 * @implNote
-	 * Assuming a valid Entity is being looked at, this is done by calling {@code HwylaTooltipFormatter.getInstance().format(null)} first. This returns a List containing just the "header info"
-	 * (The "Hold &lt;CTRL&gt; for Mob Resistances" part of the tooltip, see {@link AbstractCapabilityTooltipFormatter#format(ItemStack)} for implementation).
-	 * Then, {@code HwylaTooltipFormatter.getInstance().formatCapabilityFor(null, cats)}, where {@code cats} is the {@link MobResistanceCategories} for this Entity, is called and the results are appended to
-	 * the former call and returned. If no valid Entity is being looked at (They have no mob resistances), an empty list is returned.
-	 * @param entity
-	 * @return a List with all the HWYLA info for this mob, if applicable, otherwise an empty list.
-	 */
-	public static List<String> makeHwylaTooltipStrings(Entity entity) {
-		Optional<MobResistanceCategories> cats = YResources.getEntityIDString(entity).map(DDDConfigurations.mobResists::get);
-		if(cats.isPresent()) {
-			List<String> tip = HWYLA.formatter.format(null);
-			HwylaTooltipFormatter.getInstance().formatCapabilityFor(null, cats.get()).ifPresent(tip::addAll);
-			return tip;
-		}
-		return ImmutableList.of();
-	}
-	
-	/**
 	 * Get a list of icons to draw for a tooltip
 	 * @param stack the ItemStack
 	 * @param x the x coord of the event
@@ -147,5 +126,5 @@ public enum TooltipMaker {
 		return Arrays.stream(TooltipMaker.values()).filter((m) -> m.isApplicable(stack, regKey)).sorted();
 	}
 	
-	protected abstract boolean isApplicable(ItemStack stack, String registryString);
+	protected abstract boolean isApplicable(ItemStack stack, String registryString);	
 }

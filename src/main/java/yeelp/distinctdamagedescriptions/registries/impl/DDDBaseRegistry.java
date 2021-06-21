@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,6 +41,11 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 	@Override
 	public T get(String key) {
 		return this.map.get(key);
+	}
+	
+	@Override
+	public Collection<T> getAll() {
+		return this.map.values();
 	}
 
 	@Override

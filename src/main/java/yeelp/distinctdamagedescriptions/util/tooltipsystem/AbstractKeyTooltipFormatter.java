@@ -5,9 +5,9 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 /**
  * An abstract content formatter whose content depends on a KeyTooltip
  * @author Yeelp
- *
+ * @param <T> The kind of objects formatted
  */
-public abstract class AbstractKeyTooltipFormatter extends AbstractTooltipFormatter {
+public abstract class AbstractKeyTooltipFormatter<T> extends AbstractTooltipFormatter<T> {
 
 	private KeyTooltip keyTooltip;
 	

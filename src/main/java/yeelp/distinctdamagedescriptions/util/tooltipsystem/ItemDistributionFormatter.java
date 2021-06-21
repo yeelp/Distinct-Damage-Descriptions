@@ -1,9 +1,9 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -15,7 +15,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
@@ -51,19 +50,27 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	}
 	
 	@Override
-	protected Iterator<Float> getVals(ItemStack stack, IDamageDistribution cap) {
+	protected float getDamageToDistribute(ItemStack stack) {
+		double dmg;
 		switch(this.getNumberFormatter()) {
 			case PLAIN:
-				double base = Minecraft.getMinecraft().player.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
-				double dmg = base;
+				EntityPlayerSP player = Minecraft.getMinecraft().player;
+				if(player == null) {
+					dmg = 1.0;
+					break;
+				}
+				dmg = Minecraft.getMinecraft().player.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
 				Collection<AttributeModifier> mods = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND).get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
 				dmg += mods.stream().filter((m) -> m.getOperation() == 0).mapToDouble((m) -> m.getAmount()).sum();
 				dmg *= mods.stream().filter((m) -> m.getOperation() == 1).mapToDouble((m) -> m.getAmount()).reduce(Double::sum).orElse(1);
 				dmg *= mods.stream().filter((m) -> m.getOperation() == 2).mapToDouble((m) -> m.getAmount()).reduce((d1, d2) -> d1 * d2).orElse(1);
-				return cap.distributeDamage((float) (dmg + EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED))).values().iterator();
+				dmg += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
+				break;
 			case PERCENT:
 			default:
-				return super.getVals(stack, cap);
+				dmg = 1.0;
+				break;
 		}
+		return (float) dmg;
 	}
 }

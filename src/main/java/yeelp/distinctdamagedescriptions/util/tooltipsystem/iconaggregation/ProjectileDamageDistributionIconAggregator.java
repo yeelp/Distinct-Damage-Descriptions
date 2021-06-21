@@ -20,7 +20,7 @@ public class ProjectileDamageDistributionIconAggregator extends DistributionIcon
 	
 	/**
 	 * Get the singleton instance
-	 * @return the singletone instance
+	 * @return the singleton instance
 	 */
 	public static ProjectileDamageDistributionIconAggregator getInstance() {
 		return instance == null ? instance = new ProjectileDamageDistributionIconAggregator() : instance;

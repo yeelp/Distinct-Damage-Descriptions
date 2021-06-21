@@ -2,14 +2,13 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-
 /**
  * A tooltip formatter. Can format an ItemStack, adding DDD specific tooltip information
  * @author Yeelp
+ * @param <T> The type of objects this TooltipFormatter formats with
  *
  */
-public interface TooltipFormatter {
+public interface TooltipFormatter<T> {
 	
 	/**
 	 * Does this TooltipFormatter support this DDDNumberFormatter?
@@ -41,9 +40,9 @@ public interface TooltipFormatter {
 	
 	/**
 	 * Format information for an ItemStack
-	 * @param stack stack to format for
+	 * @param t the object to format for
 	 * @return A List of Strings to add to this stack's tooltip
 	 */
-	List<String> format(ItemStack stack);
+	List<String> format(T t);
 	
 }

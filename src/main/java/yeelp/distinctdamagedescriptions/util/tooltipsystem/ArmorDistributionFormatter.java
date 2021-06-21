@@ -25,7 +25,7 @@ import yeelp.distinctdamagedescriptions.util.ArmorValues;
  * @author Yeelp
  *
  */
-public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatter<IArmorDistribution> {
+public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatter<IArmorDistribution, ItemStack> {
 
 	private static ArmorDistributionFormatter instance;
 	private final ITextComponent armorEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(new Style().setColor(TextFormatting.GRAY));

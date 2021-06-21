@@ -38,4 +38,9 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	protected boolean shouldShowDist(ItemStack stack) {
 		return true;
 	}
+
+	@Override
+	protected float getDamageToDistribute(ItemStack stack) {
+		return 1.0f;
+	}
 }

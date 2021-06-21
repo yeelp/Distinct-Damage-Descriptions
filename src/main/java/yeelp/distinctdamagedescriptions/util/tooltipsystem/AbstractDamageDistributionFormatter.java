@@ -19,7 +19,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
  * @author Yeelp
  *
  */
-public abstract class AbstractDamageDistributionFormatter extends AbstractCapabilityTooltipFormatter<IDamageDistribution> {
+public abstract class AbstractDamageDistributionFormatter extends AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> {
 
 	private final ITextComponent damageSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damage").setStyle(new Style().setColor(TextFormatting.GRAY));
 	
@@ -52,6 +52,8 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	 */
 	protected abstract boolean shouldShowDist(ItemStack stack);
 	
+	protected abstract float getDamageToDistribute(ItemStack stack);
+	
 	/**
 	 * Get number values for this capability, depending on the current {@link DDDNumberFormatter}, if applicable. The default implementation
 	 * returns {@code cap.distributeDamage(1).values().iterator()}, which effectively is an Iterator that iterates over the passed capability's weights.
@@ -59,9 +61,8 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	 * @param cap the capability instance
 	 * @return an Iterator iterating over the weights or the distributed damage values.
 	 */
-	@SuppressWarnings("static-method")
 	protected Iterator<Float> getVals(ItemStack stack, IDamageDistribution cap) {
-		return cap.distributeDamage(1).values().iterator();
+		return cap.distributeDamage(this.getDamageToDistribute(stack)).values().iterator();
 	}
 	
 	private String makeOneDamageString(float amount, DDDDamageType type) {

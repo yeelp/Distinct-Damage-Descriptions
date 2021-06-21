@@ -16,6 +16,7 @@ import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.HwylaTooltipMaker;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 
 @Config(modid = ModConsts.MODID)
@@ -434,6 +435,12 @@ public class ModConfig {
 				"If true, Distinct Damage Descriptions will use icons for built in damage types (slashing, piercing, bludgeoning).",
 				"These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
 		public boolean useIcons = false;
+		
+		@Name("Show Mob Damage On Spawn Items")
+		@Comment({"If true, Distinct Dasmage Descriptions will show mob damage in spawn egg tooltips when holding <SHIFT>.",
+			      "Regular item damage distribution information will not be shown so long as the spawn eggs are not configured to have a particular distribution.",
+			      "It is recommended to not set a distribution for spawn eggs if this is set to true, as this will make the tooltip cleaner."})
+		public boolean showMobDamage = false;
 
 		@Name("Use Numerical Values When Possible")
 		@Comment({
@@ -458,6 +465,7 @@ public class ModConfig {
 				DebugLib.updateStatus();
 				DDDExplosionDist.update();
 				TooltipMaker.updateFormatters();
+				HwylaTooltipMaker.updateFormatters();
 			}
 		}
 

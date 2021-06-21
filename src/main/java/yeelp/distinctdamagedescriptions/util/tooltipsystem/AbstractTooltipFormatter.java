@@ -5,8 +5,9 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
  * @author Yeelp
  * 
  * @see TooltipFormatter
+ * @param <T> The kind of objects formatted
  */
-public abstract class AbstractTooltipFormatter implements TooltipFormatter {
+public abstract class AbstractTooltipFormatter<T> implements TooltipFormatter<T> {
 
 	private DDDNumberFormatter numberFormatter;
 	private DDDDamageFormatter damageFormatter;

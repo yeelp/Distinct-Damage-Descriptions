@@ -10,10 +10,11 @@ import mcp.mobius.waila.api.IWailaEntityAccessor;
 import mcp.mobius.waila.api.IWailaEntityProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.HwylaTooltipMaker;
 
 public class EntityHandler implements IWailaEntityProvider {
 	public EntityHandler() {
@@ -47,6 +48,9 @@ public class EntityHandler implements IWailaEntityProvider {
 	@Nonnull
 	@Override
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
-		return TooltipMaker.makeHwylaTooltipStrings(entity);
+		if(entity instanceof EntityLivingBase) {
+			currenttip.addAll(HwylaTooltipMaker.makeHwylaTooltipStrings((EntityLivingBase) entity));
+		}
+		return currenttip;
 	}
 }

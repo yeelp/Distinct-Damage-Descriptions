@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import java.util.Collection;
+
 import javax.annotation.Nullable;
 
 import yeelp.distinctdamagedescriptions.ModConfig;
@@ -68,4 +70,10 @@ public interface IDDDRegistry<T> {
 	 */
 	@Nullable
 	T get(String key);
+	
+	/**
+	 * Get all registered values
+	 * @return all registered values
+	 */
+	Collection<T> getAll();
 }

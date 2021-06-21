@@ -18,7 +18,7 @@ import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
  * @author Yeelp
  *
  */
-public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormatter<ShieldDistribution> {
+public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormatter<ShieldDistribution, ItemStack> {
 	
 	private final ITextComponent shieldEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ShieldDistributionFormatter instance;

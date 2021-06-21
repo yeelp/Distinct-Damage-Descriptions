@@ -29,7 +29,7 @@ import yeelp.distinctdamagedescriptions.util.lib.YLib;
  * @author yeelp
  *
  */
-public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<MobResistanceCategories> {
+public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<MobResistanceCategories, ItemStack> {
 
 	private static MobResistancesFormatter instance;
 
