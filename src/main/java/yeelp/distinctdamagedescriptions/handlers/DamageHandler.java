@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
@@ -145,7 +144,7 @@ public class DamageHandler extends Handler {
 		MinecraftForge.EVENT_BUS.post(post);
 		totalDamage = (float) YMath.sum(post.getAllDamages().values());
 		DistinctDamageDescriptions.debug("new damage after deductions: " + totalDamage);
-		boolean resistancesUpdated = DDDAPI.mutator.updateAdaptiveResistances(defender, dmgMap.keySet().toArray(new DDDDamageType[0]));
+		boolean resistancesUpdated = DDDAPI.mutator.updateAdaptiveResistances(defender, dmgMap);
 		// Only spawn particles and play sounds for players.
 		if(dmgSource.getTrueSource() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) dmgSource.getTrueSource();

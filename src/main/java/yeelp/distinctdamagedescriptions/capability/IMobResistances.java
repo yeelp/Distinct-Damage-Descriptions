@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 
 /**
  * A wrapped DamageResistance with additional information about mob adaptive
@@ -41,8 +41,8 @@ public interface IMobResistances extends IDamageResistances {
 	/**
 	 * Update adaptive resistance. Doesn't check if this mob is adaptive.
 	 * 
-	 * @param damageTypes new types this mob should be more resistant to.
+	 * @param dmgMap The distribution of damage this mob took
 	 * @return true if there was a net change in any resistances
 	 */
-	boolean updateAdaptiveResistance(DDDDamageType... damageTypes);
+	boolean updateAdaptiveResistance(DamageMap dmgMap);
 }

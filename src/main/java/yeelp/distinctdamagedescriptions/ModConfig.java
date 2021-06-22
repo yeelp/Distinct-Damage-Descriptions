@@ -419,6 +419,14 @@ public class ModConfig {
 				"These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usuable in CraftTweaker."})
 		@RequiresMcRestart
 		public boolean useCreatureTypes = false;
+
+		@Name("Enable Adaptive Weakness")
+		@Comment({"Enable Adaptive Weakness",
+			      "Adaptive Weakness kicks in when a mob that is adaptive is hit by type(s) they are weak to.",
+			      "Their adaptive amount is set to a percentage of the base amount, that percentage being equal to exp(avg), where: ",
+			      "   exp being the exponential function",
+			      "   avg is the average of all of the mobs weakness values that were hit (which is negative)"})
+		public boolean enableAdaptiveWeakness = false;
 	}
 
 	public static class ClientCategory {

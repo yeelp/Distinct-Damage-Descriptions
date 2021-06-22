@@ -38,21 +38,26 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator {
 	INSTANCE;
 
-	private static final EntityEquipmentSlot[] armorSlots = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
+	private static final EntityEquipmentSlot[] armorSlots = {
+			EntityEquipmentSlot.CHEST,
+			EntityEquipmentSlot.FEET,
+			EntityEquipmentSlot.HEAD,
+			EntityEquipmentSlot.LEGS};
 
 	private DistinctDamageDescriptionsAPIImpl() {
 		DDDAPI.accessor = this;
 		DDDAPI.mutator = this;
 	}
 
-	/*
-	 * *********** ACCESSOR *
+	/************
+	 * ACCESSOR *
 	 ************/
 
 	@Override
@@ -203,10 +208,10 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	}
 
 	@Override
-	public boolean updateAdaptiveResistances(EntityLivingBase entity, DDDDamageType... types) {
+	public boolean updateAdaptiveResistances(EntityLivingBase entity, DamageMap dmgMap) {
 		IMobResistances resists = getMobResistances(entity);
 		if(resists.hasAdaptiveResistance()) {
-			boolean sync = resists.updateAdaptiveResistance(types);
+			boolean sync = resists.updateAdaptiveResistance(dmgMap);
 			if(entity instanceof EntityPlayer) {
 				CapabilityHandler.syncResistances((EntityPlayer) entity);
 			}

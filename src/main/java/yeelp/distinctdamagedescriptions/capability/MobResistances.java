@@ -1,11 +1,12 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,11 +20,13 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public class MobResistances extends DamageResistances implements IMobResistances {
 	private boolean adaptive;
-	private float adaptiveAmount;
+	private float adaptiveAmount, adaptiveAmountModified;
 	private Set<DDDDamageType> adaptiveTo;
 
 	public MobResistances() {
@@ -34,6 +37,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		super(resistances, immunities);
 		this.adaptive = adaptitability;
 		this.adaptiveAmount = adaptiveAmount;
+		this.adaptiveAmountModified = adaptiveAmount;
 		this.adaptiveTo = new HashSet<DDDDamageType>();
 	}
 
@@ -68,29 +72,23 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	@Override
-	public boolean updateAdaptiveResistance(DDDDamageType... damageTypes) {
-		boolean changed = false;
-		for(DDDDamageType type : damageTypes) {
-			if(ModConfig.resist.adaptToCustom || !type.isCustomDamage()) {
-				if(this.adaptiveTo.contains(type)) {
-					continue;
-				}
-				changed = true;
-				this.adaptiveTo.add(type);
-				this.setResistance(type, this.getResistance(type) + this.adaptiveAmount);
-			}
+	public float getResistance(DDDDamageType type) {
+		return super.getResistance(type) + (this.adaptiveTo.contains(type) ? this.adaptiveAmountModified : 0);
+	}
+
+	@Override
+	public boolean updateAdaptiveResistance(DamageMap dmgMap) {
+		if(ModConfig.resist.enableAdaptiveWeakness) {
+			float total = (float) YMath.sum(dmgMap.values());
+			Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue()/total));
+			float avgWeakness = (float) weightMap.entrySet().stream().filter((e) -> this.getResistance(e.getKey()) < 0).mapToDouble(Entry::getValue).average().orElse(0);
+			this.adaptiveAmountModified = (float) Math.exp(avgWeakness) * this.adaptiveAmount;
 		}
-		Set<DDDDamageType> temp = new HashSet<DDDDamageType>(Arrays.asList(damageTypes));
-		Set<DDDDamageType> iter = new HashSet<DDDDamageType>(this.adaptiveTo);
-		for(DDDDamageType type : iter) {
-			if(temp.contains(type)) {
-				continue;
-			}
-			changed = true;
-			this.adaptiveTo.remove(type);
-			this.setResistance(type, this.getResistance(type) - this.adaptiveAmount);
+		boolean sameKeys = this.adaptiveTo.stream().allMatch(dmgMap::containsKey) && dmgMap.keySet().stream().allMatch(this.adaptiveTo::contains);
+		if(!sameKeys) {
+			this.adaptiveTo = new HashSet<DDDDamageType>(dmgMap.keySet());
 		}
-		return changed;
+		return !sameKeys;
 	}
 
 	@Override
@@ -99,6 +97,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		NBTTagList adaptabilityStatus = new NBTTagList();
 		tag.setBoolean("adaptive", this.adaptive);
 		tag.setFloat("adaptiveAmount", this.adaptiveAmount);
+		tag.setFloat("adaptiveAmountModified", this.adaptiveAmountModified);
 		for(DDDDamageType type : this.adaptiveTo) {
 			adaptabilityStatus.appendTag(new NBTTagString(type.getTypeName()));
 		}
@@ -111,6 +110,10 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		super.deserializeNBT(tag);
 		this.adaptive = tag.getBoolean("adaptive");
 		this.adaptiveAmount = tag.getFloat("adaptiveAmount");
+		this.adaptiveAmountModified = tag.getFloat("adaptiveAmountModified");
+		if(this.adaptiveAmountModified == 0) {
+			this.adaptiveAmountModified = this.adaptiveAmount;
+		}
 		this.adaptiveTo = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("adaptabilityStatus", new NBTTagString().getId())) {
 			this.adaptiveTo.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
