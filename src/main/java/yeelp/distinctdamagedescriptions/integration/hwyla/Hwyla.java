@@ -1,16 +1,18 @@
 package yeelp.distinctdamagedescriptions.integration.hwyla;
 
-import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;
-import mcp.mobius.waila.api.WailaPlugin;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 
-@WailaPlugin
-public class Hwyla implements IWailaPlugin, IModIntegration {
+//@WailaPlugin
+public class Hwyla implements IModIntegration {
+	
+	public Hwyla() {
+
+	}
 	
 	@Override
 	public boolean register() {
@@ -24,10 +26,10 @@ public class Hwyla implements IWailaPlugin, IModIntegration {
 	 * @param registrar - An instance of IWailaRegistrar to register your providers
 	 *                  with.
 	 */
-	@Override
-	public void register(IWailaRegistrar registrar) {
-		registrar.registerBodyProvider(new EntityHandler(), Entity.class);
-	}
+//	@Override
+//	public void register(IWailaRegistrar registrar) {
+//		registrar.registerBodyProvider(new EntityHandler(), Entity.class);
+//	}
 	
 	public static void registerHwyla(IWailaRegistrar registrar) {
 		registrar.registerBodyProvider(new EntityHandler(), Entity.class);
