@@ -16,81 +16,67 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 @ZenClass("mods.ddd.Resistances")
 @ZenRegister
-public class CTResistances
-{
-	private final IEntityLivingBase entityLiving;
+public class CTResistances {
 	private final IMobResistances resists;
-	
+
 	private final EntityPlayerMP player;
-	
+
 	private final boolean isPlayer;
-	
-	public CTResistances(IEntityLivingBase entityLiving)
-	{
+
+	public CTResistances(IEntityLivingBase entityLiving) {
 		EntityLivingBase base = CraftTweakerMC.getEntityLivingBase(entityLiving);
-		this.entityLiving = entityLiving;
 		this.resists = DDDAPI.accessor.getMobResistances(base);
 		this.player = base instanceof EntityPlayerMP ? (EntityPlayerMP) base : null;
 		this.isPlayer = this.player != null ? true : false;
 	}
-	
+
 	@ZenMethod("getResistance")
-	public float getResistance(String type)
-	{
+	public float getResistance(String type) {
 		return this.resists.getResistance(DDDRegistries.damageTypes.get(type));
 	}
-	
+
 	@ZenMethod("setResistance")
-	public void setResistance(String type, float amount)
-	{
+	public void setResistance(String type, float amount) {
 		this.resists.setResistance(DDDRegistries.damageTypes.get(type), amount);
 		update();
 	}
-	
+
 	@ZenGetter("adaptability")
-	public boolean getAdaptability()
-	{
+	public boolean getAdaptability() {
 		return this.resists.hasAdaptiveResistance();
 	}
-	
+
 	@ZenGetter("adaptabilityAmount")
-	public float getAdaptabilityAmount()
-	{
+	public float getAdaptabilityAmount() {
 		return this.resists.getAdaptiveAmount();
 	}
-	
+
 	@ZenMethod("hasImmunity")
-	public boolean hasImmunity(String type)
-	{
+	public boolean hasImmunity(String type) {
 		return this.resists.hasImmunity(DDDRegistries.damageTypes.get(type));
 	}
-	
+
 	@ZenSetter("adaptability")
-	public void setAdaptability(boolean status)
-	{
+	public void setAdaptability(boolean status) {
 		this.resists.setAdaptiveResistance(status);
 		update();
 	}
-	
+
 	@ZenSetter("adaptabilityAmount")
-	public void setAdaptabilityAmount(float amount)
-	{
+	public void setAdaptabilityAmount(float amount) {
 		this.resists.setAdaptiveAmount(amount);
 		update();
 	}
-	
+
 	@ZenMethod("setImmunity")
-	public void setSlashingImmunity(String type, boolean status)
-	{
+	public void setSlashingImmunity(String type, boolean status) {
 		this.resists.setImmunity(DDDRegistries.damageTypes.get(type), status);
 		update();
 	}
-	
-	private void update()
-	{
-		if(isPlayer)
-		{
-			CapabilityHandler.syncResistances(player);
+
+	private void update() {
+		if(this.isPlayer) {
+			CapabilityHandler.syncResistances(this.player);
 		}
 	}
 }

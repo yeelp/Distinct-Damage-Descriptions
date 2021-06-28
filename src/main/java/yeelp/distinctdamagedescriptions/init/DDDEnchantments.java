@@ -6,21 +6,17 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.enchantments.EnchantmentBruteForce;
 import yeelp.distinctdamagedescriptions.enchantments.EnchantmentSlyStrike;
 
-public class DDDEnchantments
-{
+public class DDDEnchantments {
 	public static Enchantment slyStrike;
 	public static Enchantment bruteForce;
-	
-	public static void init()
-	{
+
+	public static void init() {
 		slyStrike = new EnchantmentSlyStrike();
 		bruteForce = new EnchantmentBruteForce();
-		if(ModConfig.enchants.enableBruteForce)
-		{
+		if(ModConfig.enchants.enableBruteForce) {
 			ForgeRegistries.ENCHANTMENTS.register(bruteForce);
 		}
-		if(ModConfig.enchants.enableSlyStrike)
-		{
+		if(ModConfig.enchants.enableSlyStrike) {
 			ForgeRegistries.ENCHANTMENTS.register(slyStrike);
 		}
 	}

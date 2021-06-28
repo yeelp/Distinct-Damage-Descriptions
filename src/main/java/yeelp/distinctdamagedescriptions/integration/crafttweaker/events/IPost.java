@@ -5,12 +5,12 @@ import stanhebben.zenscript.annotations.ZenClass;
 
 /**
  * CraftTweaker post damage event
+ * 
  * @author Yeelp
  *
  */
 @ZenClass("mods.ddd.events.Post")
 @ZenRegister
-public interface IPost extends IDDDEvent
-{
-	
+public interface IPost extends IDDDEvent {
+
 }

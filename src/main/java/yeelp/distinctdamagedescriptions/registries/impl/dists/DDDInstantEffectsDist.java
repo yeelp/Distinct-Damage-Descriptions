@@ -26,70 +26,55 @@ import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 
-public final class DDDInstantEffectsDist implements DDDPredefinedDistribution
-{	
+public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 	private static final Field CLOUD_POTIONS = ObfuscationReflectionHelper.findField(EntityAreaEffectCloud.class, "field_184503_f");
-	
+
 	@Override
-	public boolean enabled()
-	{
+	public boolean enabled() {
 		return ModConfig.dmg.extraDamage.enablePotionDamage;
 	}
-	
+
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target)
-	{
+	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
 		return Sets.newHashSet(classify(src, target));
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "instantPotions";
 	}
 
 	@Override
-	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target)
-	{
+	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
 		return classify(src, target).getBaseDistribution();
 	}
 
-	private DDDDamageType classify(DamageSource source, EntityLivingBase target)
-	{
+	private DDDDamageType classify(DamageSource source, EntityLivingBase target) {
 		DDDDamageType type = DDDBuiltInDamageType.NORMAL;
-		if(enabled())
-		{
+		if(enabled()) {
 			Entity sourceEntity = source.getImmediateSource();
 			List<PotionEffect> effects;
-			if(sourceEntity instanceof EntityPotion)
-			{
+			if(sourceEntity instanceof EntityPotion) {
 				EntityPotion potion = (EntityPotion) sourceEntity;
 				ItemStack stack = potion.getPotion();
-				if(stack.getItem() instanceof ItemPotion)
-				{
+				if(stack.getItem() instanceof ItemPotion) {
 					effects = PotionUtils.getEffectsFromStack(potion.getPotion());
 				}
-				else
-				{
+				else {
 					return type;
 				}
 			}
-			else if(sourceEntity instanceof EntityAreaEffectCloud)
-			{
+			else if(sourceEntity instanceof EntityAreaEffectCloud) {
 				EntityAreaEffectCloud cloud = (EntityAreaEffectCloud) sourceEntity;
 				effects = getEffectsForCloud(cloud);
 			}
-			else
-			{
+			else {
 				return type;
 			}
-			for(PotionEffect effect : effects)
-			{
+			for(PotionEffect effect : effects) {
 				Potion appliedPotion = effect.getPotion();
-				if(appliedPotion.isInstant())
-				{
-					switch(target.getCreatureAttribute())
-					{
+				if(appliedPotion.isInstant()) {
+					switch(target.getCreatureAttribute()) {
 						case UNDEAD:
 							type = appliedPotion == MobEffects.INSTANT_HEALTH ? DDDBuiltInDamageType.RADIANT : DDDBuiltInDamageType.NORMAL;
 						default:
@@ -100,16 +85,13 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution
 		}
 		return type;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private static List<PotionEffect> getEffectsForCloud(EntityAreaEffectCloud cloud)
-	{
-		try
-		{
+	private static List<PotionEffect> getEffectsForCloud(EntityAreaEffectCloud cloud) {
+		try {
 			return (List<PotionEffect>) CLOUD_POTIONS.get(cloud);
 		}
-		catch (IllegalArgumentException | IllegalAccessException e)
-		{
+		catch(IllegalArgumentException | IllegalAccessException e) {
 			DistinctDamageDescriptions.err("Could not get potion effects for Area Effect Cloud!");
 			return Collections.emptyList();
 		}

@@ -7,17 +7,14 @@ import stanhebben.zenscript.annotations.ZenGetter;
 
 @ZenExpansion("crafttweaker.entity.IEntityLivingBase")
 @ZenRegister
-public class CTIEntityLivingBaseExt
-{
+public class CTIEntityLivingBaseExt {
 	@ZenGetter("creatureType")
-	public static CTCreatureType getCreatureType(IEntityLivingBase entity)
-	{
+	public static CTCreatureType getCreatureType(IEntityLivingBase entity) {
 		return new CTCreatureType(entity);
 	}
-	
+
 	@ZenGetter("resistances")
-	public static CTResistances getResistances(IEntityLivingBase entity)
-	{
+	public static CTResistances getResistances(IEntityLivingBase entity) {
 		return new CTResistances(entity);
 	}
 }

@@ -17,57 +17,43 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
-public abstract class Distribution implements IDistribution
-{
+public abstract class Distribution implements IDistribution {
 	protected DDDBaseMap<Float> distMap = new DDDBaseMap<Float>(0.0f);
-	
-	protected boolean invariantViolated(Collection<Float> weights)
-	{
-		for(float f : weights)
-		{
-			if(f >= 0.0f)
-			{
+
+	protected static boolean invariantViolated(Collection<Float> weights) {
+		for(float f : weights) {
+			if(f >= 0.0f) {
 				continue;
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
-	
+
 	@SafeVarargs
-	Distribution(Tuple<DDDDamageType, Float>... weights)
-	{
-		for(Tuple<DDDDamageType, Float> t : weights)
-		{
-			if(t.getSecond() < 0.0f)
-			{
+	Distribution(Tuple<DDDDamageType, Float>... weights) {
+		for(Tuple<DDDDamageType, Float> t : weights) {
+			if(t.getSecond() < 0.0f) {
 				throw new InvariantViolationException("New weights are invalid!");
 			}
 			else if(t.getSecond() == 0.0f) // ignore 0 weighted entries.
 			{
 				continue;
 			}
-			else
-			{
-				distMap.put(t.getFirst(), t.getSecond());
+			else {
+				this.distMap.put(t.getFirst(), t.getSecond());
 			}
 		}
 	}
-	
-	Distribution(Map<DDDDamageType, Float> weightMap)
-	{
+
+	Distribution(Map<DDDDamageType, Float> weightMap) {
 		setNewMap(weightMap);
 	}
 
 	@Override
-	public NBTTagList serializeNBT()
-	{
+	public NBTTagList serializeNBT() {
 		NBTTagList lst = new NBTTagList();
-		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
-		{
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setString("type", entry.getKey().getTypeName());
 			tag.setFloat("weight", entry.getValue());
@@ -77,66 +63,55 @@ public abstract class Distribution implements IDistribution
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagList lst)
-	{
+	public void deserializeNBT(NBTTagList lst) {
 		this.distMap = new DDDBaseMap<Float>(0.0f);
-		for(NBTBase nbt : lst)
-		{
+		for(NBTBase nbt : lst) {
 			NBTTagCompound tag = (NBTTagCompound) nbt;
 			this.distMap.put(DDDRegistries.damageTypes.get(tag.getString("type")), tag.getFloat("weight"));
 		}
 	}
 
 	@Override
-	public float getWeight(DDDDamageType type)
-	{
-		return distMap.get(type);
+	public float getWeight(DDDDamageType type) {
+		return this.distMap.get(type);
 	}
-	
+
 	@Override
-	public void setWeight(DDDDamageType type, float amount)
-	{
-		distMap.put(type, amount);
+	public void setWeight(DDDDamageType type, float amount) {
+		this.distMap.put(type, amount);
 	}
-	
+
 	@Override
-	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException
-	{
-		if(invariantViolated(map.values()))
-		{
+	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+		if(invariantViolated(map.values())) {
 			throw new InvariantViolationException("Weights are either non positive or do not add to 1!");
 		}
-		else
-		{
-			setNewMap(map);
-		}
+		setNewMap(map);
 	}
-	
+
 	@Override
-	public Set<DDDDamageType> getCategories()
-	{
+	public Set<DDDDamageType> getCategories() {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
-		for(Entry<DDDDamageType, Float> entry : distMap.entrySet())
-		{
-			if((entry.getKey().getType() == DDDDamageType.Type.PHYSICAL || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0)
-			{
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
+			if((!entry.getKey().isCustomDamage() || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0) {
 				set.add(entry.getKey());
 			}
 		}
 		return set;
 	}
 
-	<R, T extends DDDBaseMap<R>> T distribute(T map, Function<Float, R> valueFunc)
-	{
-		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet())
-		{
+	<R, T extends DDDBaseMap<R>> T distribute(T map, Function<Float, R> valueFunc) {
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
 			map.put(entry.getKey(), valueFunc.apply(entry.getValue()));
 		}
 		return map;
 	}
-	
-	private final void setNewMap(Map<DDDDamageType, Float> map)
-	{
+
+	private final void setNewMap(Map<DDDDamageType, Float> map) {
 		map.entrySet().stream().filter((e) -> e.getValue() > 0).forEach((e) -> this.distMap.put(e.getKey(), e.getValue()));
+	}
+	
+	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
+		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
 	}
 }

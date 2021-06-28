@@ -16,68 +16,66 @@ import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
-public class ArmorDistribution extends Distribution implements IArmorDistribution
-{
-	public ArmorDistribution()
-	{
+public class ArmorDistribution extends Distribution implements IArmorDistribution {
+	public ArmorDistribution() {
 		this(new NonNullMap<DDDDamageType, Float>(0.0f));
 	}
-	
+
 	@SafeVarargs
-	public ArmorDistribution(Tuple<DDDDamageType, Float>...weights)
-	{
+	public ArmorDistribution(Tuple<DDDDamageType, Float>... weights) {
 		super(weights);
 	}
-	
-	public ArmorDistribution(Map<DDDDamageType, Float> resistMap)
-	{
+
+	public ArmorDistribution(Map<DDDDamageType, Float> resistMap) {
 		super(resistMap);
 	}
-	
+
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return capability == ArmorDistributionProvider.armorResist;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		return capability == ArmorDistributionProvider.armorResist ? ArmorDistributionProvider.armorResist.<T> cast(this) : null;
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		return capability == ArmorDistributionProvider.armorResist ? ArmorDistributionProvider.armorResist.<T>cast(this) : null;
 	}
 
 	@Override
-	public ArmorMap distributeArmor(float armor, float toughness)
-	{
-		return super.distribute(new ArmorMap(), (f) -> new ArmorValues(armor*f, toughness*f));
+	public ArmorMap distributeArmor(float armor, float toughness) {
+		return super.distribute(new ArmorMap(), (f) -> new ArmorValues(armor * f, toughness * f));
 	}
 
-	public static void register()
-	{
+	public static void register() {
 		CapabilityManager.INSTANCE.register(IArmorDistribution.class, new ArmorResistancesStorage(), new ArmorResistancesFactory());
 	}
-	
-	private static class ArmorResistancesFactory implements Callable<IArmorDistribution>
-	{
+
+	private static class ArmorResistancesFactory implements Callable<IArmorDistribution> {
+		public ArmorResistancesFactory() {
+		}
+
 		@Override
-		public IArmorDistribution call() throws Exception
-		{
+		public IArmorDistribution call() throws Exception {
 			return new ArmorDistribution();
 		}
 	}
-	
-	private static class ArmorResistancesStorage implements IStorage<IArmorDistribution>
-	{
+
+	private static class ArmorResistancesStorage implements IStorage<IArmorDistribution> {
+		public ArmorResistancesStorage() {
+		}
+
 		@Override
-		public NBTBase writeNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side)
-		{
+		public NBTBase writeNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side) {
 			return instance.serializeNBT();
 		}
 
 		@Override
-		public void readNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side, NBTBase nbt)
-		{
+		public void readNBT(Capability<IArmorDistribution> capability, IArmorDistribution instance, EnumFacing side, NBTBase nbt) {
 			instance.deserializeNBT((NBTTagList) nbt);
 		}
+	}
+
+	@Override
+	public IDistribution copy() {
+		return new ArmorDistribution(super.copyMap(0));
 	}
 }

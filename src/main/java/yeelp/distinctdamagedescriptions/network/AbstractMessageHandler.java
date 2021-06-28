@@ -9,21 +9,21 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Skeletal framework of an IMessageHandler implementation. Classes that extend this need only provide a method to handle the message
+ * Skeletal framework of an IMessageHandler implementation. Classes that extend
+ * this need only provide a method to handle the message
+ * 
  * @author Yeelp
  *
  * @param <T> NBT type sent in the REQ of the IMessageHandler
  */
-public abstract class AbstractMessageHandler<T extends NBTBase> implements IMessageHandler<AbstractCapabilityMessage<T>, IMessage>
-{	
+public abstract class AbstractMessageHandler<T extends NBTBase> implements IMessageHandler<AbstractCapabilityMessage<T>, IMessage> {
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IMessage onMessage(AbstractCapabilityMessage<T> msg, MessageContext ctx)
-	{
+	public IMessage onMessage(AbstractCapabilityMessage<T> msg, MessageContext ctx) {
 		FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(msg, ctx));
 		return null;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public abstract void handle(AbstractCapabilityMessage<T> msg, MessageContext ctx);
 }
