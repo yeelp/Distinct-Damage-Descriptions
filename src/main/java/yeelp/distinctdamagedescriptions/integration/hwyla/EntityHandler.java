@@ -49,8 +49,15 @@ public class EntityHandler implements IWailaEntityProvider {
 	@Override
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
 		if(entity instanceof EntityLivingBase) {
-			currenttip.addAll(HwylaTooltipMaker.makeHwylaTooltipStrings((EntityLivingBase) entity));
+			currenttip.addAll(HwylaTooltipMaker.makeHwylaTooltipStrings((EntityLivingBase) accessor.getEntity()));
 		}
 		return currenttip;
 	}
+
+	@Override
+	public NBTTagCompound getNBTData(EntityPlayerMP player, Entity ent, NBTTagCompound tag, World world) {
+		return tag;
+	}
+	
+	
 }

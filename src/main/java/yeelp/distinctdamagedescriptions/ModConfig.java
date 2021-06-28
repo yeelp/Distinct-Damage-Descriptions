@@ -107,7 +107,6 @@ public class ModConfig {
 				"minecraft:zombie;[(b, 0.75), (ddd_necrotic, 0.25)]",
 				"minecraft:zombie_villager;[(b, 0.75), (ddd_necrotic, 0.25)]",
 				"minecraft:zombie_pigman;[(b, 0.75), (ddd_necrotic, 0.25)]",
-				"minecraft:wither_skeleton;[(b, 0.5), (ddd_necrotic, 0.5)]",
 				"minecraft:wither;[(b, 0.1), (ddd_necrotic, 0.9)]",
 				"minecraft:blaze;[(b, 0.25), (ddd_fire, 0.75)]",
 				"minecraft:vex;[(ddd_psychic, 1)]",
@@ -328,7 +327,7 @@ public class ModConfig {
 				"minecraft:rabbit;[];[];0;0",
 				"minecraft:sheep;[];[];0;0",
 				"minecraft:shulker;[(s, 0.5), (p, -0.5), (b, 0.75), (ddd_psychic, 0.6), (ddd_thunder, 0.8)];[ddd_force];0.25;0.5",
-				"minecraft:silverfish;[(b, -0.25), (ddd_fire, -0.1), (ddd_poison, 0.5)];[];0.95;1.0",
+				"minecraft:silverfish;[(b, -0.25), (p, 0.25), (ddd_fire, -0.1), (ddd_poison, 0.5)];[];0.95;1.0",
 				"minecraft:skeleton;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[ddd_poison];0;0",
 				"minecraft:skeleton_horse;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[ddd_poison];0;0",
 				"minecraft:slime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
@@ -425,7 +424,8 @@ public class ModConfig {
 			      "Adaptive Weakness kicks in when a mob that is adaptive is hit by type(s) they are weak to.",
 			      "Their adaptive amount is set to a percentage of the base amount, that percentage being equal to exp(avg), where: ",
 			      "   exp being the exponential function",
-			      "   avg is the average of all of the mobs weakness values that were hit (which is negative)"})
+			      "   avg is the average of all of the mobs weakness values that were hit (which is negative)",
+			      "This triggers only when a mob's adaptability is triggered."})
 		public boolean enableAdaptiveWeakness = false;
 	}
 

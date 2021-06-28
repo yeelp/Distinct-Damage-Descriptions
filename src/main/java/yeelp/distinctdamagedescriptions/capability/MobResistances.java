@@ -78,15 +78,15 @@ public class MobResistances extends DamageResistances implements IMobResistances
 
 	@Override
 	public boolean updateAdaptiveResistance(DamageMap dmgMap) {
-		if(ModConfig.resist.enableAdaptiveWeakness) {
-			float total = (float) YMath.sum(dmgMap.values());
-			Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue()/total));
-			float avgWeakness = (float) weightMap.entrySet().stream().filter((e) -> this.getResistance(e.getKey()) < 0).mapToDouble(Entry::getValue).average().orElse(0);
-			this.adaptiveAmountModified = (float) Math.exp(avgWeakness) * this.adaptiveAmount;
-		}
 		boolean sameKeys = this.adaptiveTo.stream().allMatch(dmgMap::containsKey) && dmgMap.keySet().stream().allMatch(this.adaptiveTo::contains);
 		if(!sameKeys) {
 			this.adaptiveTo = new HashSet<DDDDamageType>(dmgMap.keySet());
+			if(ModConfig.resist.enableAdaptiveWeakness) {
+				float total = (float) YMath.sum(dmgMap.values());
+				Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue()/total));
+				float avgWeakness = (float) weightMap.entrySet().stream().filter((e) -> this.getResistance(e.getKey()) < 0).mapToDouble((e) -> this.getResistance(e.getKey())*e.getValue()).average().orElse(0);
+				this.adaptiveAmountModified = (float) Math.exp(avgWeakness) * this.adaptiveAmount;
+			}
 		}
 		return !sameKeys;
 	}

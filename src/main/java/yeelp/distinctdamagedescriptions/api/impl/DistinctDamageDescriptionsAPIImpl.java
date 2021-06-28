@@ -33,14 +33,12 @@ import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionP
 import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
 import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
-import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator {
 	INSTANCE;
@@ -177,7 +175,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		if(src.getImmediateSource() == null) {
 			return false;
 		}
-		return DDDConfigurations.projectiles.configured(YResources.getEntityIDString(src.getImmediateSource()).orElse(""));
+		return src.getImmediateSource() instanceof IProjectile;
 	}
 
 	private IDamageDistribution getDistForLivingEntity(EntityLivingBase attacker) {
