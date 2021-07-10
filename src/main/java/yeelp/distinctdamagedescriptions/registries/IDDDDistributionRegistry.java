@@ -18,33 +18,25 @@ import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 
-public interface IDDDDistributionRegistry extends IDDDRegistry<DDDPredefinedDistribution>
-{
+public interface IDDDDistributionRegistry extends IDDDRegistry<DDDPredefinedDistribution> {
 	Set<DDDDamageType> getDamageTypes(DamageSource src, EntityLivingBase target);
-	
+
 	IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target);
-	
-	default ITextComponent getDeathMessageForDist(IDamageDistribution dist, DamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender)
-	{
-		if(src instanceof DDDDamageSource && dist != null)
-		{
+
+	default ITextComponent getDeathMessageForDist(IDamageDistribution dist, DamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
+		if(src instanceof DDDDamageSource && dist != null) {
 			DDDDamageSource dSrc = (DDDDamageSource) src;
 			double weight = Math.random();
 			ArrayList<DDDDamageType> lst = Lists.newArrayList(dist.getCategories());
 			Collections.shuffle(lst);
-			for(DDDDamageType type : lst)
-			{
+			for(DDDDamageType type : lst) {
 				weight -= dist.getWeight(type);
-				if(weight <= 0)
-				{
+				if(weight <= 0) {
 					return DDDRegistries.damageTypes.getDeathMessageForType(type, dSrc, attacker, defender);
 				}
 			}
 			return DDDRegistries.damageTypes.getDeathMessageForType(lst.get(0), dSrc, attacker, defender);
 		}
-		else
-		{
-			return src.getDeathMessage(defender);
-		}
+		return src.getDeathMessage(defender);
 	}
 }

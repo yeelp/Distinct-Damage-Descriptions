@@ -4,19 +4,19 @@ import yeelp.distinctdamagedescriptions.api.impl.DistinctDamageDescriptionsAPIIm
 
 /**
  * API for Distinct Damage Descriptions
+ * 
  * @author Yeelp
  *
  */
-public abstract class DDDAPI
-{
+public abstract class DDDAPI {
 	public static IDistinctDamageDescriptionsAccessor accessor;
 	public static IDistinctDamageDescriptionsMutator mutator;
-	
+
 	/**
-	 * Initialize the API. Only needed to be called once. DistinctDamageDescriptions does this during startup in preinit.
+	 * Initialize the API. Only needed to be called once. DistinctDamageDescriptions
+	 * does this during startup in preinit.
 	 */
-	public static void init()
-	{
+	public static void init() {
 		DistinctDamageDescriptionsAPIImpl.values();
 	}
 }

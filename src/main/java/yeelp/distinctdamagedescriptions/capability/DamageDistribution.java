@@ -20,115 +20,98 @@ import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionP
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
-public class DamageDistribution extends Distribution implements IDamageDistribution
-{	
-	@Override
-	protected boolean invariantViolated(Collection<Float> weights)
-	{
+public class DamageDistribution extends Distribution implements IDamageDistribution {
+
+	protected static boolean invariantViolated(Collection<Float> weights) {
 		float sum = 0.0f;
-		for(float f : weights)
-		{
+		for(float f : weights) {
 			sum += f;
 		}
-		return !(Math.abs(sum - 1) <= 0.01) || super.invariantViolated(weights);
+		return !(Math.abs(sum - 1) <= 0.01) || Distribution.invariantViolated(weights);
 	}
-	
-	public DamageDistribution()
-	{
+
+	public DamageDistribution() {
 		this(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
 	}
-	
+
 	@SafeVarargs
-	public DamageDistribution(Tuple<DDDDamageType, Float>... weights) 
-	{
+	public DamageDistribution(Tuple<DDDDamageType, Float>... weights) {
 		super(weights);
-		if(invariantViolated(this.distMap.values()))
-		{
+		if(invariantViolated(this.distMap.values())) {
 			throw new InvariantViolationException("weights are negative or do not add to 1!");
 		}
 	}
-	
-	public DamageDistribution(Map<DDDDamageType, Float> weightMap)
-	{
+
+	public DamageDistribution(Map<DDDDamageType, Float> weightMap) {
 		super(weightMap);
-		if(invariantViolated(this.distMap.values()))
-		{
+		if(invariantViolated(this.distMap.values())) {
 			throw new InvariantViolationException("weights are negative or do not add to 1!");
 		}
 	}
-	
+
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return capability == DamageDistributionProvider.damageDist;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		return capability == DamageDistributionProvider.damageDist ? DamageDistributionProvider.damageDist.<T> cast(this) : null;
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		return capability == DamageDistributionProvider.damageDist ? DamageDistributionProvider.damageDist.<T>cast(this) : null;
 	}
 
 	@Override
-	public DamageMap distributeDamage(float dmg)
-	{
-		if(ModConfig.dmg.useCustomDamageTypes || distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0)
-		{
-			return super.distribute(new DamageMap(), (f) -> f*dmg);
+	public DamageMap distributeDamage(float dmg) {
+		if(ModConfig.dmg.useCustomDamageTypes || this.distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0) {
+			return super.distribute(new DamageMap(), (f) -> f * dmg);
 		}
-		else
-		{
-			Stream<Entry<DDDDamageType, Float>> stream = distMap.entrySet().stream();
-			long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
-			if(regularTypes == 0)
-			{
-				return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
-			}
-			else
-			{
-				DamageMap map = new DamageMap();
-				float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
-				float weightToAdd = lostWeight / regularTypes;
-				int count = 0;
-				for(Entry<DDDDamageType, Float> entry : distMap.entrySet())
-				{
-					if(!entry.getKey().isCustomDamage())
-					{
-						map.put(entry.getKey(), (entry.getValue() + weightToAdd)*dmg);
-					}
-				}
-				return map;
+		Stream<Entry<DDDDamageType, Float>> stream = this.distMap.entrySet().stream();
+		long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
+		if(regularTypes == 0) {
+			return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
+		}
+		DamageMap map = new DamageMap();
+		float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
+		float weightToAdd = lostWeight / regularTypes;
+		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
+			if(!entry.getKey().isCustomDamage()) {
+				map.put(entry.getKey(), (entry.getValue() + weightToAdd) * dmg);
 			}
 		}
+		return map;
 	}
-	
-	public static void register()
-	{
+
+	public static void register() {
 		CapabilityManager.INSTANCE.register(IDamageDistribution.class, new DamageDistributionStorage(), new DamageDistributionFactory());
 	}
-	
-	private static class DamageDistributionFactory implements Callable<IDamageDistribution>
-	{
+
+	private static class DamageDistributionFactory implements Callable<IDamageDistribution> {
+		public DamageDistributionFactory() {
+		}
+
 		@Override
-		public IDamageDistribution call() throws Exception
-		{
+		public IDamageDistribution call() throws Exception {
 			return new DamageDistribution();
 		}
 	}
 
-	private static class DamageDistributionStorage implements IStorage<IDamageDistribution>
-	{
+	private static class DamageDistributionStorage implements IStorage<IDamageDistribution> {
+
+		public DamageDistributionStorage() {
+		}
 
 		@Override
-		public NBTBase writeNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side)
-		{
+		public NBTBase writeNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side) {
 			return instance.serializeNBT();
 		}
 
 		@Override
-		public void readNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side, NBTBase nbt)
-		{
-			instance.deserializeNBT((NBTTagList) nbt); 
+		public void readNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side, NBTBase nbt) {
+			instance.deserializeNBT((NBTTagList) nbt);
 		}
+	}
+
+	@Override
+	public IDistribution copy() {
+		return new DamageDistribution(super.copyMap(0));
 	}
 }

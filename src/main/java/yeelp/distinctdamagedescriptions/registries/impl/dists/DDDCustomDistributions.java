@@ -19,113 +19,108 @@ import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public final class DDDCustomDistributions implements DDDPredefinedDistribution
-{
+public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 	private final Map<String, DDDDamageType> includeAllMap;
 	private final Map<String, SourceMap> srcMap;
-	
-	private final class SourceMap
-	{
+
+	private final class SourceMap {
 		private final Map<String, DDDDamageType> direct, indirect;
-		SourceMap()
-		{
+
+		SourceMap() {
 			this(DDDBuiltInDamageType.NORMAL);
 		}
-		
-		SourceMap(DDDDamageType defaultVal)
-		{
+
+		SourceMap(DDDDamageType defaultVal) {
 			this.direct = new NonNullMap<String, DDDDamageType>(defaultVal);
 			this.indirect = new NonNullMap<String, DDDDamageType>(defaultVal);
 		}
-		
-		void update(DDDDamageType type, DamageTypeData data)
-		{
-			for(String s : data.getDirectSources())
-			{
+
+		void update(DDDDamageType type, DamageTypeData data) {
+			for(String s : data.getDirectSources()) {
 				this.direct.put(s, type);
 			}
-			for(String s : data.getIndirectSources())
-			{
+			for(String s : data.getIndirectSources()) {
 				this.indirect.put(s, type);
 			}
 		}
+
+		Map<String, DDDDamageType> getDirect() {
+			return this.direct;
+		}
+
+		Map<String, DDDDamageType> getIndirect() {
+			return this.indirect;
+		}
+		
+		
 	}
-	
-	public DDDCustomDistributions()
-	{
+
+	public DDDCustomDistributions() {
 		this.includeAllMap = new NonNullMap<String, DDDDamageType>(DDDBuiltInDamageType.NORMAL);
 		this.srcMap = new HashMap<String, SourceMap>();
 	}
 
 	@Override
-	public boolean enabled()
-	{
+	public boolean enabled() {
 		return ModConfig.dmg.useCustomDamageTypes;
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target)
-	{
+	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
-		set.add(includeAllMap.get(src.getDamageType()));
-		if(srcMap.containsKey(src.getDamageType()))
-		{
+		set.add(this.includeAllMap.get(src.getDamageType()));
+		if(this.srcMap.containsKey(src.getDamageType())) {
 			Optional<String> direct = YResources.getEntityIDString(src.getImmediateSource());
 			Optional<String> indirect = YResources.getEntityIDString(src.getTrueSource());
-			DistinctDamageDescriptions.debug(direct.orElse("")+", "+indirect.orElse(""));
-			SourceMap sMap = srcMap.get(src.getDamageType());
-			DDDDamageType directType = sMap.direct.get(direct.orElse(""));
-			DDDDamageType indirectType = sMap.indirect.get(indirect.orElse(""));
-			DistinctDamageDescriptions.debug(directType.getTypeName() +", "+indirectType.getTypeName());
-			set.add(directType);
-			set.add(indirectType);
+			DistinctDamageDescriptions.debug(direct.orElse("") + ", " + indirect.orElse(""));
+			SourceMap sMap = this.srcMap.get(src.getDamageType());
+			DDDDamageType directType = sMap.getDirect().get(direct.orElse(""));
+			DDDDamageType indirectType = sMap.getIndirect().get(indirect.orElse(""));
+			DistinctDamageDescriptions.debug(directType.getTypeName() + ", " + indirectType.getTypeName());
+			boolean altered = false;
+			altered = set.add(directType) || set.add(indirectType);
+			if(altered) {
+				//if altered, we don't need normal any more, as we have different types in it.
+				set.remove(DDDBuiltInDamageType.NORMAL);
+			}
 		}
 		return set;
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "json";
 	}
 
 	@Override
-	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target)
-	{
+	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
 		Set<DDDDamageType> types = getTypes(src, target);
-		if(types.size() == 1)
-		{
+		if(types.size() == 1) {
 			return types.iterator().next().getBaseDistribution();
 		}
-		else
-		{
-			Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
-			float weight = 1.0f/types.size();
-			for(DDDDamageType type : types)
-			{
-				map.put(type, weight);
-			}
-			return new DamageDistribution(map);
+		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+		float weight = 1.0f / types.size();
+		for(DDDDamageType type : types) {
+			map.put(type, weight);
 		}
+		return new DamageDistribution(map);
 	}
 
-	public void registerDamageTypeData(DDDDamageType type, DamageTypeData[] datas)
-	{
-		for(DamageTypeData d : datas)
-		{
+	public void registerDamageTypeData(DDDDamageType type, DamageTypeData[] datas) {
+		for(DamageTypeData d : datas) {
 			update(type, d);
 		}
 		DistinctDamageDescriptions.info(String.format("Registered damage type info for type %s!", type.getDisplayName()));
 	}
-	
-	private void update(DDDDamageType type, DamageTypeData data)
-	{
-		if(data.includeAll())
-		{
+
+	private void update(DDDDamageType type, DamageTypeData data) {
+		if(data.includeAll()) {
 			this.includeAllMap.put(data.getOriginalSource(), type);
 		}
-		if(!this.srcMap.containsKey(data.getOriginalSource())) //this.srcMap.putIfAbsent would still require the compute a new SourceMap every time, so it's less efficient
-		{
+		if(!this.srcMap.containsKey(data.getOriginalSource())) {
+			// this.srcMap.putIfAbsent would still require the
+			// computing of a new SourceMap every time, so it's less
+			// efficient
 			this.srcMap.put(data.getOriginalSource(), new SourceMap());
 		}
 		this.srcMap.get(data.getOriginalSource()).update(type, data);

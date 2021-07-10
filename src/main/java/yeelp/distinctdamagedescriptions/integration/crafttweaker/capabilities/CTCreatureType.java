@@ -13,20 +13,17 @@ import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 
 @ZenClass("mods.ddd.CreatureType")
 @ZenRegister
-public class CTCreatureType
-{
+public class CTCreatureType {
 	private final IEntityLivingBase entityLiving;
 	private final ICreatureType type;
-	
-	public CTCreatureType(IEntityLivingBase entityLiving)
-	{
+
+	public CTCreatureType(IEntityLivingBase entityLiving) {
 		this.entityLiving = entityLiving;
 		this.type = DDDAPI.accessor.getMobCreatureType(CraftTweakerMC.getEntityLivingBase(this.entityLiving));
 	}
-	
+
 	@ZenGetter("types")
-	public List<String> getType()
-	{
+	public List<String> getType() {
 		return new LinkedList<String>(this.type.getCreatureTypeNames());
 	}
 }

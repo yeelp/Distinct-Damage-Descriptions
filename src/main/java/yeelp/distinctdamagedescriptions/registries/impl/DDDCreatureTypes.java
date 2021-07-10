@@ -9,37 +9,31 @@ import yeelp.distinctdamagedescriptions.registries.IDDDCreatureTypeRegistry;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
-public class DDDCreatureTypes extends DDDBaseRegistry<CreatureTypeData> implements IDDDCreatureTypeRegistry
-{
+public class DDDCreatureTypes extends DDDBaseRegistry<CreatureTypeData> implements IDDDCreatureTypeRegistry {
 	private final Map<String, Set<CreatureTypeData>> typeMap = new NonNullMap<String, Set<CreatureTypeData>>(Sets.newHashSet(CreatureTypeData.UNKNOWN));
-	public DDDCreatureTypes()
-	{
+
+	public DDDCreatureTypes() {
 		super(d -> d.getTypeName(), "Creature Type");
 	}
-	
+
 	@Override
-	public void init()
-	{
+	public void init() {
 		this.register(CreatureTypeData.UNKNOWN);
 	}
 
 	@Override
-	public Set<CreatureTypeData> getCreatureTypeForMob(String key)
-	{
-		return typeMap.get(key);
+	public Set<CreatureTypeData> getCreatureTypeForMob(String key) {
+		return this.typeMap.get(key);
 	}
-	
+
 	@Override
-	public void addTypeToEntity(String entityID, CreatureTypeData type)
-	{
-		if(!this.typeMap.containsKey(entityID))
-		{
+	public void addTypeToEntity(String entityID, CreatureTypeData type) {
+		if(!this.typeMap.containsKey(entityID)) {
 			this.typeMap.get(entityID).add(type);
 		}
-		else
-		{
+		else {
 			this.typeMap.put(entityID, Sets.newHashSet(type));
 		}
 	}
-	
+
 }

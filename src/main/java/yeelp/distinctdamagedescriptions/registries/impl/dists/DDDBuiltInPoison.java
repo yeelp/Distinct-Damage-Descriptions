@@ -8,27 +8,21 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
-public final class DDDBuiltInPoison extends AbstractSingleTypeDist
-{
-	public DDDBuiltInPoison()
-	{
+public final class DDDBuiltInPoison extends AbstractSingleTypeDist {
+	public DDDBuiltInPoison() {
 		super(() -> ModConfig.dmg.extraDamage.enablePoisonEffectDamage);
 	}
 
 	@Override
-	protected DDDDamageType getType()
-	{
+	protected DDDDamageType getType() {
 		return DDDBuiltInDamageType.POISON;
 	}
 
 	@Override
-	protected boolean useType(DamageSource source, EntityLivingBase target)
-	{
-		if(target.isPotionActive(MobEffects.POISON))
-		{
+	protected boolean useType(DamageSource source, EntityLivingBase target) {
+		if(target.isPotionActive(MobEffects.POISON)) {
 			PotionEffect effect = target.getActivePotionEffect(MobEffects.POISON);
-			if(effect.getPotion().isReady(effect.getDuration()+1, effect.getAmplifier()))
-			{
+			if(effect.getPotion().isReady(effect.getDuration(), effect.getAmplifier())) {
 				return true;
 			}
 		}
@@ -36,8 +30,7 @@ public final class DDDBuiltInPoison extends AbstractSingleTypeDist
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return "builtInPoison";
 	}
 }

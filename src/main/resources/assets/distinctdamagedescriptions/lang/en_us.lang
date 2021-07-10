@@ -18,7 +18,12 @@ tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distributi
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
 tooltips.distinctdamagedescriptions.shielddist=Shield Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:
+tooltips.distinctdamagedescriptions.mobdistribution=Mob Damage:
 tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is on and Mob Capabilities not generated yet! Spawn this mob to generate capabilities (may need to restart)!
+tooltips.distinctdamagedescriptions.effectiveArmor=Armor
+tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
+tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:
+tooltips.distinctdamagedescriptions.hwyla.witharmor=Max: %s with armor
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force
