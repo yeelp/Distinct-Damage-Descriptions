@@ -20,11 +20,11 @@ import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
  */
 public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormatter<ShieldDistribution, ItemStack> {
 	
-	private final ITextComponent shieldEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(new Style().setColor(TextFormatting.GRAY));
+	private final ITextComponent shieldEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ShieldDistributionFormatter instance;
 	
 	protected ShieldDistributionFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(new Style().setColor(TextFormatting.GRAY)));
 	}
 	
 	/**

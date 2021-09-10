@@ -74,7 +74,7 @@ public class DamageHandler extends Handler {
 		DamageSource src = evt.getSource();
 		Entity attacker = src.getImmediateSource();
 		HitInfo info = DDDCombatRules.setLastHit(src, defender);
-		DDDCombatRules.setModifiers(src, defender);
+		DDDCombatRules.setModifiers(info.getLastSource(), defender);
 		if(info.getLastSource() instanceof DDDDamageSource) {
 			// Let the damage bypass armor so the shield can't block it normally.
 			evt.getSource().setDamageBypassesArmor();

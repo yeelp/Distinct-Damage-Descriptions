@@ -1,8 +1,9 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -13,6 +14,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.DamageMap;
 
 /**
  * A capability formatter specifically for {@link IDamageDistribution}
@@ -37,9 +39,8 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 		if(cap == null || !this.shouldShowDist(stack)) {
 			return Optional.empty();
 		}
-		List<String> lst = new LinkedList<String>();
-		final Iterator<Float> vals = this.getVals(stack, cap);
-		cap.getCategories().stream().sorted().forEach((d) -> lst.add(makeOneDamageString(vals.next(), d)));
+		final DamageMap vals = this.getVals(stack, cap);
+		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(this.makeOneDamageString(vals.get(d.getKey()), d.getKey())), LinkedList<String>::addAll);
 		return Optional.of(lst);
 	}
 	
@@ -52,17 +53,22 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	 */
 	protected abstract boolean shouldShowDist(ItemStack stack);
 	
+	/**
+	 * Get the amount of damage to distribute for this ItemStack
+	 * @param stack
+	 * @return The amount of damage this ItemStack does
+	 */
 	protected abstract float getDamageToDistribute(ItemStack stack);
 	
 	/**
 	 * Get number values for this capability, depending on the current {@link DDDNumberFormatter}, if applicable. The default implementation
-	 * returns {@code cap.distributeDamage(1).values().iterator()}, which effectively is an Iterator that iterates over the passed capability's weights.
+	 * returns {@code cap.distributeDamage(1)}, which effectively is a Map that maps damage types to the passed capability's weights.
 	 * @param stack the stack context
 	 * @param cap the capability instance
-	 * @return an Iterator iterating over the weights or the distributed damage values.
+	 * @return an Map mapping types to weights or the distributed damage values.
 	 */
-	protected Iterator<Float> getVals(ItemStack stack, IDamageDistribution cap) {
-		return cap.distributeDamage(this.getDamageToDistribute(stack)).values().iterator();
+	protected DamageMap getVals(ItemStack stack, IDamageDistribution cap) {
+		return cap.distributeDamage(this.getDamageToDistribute(stack));
 	}
 	
 	private String makeOneDamageString(float amount, DDDDamageType type) {
