@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability;
+package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,6 +13,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;

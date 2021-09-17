@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability;
+package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,6 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
@@ -108,6 +109,7 @@ public abstract class Distribution implements IDistribution {
 	}
 
 	private final void setNewMap(Map<DDDDamageType, Float> map) {
+		this.distMap.clear();
 		map.entrySet().stream().filter((e) -> e.getValue() > 0).forEach((e) -> this.distMap.put(e.getKey(), e.getValue()));
 	}
 	

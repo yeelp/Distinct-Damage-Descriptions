@@ -9,8 +9,8 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
-import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
 
 public final class DDDExplosionDist implements DDDPredefinedDistribution {

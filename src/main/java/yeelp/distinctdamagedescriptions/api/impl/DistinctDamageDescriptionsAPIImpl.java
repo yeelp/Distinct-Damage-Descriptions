@@ -26,7 +26,7 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.capability.providers.ArmorDistributionProvider;
 import yeelp.distinctdamagedescriptions.capability.providers.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;

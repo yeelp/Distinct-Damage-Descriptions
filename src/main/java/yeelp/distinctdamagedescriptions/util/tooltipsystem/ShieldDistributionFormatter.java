@@ -11,7 +11,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 
 /**
  * The singleton instance for formatting {@link ShieldDistribution} instances

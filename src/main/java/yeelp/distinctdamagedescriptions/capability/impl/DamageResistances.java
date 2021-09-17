@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability;
+package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 

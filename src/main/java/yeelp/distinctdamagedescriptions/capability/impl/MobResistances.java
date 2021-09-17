@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability;
+package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,6 +18,8 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
+import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DamageMap;

@@ -30,7 +30,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;

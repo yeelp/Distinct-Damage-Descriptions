@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability;
+package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Collection;
 import java.util.Map;
@@ -16,6 +16,8 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;

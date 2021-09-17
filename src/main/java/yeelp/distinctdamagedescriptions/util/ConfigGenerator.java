@@ -41,14 +41,14 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
-import yeelp.distinctdamagedescriptions.capability.ArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.capability.MobResistances;
-import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 

@@ -1,8 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.minecraft.item.ItemMonsterPlacer;

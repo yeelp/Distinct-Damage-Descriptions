@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability;
+package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.providers.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 

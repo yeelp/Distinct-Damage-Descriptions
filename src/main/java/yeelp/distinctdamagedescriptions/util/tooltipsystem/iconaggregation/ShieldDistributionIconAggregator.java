@@ -1,7 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ShieldDistributionFormatter;
 
 /**

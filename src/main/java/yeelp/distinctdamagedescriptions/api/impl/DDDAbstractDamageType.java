@@ -4,8 +4,8 @@ import java.util.Comparator;
 
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 
 /**
  * An abstract skeleton implementation of DDDDamageType
