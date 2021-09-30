@@ -11,10 +11,38 @@ import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.util.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.config.DefaultValues;
+import yeelp.distinctdamagedescriptions.config.readers.DDDSingleStringConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
+import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
 public final class DDDExplosionDist implements DDDPredefinedDistribution {
+	
+	private static final class ConfigReader extends DDDSingleStringConfigReader {
+		
+		ConfigReader() {
+			super(() -> ModConfig.dmg.extraDamage.explosionDist, () -> DefaultValues.EXPLOSION_DIST);
+		}
+
+		@Override
+		protected boolean validEntry(String entry) {
+			return entry.matches(ConfigReaderUtilities.DIST_REGEX);
+		}
+
+		@SuppressWarnings("synthetic-access")
+		@Override
+		protected void parseEntry(String entry) {
+			try {
+				dist = new DamageDistribution(ConfigReaderUtilities.parseMap(entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, 0.0f));
+			}
+			catch(ConfigParsingException e) {
+				// If we get here, something went really badly. The default fallback should always work
+				e.printStackTrace();
+			}
+		}
+	}
 	private static IDamageDistribution dist;
+	private static final ConfigReader READER = new ConfigReader();
 
 	@Override
 	public boolean enabled() {
@@ -38,7 +66,7 @@ public final class DDDExplosionDist implements DDDPredefinedDistribution {
 
 	public static void update() {
 		if(ModConfig.dmg.extraDamage.enableExplosionDamage) {
-			dist = new DamageDistribution(DDDConfigReader.buildMap(0.0f, DDDConfigReader.parseListOfTuples(ModConfig.dmg.extraDamage.explosionDist)));
+			READER.read();
 		}
 	}
 }

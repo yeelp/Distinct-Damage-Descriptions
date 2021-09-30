@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
@@ -23,7 +22,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
@@ -31,9 +29,8 @@ import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.init.config.IDDDConfiguration;
-import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
+import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
@@ -159,12 +156,6 @@ public class CapabilityHandler extends Handler {
 				shieldDist = ConfigGenerator.getOrGenerateShieldDistribution((ItemShield) item, evt.getObject());
 			}
 			evt.addCapability(shield, shieldDist.copy());
-		}
-	}
-
-	public static void syncResistances(EntityPlayer player) {
-		if(!player.world.isRemote) {
-			PacketHandler.INSTANCE.sendTo(new MobResistancesMessage(DDDAPI.accessor.getMobResistances(player)), (EntityPlayerMP) player);
 		}
 	}
 

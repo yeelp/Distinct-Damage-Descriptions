@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 /**
@@ -10,7 +9,8 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
  * @author Yeelp
  *
  */
-public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompound> {
+public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> {
+	
 	/**
 	 * Get resistance for a certain type.
 	 * 

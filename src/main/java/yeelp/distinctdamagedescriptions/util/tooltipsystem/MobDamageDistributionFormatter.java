@@ -16,7 +16,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 
 /**
  * A formatter for mob damage distributions

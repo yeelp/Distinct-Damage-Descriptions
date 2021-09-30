@@ -3,13 +3,13 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 import crafttweaker.api.entity.IEntity;
 import crafttweaker.api.entity.IEntityLivingBase;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
+import yeelp.distinctdamagedescriptions.event.DamageCalculationEvent;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public abstract class CTDDDEvent implements IDDDEvent {
-	private final DamageDescriptionEvent internal;
+	private final DamageCalculationEvent internal;
 
-	CTDDDEvent(DamageDescriptionEvent evt) {
+	CTDDDEvent(DamageCalculationEvent evt) {
 		this.internal = evt;
 	}
 

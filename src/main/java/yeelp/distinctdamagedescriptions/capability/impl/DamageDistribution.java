@@ -3,27 +3,25 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution {
 
+	@CapabilityInject(IDamageDistribution.class)
+	public static Capability<IDamageDistribution> cap;
+	
 	protected static boolean invariantViolated(Collection<Float> weights) {
 		float sum = 0.0f;
 		for(float f : weights) {
@@ -53,12 +51,12 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == DamageDistributionProvider.damageDist;
+		return capability == cap;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == DamageDistributionProvider.damageDist ? DamageDistributionProvider.damageDist.<T>cast(this) : null;
+		return capability == cap ? cap.<T>cast(this) : null;
 	}
 
 	@Override
@@ -80,36 +78,6 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 			}
 		}
 		return map;
-	}
-
-	public static void register() {
-		CapabilityManager.INSTANCE.register(IDamageDistribution.class, new DamageDistributionStorage(), new DamageDistributionFactory());
-	}
-
-	private static class DamageDistributionFactory implements Callable<IDamageDistribution> {
-		public DamageDistributionFactory() {
-		}
-
-		@Override
-		public IDamageDistribution call() throws Exception {
-			return new DamageDistribution();
-		}
-	}
-
-	private static class DamageDistributionStorage implements IStorage<IDamageDistribution> {
-
-		public DamageDistributionStorage() {
-		}
-
-		@Override
-		public NBTBase writeNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side) {
-			return instance.serializeNBT();
-		}
-
-		@Override
-		public void readNBT(Capability<IDamageDistribution> capability, IDamageDistribution instance, EnumFacing side, NBTBase nbt) {
-			instance.deserializeNBT((NBTTagList) nbt);
-		}
 	}
 
 	@Override

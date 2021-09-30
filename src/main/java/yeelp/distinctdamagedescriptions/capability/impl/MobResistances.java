@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import net.minecraft.nbt.NBTBase;
@@ -14,19 +13,22 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
+import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public class MobResistances extends DamageResistances implements IMobResistances {
+	
+	@CapabilityInject(IMobResistances.class)
+	public static Capability<IMobResistances> cap;
 	private boolean adaptive;
 	private float adaptiveAmount, adaptiveAmountModified;
 	private Set<DDDDamageType> adaptiveTo;
@@ -45,12 +47,12 @@ public class MobResistances extends DamageResistances implements IMobResistances
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == MobResistancesProvider.mobResist;
+		return capability == cap;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == MobResistancesProvider.mobResist ? MobResistancesProvider.mobResist.<T>cast(this) : null;
+		return capability == cap ? cap.<T>cast(this) : null;
 	}
 
 	@Override
@@ -62,10 +64,20 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	public void setAdaptiveResistance(boolean status) {
 		this.adaptive = status;
 	}
+	
+	@Override
+	public boolean isAdaptiveTo(DDDDamageType type) {
+		return this.adaptiveTo.contains(type);
+	}
 
 	@Override
 	public float getAdaptiveAmount() {
 		return this.adaptiveAmount;
+	}
+
+	@Override
+	public float getAdaptiveResistanceModified() {
+		return this.adaptiveAmountModified;
 	}
 
 	@Override
@@ -122,39 +134,15 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		}
 	}
 
-	public static void register() {
-		CapabilityManager.INSTANCE.register(IMobResistances.class, new MobResistancesStorage(), new MobResistancesFactory());
-	}
-
-	private static class MobResistancesFactory implements Callable<IMobResistances> {
-		public MobResistancesFactory() {
-		}
-
-		@Override
-		public IMobResistances call() throws Exception {
-			return new MobResistances();
-		}
-	}
-
-	private static class MobResistancesStorage implements IStorage<IMobResistances> {
-		public MobResistancesStorage() {
-		}
-
-		@Override
-		public NBTBase writeNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side) {
-			return instance.serializeNBT();
-		}
-
-		@Override
-		public void readNBT(Capability<IMobResistances> capability, IMobResistances instance, EnumFacing side, NBTBase nbt) {
-			instance.deserializeNBT((NBTTagCompound) nbt);
-		}
-	}
-
 	@Override
 	public IDamageResistances copy() {
 		MobResistances copy = new MobResistances(super.copyMap(), super.copyImmunities(), this.adaptive, this.adaptiveAmount);
 		copy.adaptiveTo = new HashSet<DDDDamageType>(this.adaptiveTo);
 		return copy;
+	}
+
+	@Override
+	public IMessage getIMessage() {
+		return new MobResistancesMessage(this);
 	}
 }

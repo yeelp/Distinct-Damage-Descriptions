@@ -5,7 +5,7 @@ import java.util.Optional;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.MobDamageDistributionFormatter;
 
 /**

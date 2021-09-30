@@ -12,6 +12,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
@@ -54,19 +55,73 @@ public class ModConfig {
 	public static boolean suppressRegistrationInfo = false;
 
 	@Name("Generate Configs")
-	@Comment("If set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles.")
+	@Comment("If set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles. This isn't super accurate and is rather primitive.")
 	public static boolean generateStats = false;
 
 	@Name("Generate JSON")
-	@Comment("If set, DistinctDamageDescriptions will generate example JSON files for custom damage types and creature types.")
+	@Comment("If set, DistinctDamageDescriptions will generate example JSON files on startup for custom damage types and creature types.")
 	public static boolean generateJSON = true;
 
 	public static class CompatCategory {
-		@Name("Tool Material Bias")
-		@Comment("Tools that use materials, like TiC tools, will use these distributions to influence the tool distribution.")
-		public String[] toolMatBias = {};
 
-		public String[] armorMatBias = {};
+		public ConarmCategory conarm = new ConarmCategory();
+
+		public TinkersCategory tinkers = new TinkersCategory();
+
+		public static class ConarmCategory {
+			@Name("Armor Material Distribution")
+			@Comment({
+					"Determine the armor distribution for materials' plates pieces.",
+					"Each entry is the same as a regular armor distribution entry, that is, of the form material;[(t,a)] where:",
+					"   material is the registration name of the Tinker's material. Pretty much always lowercase",
+					"   [(t,a}] is a comma sepatated list of tuples, (t,a), where:",
+					"      t is the type. requires the 'ddd_' prefix, but can use s, p, b as shorthand for slashing, piercing and bludgeoning",
+					"      a is the effectiveness this material has against that damage type."})
+			@RequiresMcRestart
+			public String[] armorMatDist = DefaultValues.ARMOR_MATERIAL_DISTRIBUTION;
+
+			@Name("Armor Immunity Traits")
+			@Comment({
+					"A list of entries of the form material;types that grant immunity traits to armor pieces. Only works for built in types.",
+					"material is the registration name of the Tinker's material. Pretty much always lowercase.",
+					"types is a comma separated list of DDD types, with the 'ddd_' prefix."})
+			@RequiresMcRestart
+			public String[] armorImmunities = DefaultValues.ARMOR_IMMUNITIES;
+
+			@Name("Armor Immunity Trait Location")
+			@Comment({
+					"This dictates where DDD puts armor immunity traits, on the platers or on the core.",
+					"Only applies to new pieces made. Will not overwrite or change existing armor pieces.",
+					"No Trim option, as that's a little OP."})
+			@RequiresMcRestart
+			public TraitLocation traitLocation = TraitLocation.PLATES;
+
+			/**
+			 * Can't have this TraitLocation directly reference Conarm's core and plates
+			 * part strings, as that would cause problems if Conarm isn't loaded. Has to be
+			 * handled elsewhere.
+			 * 
+			 * @author Yeelp
+			 *
+			 */
+			public enum TraitLocation {
+				CORE,
+				PLATES;
+			}
+		}
+
+		public static class TinkersCategory {
+			@Name("Tool Bias")
+			@Comment({"Control a tool's bias. Tool bias is a tinker's tool's ability to stick to its base distribution.", 
+					  "Base distributions are defined in items.",
+					  "Entries are of the form id;bias",
+					  "   id is the namespaced id of the item (e.g. tconstruct:rapier). The mod name can be excluded ONLY if it's from tconstruct. Tinker tools added from other mods need the full namepaced id.",
+					  "   bias is the tool's bias. A non negative decimal value. Negatives will be treated as 0. This value represents a percantage, so values under 1 are recommended, but you can use values over 1 for tool's whose distributions will never ever change."})
+			@RequiresMcRestart
+			public String[] toolBias = DefaultValues.TOOL_BIAS;
+
+			public String[] matBias = {};
+		}
 	}
 
 	public static class EnchantCategory {
@@ -95,24 +150,7 @@ public class ModConfig {
 				"Mobs that aren't listed here will inflict full bludgeoning damage.",
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseDmg = {
-				"minecraft:blaze;[(b, 0.5), (ddd_fire, 0.5)]",
-				"minecraft:cave_spider;[(p, 0.75), (ddd_poison, 0.25)]",
-				"minecraft:magma_cube;[(b, 0.8), (ddd_fire, 0.2))]",
-				"minecraft:ocelot;[(p, 0.3), (s, 0.7)]",
-				"minecraft:polar_bear;[(s, 0.25), (b, 0.75)]",
-				"minecraft:slime;[(b, 0.4), (ddd_acid, 0.6)]",
-				"minecraft:spider;[(p, 1)]",
-				"minecraft:wolf;[(p, 1)]",
-				"minecraft:zombie;[(b, 0.75), (ddd_necrotic, 0.25)]",
-				"minecraft:zombie_villager;[(b, 0.75), (ddd_necrotic, 0.25)]",
-				"minecraft:zombie_pigman;[(b, 0.75), (ddd_necrotic, 0.25)]",
-				"minecraft:wither;[(b, 0.1), (ddd_necrotic, 0.9)]",
-				"minecraft:blaze;[(b, 0.25), (ddd_fire, 0.75)]",
-				"minecraft:vex;[(ddd_psychic, 1)]",
-				"minecraft:silverfish;[(p, 1)]",
-				"minecraft:endermite;[(p, 1)]",
-				"tconstruct:blueslime;[(b, 0.4), (ddd_acid, 0.6)]"};
+		public String[] mobBaseDmg = DefaultValues.MOB_BASE_DAMAGE;
 
 		@Name("Weapon Base Damage")
 		@Comment({
@@ -127,41 +165,7 @@ public class ModConfig {
 				"Items that aren't listed here will inflict 100% bludgeoning damage, no matter the item.",
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] itemBaseDamage = {
-				"minecraft:blaze_rod;[(ddd_fire, 1)]",
-				"minecraft:nether_star;[(ddd_necrotic, 0.5), (ddd_force, 0.5)]",
-				"minecraft:torch;[(ddd_fire, 1)]",
-				"minecraft:redstone_torch;[(b, 0.9), (ddd_lightning, 0.1)]",
-				"minecraft:arrow;[(p, 1)]",
-				"minecraft:tipped_arrow;[(p, 1)]",
-				"minecraft:spectral_arrow;[(p, 1)]",
-				"minecraft:wooden_sword;[(s, 0.5), (b, 0.5)]",
-				"minecraft:wooden_axe;[(s, 0.3), (b, 0.7)]",
-				"minecraft:wooden_pickaxe;[(p, 0.5), (b, 0.5)]",
-				"minecraft:wooden_shovel;[(b, 1)]",
-				"minecraft:wooden_hoe;[(p, 0.5), (b, 0.5)]",
-				"minecraft:stone_sword;[(b, 1)]",
-				"minecraft:stone_axe;[(b, 1)]",
-				"minecraft:stone_pickaxe;[(p, 0.2), (b, 0.8)]",
-				"minecraft:stone_shovel;[(b, 1)]",
-				"minecraft:stone_hoe;[(p, 0.2), (b, 0.8)]",
-				"minecraft:iron_sword;[(s, 0.8), (p, 0.2)]",
-				"minecraft:iron_axe;[(s, 0.6), (b, 0.4)]",
-				"minecraft:iron_pickaxe;[(p, 0.9), (b, 0.1)]",
-				"minecraft:iron_shovel;[(p, 0.1), (b, 0.9)]",
-				"minecraft:iron_hoe;[(p, 1)]",
-				"minecraft:golden_sword;[(s, 1)]",
-				"minecraft:golden_axe;[(s, 1)]",
-				"minecraft:golden_pickaxe;[(p, 1)]",
-				"minecraft:golden_shovel;[(b, 1)]",
-				"minecraft:golden_hoe;[(p, 1)]",
-				"minecraft:diamond_sword;[(s, 1)]",
-				"minecraft:diamond_axe;[(s, 0.8), (b, 0.2)]",
-				"minecraft:diamond_pickaxe;[(p, 1)]",
-				"minecraft:diamond_shovel;[(b, 1)]",
-				"minecraft:diamond_hoe;[(p, 1)]",
-				"tconstruct:stone_torch;[(ddd_fire, 1)]",
-				"tconstruct:slimesling;[(b, 0.9), (ddd_acid, 0.1)]"};
+		public String[] itemBaseDamage = DefaultValues.WEAPON_BASE_DAMAGE;
 
 		@Name("Projectile Damage Type")
 		@Comment({
@@ -178,10 +182,7 @@ public class ModConfig {
 				"Projectiles that aren't listed here will inflict piercing damage, no matter the projectile.",
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] projectileDamageTypes = {
-				"minecraft:arrow;[(p, 1)];minecraft:arrow,minecraft:tipped_arrow",
-				"minecraft:spectral_arrow;[(p, 1)];minecraft:spectral_arrow",
-				"minecraft:llama_spit;[(b, 1)]"};
+		public String[] projectileDamageTypes = DefaultValues.PROJECTILE_BASE_DAMAGE;
 
 		@Name("Use Custom Damage Types")
 		@Comment("If true, Distinct Damage Descriptions will load and enable custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
@@ -207,7 +208,7 @@ public class ModConfig {
 		public static class ExtraDamageDistsCategory {
 			@Name("Explosion DamageDistribution")
 			@Comment("The damage distribution to use for explosion damage; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
-			public String explosionDist = "[(b, 1)]";
+			public String explosionDist = DefaultValues.EXPLOSION_DIST;
 
 			@Name("Cactus Distribution")
 			@Comment("Enable/disable the cactus damage distribution. Cacti inflict piercing damage with this enabled. If disabled, vanilla handles it normally.")
@@ -299,118 +300,44 @@ public class ModConfig {
 				"Resistances and weaknesses are percentage based. That is, an value of 0.5 means that mob takes 50% less damage from that type, and a value of -0.5 means that mob takes 50% more damage from that type",
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] mobBaseResist = {
-				"minecraft:bat;[(b, -0.5), (ddd_poison, 0.2)];[];0;0",
-				"minecraft:blaze;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_fire, 1), (ddd_poison, 0.5), (ddd_cold, -1)];[ddd_fire];0;0",
-				"minecraft:cave_spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25",
-				"minecraft:chicken;[(b, -0.25)];[];0;0",
-				"minecraft:cow;[];[];0;0",
-				"minecraft:creeper;[(ddd_lightning, 0.3)];[ddd_thunder];0;0",
-				"minecraft:donkey;[];[];0;0",
-				"minecraft:elder_guardian;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_lightning, -0.15)];[];1.0;0.75",
-				"minecraft:ender_dragon;[][ddd_psychic];0;0",
-				"minecraft:enderman;[(ddd_psychic, 0.5)];[];0.7;0.5",
-				"minecraft:endermite;[(ddd_psychic, 0.7)];[];0.9;0.75",
-				"minecraft:evocation_illager;[(ddd_psychic, 0.3), (ddd_force, 0.4)];[];0;0",
-				"minecraft:ghast;[(b, 0.5)];[ddd_psychic];0;0",
-				"minecraft:guardian;[(ddd_lightning, -0.2)];[];0.25;0.25",
-				"minecraft:horse;[];[];0;0",
-				"minecraft:husk;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.5), (ddd_radiant, -0.25)];[];0;0",
-				"minecraft:llama;[];[];0;0",
-				"minecraft:magma_cube;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_fire, 1), (ddd_cold, -0.5), (ddd_poison, 0.2)];[b, ddd_acid, ddd_psychic, ddd_thunder, ddd_fire];0;0",
-				"minecraft:mooshroom;[];[];0;0",
-				"minecraft:mule;[];[];0;0",
-				"minecraft:ocelot;[];[];0;0",
-				"minecraft:parrot;[(b, -0.5)];[];0;0",
-				"minecraft:pig;[];[];0;0",
-				"minecraft:polar_bear;[(b, 0.25)];[ddd_cold];0;0",
-				"minecraft:rabbit;[];[];0;0",
-				"minecraft:sheep;[];[];0;0",
-				"minecraft:shulker;[(s, 0.5), (p, -0.5), (b, 0.75), (ddd_psychic, 0.6), (ddd_thunder, 0.8)];[ddd_force];0.25;0.5",
-				"minecraft:silverfish;[(b, -0.25), (p, 0.25), (ddd_fire, -0.1), (ddd_poison, 0.5)];[];0.95;1.0",
-				"minecraft:skeleton;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[ddd_poison];0;0",
-				"minecraft:skeleton_horse;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -1)];[ddd_poison];0;0",
-				"minecraft:slime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
-				"minecraft:spider;[(p, 0.25), (b, -0.25)];[ddd_poison];0.3;0.25",
-				"minecraft:squid;[];[];0;0",
-				"minecraft:stray;[(s, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[ddd_poison, ddd_cold];0;0",
-				"minecraft:vex;[];[ddd_psychic, ddd_force];0;0",
-				"minecraft:villager;[];[];0;0",
-				"minecraft:vindication_illager;[];[];0;0",
-				"minecraft:witch;[(ddd_acid, 0.2), (ddd_poison, 0.3)];[];0.1;0.25",
-				"minecraft:wither_skeleton;[(s, 0.25), (ddd_necrotic, 1), (ddd_radiant, -1)];[ddd_poison, ddd_fire, ddd_necrotic];0;0",
-				"minecraft:wolf;[];[];0;0",
-				"minecraft:zombie;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
-				"minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
-				"minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[ddd_fire];0;0",
-				"minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
-				"minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65)];[ddd_poison, ddd_psychic];0;0",
-				"minecraft:wither;[(s, 0.25), (ddd_necrotic, 1.25), (ddd_poison, 0.8), (ddd_radiant, -0.25)];[ddd_necrotic];0;0",
-				"tconstruct:blueslime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
-				"thermalfoundation:blizz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_cold, 1), (ddd_poison, 0.5), (ddd_fire, -1)];[ddd_cold];0;0",
-				"thermalfoundation:basalz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_force, 1), (ddd_poison, 0.5), (ddd_thunder, -1)];[ddd_force];0;0",
-				"thermalfoundation:blitz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_thunder, 1), (ddd_poison, 0.5), (ddd_force, -1)];[ddd_thunder];0;0"};
+		public String[] mobBaseResist = DefaultValues.MOB_BASE_RESISTS;
 
 		@Name("Player Base Resistance")
-		@Comment({"Set the base resistance values for the player",
-				  "This is likely only applicable to new worlds! Old worlds may not reflect this change!",
-				  "The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part. All properties are usuable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
+		@Comment({
+				"Set the base resistance values for the player",
+				"This is likely only applicable to new worlds! Old worlds may not reflect this change!",
+				"The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part. All properties are usuable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
 		@RequiresMcRestart
-		public String playerResists = "[];[];0;0";
-		
+		public String playerResists = DefaultValues.PLAYER_BASE_RESISTS;
+
 		@Name("Shield Effectiveness")
 		@Comment({
 				"Modify how shields block damage.",
-				"Each entry is of the form id;s;p;b;[(t,a)] where:",
+				"Each entry is of the form id;[(t,a)] where:",
 				"   id is the namespaced id of the item (e.g. minecraft:shield)",
 				"   [(t,a)] is a list of comma separated tuples of damage types this shield blocks.",
-				"      t is the type this shield blocks. Requires the 'ddd_' prefix.",
+				"      t is the type this shield blocks. Requires the 'ddd_' prefix. Can use s, p, b as shorthand for slashing, piercing and bludgeoning damage, respectively.",
 				"      a is the effectiveness the shield has against that damage type.",
 				"Shields not listed here will act as normal shields (will block all damage they can interact with).",
 				"Shield effectiveness determines how much physical damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
 				"Blocking damage will still knock the attacker back, but the knockback strength is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by about 33% of the vanilla amount).",
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] shieldResist = {
-				"minecraft:shield;[(s, 0.8), (p, 0.5), (b, 0.2)]"};
+		public String[] shieldResist = DefaultValues.SHIELD_BASE_RESISTS;
 
 		@Name("Armor Resistance")
 		@Comment({
 				"Modify the base resistance effectiveness of armor",
-				"Each entry is of the form id;s;p;b;[(t,a)] where:",
+				"Each entry is of the form id;[(t,a)] where:",
 				"   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
-				"   s is the base slashing effectiveness of this armor.",
-				"   p is the base piercing effectiveness of this armor.",
-				"   b is the base bludgeoning effectiveness of this armor.",
-				"   [(t,a)] is a list of comma separated tuples of custom damage types this armor resists (if enabled).",
+				"   [(t,a)] is a list of comma separated tuples of damage types this armor resists (if enabled).",
 				"      t is the damage type this armor resists. Requires the 'ddd_' prefix.",
 				"      a is the armor's effectiveness against that damage type.",
-				"      You can omit this list if the armor resists no custom damage.",
 				"Armors that aren't listed here will have no effectiveness (this doesn't mean the armor does nothing).",
 				"Resistances effectiveness determines how armor points are distributed. That is, an value of 0.5 means that armor only uses 50% of its usual armor points when defending against that type",
 				"Malformed entries in this list will be ignored."})
 		@RequiresMcRestart
-		public String[] armorResist = {
-				"minecraft:leather_helmet;[(s, 0.3), (p, 0.05), (b, 1.0)]",
-				"minecraft:leather_chestplate;[(s, 0.3), (p, 0.05), (b, 1.0)]",
-				"minecraft:leather_leggings;[(s, 0.3), (p, 0.05), (b, 1.0)]",
-				"minecraft:leather_boots;[(s, 0.3), (p, 0.05), (b, 1.0)]",
-				"minecraft:chainmail_helmet;[(s, 0.6), (b, 0.8)]",
-				"minecraft:chainmail_chestplate;[(s, 0.6), (b, 0.8)]",
-				"minecraft:chainmail_leggings;[(s, 0.6), (b, 0.8)]",
-				"minecraft:chainmail_boots;[(s, 0.6), (b, 0.8)]",
-				"minecraft:iron_helmet;[(s, 1.0), (p, 0.7), (b, 0.3)]",
-				"minecraft:iron_chestplate;[(s, 1.0), (p, 0.7), (b, 0.3)]",
-				"minecraft:iron_leggings;[(s, 1.0), (p, 0.7), (b, 0.3)]",
-				"minecraft:iron_boots;[(s, 1.0), (p, 0.7), (b, 0.3)]",
-				"minecraft:golden_helmet;[(s, 1.0), (p, 0.6), (b, 0.25)]",
-				"minecraft:golden_chestplate;[(s, 1.0), (p, 0.6), (b, 0.25)]",
-				"minecraft:golden_leggings;[(s, 1.0), (p, 0.6), (b, 0.25)]",
-				"minecraft:golden_boots;[(s, 1.0), (p, 0.6), (b, 0.25)]",
-				"minecraft:diamond_helmet;[(s, 0.15), (p, 1.0), (b, 0.7)]",
-				"minecraft:diamond_chestplate;[(s, 0.15), (p, 1.0), (b, 0.7)]",
-				"minecraft:diamond_leggings;[(s, 0.15), (p, 1.0), (b, 0.7)]",
-				"minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]"};
+		public String[] armorResist = DefaultValues.ARMOR_BASE_RESISTS;
 
 		@Name("Use Creature Types")
 		@Comment({
@@ -420,12 +347,13 @@ public class ModConfig {
 		public boolean useCreatureTypes = false;
 
 		@Name("Enable Adaptive Weakness")
-		@Comment({"Enable Adaptive Weakness",
-			      "Adaptive Weakness kicks in when a mob that is adaptive is hit by type(s) they are weak to.",
-			      "Their adaptive amount is set to a percentage of the base amount, that percentage being equal to exp(avg), where: ",
-			      "   exp being the exponential function",
-			      "   avg is the average of all of the mobs weakness values that were hit (which is negative)",
-			      "This triggers only when a mob's adaptability is triggered."})
+		@Comment({
+				"Enable Adaptive Weakness",
+				"Adaptive Weakness kicks in when a mob that is adaptive is hit by type(s) they are weak to.",
+				"Their adaptive amount is set to a percentage of the base amount, that percentage being equal to exp(avg), where: ",
+				"   exp being the exponential function",
+				"   avg is the average of all of the mobs weakness values that were hit (which is negative)",
+				"This triggers only when a mob's adaptability is triggered."})
 		public boolean enableAdaptiveWeakness = false;
 	}
 
@@ -433,7 +361,7 @@ public class ModConfig {
 		@Name("Show Damage Distribution Tooltip for all items")
 		@Comment("If true, the Damage Distribution tooltip appears for all items. If false, it only appears for items with a damage distribution manually set.")
 		public boolean alwaysShowDamageDistTooltip = true;
-		
+
 		@Name("Never Hide Info")
 		@Comment("If true, All Distint Damage Descriptions related tooltip information will always be shown (Basically, SHIFT or CTRL never need to be held on tooltips).")
 		public boolean neverHideInfo = false;
@@ -443,11 +371,12 @@ public class ModConfig {
 				"If true, Distinct Damage Descriptions will use icons for built in damage types (slashing, piercing, bludgeoning).",
 				"These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
 		public boolean useIcons = false;
-		
+
 		@Name("Show Mob Damage On Spawn Items")
-		@Comment({"If true, Distinct Dasmage Descriptions will show mob damage in spawn egg tooltips when holding <SHIFT>.",
-			      "Regular item damage distribution information will not be shown so long as the spawn eggs are not configured to have a particular distribution.",
-			      "It is recommended to not set a distribution for spawn eggs if this is set to true, as this will make the tooltip cleaner."})
+		@Comment({
+				"If true, Distinct Dasmage Descriptions will show mob damage in spawn egg tooltips when holding <SHIFT>.",
+				"Regular item damage distribution information will not be shown so long as the spawn eggs are not configured to have a particular distribution.",
+				"It is recommended to not set a distribution for spawn eggs if this is set to true, as this will make the tooltip cleaner."})
 		public boolean showMobDamage = false;
 
 		@Name("Use Numerical Values When Possible")

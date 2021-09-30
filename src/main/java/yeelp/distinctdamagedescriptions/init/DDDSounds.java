@@ -24,6 +24,7 @@ public final class DDDSounds {
 	public static final SoundEvent IMMUNITY_HIT = createSoundEvent("immunity_hit");
 	public static final SoundEvent HIGH_RESIST_HIT = createSoundEvent("high_resist_hit");
 	public static final SoundEvent ADAPTABILITY_CHANGE = createSoundEvent("adaptability_change");
+	public static final SoundEvent DISTINCTION = createSoundEvent("distinction");
 
 	public static void init() {
 		for(Entry<String, SoundEvent> entry : SOUND_MAP.entrySet()) {

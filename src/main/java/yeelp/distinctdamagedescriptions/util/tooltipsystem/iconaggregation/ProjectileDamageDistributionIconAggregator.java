@@ -1,7 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ProjectileDistributionFormatter;
 

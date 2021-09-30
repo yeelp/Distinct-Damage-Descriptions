@@ -4,9 +4,9 @@ import java.util.Set;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
 
-public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound> {
+public interface ICreatureType extends DDDCapabilityBase<NBTTagCompound> {
 	/**
 	 * Return a set of all the creature type names.
 	 * 
@@ -56,5 +56,9 @@ public interface ICreatureType extends ICapabilitySerializable<NBTTagCompound> {
 	 */
 	default boolean isSingleTyped() {
 		return getTypeCount() == 1;
+	}
+	
+	static void register() {
+		DDDCapabilityBase.register(ICreatureType.class, NBTTagCompound.class, CreatureType::new);
 	}
 }

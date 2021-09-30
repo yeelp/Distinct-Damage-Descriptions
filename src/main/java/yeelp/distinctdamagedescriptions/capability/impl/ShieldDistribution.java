@@ -2,23 +2,24 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ShieldDistribution extends Distribution implements IDistribution {
+	
+	@CapabilityInject(ShieldDistribution.class)
+	public static Capability<ShieldDistribution> cap;
+	
 	public ShieldDistribution() {
 		this(new NonNullMap<DDDDamageType, Float>(1.0f));
 	}
@@ -41,50 +42,25 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 
 	public static void register() {
-		CapabilityManager.INSTANCE.register(ShieldDistribution.class, new ShieldDistributionStorage(), new ShieldDistributionFactory());
+		DDDCapabilityBase.register(ShieldDistribution.class, NBTTagList.class, ShieldDistribution::new);
 	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == ShieldDistributionProvider.shieldDist;
+		return capability == cap;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == ShieldDistributionProvider.shieldDist ? ShieldDistributionProvider.shieldDist.<T>cast(this) : null;
+		return capability == cap ? cap.<T>cast(this) : null;
 	}
-
-	private static float blockDamage(float damage, float weight) {
-		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
-	}
-
-	private static class ShieldDistributionFactory implements Callable<ShieldDistribution> {
-		public ShieldDistributionFactory() {
-		}
-
-		@Override
-		public ShieldDistribution call() throws Exception {
-			return new ShieldDistribution();
-		}
-	}
-
-	private static class ShieldDistributionStorage implements IStorage<ShieldDistribution> {
-		public ShieldDistributionStorage() {
-		}
-
-		@Override
-		public NBTBase writeNBT(Capability<ShieldDistribution> capability, ShieldDistribution instance, EnumFacing side) {
-			return instance.serializeNBT();
-		}
-
-		@Override
-		public void readNBT(Capability<ShieldDistribution> capability, ShieldDistribution instance, EnumFacing side, NBTBase nbt) {
-			instance.deserializeNBT((NBTTagList) nbt);
-		}
-	}
-
+	
 	@Override
 	public IDistribution copy() {
 		return new ShieldDistribution(super.copyMap(1.0f));
+	}
+	
+	private static float blockDamage(float damage, float weight) {
+		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
 	}
 }

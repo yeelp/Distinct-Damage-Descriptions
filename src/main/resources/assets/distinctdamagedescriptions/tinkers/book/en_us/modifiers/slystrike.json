@@ -1,0 +1,28 @@
+{ 
+    "modifier": "slystrike",
+    "text": [ 
+        { 
+            "text": "A ghast tear, compass and ender eye endows your weapon with precise vision, allowing it to see weak points in the enemy's natural defenses."
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "...Let's hope it doesn't watch you sleep. Only works for melee weapons."
+        }
+    ],
+    "effects": [ 
+        "Bypass mob immunities",
+        "Incompatible with Brute Force",
+        "Single use",
+        "Only applicable to melee weapons, no tools",
+        "Sleep with one eye open"
+    ],
+    "demoTool": [ 
+        "tconstruct:broadsword",
+        "tconstruct:rapier",
+        "tconstruct:longsword",
+        "tconstruct:cleaver",
+        "tconstruct:battlesign"
+    ]
+}

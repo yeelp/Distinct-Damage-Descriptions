@@ -4,11 +4,10 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
-public abstract interface IDistribution extends ICapabilitySerializable<NBTTagList> {
+public abstract interface IDistribution extends DDDCapabilityBase<NBTTagList> {
 	/**
 	 * Get the weight associated with a certain type
 	 * 

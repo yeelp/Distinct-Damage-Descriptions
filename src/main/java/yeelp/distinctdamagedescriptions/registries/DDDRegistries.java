@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import yeelp.distinctdamagedescriptions.init.DDDLoader;
+import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributions;
@@ -13,6 +15,7 @@ import yeelp.distinctdamagedescriptions.util.DDDJsonIO;
  * @author Yeelp
  *
  */
+@DDDLoader(name = "DDD Registries")
 public abstract class DDDRegistries {
 	/**
 	 * The registry for creature types. Still initialized even if creature types
@@ -34,6 +37,7 @@ public abstract class DDDRegistries {
 	 * Initialize the registries, update the explosion distribution, and read from
 	 * JSON
 	 */
+	@Initializer
 	public static void init() {
 		damageTypes = new DDDDamageTypes();
 		creatureTypes = new DDDCreatureTypes();

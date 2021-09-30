@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.capability;
 
+import net.minecraft.nbt.NBTTagList;
+import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
 
 /**
@@ -17,4 +19,8 @@ public interface IArmorDistribution extends IDistribution {
 	 * @return an ArmorMap with the distributed armor and toughness
 	 */
 	ArmorMap distributeArmor(float armor, float toughness);
+	
+	static void register() {
+		DDDCapabilityBase.register(IArmorDistribution.class, NBTTagList.class, ArmorDistribution::new);
+	}
 }

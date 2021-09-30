@@ -11,7 +11,6 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenSetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 @ZenClass("mods.ddd.Resistances")
@@ -76,7 +75,7 @@ public class CTResistances {
 
 	private void update() {
 		if(this.isPlayer) {
-			CapabilityHandler.syncResistances(this.player);
+			this.resists.sync(this.player);
 		}
 	}
 }

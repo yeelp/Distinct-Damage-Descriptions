@@ -30,7 +30,7 @@ import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.event.DamageDescriptionEvent;
+import yeelp.distinctdamagedescriptions.event.DamageCalculationEvent;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
@@ -119,7 +119,7 @@ public class DamageHandler extends Handler {
 		}
 		ResistMap resistMap = DDDAPI.accessor.classifyResistances(dmgMap.keySet(), mobResists);
 		ArmorMap armors = DDDCombatRules.getApplicableArmorValues(attacker, defender);
-		DamageDescriptionEvent.Pre pre = new DamageDescriptionEvent.Pre(attacker, defender, dmgMap, resistMap, armors);
+		DamageCalculationEvent.Pre pre = new DamageCalculationEvent.Pre(attacker, defender, dmgMap, resistMap, armors);
 		MinecraftForge.EVENT_BUS.post(pre);
 		if(pre.isCanceled()) {
 			return;
@@ -140,7 +140,7 @@ public class DamageHandler extends Handler {
 		if(enchantMods > 0) {
 			totalDamage = CombatRules.getDamageAfterMagicAbsorb(totalDamage, enchantMods);
 		}
-		DamageDescriptionEvent.Post post = new DamageDescriptionEvent.Post(attacker, defender, results.getDamage(), results.getResistances(), results.getArmor());
+		DamageCalculationEvent.Post post = new DamageCalculationEvent.Post(attacker, defender, results.getDamage(), results.getResistances(), results.getArmor());
 		MinecraftForge.EVENT_BUS.post(post);
 		totalDamage = (float) YMath.sum(post.getAllDamages().values());
 		DistinctDamageDescriptions.debug("new damage after deductions: " + totalDamage);

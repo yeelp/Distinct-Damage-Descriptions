@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.capability;
 
+import net.minecraft.nbt.NBTTagList;
+import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 
 /**
@@ -18,4 +20,8 @@ public interface IDamageDistribution extends IDistribution {
 	 * @return a DamageMap with {@code dmg} distributed across all categories
 	 */
 	DamageMap distributeDamage(float dmg);
+	
+	static void register() {
+		DDDCapabilityBase.register(IDamageDistribution.class, NBTTagList.class, DamageDistribution::new);
+	}
 }

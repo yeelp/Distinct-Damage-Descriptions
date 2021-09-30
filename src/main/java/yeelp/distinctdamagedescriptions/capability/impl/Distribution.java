@@ -112,7 +112,7 @@ public abstract class Distribution implements IDistribution {
 		this.distMap.clear();
 		map.entrySet().stream().filter((e) -> e.getValue() > 0).forEach((e) -> this.distMap.put(e.getKey(), e.getValue()));
 	}
-	
+
 	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
 		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
 	}

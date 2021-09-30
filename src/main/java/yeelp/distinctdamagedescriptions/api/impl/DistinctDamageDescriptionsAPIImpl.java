@@ -26,13 +26,11 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.capability.providers.ArmorDistributionProvider;
-import yeelp.distinctdamagedescriptions.capability.providers.CreatureTypeProvider;
-import yeelp.distinctdamagedescriptions.capability.providers.DamageDistributionProvider;
-import yeelp.distinctdamagedescriptions.capability.providers.MobResistancesProvider;
-import yeelp.distinctdamagedescriptions.capability.providers.ShieldDistributionProvider;
-import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.ArmorValues;
@@ -61,17 +59,20 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Override
 	@Nullable
 	public IDamageDistribution getDamageDistribution(ItemStack stack) {
-		return stack.isEmpty() ? null : DamageDistributionProvider.getDamageDistribution(stack);
+		return stack.isEmpty() ? null : stack.getCapability(DamageDistribution.cap, null);
 	}
 
 	@Override
 	public IDamageDistribution getDamageDistribution(EntityLivingBase entity) {
-		return DamageDistributionProvider.getDamageDistribution(entity);
+		return entity.getCapability(DamageDistribution.cap, null);
 	}
 
 	@Override
 	public IDamageDistribution getDamageDistribution(IProjectile projectile) {
-		return DamageDistributionProvider.getDamageDistribution(projectile);
+		if(projectile instanceof Entity) {
+			return ((Entity) projectile).getCapability(DamageDistribution.cap, null);
+		}
+		return null;
 	}
 
 	@Override
@@ -80,17 +81,17 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		if(stack == null || !(stack.getItem() instanceof ItemArmor)) {
 			return null;
 		}
-		return ArmorDistributionProvider.getArmorResistances(stack);
+		return stack.getCapability(ArmorDistribution.cap, null);
 	}
 
 	@Override
 	public IMobResistances getMobResistances(EntityLivingBase entity) {
-		return MobResistancesProvider.getMobResistances(entity);
+		return entity.getCapability(MobResistances.cap, null);
 	}
 
 	@Override
 	public ICreatureType getMobCreatureType(EntityLivingBase entity) {
-		return CreatureTypeProvider.getCreatureType(entity);
+		return entity.getCapability(CreatureType.cap, null);
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		if(stack == null || !(stack.getItem() instanceof ItemShield)) {
 			return null;
 		}
-		return ShieldDistributionProvider.getShieldDistribution(stack);
+		return stack.getCapability(ShieldDistribution.cap, null);
 	}
 
 	@Override
@@ -202,7 +203,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		}
 		mobResists.setAdaptiveResistance(adaptive);
 		mobResists.setAdaptiveAmount(adaptiveAmount);
-		CapabilityHandler.syncResistances(player);
+		mobResists.sync(player);
 	}
 
 	@Override
@@ -211,7 +212,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 		if(resists.hasAdaptiveResistance()) {
 			boolean sync = resists.updateAdaptiveResistance(dmgMap);
 			if(entity instanceof EntityPlayer) {
-				CapabilityHandler.syncResistances((EntityPlayer) entity);
+				resists.sync((EntityPlayer) entity);
 			}
 			return sync;
 		}

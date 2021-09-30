@@ -1,0 +1,17 @@
+{
+    "title": "Shields & Projectiles",
+    "text": [
+        { 
+            "text": "Now a good tinkerer doesn't leave their home (or hole in the wall), without a trusty Battlesign for defense, and a ranged weapon of choice. But... How do those work?"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "It's pretty straight forward. All shield-like items have their shield effectiveness determined by their damage distribution. However in addition to that, the tool gains a bonus to Slashing, Piercing, Bludgeoning and any other additional types it may have in its damage distribution equal to 30% of the tool's average head durabilities divided by 1000, rounded down to the nearest percent. The takeaway is that extremely durable heads make for better shields!"
+        }
+    ]
+}

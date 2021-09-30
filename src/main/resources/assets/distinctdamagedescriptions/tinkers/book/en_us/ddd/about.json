@@ -1,0 +1,31 @@
+{
+    "title": "About Distributions", 
+    "text": [ 
+        {
+            "text": "Combining Tinker's Construct with Distinct Damage Descriptions opens up all new posibilities to tinker with!",
+            "paragraph": true
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "So, how does it work? Excellent question, avid adventurer! Knowledge is power after all."
+        },
+        { 
+            "text": "Each tool type has it's own damage distribution. A base distribution, if you will. That base distribution can be influenced by the material used for the head(s).",
+            "paragraph": true
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "But, not all tools are influenced equally and not all materials influence tools by the same amount."
+        }
+    ]
+}
