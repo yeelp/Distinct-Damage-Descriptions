@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingE
 public final class DDDProjectileConfigReader extends DDDBasicConfigReader<IDamageDistribution> {
 
 	public DDDProjectileConfigReader() throws NoSuchMethodException, SecurityException {
-		super(ModConfig.dmg.projectileDamageTypes, DDDConfigurations.projectiles, DamageDistribution.class.getConstructor(Map.class), 0.0f);
+		super("Projectile Distributions", ModConfig.dmg.projectileDamageTypes, DDDConfigurations.projectiles, DamageDistribution.class.getConstructor(Map.class), 0.0f);
 	}
 
 	@Override

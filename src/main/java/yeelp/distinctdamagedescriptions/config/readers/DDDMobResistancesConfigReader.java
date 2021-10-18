@@ -17,16 +17,23 @@ public final class DDDMobResistancesConfigReader extends DDDBasicConfigReader<Mo
 	private static final String IMMUNITY_REGEX = ConfigReaderUtilities.buildListRegex(ConfigReaderUtilities.DAMAGE_TYPE_SUBREGEX, true);
 	private static final String RESIST_REGEX = ConfigReaderUtilities.buildListRegex(ConfigReaderUtilities.ALLOW_NEGATIVE_ENTRY_TUPLE_SUBREGEX, true);
 	public DDDMobResistancesConfigReader(String[] configList) throws NoSuchMethodException, SecurityException {
-		super(configList, DDDConfigurations.mobResists, MobResistanceCategories.class.getConstructor(Map.class, Collection.class, float.class, float.class), 0.0f);
+		super("Mob Resistances", configList, DDDConfigurations.mobResists, MobResistanceCategories.class.getConstructor(Map.class, Collection.class, float.class, float.class), 0.0f);
 	}
 
 	@Override
 	protected MobResistanceCategories parseMapping(String entry, String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
+		if(key.equals("player") && additionalInfo.length == 2) {
+			String[] newInfo = new String[3];
+			newInfo[0] = additionalInfo[0];
+			newInfo[1] = additionalInfo[1].matches("0+(\\.0*)?") ? "0" : "1";
+			newInfo[2] = additionalInfo[1];
+			return this.parseMapping(entry, key, map, newInfo);
+		}
 		if(map.matches(RESIST_REGEX) && additionalInfo.length == 3) {
 			if(!additionalInfo[0].matches(IMMUNITY_REGEX)) {
 				throw new ConfigParsingException(entry);
 			}
-			else if (!additionalInfo[1].matches(ConfigReaderUtilities.DECIMAL_REGEX) || !additionalInfo[2].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {
+			if (!additionalInfo[1].matches(ConfigReaderUtilities.DECIMAL_REGEX) || !additionalInfo[2].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {
 				throw new ConfigInvalidException(entry);
 			}
 			return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, 0.0f), parseImmunities(entry, additionalInfo[0]), Float.parseFloat(additionalInfo[1]), Float.parseFloat(additionalInfo[2]));

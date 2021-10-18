@@ -12,9 +12,6 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 
@@ -29,7 +26,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	private Map<ResourceLocation, Float> cache;
 	
 	private MobDamageDistributionFormatter() {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse("")), new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobdistribution").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse("")), "mobdistribution");
 		this.cache = new HashMap<ResourceLocation, Float>();
 	}
 	
@@ -74,5 +71,10 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 				}
 				return 1.0f;
 		}
+	}
+
+	@Override
+	public TooltipOrder getType() {
+		return TooltipOrder.MOB_DAMAGE;
 	}
 }

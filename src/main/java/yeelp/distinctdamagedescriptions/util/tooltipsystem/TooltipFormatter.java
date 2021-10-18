@@ -45,4 +45,24 @@ public interface TooltipFormatter<T> {
 	 */
 	List<String> format(T t);
 	
+	/**
+	 * Get the type strings this formatter creates. Used for ordering.
+	 * @return The type
+	 */
+	TooltipOrder getType();
+	
+	/**
+	 * The type of strings created
+	 * @author Yeelp
+	 *
+	 */
+	enum TooltipOrder {
+		DAMAGE,
+		MOB_DAMAGE,
+		PROJECTILE,
+		ARMOR,
+		SHIELD,
+		MOB_RESISTANCES;
+	}
+	
 }

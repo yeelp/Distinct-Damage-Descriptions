@@ -13,11 +13,11 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
+import yeelp.distinctdamagedescriptions.integration.hwyla.client.HwylaTooltipMaker;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.HwylaTooltipMaker;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 
 @Config(modid = ModConsts.MODID)
@@ -120,7 +120,7 @@ public class ModConfig {
 			@RequiresMcRestart
 			public String[] toolBias = DefaultValues.TOOL_BIAS;
 
-			public String[] matBias = {};
+			public String[] matBias = DefaultValues.MATERIAL_BIAS;
 		}
 	}
 
@@ -306,7 +306,7 @@ public class ModConfig {
 		@Comment({
 				"Set the base resistance values for the player",
 				"This is likely only applicable to new worlds! Old worlds may not reflect this change!",
-				"The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part. All properties are usuable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
+				"The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part and adaptability chance. All properties are usuable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
 		@RequiresMcRestart
 		public String playerResists = DefaultValues.PLAYER_BASE_RESISTS;
 

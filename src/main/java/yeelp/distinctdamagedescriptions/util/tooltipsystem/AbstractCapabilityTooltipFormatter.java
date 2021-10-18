@@ -6,6 +6,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.util.Translations;
+import yeelp.distinctdamagedescriptions.util.Translations.Translator;
 
 /**
  * An abstract capability content formatter for DDD tooltips.
@@ -17,11 +21,13 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 
 	private Function<T, C> capExtractor;
 	private ITextComponent typeText;
+	private static final Style GRAY_COLOUR = new Style().setColor(TextFormatting.GRAY);
+	private static final Translator TRANSLATOR = Translations.INSTANCE.getTranslator("tooltips");
 
-	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<T, C> capExtractor, ITextComponent typeText) {
+	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<T, C> capExtractor, String typeTextKey) {
 		super(keyTooltip, numberFormatter, damageFormatter);
 		this.capExtractor = capExtractor;
-		this.typeText = typeText;
+		this.typeText = TRANSLATOR.getComponent(typeTextKey, GRAY_COLOUR);
 	}
 	
 	/**
@@ -52,5 +58,13 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	
 	public ITextComponent getTypeText() {
 		return this.typeText;
+	}
+	
+	protected static ITextComponent getComponentWithGrayColour(String key) {
+		return getComponentWithStyle(key, GRAY_COLOUR);
+	}
+	
+	protected static ITextComponent getComponentWithStyle(String key, Style style) {
+		return TRANSLATOR.getComponent(key, style);
 	}
 }

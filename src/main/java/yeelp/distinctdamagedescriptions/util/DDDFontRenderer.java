@@ -124,6 +124,9 @@ public final class DDDFontRenderer extends FontRenderer {
 	 * @return The DDDFontRender instance which wraps the specified font renderer
 	 */
 	public static FontRenderer getInstance(FontRenderer currentFontRenderer) {
+		if(currentFontRenderer == instance) {
+			return currentFontRenderer;
+		}
 		if(instance == null) {
 			instance = new DDDFontRenderer(currentFontRenderer);
 			Minecraft mc = Minecraft.getMinecraft();

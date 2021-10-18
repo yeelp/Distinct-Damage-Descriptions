@@ -3,7 +3,7 @@ package yeelp.distinctdamagedescriptions.config;
 /**
  * Stores values from config on startup for easy access.
  * 
- * @author dunca
+ * @author Yeelp
  *
  * @param <T> The type of capability this configuration stores
  */

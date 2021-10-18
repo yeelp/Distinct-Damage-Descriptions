@@ -14,7 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.HwylaTooltipMaker;
+import yeelp.distinctdamagedescriptions.integration.hwyla.client.HwylaTooltipMaker;
 
 public class EntityHandler implements IWailaEntityProvider {
 	public EntityHandler() {

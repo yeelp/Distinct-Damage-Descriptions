@@ -15,13 +15,16 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
+import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -59,17 +62,19 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Override
 	@Nullable
 	public IDamageDistribution getDamageDistribution(ItemStack stack) {
-		return stack.isEmpty() ? null : stack.getCapability(DamageDistribution.cap, null);
+		return getDDDCap(DamageDistribution.cap, stack);
 	}
 
 	@Override
+	@Nullable
 	public IDamageDistribution getDamageDistribution(EntityLivingBase entity) {
-		return entity.getCapability(DamageDistribution.cap, null);
+		return getDDDCap(DamageDistribution.cap, entity);
 	}
 
 	@Override
+	@Nullable
 	public IDamageDistribution getDamageDistribution(IProjectile projectile) {
-		if(projectile instanceof Entity) {
+		if(projectile != null && projectile instanceof Entity) {
 			return ((Entity) projectile).getCapability(DamageDistribution.cap, null);
 		}
 		return null;
@@ -78,29 +83,25 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	@Override
 	@Nullable
 	public IArmorDistribution getArmorResistances(ItemStack stack) {
-		if(stack == null || !(stack.getItem() instanceof ItemArmor)) {
-			return null;
-		}
-		return stack.getCapability(ArmorDistribution.cap, null);
+		return getDDDCap(ArmorDistribution.cap, stack);
 	}
 
 	@Override
+	@Nullable
 	public IMobResistances getMobResistances(EntityLivingBase entity) {
-		return entity.getCapability(MobResistances.cap, null);
+		return getDDDCap(MobResistances.cap, entity);
 	}
 
 	@Override
+	@Nullable
 	public ICreatureType getMobCreatureType(EntityLivingBase entity) {
-		return entity.getCapability(CreatureType.cap, null);
+		return getDDDCap(CreatureType.cap, entity);
 	}
 
 	@Override
 	@Nullable
 	public ShieldDistribution getShieldDistribution(ItemStack stack) {
-		if(stack == null || !(stack.getItem() instanceof ItemShield)) {
-			return null;
-		}
-		return stack.getCapability(ShieldDistribution.cap, null);
+		return getDDDCap(ShieldDistribution.cap, stack);
 	}
 
 	@Override
@@ -186,6 +187,13 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			return getDamageDistribution(heldItem);
 		}
 		return getDamageDistribution(attacker);
+	}
+	
+	private static <Cap extends DDDCapabilityBase<? extends NBTBase>> Cap getDDDCap(Capability<Cap> cap, ICapabilityProvider thing) {
+		if(thing == null) {
+			return null;
+		}
+		return thing.getCapability(cap, null);
 	}
 
 	/***********

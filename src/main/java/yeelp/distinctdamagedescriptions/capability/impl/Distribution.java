@@ -7,14 +7,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
@@ -53,23 +50,12 @@ public abstract class Distribution implements IDistribution {
 
 	@Override
 	public NBTTagList serializeNBT() {
-		NBTTagList lst = new NBTTagList();
-		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("type", entry.getKey().getTypeName());
-			tag.setFloat("weight", entry.getValue());
-			lst.appendTag(tag);
-		}
-		return lst;
+		return DDDBaseMap.toNBT(this.distMap);
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagList lst) {
-		this.distMap = new DDDBaseMap<Float>(0.0f);
-		for(NBTBase nbt : lst) {
-			NBTTagCompound tag = (NBTTagCompound) nbt;
-			this.distMap.put(DDDRegistries.damageTypes.get(tag.getString("type")), tag.getFloat("weight"));
-		}
+		this.distMap = DDDBaseMap.fromNBT(lst, 0.0f);
 	}
 
 	@Override

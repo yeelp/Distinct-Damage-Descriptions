@@ -42,6 +42,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param entity
 	 * @return the IDamageDistribution capability for this EntityLivingBase.
 	 */
+	@Nullable
 	IDamageDistribution getDamageDistribution(EntityLivingBase entity);
 
 	/**
@@ -51,6 +52,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param projectile
 	 * @return the IDamageDistribution capability for this IProjectile.
 	 */
+	@Nullable
 	IDamageDistribution getDamageDistribution(IProjectile projectile);
 
 	/**
@@ -71,6 +73,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param entity
 	 * @return the IMobResistances for that entity
 	 */
+	@Nullable
 	IMobResistances getMobResistances(EntityLivingBase entity);
 
 	/**
@@ -81,6 +84,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 *         {@link CreatureType.UNKNOWN} for mobs that are instances of
 	 *         EntityPlayer
 	 */
+	@Nullable
 	ICreatureType getMobCreatureType(EntityLivingBase entity);
 
 	/**
@@ -136,8 +140,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * 
 	 * @param types
 	 * @param resists
-	 * @return a map of relevant resistances. If a mob is immune to a damage type,
-	 *         {@link Float#MAX_VALUE} is put in the map.
+	 * @return a map of relevant resistances. Immunities aren't included.
 	 */
 	ResistMap classifyResistances(Set<DDDDamageType> types, IMobResistances resists);
 

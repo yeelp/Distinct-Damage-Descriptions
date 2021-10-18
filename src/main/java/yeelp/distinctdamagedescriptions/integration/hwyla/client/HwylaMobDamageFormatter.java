@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util.tooltipsystem;
+package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,21 +16,23 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 
 public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistribution> {
 
 	private static HwylaMobDamageFormatter instance;
-	private final ITextComponent damageSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damage").setStyle(new Style().setColor(TextFormatting.GRAY));
+	private final ITextComponent damageSuffix = AbstractCapabilityTooltipFormatter.getComponentWithGrayColour("damage");
 
 	private HwylaMobDamageFormatter() {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD, HwylaMobDamageFormatter::getCap, new TextComponentTranslation("tooltips.distinctdamagedescriptions.mobdistribution").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD, HwylaMobDamageFormatter::getCap, "mobdistribution");
 	}
 	
 	/**
@@ -84,5 +86,10 @@ public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistri
 	
 	private String makeOneDamageString(float amount, DDDDamageType type) {
 		return String.format("   %s%s %s %s", TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), this.damageSuffix.getFormattedText());
+	}
+
+	@Override
+	public TooltipOrder getType() {
+		return TooltipOrder.MOB_DAMAGE;
 	}
 }

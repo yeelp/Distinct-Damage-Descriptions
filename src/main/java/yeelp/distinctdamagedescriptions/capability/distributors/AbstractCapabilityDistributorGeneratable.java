@@ -28,8 +28,5 @@ public abstract class AbstractCapabilityDistributorGeneratable<T, U, C extends D
 	
 	protected abstract C generateCapability(T t, ResourceLocation key);
 	
-	@SuppressWarnings("unchecked")
-	protected C createCapability(U configResult) {
-		return (C) configResult;
-	}
+	protected abstract C createCapability(U configResult);
 }

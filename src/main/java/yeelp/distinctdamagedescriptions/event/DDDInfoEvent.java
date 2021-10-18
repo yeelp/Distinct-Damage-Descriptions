@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -12,6 +14,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 
@@ -39,6 +42,34 @@ public abstract class DDDInfoEvent extends Event {
 	 */
 	public EntityLivingBase getEntity() {
 		return this.entity;
+	}
+	
+	public static final class ShieldBlock extends DDDInfoEvent {
+
+		private ItemStack blockingShield;
+		private Entity attacker;
+		private ShieldDistribution shieldDistribution;
+		
+		public ShieldBlock(EntityLivingBase entity, Entity attacker, ItemStack blockingShield) {
+			super(entity);
+			this.attacker = attacker;
+			this.blockingShield = blockingShield;
+			this.shieldDistribution = DDDAPI.accessor.getShieldDistribution(blockingShield);
+		}
+
+		/**
+		 * @return the blockingShield
+		 */
+		public ItemStack getBlockingShield() {
+			return this.blockingShield;
+		}
+
+		/**
+		 * @return the attacker
+		 */
+		public Entity getAttacker() {
+			return this.attacker;
+		}
 	}
 
 	/**

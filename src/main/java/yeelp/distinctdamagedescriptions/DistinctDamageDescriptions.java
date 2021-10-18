@@ -18,6 +18,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
 import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
@@ -56,6 +57,7 @@ public class DistinctDamageDescriptions {
 		DDDInitialization.runLoaders(event);
 		DebugLib.updateStatus();
 		proxy.preInit();
+		DDDConfigLoader.readConfig();
 		ModIntegrationKernel.doPreInit(event);
 	}
 

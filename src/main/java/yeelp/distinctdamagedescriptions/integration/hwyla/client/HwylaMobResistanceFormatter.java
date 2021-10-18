@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.util.tooltipsystem;
+package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -12,34 +12,34 @@ import java.util.stream.Collectors;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
 
 public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResistances> {
 
 	private static HwylaMobResistanceFormatter instance;
 
-	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY),
-			WHITE = new Style().setColor(TextFormatting.WHITE), AQUA = new Style().setColor(TextFormatting.AQUA),
-			LIGHT_PURPLE = new Style().setColor(TextFormatting.LIGHT_PURPLE),
-			DARK_RED = new Style().setColor(TextFormatting.DARK_RED);
+	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE), AQUA = new Style().setColor(TextFormatting.AQUA),
+			LIGHT_PURPLE = new Style().setColor(TextFormatting.LIGHT_PURPLE);
 
-	private final ITextComponent resistanceSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.resistance").setStyle(GRAY),
-			weaknessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.weakness").setStyle(DARK_RED),
-			noResists = new TextComponentTranslation("tooltips.distinctdamagedescriptions.noresists").setStyle(WHITE),
-			immunityPrefix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.immunities").setStyle(AQUA),
-			adaptabilityAmountPrefix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.adaptiveamount").setStyle(LIGHT_PURPLE);
+	private final ITextComponent noResists = AbstractCapabilityTooltipFormatter.getComponentWithStyle("noresists", WHITE),
+			immunityPrefix = AbstractCapabilityTooltipFormatter.getComponentWithStyle("immunities", AQUA),
+			adaptabilityAmountPrefix = AbstractCapabilityTooltipFormatter.getComponentWithStyle("adaptiveamount", LIGHT_PURPLE);
 
 	private HwylaMobResistanceFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD, DDDAPI.accessor::getMobResistances, new TextComponentTranslation("tooltips.distinctdamagedescriptions.hwyla.mobresistances").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD, DDDAPI.accessor::getMobResistances, "mobresistances");
 	}
 
 	/**
@@ -70,11 +70,12 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			if(cap.hasImmunity(type)) {
 				immunities.add(type);
 			}
+			String s = TooltipTypeFormatter.MOB_RESISTS.format(type, rMap.get(type), this);
 			if(aMap.containsKey(type)) {
-				result.add(this.makeOneMobResistString(rMap.get(type), aMap.get(type), type));
+				result.add(s.concat(Translations.INSTANCE.getTranslator("tooltips").translate("hwyla.witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormatter().format(1-(1-rMap.get(type))*(1 - aMap.get(type).getArmor()/100.0f))))));
 			}
 			else if (rMap.get(type) != 0) {
-				result.add(this.makeOneMobResistString(rMap.get(type), type));
+				result.add(s);
 			}
 		}
 		if(result.isEmpty()) {
@@ -87,16 +88,6 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		return Optional.of(result);
 		
 	}
-
-	private String makeOneMobResistString(float amount, DDDDamageType type) {
-		boolean isNegative = amount < 0;
-		return String.format("   %s%s %s %s", isNegative ? TextFormatting.DARK_RED.toString() : TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), isNegative ? this.weaknessSuffix.getFormattedText() : this.resistanceSuffix.getFormattedText());
-	}
-	
-	private String makeOneMobResistString(float resist, ArmorValues armor, DDDDamageType type) {
-		boolean isNegative = resist < 0;
-		return String.format("   %s%s %s %s (%s)", isNegative ? TextFormatting.DARK_RED.toString() : TextFormatting.GRAY.toString(), this.getNumberFormatter().format(resist), this.getDamageFormatter().format(type), isNegative ? this.weaknessSuffix.getFormattedText() : this.resistanceSuffix.getFormattedText(), new TextComponentTranslation("tooltips.distinctdamagedescriptions.hwyla.witharmor", String.valueOf(this.getNumberFormatter().format(1-(1-resist)*(1 - armor.getArmor()/100.0f)))));
-	}
 	
 	private Optional<String> makeImmunityString(Set<DDDDamageType> immunities) {
 		if(immunities.isEmpty()) {
@@ -106,5 +97,10 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		String[] strings = new String[immunities.size()];
 		strings = immunities.stream().sorted().map(DDDDamageFormatter.STANDARD::format).collect(Collectors.toList()).toArray(strings);
 		return Optional.of(str + YLib.joinNiceString(true, ",", strings));
+	}
+
+	@Override
+	public TooltipOrder getType() {
+		return TooltipOrder.MOB_RESISTANCES;
 	}
 }

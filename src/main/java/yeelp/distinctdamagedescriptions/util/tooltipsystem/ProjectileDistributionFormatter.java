@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
@@ -16,8 +13,8 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	
 	private static ProjectileDistributionFormatter instance;
 	
-	private ProjectileDistributionFormatter() {	
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s.getItem())), new TextComponentTranslation("tooltips.distinctdamagedescriptions.projectiledistribution").setStyle(new Style().setColor(TextFormatting.GRAY)));
+	protected ProjectileDistributionFormatter() {	
+		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s.getItem())), "projectiledistribution");
 	}
 	
 	/**
@@ -42,5 +39,10 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	@Override
 	protected float getDamageToDistribute(ItemStack stack) {
 		return 1.0f;
+	}
+
+	@Override
+	public TooltipOrder getType() {
+		return TooltipOrder.PROJECTILE;
 	}
 }

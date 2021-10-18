@@ -21,7 +21,7 @@ public final class DDDExplosionDist implements DDDPredefinedDistribution {
 	private static final class ConfigReader extends DDDSingleStringConfigReader {
 		
 		ConfigReader() {
-			super(() -> ModConfig.dmg.extraDamage.explosionDist, () -> DefaultValues.EXPLOSION_DIST);
+			super("Explosion Distribution", () -> ModConfig.dmg.extraDamage.explosionDist, () -> DefaultValues.EXPLOSION_DIST);
 		}
 
 		@Override

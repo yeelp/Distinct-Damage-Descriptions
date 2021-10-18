@@ -1,9 +1,10 @@
-package yeelp.distinctdamagedescriptions.util.tooltipsystem;
+package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
 import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 
 public final class HwylaTooltipMaker {
 	private static final HwylaMobResistanceFormatter resistances = HwylaMobResistanceFormatter.getInstance();

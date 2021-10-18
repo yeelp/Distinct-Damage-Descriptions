@@ -10,13 +10,13 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 public final class ArmorDistributionCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<ItemStack, IArmorDistribution, IArmorDistribution> {
-	private static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "armorResists");
+	static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "armorResists");
 	private static ArmorDistributionCapabilityDistributor instance;
 
 	private ArmorDistributionCapabilityDistributor() {
 		super(LOC);
 	}
-	
+
 	@Override
 	protected IArmorDistribution generateCapability(ItemStack t, ResourceLocation key) {
 		return ConfigGenerator.getOrGenerateArmorResistances((ItemArmor) t.getItem(), t);
@@ -31,7 +31,12 @@ public final class ArmorDistributionCapabilityDistributor extends AbstractCapabi
 	protected IDDDConfiguration<IArmorDistribution> getConfig() {
 		return DDDConfigurations.armors;
 	}
-	
+
+	@Override
+	protected IArmorDistribution createCapability(IArmorDistribution configResult) {
+		return (IArmorDistribution) configResult.copy();
+	}
+
 	public static final ArmorDistributionCapabilityDistributor getInstance() {
 		return instance == null ? instance = new ArmorDistributionCapabilityDistributor() : instance;
 	}

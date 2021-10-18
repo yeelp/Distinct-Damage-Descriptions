@@ -1,16 +1,21 @@
 package yeelp.distinctdamagedescriptions.config;
 
 import java.util.HashSet;
+import java.util.Map;
 
+import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.config.readers.DDDBasicConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.DDDDamageDistributionConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.DDDMobResistancesConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.DDDProjectileConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
-import yeelp.distinctdamagedescriptions.util.DDDConfig;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
@@ -64,6 +69,14 @@ public abstract class DDDConfigurations {
 		mobDamage = new DDDBaseConfiguration<IDamageDistribution>(DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
 		mobResists = new DDDBaseConfiguration<MobResistanceCategories>(new MobResistanceCategories(new NonNullMap<DDDDamageType, Float>(0.0f), new HashSet<DDDDamageType>(), 0.0f, 0.0f));
 		projectiles = new DDDProjectileConfiguration(DDDBuiltInDamageType.PIERCING.getBaseDistribution());
-		DDDConfig.readConfig();
+		String[] resistsConfig = new String[ModConfig.resist.mobBaseResist.length + 1];
+		System.arraycopy(ModConfig.resist.mobBaseResist, 0, resistsConfig, 1, ModConfig.resist.mobBaseResist.length);
+		resistsConfig[0] = "player;" + ModConfig.resist.playerResists;
+		try {
+			DDDConfigLoader.getInstance().enqueueAll(new DDDDamageDistributionConfigReader("Item Distributions", ModConfig.dmg.itemBaseDamage, items), new DDDBasicConfigReader<IArmorDistribution>("Armor Distributions", ModConfig.resist.armorResist, armors, ArmorDistribution.class.getConstructor(Map.class), 0.0f), new DDDBasicConfigReader<ShieldDistribution>("Shield Distributions", ModConfig.resist.shieldResist, shields, ShieldDistribution.class.getConstructor(Map.class), 0.0f), new DDDDamageDistributionConfigReader("Mob Damage Distribtuions", ModConfig.dmg.mobBaseDmg, mobDamage), new DDDMobResistancesConfigReader(resistsConfig), new DDDProjectileConfigReader());
+		}
+		catch(NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
 	}
 }

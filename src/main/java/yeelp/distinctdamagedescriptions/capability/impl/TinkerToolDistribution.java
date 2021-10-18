@@ -1,9 +1,11 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Functions;
@@ -20,14 +22,18 @@ import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType.Type;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public abstract class TinkerToolDistribution<D extends IDistribution> extends AbstractTinkersDistribution<D> {
+public abstract class TinkerToolDistribution<D extends IDistribution> extends AbstractTinkersDistribution<D, DistributionBias> {
 
 	@Override
 	protected String getPartType() {
@@ -41,14 +47,24 @@ public abstract class TinkerToolDistribution<D extends IDistribution> extends Ab
 
 	@Override
 	protected IDDDConfiguration<DistributionBias> getConfiguration() {
-		return TiCConfigurations.weaponMaterialBias;
+		return TiCConfigurations.toolMaterialBias;
 	}
 	
+	protected static final Map<DDDDamageType, Float> mergeMaps(Collection<Map<DDDDamageType, Float>> maps) {
+		return mergeMaps(maps, maps.size());
+	}
+	
+	private static final Map<DDDDamageType, Float> mergeMaps(Iterable<Map<DDDDamageType, Float>> maps, int size) {
+		DDDBaseMap<Float> map = new DDDBaseMap<Float>(0.0f);
+		maps.forEach((m) -> m.forEach((k, v) -> map.merge(k, v/size, Float::sum)));
+		return map;
+	}
+
 	public static final class Tool extends TinkerToolDistribution<IDamageDistribution> {
 
 		@CapabilityInject(Tool.class)
 		public static Capability<Tool> cap;
-		
+
 		@Override
 		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 			return cap == capability;
@@ -64,13 +80,33 @@ public abstract class TinkerToolDistribution<D extends IDistribution> extends Ab
 			return DDDAPI.accessor.getDamageDistribution(stack);
 		}
 		
-	}
-	
-	public static final class Shield extends TinkerToolDistribution<ShieldDistribution> {
+		@Override
+		protected Optional<Map<DDDDamageType, Float>> determineNewMap(ItemStack stack, Collection<String> mats, IDDDConfiguration<DistributionBias> config) {
+			float biasResistance = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(YResources.getRegistryString(stack));
+			Set<Map<DDDDamageType, Float>> dists = mats.stream().map((m) -> config.getOrFallbackToDefault(m).getBiasedDistributionMap(this.baseDist, biasResistance).orElse(new HashMap<DDDDamageType, Float>())).filter((m) -> !m.isEmpty()).collect(Collectors.toSet());
+			if(dists.size() == 0) {
+				return Optional.empty();
+			}
+			return Optional.of(mergeMaps(dists));
+		}
 
+		public static void register() {
+			IDistributionRequiresUpdate.register(Tool.class, Tool::new);
+		}
+		
+		@CapabilityInject(Tool.class)
+		public static void onRegister(Capability<Tool> cap) {
+			IDistributionRequiresUpdate.PlayerHandler.allowCapabilityUpdates(cap);
+		}
+
+	}
+
+	public static final class Shield extends TinkerToolDistribution<ShieldDistribution> {
+		
+		private static final Set<DDDDamageType> PHYSICAL_TYPES = DDDRegistries.damageTypes.getAll().stream().filter((t) -> t.getType()== Type.PHYSICAL).collect(Collectors.toSet());
 		@CapabilityInject(Shield.class)
 		public static Capability<Shield> cap;
-		
+
 		@Override
 		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 			return cap == capability;
@@ -85,17 +121,24 @@ public abstract class TinkerToolDistribution<D extends IDistribution> extends Ab
 		protected ShieldDistribution getDistributionCapabilityOnStack(ItemStack stack) {
 			return DDDAPI.accessor.getShieldDistribution(stack);
 		}
-
+		
 		@Override
-		protected Optional<Map<DDDDamageType, Float>> calculateNewMap(ItemStack stack) {
-			Optional<Map<DDDDamageType, Float>> map = super.calculateNewMap(stack);
-			if(map.isPresent()) {
-				float avgDurabilityRatio = this.getHeadMaterialIdentifiers(stack).stream().map(Functions.compose((m) -> ((HeadMaterialStats) m.getStats(this.getPartType())).durability, TinkerRegistry::getMaterial)).collect(Collectors.averagingInt(Integer::intValue)).floatValue()/1000;
-				float bonus = avgDurabilityRatio * 0.3f;
-				Map<DDDDamageType, Float> dist = map.get();
-				ImmutableSet.<DDDDamageType>builder().addAll(Arrays.asList(DDDBuiltInDamageType.PHYSICAL_TYPES)).addAll(dist.keySet()).build().forEach((type) -> dist.compute(type, (t, f) -> Math.min(1.0f, f + bonus)));
-			}
-			return map;
-		}		
+		protected Optional<Map<DDDDamageType, Float>> determineNewMap(ItemStack stack, Collection<String> mats, IDDDConfiguration<DistributionBias> config) {
+			Set<Map<DDDDamageType, Float>> dists = mats.stream().map((m) -> config.getOrFallbackToDefault(m).getPreferredMapCopy()).collect(Collectors.toSet());
+			Map<DDDDamageType, Float> map = mergeMaps(dists);
+			float avgDurabilityRatio = this.getKeyMaterialIdentifiers(stack).stream().map(Functions.compose((m) -> ((HeadMaterialStats) m.getStats(this.getPartType())).durability, TinkerRegistry::getMaterial)).collect(Collectors.averagingInt(Integer::intValue)).floatValue() / 1000;
+			float bonus = (float) (avgDurabilityRatio * 0.3f + map.keySet().stream().filter(PHYSICAL_TYPES::contains).mapToDouble((t) -> 0.1f).sum());
+			ImmutableSet.<DDDDamageType>builder().addAll(PHYSICAL_TYPES).addAll(map.keySet()).build().forEach((type) -> map.compute(type, (t, f) -> Math.min(1.0f, (f == null ? 0.0f : f) + bonus)));
+			return Optional.of(map);
+		}
+		
+		public static void register() {
+			IDistributionRequiresUpdate.register(Shield.class, Shield::new);
+		}
+		
+		@CapabilityInject(Shield.class)
+		public static void onRegister(Capability<Shield> cap) {
+			IDistributionRequiresUpdate.PlayerHandler.allowCapabilityUpdates(cap);
+		}
 	}
 }

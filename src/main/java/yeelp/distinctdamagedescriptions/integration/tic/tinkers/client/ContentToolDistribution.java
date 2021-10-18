@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.google.common.base.Functions;
 
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -29,7 +26,6 @@ import yeelp.distinctdamagedescriptions.util.lib.YResources;
 public class ContentToolDistribution extends ContentTool {
 	
 	public static final transient String ID = "toolDist";
-	private static final transient Function<IBookString, TextData> CONVERT_TO_TEXTDATA = Functions.compose(TextData::new, (b) -> " " + b.toBookString());
 	private final transient IDamageDistribution dist;
 	private final transient float variability;
 
@@ -44,7 +40,7 @@ public class ContentToolDistribution extends ContentTool {
 		this.parent = parent;
 		String key = YResources.getRegistryString(tool);
 		this.dist = (IDamageDistribution) DDDConfigurations.items.getOrFallbackToDefault(key).copy();
-		this.variability = TiCConfigurations.biasResistance.getOrFallbackToDefault(key);
+		this.variability = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(key);
 		this.text = generateTextData(tool);
 		this.properties = this.dist.getCategories().stream().sorted().map((t) -> new TextComponentTranslation("distinctdamagedescriptions.tinkers.book.distributions.entry", (int)(this.dist.getWeight(t)*100), t.getDisplayName()).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);
 		super.load();
@@ -55,8 +51,7 @@ public class ContentToolDistribution extends ContentTool {
 		Tuple<IBookString, Optional<IBookString>> distPreferences = DistributionPreference.determinePreferences(tool, this.dist);
 		q.add(new TextData(Flexibility.determineFlexibility(this.variability).toBookString()));
 		q.add(TextData.LINEBREAK);
-		q.add(new TextData(distPreferences.getFirst().toBookString()));
-		distPreferences.getSecond().map(CONVERT_TO_TEXTDATA).ifPresent(q::add);
+		q.add(new TextData(distPreferences.getFirst().toBookString() + distPreferences.getSecond().map((b) -> " " + b.toBookString()).orElse("")));
 		q.add(TextData.LINEBREAK);
 		q.add(new TextData(new TextComponentTranslation("distinctdamagedescriptions.tinkers.book.flexibility.measure", this.variability).getFormattedText()));
 		return q.toArray(new TextData[q.size()]);

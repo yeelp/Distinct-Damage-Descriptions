@@ -9,10 +9,10 @@ import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
 public class DDDBasicConfigReader<T> extends DDDMapParsingConfigReader<T> {
 	
-	private final float defaultVal;
+	protected final float defaultVal;
 
-	public <U extends T> DDDBasicConfigReader(String[] configList, IDDDConfiguration<T> config, Constructor<U> constructor, float defaultVal) {
-		super(configList, config, constructor);
+	public <U extends T> DDDBasicConfigReader(String name, String[] configList, IDDDConfiguration<T> config, Constructor<U> constructor, float defaultVal) {
+		super(name, configList, config, constructor);
 		this.defaultVal = defaultVal;
 	}
 

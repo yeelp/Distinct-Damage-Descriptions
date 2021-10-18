@@ -10,13 +10,13 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 public final class ShieldDistributionCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<ItemStack, ShieldDistribution, ShieldDistribution> {
-	private static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "shieldEffectiveness");
+	static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "shieldEffectiveness");
 	private static ShieldDistributionCapabilityDistributor instance;
 
 	private ShieldDistributionCapabilityDistributor() {
 		super(LOC);
 	}
-	
+
 	@Override
 	protected ShieldDistribution generateCapability(ItemStack t, ResourceLocation key) {
 		return ConfigGenerator.getOrGenerateShieldDistribution((ItemShield) t.getItem(), t);
@@ -30,6 +30,11 @@ public final class ShieldDistributionCapabilityDistributor extends AbstractCapab
 	@Override
 	protected IDDDConfiguration<ShieldDistribution> getConfig() {
 		return DDDConfigurations.shields;
+	}
+
+	@Override
+	protected ShieldDistribution createCapability(ShieldDistribution configResult) {
+		return (ShieldDistribution) configResult.copy();
 	}
 
 	public static final ShieldDistributionCapabilityDistributor getInstance() {

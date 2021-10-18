@@ -10,9 +10,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
@@ -28,7 +25,7 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	private static ItemDistributionFormatter instance;
 	
 	private ItemDistributionFormatter() {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, new TextComponentTranslation("tooltips.distinctdamagedescriptions.damagedistribution").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, "damagedistribution");
 	}
 
 	/**
@@ -72,5 +69,10 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 				break;
 		}
 		return (float) dmg;
+	}
+
+	@Override
+	public TooltipOrder getType() {
+		return TooltipOrder.DAMAGE;
 	}
 }

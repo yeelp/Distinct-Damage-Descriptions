@@ -9,8 +9,8 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReade
 
 public abstract class DDDMapParsingConfigReader<T> extends DDDMultiEntryConfigReader<T> {
 
-	protected <U extends T> DDDMapParsingConfigReader(String[] configList, IDDDConfiguration<T> config, Constructor<U> constructor) {
-		super(configList, config, constructor);
+	protected <U extends T> DDDMapParsingConfigReader(String name, String[] configList, IDDDConfiguration<T> config, Constructor<U> constructor) {
+		super(name, configList, config, constructor);
 	}
 
 	@Override

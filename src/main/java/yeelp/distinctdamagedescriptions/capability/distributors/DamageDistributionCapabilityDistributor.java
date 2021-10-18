@@ -30,6 +30,13 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 		return true;
 	}
 	
+	
+	
+	@Override
+	protected IDamageDistribution createCapability(IDamageDistribution configResult) {
+		return (IDamageDistribution) configResult.copy();
+	}
+
 	public static final class ForEntity extends DamageDistributionCapabilityDistributor<EntityLivingBase> {
 		
 		private static ForEntity instance;

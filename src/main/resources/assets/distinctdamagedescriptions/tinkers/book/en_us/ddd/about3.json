@@ -11,7 +11,7 @@
             "text": "\n"
         },
         { 
-            "text": "It's pretty straight forward. All shield-like items have their shield effectiveness determined by their damage distribution. However in addition to that, the tool gains a bonus to Slashing, Piercing, Bludgeoning and any other additional types it may have in its damage distribution equal to 30% of the tool's average head durabilities divided by 1000, rounded down to the nearest percent. The takeaway is that extremely durable heads make for better shields!"
+            "text": "It's pretty straight forward. All shield-like items have their shield effectiveness determined by the average of their head materials' distribution preference. However in addition to that, the tool gains a bonus to Slashing, Piercing, Bludgeoning and any other additional types it may have in its distribution preference equal to 30% of the tool's average head durabilities divided by 1000, rounded down to the nearest percent. The takeaway is that extremely durable heads make for better shields!"
         }
     ]
 }

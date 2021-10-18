@@ -211,7 +211,7 @@ public interface DefaultValues {
 	/**
 	 * {@link ModConfig.ResistanceCategory#playerResists}
 	 */
-	final String PLAYER_BASE_RESISTS = "[];[];0;0";
+	final String PLAYER_BASE_RESISTS = "[];[];0";
 	
 	/***********************
 	 * TCONSTRUCT & CONARM *

@@ -7,9 +7,13 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 
 public abstract class ModCompatCapabilityDistributor<T, C extends IDistributionRequiresUpdate> extends AbstractCapabilityDistributor<T, IDistributionRequiresUpdate, C> {
 
-	private static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "distributionUpdate");
+	protected static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "distributionUpdate");
 	protected ModCompatCapabilityDistributor() {
 		super(LOC);
+	}
+	
+	protected ModCompatCapabilityDistributor(ResourceLocation loc) {
+		super(loc);
 	}
 
 	@Override

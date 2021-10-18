@@ -1,107 +1,38 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
-import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
-import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
-import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public class CapabilityHandler extends Handler {
-	private static final ResourceLocation dmg = new ResourceLocation(ModConsts.MODID, "dmgDistribution");
-	private static final ResourceLocation armor = new ResourceLocation(ModConsts.MODID, "armorResists");
-	private static final ResourceLocation shield = new ResourceLocation(ModConsts.MODID, "shieldEffectiveness");
-	private static final ResourceLocation mobs = new ResourceLocation(ModConsts.MODID, "mobResists");
-	private static final ResourceLocation projDmg = new ResourceLocation(ModConsts.MODID, "projectileDmgDistribution");
+
 	private static final ResourceLocation creatureType = new ResourceLocation(ModConsts.MODID, "creatureTypes");
 
 	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void attachEntityCapabilities(AttachCapabilitiesEvent<Entity> evt) {
 		Entity entity = evt.getObject();
-		if(entity == null) {
-			return;
-		}
-		if(entity instanceof EntityPlayer) {
-			evt.addCapability(dmg, new DamageDistribution());
-			IMobResistances resists = getConfigValue("player", DDDConfigurations.mobResists).map((c) -> new MobResistances(c.getResistanceMap(), c.getImmunities(), c.getAdaptiveAmount() > 0, c.getAdaptiveAmount())).orElse(new MobResistances());
-			evt.addCapability(mobs, resists);
-			evt.addCapability(creatureType, CreatureType.UNKNOWN);
-		}
-		else {
-			Optional<ResourceLocation> oLoc = YResources.getEntityID(entity);
-			if(oLoc.isPresent()) {
-				ResourceLocation loc = oLoc.get();
-				String key = loc.toString();
-				if(entity instanceof EntityLivingBase) {
-					Optional<IDamageDistribution> oDist = getConfigValue(key, DDDConfigurations.mobDamage);
-					Optional<MobResistanceCategories> oResists = getConfigValue(key, DDDConfigurations.mobResists);
-					IMobResistances mobResists;
-					IDamageDistribution dist;
-					MobResistanceCategories resists;
-					if(oDist.isPresent()) {
-						dist = oDist.get();
-					}
-					else {
-						dist = ConfigGenerator.getOrGenerateMobDamage((EntityLivingBase) entity, loc);
-					}
-					if(oResists.isPresent()) {
-						resists = oResists.get();
-						mobResists = new MobResistances(resists.getResistanceMap(), resists.getImmunities(), Math.random() < resists.adaptiveChance(), resists.getAdaptiveAmount());
-					}
-					else {
-						mobResists = ConfigGenerator.getOrGenerateMobResistances((EntityLivingBase) entity, loc);
-					}
-					Set<CreatureTypeData> types = DDDRegistries.creatureTypes.getCreatureTypeForMob(key);
-					evt.addCapability(dmg, dist.copy());
-					evt.addCapability(mobs, mobResists.copy());
-					evt.addCapability(creatureType, new CreatureType(types));
-				}
-				else if(entity instanceof IProjectile) {
-					Optional<IDamageDistribution> oDmges = getConfigValue(key, DDDConfigurations.projectiles);
-					IDamageDistribution dist;
-					if(oDmges.isPresent()) {
-						dist = oDmges.get();
-					}
-					else {
-						dist = ConfigGenerator.getOrGenerateProjectileDistribution((IProjectile) entity, loc);
-					}
-					evt.addCapability(projDmg, dist.copy());
-
-				}
+		if(entity != null) {
+			if(entity instanceof EntityPlayer) {
+				evt.addCapability(creatureType, CreatureType.UNKNOWN);
+				DDDCapabilityDistributors.getPlayerCapabilities((EntityPlayer) entity).forEach(evt::addCapability);
 			}
-			else {
-				DistinctDamageDescriptions.warn("ResourceLocation was null for: " + entity.getName() + ", but entity is non null!");
+			else if(entity instanceof EntityLivingBase) {
+				EntityLivingBase entityLiving = (EntityLivingBase) entity;
+				evt.addCapability(creatureType, new CreatureType(DDDRegistries.creatureTypes.getCreatureTypeForMob(entityLiving)));
+				DDDCapabilityDistributors.getCapabilities(entityLiving).ifPresent((m) -> m.forEach(evt::addCapability));
+			}
+			else if (entity instanceof IProjectile) {
+				DDDCapabilityDistributors.getCapabilities((IProjectile) entity).ifPresent((m) -> m.forEach(evt::addCapability));
 			}
 		}
 	}
@@ -109,67 +40,6 @@ public class CapabilityHandler extends Handler {
 	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void attachItemCapabilities(AttachCapabilitiesEvent<ItemStack> evt) {
-		Item item = evt.getObject().getItem();
-		IDamageDistribution dist;
-		ResourceLocation itemLoc = item.getRegistryName();
-		if(itemLoc == null) {
-			dist = DDDConfigurations.items.getDefaultValue();
-		}
-		String key = item.getRegistryName().toString();
-		Optional<IDamageDistribution> oDmges = getConfigValue(key, DDDConfigurations.items);
-		if(oDmges.isPresent()) {
-			dist = oDmges.get();
-		}
-		else {
-			if(item instanceof ItemSword) {
-				dist = ConfigGenerator.getOrGenerateWeaponCapabilities((ItemSword) item, evt.getObject());
-			}
-			else if(item instanceof ItemTool) {
-				dist = ConfigGenerator.getOrGenerateWeaponCapabilities((ItemTool) item, evt.getObject());
-			}
-			else if(item instanceof ItemHoe) {
-				dist = ConfigGenerator.getOrGenerateWeaponCapabilities((ItemHoe) item, evt.getObject());
-			}
-			else {
-				dist = DDDConfigurations.items.getDefaultValue();
-			}
-		}
-		evt.addCapability(dmg, dist.copy());
-		if(item instanceof ItemArmor) {
-			Optional<IArmorDistribution> oResists = getConfigValue(key, DDDConfigurations.armors);
-			IArmorDistribution armorResists;
-			if(oResists.isPresent()) {
-				armorResists = oResists.get();
-			}
-			else {
-				armorResists = ConfigGenerator.getOrGenerateArmorResistances((ItemArmor) item, evt.getObject());
-			}
-			evt.addCapability(armor, armorResists.copy());
-		}
-		else if(item instanceof ItemShield) {
-			Optional<ShieldDistribution> oCaps = getConfigValue(key, DDDConfigurations.shields);
-			ShieldDistribution shieldDist;
-			if(oCaps.isPresent()) {
-				shieldDist = oCaps.get();
-			}
-			else {
-				shieldDist = ConfigGenerator.getOrGenerateShieldDistribution((ItemShield) item, evt.getObject());
-			}
-			evt.addCapability(shield, shieldDist.copy());
-		}
-	}
-
-	@Nonnull
-	private static <T> Optional<T> getConfigValue(String key, IDDDConfiguration<T> config) {
-		if(config.configured(key)) {
-			return Optional.of(config.get(key));
-		}
-		else if(ModConfig.generateStats) {
-			return Optional.empty();
-		}
-		else {
-			return Optional.of(config.getDefaultValue());
-		}
-
+		DDDCapabilityDistributors.getCapabilities(evt.getObject()).forEach(evt::addCapability);
 	}
 }

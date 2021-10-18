@@ -26,6 +26,8 @@ tooltips.distinctdamagedescriptions.effectiveArmor=Armor
 tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
 tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:
 tooltips.distinctdamagedescriptions.hwyla.witharmor=Max: %s with armor
+tooltips.distinctdamagedescriptions.tic.distributionbias=Distribution Bias:
+tooltips.distinctdamagedescriptions.tic.influence=Influence:
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force
@@ -48,8 +50,8 @@ distinctdamagedescriptions.general.resistance.shieldresist=Shield Resistances
 
 ### TINKERS ###
 distinctdamagedescriptions.tinkers.book.flexibility.flexible=This tool's damage is very easily influenced by its head materials, making its damage very customizable.
-distinctdamagedescriptions.tinkers.book.flexibility.moderate=This tool's damage is only moderately influenced by its head materials. Its damage won't greatly deviate from its base distribution for most materials.
-distinctdamagedescriptions.tinkers.book.flexibility.inflexible=This tool's damage strictly adheres to its base distribution. You'll need some extremely influential materials for the head to change the damage types inflicted.
+distinctdamagedescriptions.tinkers.book.flexibility.moderate=This tool's damage is only moderately influenced by its head materials. Its damage won't deviate a lot from its base distribution.
+distinctdamagedescriptions.tinkers.book.flexibility.inflexible=This tool's damage strictly adheres to its base distribution. You'll need some extremely influential head materials to change it.
 distinctdamagedescriptions.tinkers.book.flexibility.measure=Tool Bias: %s
 distinctdamagedescriptions.tinkers.book.distributions.favoured.only=The %s only does %d damage.
 distinctdamagedescriptions.tinkers.book.distributions.favoured.strongly=The %s strongly favours %s damage.

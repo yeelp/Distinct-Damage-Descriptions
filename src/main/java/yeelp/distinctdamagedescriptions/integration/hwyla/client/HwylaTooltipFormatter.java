@@ -1,9 +1,12 @@
-package yeelp.distinctdamagedescriptions.util.tooltipsystem;
+package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 
 import java.util.function.Function;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.text.ITextComponent;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 
 /**
  * The singleton formatter for Hwyla tooltip formatting.
@@ -14,8 +17,8 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class HwylaTooltipFormatter<C> extends AbstractCapabilityTooltipFormatter<C, EntityLivingBase> {
 	
 	private final KeyTooltip key;
-	protected HwylaTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<EntityLivingBase, C> capExtractor, ITextComponent typeText) {
-		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeText);
+	protected HwylaTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<EntityLivingBase, C> capExtractor, String typeTextKey) {
+		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
 		this.key = keyTooltip;
 	}
 
