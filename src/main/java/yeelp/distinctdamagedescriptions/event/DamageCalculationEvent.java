@@ -25,6 +25,7 @@ import yeelp.distinctdamagedescriptions.util.ResistMap;
  * @author Yeelp
  *
  */
+@Deprecated
 public abstract class DamageCalculationEvent extends Event {
 	private final Entity attacker;
 	private final EntityLivingBase defender;

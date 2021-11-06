@@ -12,7 +12,7 @@ public class MobHandler extends Handler {
 	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onPotionApplyEvent(PotionEvent.PotionApplicableEvent evt) {
-		evt.setResult(DDDAPI.accessor.getMobCreatureType(evt.getEntityLiving()).isImmuneToPotionEffect(evt.getPotionEffect()) ? Result.DENY : Result.DEFAULT);
+		evt.setResult(DDDAPI.accessor.getMobCreatureType(evt.getEntityLiving()).isImmuneToPotionEffect(evt.getPotionEffect()) ? Result.DENY : evt.getResult());
 	}
 
 	@SuppressWarnings("static-method")
@@ -20,7 +20,7 @@ public class MobHandler extends Handler {
 	public void onCrit(CriticalHitEvent evt) {
 		Entity target = evt.getTarget();
 		if(target instanceof EntityLivingBase) {
-			evt.setResult(DDDAPI.accessor.getMobCreatureType((EntityLivingBase) evt.getTarget()).isImmuneToCriticalHits() ? Result.DENY : Result.DEFAULT);
+			evt.setResult(DDDAPI.accessor.getMobCreatureType((EntityLivingBase) evt.getTarget()).isImmuneToCriticalHits() ? Result.DENY : evt.getResult());
 		}
 	}
 }

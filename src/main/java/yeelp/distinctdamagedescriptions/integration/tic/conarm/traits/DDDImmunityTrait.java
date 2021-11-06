@@ -14,7 +14,7 @@ import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.TagUtil;
 import slimeknights.tconstruct.library.utils.ToolHelper;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.event.DDDInfoEvent;
+import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 
 public class DDDImmunityTrait extends AbstractArmorTrait {
@@ -37,15 +37,16 @@ public class DDDImmunityTrait extends AbstractArmorTrait {
 		
 		@SuppressWarnings("static-method")
 		@SubscribeEvent(priority = EventPriority.HIGHEST)
-		public final void onGatherImmunities(DDDInfoEvent.GatherImmunities evt) {
-			for(ItemStack stack : evt.getEntity().getArmorInventoryList()) {
+		public final void onGatherImmunities(GatherDefensesEvent evt) {
+			for(ItemStack stack : evt.getDefender().getArmorInventoryList()) {
 				if(stack.getItem() instanceof TinkersArmor && !ToolHelper.isBroken(stack)) {
 					Iterator<NBTBase> it = TagUtil.getTraitsTagList(stack).iterator();
 					while(it.hasNext()) {
 						ITrait trait = TinkerRegistry.getTrait(((NBTTagString) it.next()).getString());
 						if(trait instanceof DDDImmunityTrait) {
 							DDDImmunityTrait immunity = (DDDImmunityTrait) trait;
-							evt.immunities.add(immunity.getType());
+							evt.addImmunity(immunity.getType());
+							ToolHelper.damageTool(stack, 1, evt.getDefender());
 						}
 					}
 				}

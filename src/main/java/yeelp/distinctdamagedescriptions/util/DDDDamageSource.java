@@ -17,6 +17,7 @@ import net.minecraft.util.text.ITextComponent;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
+@Deprecated
 public final class DDDDamageSource extends DamageSource {
 	private List<DDDDamageType> types;
 	private DamageSource parentSource;

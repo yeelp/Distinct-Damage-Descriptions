@@ -46,6 +46,8 @@ public class ModConfig {
 	@Comment("Tweak DDD's behaviour with other mods")
 	public static final CompatCategory compat = new CompatCategory();
 
+	public static final DeveloperCategory dev = new DeveloperCategory();
+
 	@Name("Suppress Warnings")
 	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
 	public static boolean suppressWarnings = false;
@@ -61,6 +63,10 @@ public class ModConfig {
 	@Name("Generate JSON")
 	@Comment("If set, DistinctDamageDescriptions will generate example JSON files on startup for custom damage types and creature types.")
 	public static boolean generateJSON = true;
+
+	public static class DeveloperCategory {
+		public boolean enabled = false;
+	}
 
 	public static class CompatCategory {
 
@@ -112,11 +118,12 @@ public class ModConfig {
 
 		public static class TinkersCategory {
 			@Name("Tool Bias")
-			@Comment({"Control a tool's bias. Tool bias is a tinker's tool's ability to stick to its base distribution.", 
-					  "Base distributions are defined in items.",
-					  "Entries are of the form id;bias",
-					  "   id is the namespaced id of the item (e.g. tconstruct:rapier). The mod name can be excluded ONLY if it's from tconstruct. Tinker tools added from other mods need the full namepaced id.",
-					  "   bias is the tool's bias. A non negative decimal value. Negatives will be treated as 0. This value represents a percantage, so values under 1 are recommended, but you can use values over 1 for tool's whose distributions will never ever change."})
+			@Comment({
+					"Control a tool's bias. Tool bias is a tinker's tool's ability to stick to its base distribution.",
+					"Base distributions are defined in items.",
+					"Entries are of the form id;bias",
+					"   id is the namespaced id of the item (e.g. tconstruct:rapier). The mod name can be excluded ONLY if it's from tconstruct. Tinker tools added from other mods need the full namepaced id.",
+					"   bias is the tool's bias. A non negative decimal value. Negatives will be treated as 0. This value represents a percantage, so values under 1 are recommended, but you can use values over 1 for tool's whose distributions will never ever change."})
 			@RequiresMcRestart
 			public String[] toolBias = DefaultValues.TOOL_BIAS;
 
@@ -190,16 +197,9 @@ public class ModConfig {
 		public boolean useCustomDamageTypes = false;
 
 		@Name("Use Custom Death Messages")
-		@Comment({
-				"If custom damage types are enabled and this is turned on, the JSON specified death messages will be used.",
-				"This config option sets the showDeathMessages gamerule to false when enabled when worlds are loaded.",
-				"The gamerule will be set to true when disabled of course. However, if the mod is uninstalled, this gamerule will have to be manually set back."})
+		@Comment("Should Distinct Damage Descriptions use it's custom death messages for damage types?")
 		@RequiresWorldRestart
 		public boolean useCustomDeathMessages = false;
-
-		@Name("Cancel Events On Immunity")
-		@Comment("If true, Distinct Damage Descriptions will cancel hurt events if immunity blocks all incoming damage. This will prevent other mods from doing anything during that event and keep damage at zero.")
-		public boolean cancelLivingHurtEventOnImmunity = false;
 
 		@Name("Extra Damage Classification")
 		@Comment("Enable/disable damage distributions for certain vanilla damage sources.")
@@ -263,7 +263,7 @@ public class ModConfig {
 			public boolean enableGuardianDamage = true;
 
 			@Name("Fire Distribution")
-			@Comment("Enable/disable the fire damage distribution. All fire sources (fire, lava, magma etc.) will count as fire damage when enabled.")
+			@Comment("Enable/disable the fire damage distribution. All fire sources (fire, lava, magma etc.) will count as fire damage when enabled. Magma also is only blockable with boots.")
 			public boolean enableFireDamage = true;
 
 			@Name("Daylight Burning Distribution")

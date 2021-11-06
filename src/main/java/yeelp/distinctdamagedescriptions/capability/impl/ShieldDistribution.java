@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -34,11 +33,11 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 
 	public DamageMap block(DamageMap fullDamage) {
-		DamageMap remainingDamage = new DamageMap();
-		for(Entry<DDDDamageType, Float> entry : fullDamage.entrySet()) {
-			remainingDamage.put(entry.getKey(), blockDamage(entry.getValue(), this.getWeight(entry.getKey())));
-		}
-		return remainingDamage;
+		this.getCategories().forEach((t) -> fullDamage.computeIfPresent(t, (k, v) -> { 
+			float f = blockDamage(v, this.getWeight(k));
+			return f <= 0 ? null : f;
+		}));
+		return fullDamage;
 	}
 
 	public static void register() {

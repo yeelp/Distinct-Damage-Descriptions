@@ -10,14 +10,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
+import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
@@ -58,13 +61,22 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(EntityLivingBase t, IMobResistances cap) {
-		if(t == null && cap == null) {
+		if(t == null || cap == null) {
 			return Optional.empty();
 		}
 		List<String> result = new LinkedList<String>();
 		Set<DDDDamageType> immunities = new HashSet<DDDDamageType>();
-		ArmorMap aMap = DDDAPI.accessor.getArmorValuesForEntity(t);
-		ResistMap rMap = DDDAPI.accessor.classifyResistances(new HashSet<DDDDamageType>(DDDRegistries.damageTypes.getAll()), cap);
+		ArmorMap aMap = new ArmorMap();
+		t.getArmorInventoryList().forEach((stack) -> {
+			if(stack.getItem() instanceof ItemArmor) {
+				ItemArmor armor = (ItemArmor) stack.getItem();
+				IArmorDistribution armorDist = DDDAPI.accessor.getArmorResistances(stack);
+				if(armorDist != null) {
+					armorDist.distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
+				}
+			}
+		});
+		ResistMap rMap = cap.getAllResistances();
 		for(Iterator<DDDDamageType> it = DDDRegistries.damageTypes.getAll().stream().sorted(Comparator.<DDDDamageType>comparingDouble((d) -> rMap.get(d)).thenComparing(Comparator.naturalOrder())).iterator(); it.hasNext();) {
 			DDDDamageType type = it.next();
 			if(cap.hasImmunity(type)) {

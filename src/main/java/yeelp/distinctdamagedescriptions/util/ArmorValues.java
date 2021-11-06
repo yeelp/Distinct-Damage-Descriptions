@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.util;
 
 import java.util.Comparator;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.Tuple;
 
 public final class ArmorValues implements Comparable<ArmorValues> {
@@ -35,8 +37,17 @@ public final class ArmorValues implements Comparable<ArmorValues> {
 		return this;
 	}
 
-	public static ArmorValues merge(ArmorValues a1, ArmorValues a2) {
-		return a1.setValues(a1.armor + a2.armor, a1.toughness + a2.toughness);
+	public static ArmorValues merge(@Nullable ArmorValues a1, @Nullable ArmorValues a2) {
+		if(a1 == null && a2 == null) {
+			return new ArmorValues();
+		}
+		if(a1 == null) {
+			return a2;
+		}
+		if(a2 == null) {
+			return a1;
+		}
+		return a1.setValues(a1.armor + a2.armor, a1.toughness + a2.toughness);			
 	}
 
 	@Override

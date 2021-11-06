@@ -21,7 +21,6 @@ import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
-import yeelp.distinctdamagedescriptions.handlers.DamageHandler;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
@@ -42,7 +41,7 @@ public class DistinctDamageDescriptions {
 	@Instance(ModConsts.MODID)
 	public static DistinctDamageDescriptions instance;
 	public static File srcFile;
-	
+
 	@SidedProxy(clientSide = "yeelp.distinctdamagedescriptions.proxy.ClientProxy", serverSide = "yeelp.distinctdamagedescriptions.proxy.Proxy")
 	public static Proxy proxy;
 
@@ -66,7 +65,6 @@ public class DistinctDamageDescriptions {
 	public void init(FMLInitializationEvent event) {
 		new CapabilityHandler().register();
 		new TooltipHandler().register();
-		new DamageHandler().register();
 		new MobHandler().register();
 		new DDDDiscItem.DropHandler().register();
 		DDDTrackers.register();
@@ -81,7 +79,7 @@ public class DistinctDamageDescriptions {
 		DDDEnchantments.init();
 		ModIntegrationKernel.doInit(event);
 	}
-	
+
 	@SuppressWarnings("static-method")
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {

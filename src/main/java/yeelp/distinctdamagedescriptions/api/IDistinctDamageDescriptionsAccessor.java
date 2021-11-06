@@ -1,27 +1,19 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatTracker;
 
 public abstract interface IDistinctDamageDescriptionsAccessor {
 	/**
@@ -96,71 +88,17 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 */
 	@Nullable
 	ShieldDistribution getShieldDistribution(ItemStack stack);
-
+	
 	/**
-	 * Get a map of armor resistance for an entity
-	 * 
+	 * Get this entity's DDDCombatTracker, if present. If not present, then this entity hasn't finised construction yet, or replaced their combat tracker
 	 * @param entity
-	 * @return a Map that maps equipment slots to specific IArmorReistances present
-	 *         in that slot
+	 * @return The entity's DDDCombatTracker, if they have it.
 	 */
-	Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity);
-
-	/**
-	 * Get all armor values per damage type for an entity
-	 * 
-	 * @param entity
-	 * @return A Map mapping damage types to a tuple (armor, toughness)
-	 */
-	default ArmorMap getArmorValuesForEntity(EntityLivingBase entity) {
-		return getArmorValuesForEntity(entity, ModConsts.ARMOR_SLOTS_ITERABLE);
-	}
-
-	/**
-	 * Get a map of damage types to armor values for that damage type.
-	 * 
-	 * @param entity
-	 * @param slots  the slots to consider. Other slots are ignored, even if they
-	 *               have armor in them.
-	 * @return A Map mapping damage types to a tuple (armor, toughness).
-	 */
-	ArmorMap getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots);
-
-	/**
-	 * classify and categorize damage.
-	 * 
-	 * @param src    DamageSource
-	 * @param target the defending EntityLivingBase
-	 * @return The damage distribution that gives the context for the damage.
-	 */
-	Optional<IDamageDistribution> classifyDamage(@Nonnull DamageSource src, EntityLivingBase target);
-
-	/**
-	 * Divide resistances into categories
-	 * 
-	 * @param types
-	 * @param resists
-	 * @return a map of relevant resistances. Immunities aren't included.
-	 */
-	ResistMap classifyResistances(Set<DDDDamageType> types, IMobResistances resists);
-
-	/**
-	 * Check if a {@link DDDDamageSource} is physical (slash, pierce, bludgeoning)
-	 * only.
-	 * 
-	 * @param src
-	 * @return true if only physical.
-	 */
-	boolean isPhysicalDamageOnly(DDDDamageSource src);
-
-	/**
-	 * Check if a damage type string is physical.
-	 * 
-	 * @param damageType
-	 * @return true if physical, false if not.
-	 */
-	default boolean isPhysicalDamage(DDDDamageType type) {
-		return type.getType() == DDDDamageType.Type.PHYSICAL;
+	default Optional<DDDCombatTracker> getDDDCombatTracker(EntityLivingBase entity) {
+		if(entity._combatTracker instanceof DDDCombatTracker) {
+			return Optional.of((DDDCombatTracker) entity._combatTracker);
+		}
+		return Optional.empty();
 	}
 
 }

@@ -15,7 +15,7 @@ import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticleType;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.network.ParticleMessage;
-import yeelp.distinctdamagedescriptions.util.DDDCombatRules.CombatResults;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults;
 
 public class DDDEffects {
 	private static Random particleDisplacement = new Random();

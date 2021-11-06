@@ -8,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
 
 public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	/**
@@ -25,18 +24,17 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	 * Get the death message for a damage type
 	 * 
 	 * @param type     type
-	 * @param src      the DDDDamageSource to fall back too if type has no death
-	 *                 message
 	 * @param attacker attacking Entity
 	 * @param defender defending EntityLivingBase
 	 * @return the ITextComponent death message
 	 */
+	@Nonnull
 	@SuppressWarnings("null")
-	default ITextComponent getDeathMessageForType(DDDDamageType type, DDDDamageSource src, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
+	default ITextComponent getDeathMessageForType(@Nonnull DDDDamageType type, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
 		boolean hasAttacker = attacker != null;
 		String msg = type.getDeathMessage(hasAttacker);
 		if(msg == null) {
-			return src.getDeathMessage(defender);
+			return defender.getCombatTracker().getDeathMessage();
 		}
 		if(hasAttacker) {
 			msg = msg.replaceAll("#attacker", attacker.getName());

@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.nbt.NBTTagCompound;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.ResistMap;
 
 /**
  * Damage Resistances capability base.
@@ -53,5 +55,11 @@ public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> 
 	 * @return a copy
 	 */
 	IDamageResistances copy();
+	
+	default ResistMap getAllResistances() {
+		ResistMap rMap = new ResistMap();
+		DDDRegistries.damageTypes.getAll().forEach((t) -> rMap.put(t, this.getResistance(t)));
+		return rMap;
+	}
 
 }
