@@ -65,6 +65,9 @@ public abstract class Distribution implements IDistribution {
 
 	@Override
 	public void setWeight(DDDDamageType type, float amount) {
+		if(amount < 0) {
+			throw new InvariantViolationException("Can't set negative weight!");
+		}
 		this.distMap.put(type, amount);
 	}
 

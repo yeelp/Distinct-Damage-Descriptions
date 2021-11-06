@@ -155,7 +155,7 @@ public class DDDCombatTracker extends CombatTracker {
 						}
 						// FALL_THROUGH
 					case ALLOW:
-						if(resistances.updateAdaptiveResistance(m)) {
+						if(resistances.updateAdaptiveResistance(updateEvt.getDamageToAdaptTo())) {
 							this.results.wasAdaptive();
 						}
 					default:

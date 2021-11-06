@@ -1,65 +1,21 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 
-import crafttweaker.api.entity.IEntity;
-import crafttweaker.api.entity.IEntityLivingBase;
-import crafttweaker.api.minecraft.CraftTweakerMC;
-import yeelp.distinctdamagedescriptions.event.DamageCalculationEvent;
+import java.util.function.Supplier;
+
+import stanhebben.zenscript.ZenRuntimeException;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public abstract class CTDDDEvent implements IDDDEvent {
-	private final DamageCalculationEvent internal;
-
-	CTDDDEvent(DamageCalculationEvent evt) {
-		this.internal = evt;
+	
+	protected static DDDDamageType parseDamageType(String type) {
+		return validateNonNull(DDDRegistries.damageTypes.get(type), () -> new ZenRuntimeException(String.format("%s isn't a recognized damage type! Remember types must start with the prefix: ddd_", type)));
 	}
-
-	@Override
-	public IEntity getEntity() {
-		return CraftTweakerMC.getIEntity(this.internal.getAttacker());
-	}
-
-	@Override
-	public IEntityLivingBase getDefender() {
-		return CraftTweakerMC.getIEntityLivingBase(this.internal.getDefender());
-	}
-
-	@Override
-	public float getDamage(String type) {
-		return this.internal.getDamage(DDDRegistries.damageTypes.get(type));
-	}
-
-	@Override
-	public void setDamage(String type, float damage) {
-		this.internal.setDamage(DDDRegistries.damageTypes.get(type), damage);
-	}
-
-	@Override
-	public float getResistance(String type) {
-		return this.internal.getResistance(DDDRegistries.damageTypes.get(type));
-	}
-
-	@Override
-	public void setResistance(String type, float resistance) {
-		this.internal.setResistance(DDDRegistries.damageTypes.get(type), resistance);
-	}
-
-	@Override
-	public float getArmor(String type) {
-		return this.internal.getArmorAndToughness(DDDRegistries.damageTypes.get(type)).getArmor();
-	}
-
-	@Override
-	public void setArmor(String type, float armor) {
-		this.internal.setArmorAndToughness(DDDRegistries.damageTypes.get(type), armor, getToughness(type));
-	}
-
-	@Override
-	public float getToughness(String type) {
-		return this.internal.getArmorAndToughness(DDDRegistries.damageTypes.get(type)).getToughness();
-	}
-
-	@Override
-	public void setToughness(String type, float toughness) {
-		this.internal.setArmorAndToughness(DDDRegistries.damageTypes.get(type), getArmor(type), toughness);
+	
+	private static <T, X extends Exception> T validateNonNull(T t, Supplier<X> exceptionSup) throws X {
+		if(t != null) {
+			return t;
+		}
+		throw exceptionSup.get();
 	}
 }

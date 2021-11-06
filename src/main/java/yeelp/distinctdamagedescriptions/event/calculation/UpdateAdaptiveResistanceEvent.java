@@ -51,15 +51,48 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 		this.resists = resists;
 	}
 
+	/**
+	 * Get this entity's current resistance of a certain type. Does not reflect
+	 * their actual resistance, but the resistance value used in calculations.
+	 * 
+	 * @param type
+	 * @return That entity's resistance to that type.
+	 */
 	public float getResistance(DDDDamageType type) {
 		return this.resists.get(type);
 	}
 
+	/**
+	 * Is this entity currently immune to this type? Does not reflect their regular
+	 * immunities, just immunities used in this calculation.
+	 * 
+	 * @param type
+	 * @return true if immune
+	 */
 	public boolean hasImmunity(DDDDamageType type) {
 		return this.immunities.contains(type);
 	}
 
+	/**
+	 * Prevent this entity from adapting to this type, this time only.
+	 * 
+	 * @param type
+	 */
 	public void ignoreType(DDDDamageType type) {
 		this.dmg.remove(type);
+	}
+
+	/**
+	 * Get the current map of damage this entity is adapting to. This will be used
+	 * when updating adpative resistance, but <strong>NOT</strong> used as the
+	 * damage inflicted. In reality, this damage map is a copy; changes to the
+	 * damage values in this map do <strong>NOT</strong> change the amount of damage
+	 * inflicted. It will however, change how adpatability changes with adaptive
+	 * weakness enabled!
+	 * 
+	 * @return The damage being adapted to
+	 */
+	public DamageMap getDamageToAdaptTo() {
+		return this.dmg;
 	}
 }

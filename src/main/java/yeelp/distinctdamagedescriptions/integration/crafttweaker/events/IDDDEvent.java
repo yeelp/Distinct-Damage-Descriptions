@@ -1,9 +1,12 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 
 import crafttweaker.annotations.ZenRegister;
+import crafttweaker.api.damage.IDamageSource;
 import crafttweaker.api.entity.IEntity;
 import crafttweaker.api.entity.IEntityLivingBase;
 import crafttweaker.api.event.IEntityEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import stanhebben.zenscript.ZenRuntimeException;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -18,7 +21,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
  * @author Yeelp
  *
  */
-public abstract interface IDDDEvent extends IEntityEvent {
+public interface IDDDEvent extends IEntityEvent {
 	/**
 	 * Get the defender
 	 * 
@@ -40,74 +43,40 @@ public abstract interface IDDDEvent extends IEntityEvent {
 	}
 
 	/**
-	 * Get the damage inflicted
+	 * Gets the true attacker. The shulker, not the bullet.
 	 * 
-	 * @param type the damage type.
-	 * @return damage inflicted
+	 * @return The true attacker. May be null.
 	 */
-	@ZenMethod
-	float getDamage(String type);
+	@ZenGetter("trueAttacker")
+	IEntity getTrueAttacker();
 
 	/**
-	 * Set the damage to inflict via this event
+	 * Get the original damage source the defender was hit by.
 	 * 
-	 * @param type   the damage type.
-	 * @param damage new damage to inflict
+	 * @return the original damage source
 	 */
-	@ZenMethod
-	void setDamage(String type, float damage);
+	@ZenGetter("originalSource")
+	IDamageSource getOriginalSource();
 
 	/**
-	 * Get the resistance the defender has against a damage type.
+	 * Check if this event is {@link Cancelable}. Trying to cancel events that can't
+	 * be canceled will throw an exception.
 	 * 
-	 * @param type the damage type.
-	 * @return the resistance
+	 * @return True if the event can be canceled, false otherwise.
 	 */
-	@ZenMethod
-	float getResistance(String type);
+	@ZenGetter("cancelable")
+	default boolean isCancelable() {
+		return false;
+	}
 
 	/**
-	 * Set the resistance the defender will use for a damage type
+	 * Set the canceled status of this event. Further ZenScript listeners will not
+	 * be able to react to the event.
 	 * 
-	 * @param type       the damage type
-	 * @param resistance the new resistance
+	 * @param status The cancellation status
 	 */
-	@ZenMethod
-	void setResistance(String type, float resistance);
-
-	/**
-	 * Get the armor value versus a certain type
-	 * 
-	 * @param type the damage type
-	 * @return the armor amount
-	 */
-	@ZenMethod
-	float getArmor(String type);
-
-	/**
-	 * Set the armor amount for a certain type
-	 * 
-	 * @param type  the damage type
-	 * @param armor the armor amount.
-	 */
-	@ZenMethod
-	void setArmor(String type, float armor);
-
-	/**
-	 * Get the toughness amount for a certain type
-	 * 
-	 * @param type the damage type
-	 * @return The total toughness value for a certain damage type.
-	 */
-	@ZenMethod
-	float getToughness(String type);
-
-	/**
-	 * Set the toughness amount for a certain type
-	 * 
-	 * @param type      the damage type
-	 * @param toughness the new toughness value to set.
-	 */
-	@ZenMethod
-	void setToughness(String type, float toughness);
+	@ZenMethod("setCanceled")
+	default void setCanceled(boolean status) {
+		throw new ZenRuntimeException("Can't attempt to cancel event of type: " + this.getClass().getSimpleName());
+	}
 }

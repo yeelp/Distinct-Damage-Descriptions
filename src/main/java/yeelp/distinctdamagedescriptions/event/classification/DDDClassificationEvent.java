@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 /**
  * Base event for all classification DDD does to let other mods and features hook into
  * this to alter information during damage calculations. <br>
- * Some of these events are {@link Cancelable}. <br>
+ * None of these events are {@link Cancelable}. <br>
  * None of these events have a result {@link HasResult}. <br>
  * All children are fired on the {@link MinecraftForge#EVENT_BUS}.
  * 

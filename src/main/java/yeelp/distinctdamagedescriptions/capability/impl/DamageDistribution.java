@@ -84,4 +84,11 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	public IDistribution copy() {
 		return new DamageDistribution(super.copyMap(0));
 	}
+
+	@Override
+	public void setWeight(DDDDamageType type, float amount) {
+		throw new InvariantViolationException("Can't set individual damage types weight as weights would no longer add to 1! Use setNewWeights() instead!");
+	}
+	
+	
 }
