@@ -77,12 +77,9 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 			DDDDamageType directType = sMap.getDirect().get(direct.orElse(""));
 			DDDDamageType indirectType = sMap.getIndirect().get(indirect.orElse(""));
 			DistinctDamageDescriptions.debug(directType.getTypeName() + ", " + indirectType.getTypeName());
-			boolean altered = false;
-			altered = set.add(directType) || set.add(indirectType);
-			if(altered) {
-				//if altered, we don't need normal any more, as we have different types in it.
-				set.remove(DDDBuiltInDamageType.NORMAL);
-			}
+			set.add(directType);
+			set.add(indirectType);
+			set.remove(DDDBuiltInDamageType.NORMAL);
 		}
 		return set;
 	}
@@ -93,17 +90,20 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 	}
 
 	@Override
-	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
 		Set<DDDDamageType> types = getTypes(src, target);
+		if(types.size() == 0) {
+			return Optional.empty();
+		}
 		if(types.size() == 1) {
-			return types.iterator().next().getBaseDistribution();
+			return Optional.of(types.iterator().next().getBaseDistribution());
 		}
 		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
 		float weight = 1.0f / types.size();
 		for(DDDDamageType type : types) {
 			map.put(type, weight);
 		}
-		return new DamageDistribution(map);
+		return Optional.of(new DamageDistribution(map));
 	}
 
 	public void registerDamageTypeData(DDDDamageType type, DamageTypeData[] datas) {

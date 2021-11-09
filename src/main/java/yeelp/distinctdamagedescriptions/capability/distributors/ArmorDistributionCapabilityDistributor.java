@@ -10,7 +10,7 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 public final class ArmorDistributionCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<ItemStack, IArmorDistribution, IArmorDistribution> {
-	static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "armorResists");
+	public static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "armorResists");
 	private static ArmorDistributionCapabilityDistributor instance;
 
 	private ArmorDistributionCapabilityDistributor() {

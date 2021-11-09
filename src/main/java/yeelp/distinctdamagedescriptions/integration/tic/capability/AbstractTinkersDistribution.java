@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability.impl;
+package yeelp.distinctdamagedescriptions.integration.tic.capability;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,6 +15,7 @@ import slimeknights.tconstruct.library.utils.TinkerUtil;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.integration.capability.impl.DistributionRequiresUpdate;
 
 /**
  * An abstract distribution for tinker items

@@ -1,15 +1,15 @@
 package yeelp.distinctdamagedescriptions.registries.impl.dists;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 
 /**
@@ -66,18 +66,14 @@ public abstract class AbstractSingleTypeDist implements DDDPredefinedDistributio
 
 	@Override
 	public final Set<DDDDamageType> getTypes(DamageSource source, EntityLivingBase target) {
-		DDDDamageType type;
-		if(this.enabled() && useType(source, target)) {
-			type = this.getType();
+		if(this.enabled() && this.useType(source, target)) {
+			return ImmutableSet.of(this.getType());
 		}
-		else {
-			type = DDDBuiltInDamageType.NORMAL;
-		}
-		return Sets.newHashSet(type);
+		return ImmutableSet.of();
 	}
 
 	@Override
-	public final IDamageDistribution getDamageDistribution(DamageSource source, EntityLivingBase target) {
-		return getTypes(source, target).iterator().next().getBaseDistribution();
+	public final Optional<IDamageDistribution> getDamageDistribution(DamageSource source, EntityLivingBase target) {
+		return this.getTypes(source, target).isEmpty() ? Optional.empty() : Optional.of(this.getType().getBaseDistribution());
 	}
 }

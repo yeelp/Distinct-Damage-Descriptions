@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries.impl.dists;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -8,7 +9,6 @@ import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
@@ -55,8 +55,8 @@ public final class DDDExplosionDist implements DDDPredefinedDistribution {
 	}
 
 	@Override
-	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return src.isExplosion() ? dist : DDDBuiltInDamageType.NORMAL.getBaseDistribution();
+	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+		return Optional.ofNullable(src.isExplosion() ? dist : null);
 	}
 
 	@Override

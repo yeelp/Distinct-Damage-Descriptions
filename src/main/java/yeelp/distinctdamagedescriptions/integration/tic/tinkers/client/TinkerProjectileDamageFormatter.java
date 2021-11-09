@@ -2,8 +2,8 @@ package yeelp.distinctdamagedescriptions.integration.tic.tinkers.client;
 
 import net.minecraft.item.ItemStack;
 import slimeknights.tconstruct.library.tools.ranged.ProjectileCore;
-import yeelp.distinctdamagedescriptions.capability.impl.TinkerToolDistribution;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatIconAggregator;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerToolDistribution;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 

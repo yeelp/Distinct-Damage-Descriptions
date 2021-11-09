@@ -5,12 +5,13 @@ import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributions;
+import yeelp.distinctdamagedescriptions.registries.impl.DDDTrackers;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.DDDJsonIO;
 
 /**
- * All the registered info for DDD goes here. Damage Types, Creature Types, and
- * Damage Distributions.
+ * All the registered info for DDD goes here. Damage Types, Creature Types,
+ * Damage Distributions and trackers.
  * 
  * @author Yeelp
  *
@@ -32,6 +33,11 @@ public abstract class DDDRegistries {
 	 * The registry for custom distributions.
 	 */
 	public static IDDDDistributionRegistry distributions;
+	
+	/**
+	 * Registry for tracking entities.
+	 */
+	public static IDDDTrackersRegistry trackers;
 
 	/**
 	 * Initialize the registries, update the explosion distribution, and read from
@@ -42,6 +48,7 @@ public abstract class DDDRegistries {
 		damageTypes = new DDDDamageTypes();
 		creatureTypes = new DDDCreatureTypes();
 		distributions = new DDDDistributions();
+		trackers = new DDDTrackers();
 		DDDExplosionDist.update();
 		distributions.register(DDDJsonIO.init());
 	}

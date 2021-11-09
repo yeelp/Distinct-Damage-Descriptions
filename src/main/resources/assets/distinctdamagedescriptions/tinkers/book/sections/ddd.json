@@ -10,13 +10,8 @@
         "data": "ddd/about2.json"
     },
     { 
-        "name": "distsabout2",
+        "name": "more dists contd",
         "type": "text",
         "data": "ddd/about3.json"
-    },
-    { 
-        "name": "shieldsprojectiles contd",
-        "type": "text",
-        "data": "ddd/about4.json"
     }
 ]

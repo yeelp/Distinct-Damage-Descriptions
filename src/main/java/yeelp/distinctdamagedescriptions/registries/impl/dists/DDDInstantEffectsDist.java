@@ -3,9 +3,10 @@ package yeelp.distinctdamagedescriptions.registries.impl.dists;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
@@ -36,7 +37,7 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 
 	@Override
 	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
-		return Sets.newHashSet(classify(src, target));
+		return this.classify(src, target).map(ImmutableSet::of).orElse(ImmutableSet.of());
 	}
 
 	@Override
@@ -45,13 +46,13 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 	}
 
 	@Override
-	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return classify(src, target).getBaseDistribution();
+	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+		return this.classify(src, target).map(DDDDamageType::getBaseDistribution);
 	}
 
-	private DDDDamageType classify(DamageSource source, EntityLivingBase target) {
-		DDDDamageType type = DDDBuiltInDamageType.NORMAL;
-		if(enabled()) {
+	private Optional<DDDDamageType> classify(DamageSource source, EntityLivingBase target) {
+		DDDDamageType type = null;
+		if(this.enabled()) {
 			Entity sourceEntity = source.getImmediateSource();
 			List<PotionEffect> effects;
 			if(sourceEntity instanceof EntityPotion) {
@@ -61,7 +62,7 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 					effects = PotionUtils.getEffectsFromStack(potion.getPotion());
 				}
 				else {
-					return type;
+					return Optional.ofNullable(type);
 				}
 			}
 			else if(sourceEntity instanceof EntityAreaEffectCloud) {
@@ -69,7 +70,7 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 				effects = getEffectsForCloud(cloud);
 			}
 			else {
-				return type;
+				return Optional.ofNullable(type);
 			}
 			for(PotionEffect effect : effects) {
 				Potion appliedPotion = effect.getPotion();
@@ -83,7 +84,7 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 				}
 			}
 		}
-		return type;
+		return Optional.ofNullable(type);
 	}
 
 	@SuppressWarnings("unchecked")

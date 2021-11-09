@@ -10,24 +10,20 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.modifiers.Modifier;
-import slimeknights.tconstruct.tools.melee.TinkerMeleeWeapons;
 import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
-import yeelp.distinctdamagedescriptions.capability.distributors.ModCompatCapabilityDistributor;
-import yeelp.distinctdamagedescriptions.capability.distributors.TinkerBlankShieldDistributionCapabilityDistributor;
-import yeelp.distinctdamagedescriptions.capability.distributors.TinkersCapabilityDistributor;
-import yeelp.distinctdamagedescriptions.capability.impl.AbstractTinkersDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.TinkerToolDistribution.Shield;
-import yeelp.distinctdamagedescriptions.capability.impl.TinkerToolDistribution.Tool;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
+import yeelp.distinctdamagedescriptions.integration.capability.distributors.ModCompatCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
+import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.capability.distributors.TinkersCapabilityDistributor;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerToolDistribution.Shield;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerToolDistribution.Tool;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.DDDTinkersBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerProjectileDamageFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerShieldFormatter;
@@ -35,6 +31,7 @@ import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerToo
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerToolPartFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.ModifierBruteForce;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.ModifierSlyStrike;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class DDDTinkersIntegration extends DDDTiCIntegration {
 	public static final Modifier slyStrike = new ModifierSlyStrike(), bruteForce = new ModifierBruteForce();
@@ -49,12 +46,13 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 
 	@Override
 	public boolean postInit(FMLPostInitializationEvent evt) {
-		DDDConfigurations.shields.put(ForgeRegistries.ITEMS.getKey(TinkerMeleeWeapons.battleSign).toString(), new ShieldDistribution());
 		for(Item i : ImmutableList.of(TinkerRangedWeapons.arrow, TinkerRangedWeapons.bolt, TinkerRangedWeapons.shuriken)) {
 			String s = ForgeRegistries.ITEMS.getKey(i).toString();
 			DDDConfigurations.projectiles.registerItemProjectilePair(s, s);
 			DDDConfigurations.projectiles.put(s, new DamageDistribution());
 		}
+		DDDRegistries.trackers.register(new BattleSignTracker());
+		DDDRegistries.distributions.register(new BattleSignCounterAttackDistribution());
 		return true;
 	}
 
@@ -75,14 +73,8 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 
 	@Override
 	protected Iterable<ModCompatCapabilityDistributor<ItemStack, ? extends AbstractTinkersDistribution<? extends IDistribution, ?>>> getItemDistributors() {
-		return ImmutableList.of(TinkersCapabilityDistributor.Tool.Damage.getInstance(), TinkersCapabilityDistributor.Tool.Shield.getInstance());
+		return ImmutableList.of(TinkersCapabilityDistributor.Tool.Damage.getInstance());
 	}
-
-	@Override
-	protected void addOtherDistributors() {
-		DDDCapabilityDistributors.addItemDistributor(TinkerBlankShieldDistributionCapabilityDistributor.getInstance());
-	}
-
 
 	@Override
 	protected Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters() {

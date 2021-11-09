@@ -4,6 +4,7 @@ import com.lycanitesmobs.core.item.equipment.ItemEquipment;
 
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.impl.LycanitesEquipmentDistribution;
+import yeelp.distinctdamagedescriptions.integration.capability.distributors.ModCompatCapabilityDistributor;
 
 public class LycanitesCapabilityDistributor extends ModCompatCapabilityDistributor<ItemStack, LycanitesEquipmentDistribution> {
 

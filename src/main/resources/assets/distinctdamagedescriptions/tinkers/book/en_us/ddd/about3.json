@@ -1,8 +1,7 @@
-{
-    "title": "Shields & Projectiles",
-    "text": [
+{ 
+    "text": [ 
         { 
-            "text": "Now a good tinkerer doesn't leave their home (or hole in the wall), without a trusty Battlesign for defense, and a ranged weapon of choice. But... How do those work?"
+            "text": "Now projectiles are much simpler. The projectile inherits the same damage distribution it has sitting in your inventory when fired."
         },
         { 
             "text": "\n"
@@ -11,7 +10,25 @@
             "text": "\n"
         },
         { 
-            "text": "It's pretty straight forward. All shield-like items have their shield effectiveness determined by the average of their head materials' distribution preference. However in addition to that, the tool gains a bonus to Slashing, Piercing, Bludgeoning and any other additional types it may have in its distribution preference equal to 30% of the tool's average head durabilities divided by 1000, rounded down to the nearest percent. The takeaway is that extremely durable heads make for better shields!"
+            "text": "Of course, it doesn't hurt to mention that projectile launchers like bows and crossbows have their own damage distribution, but that is only used when using these launchers as melee weapons. Their damage distribution doesn't affect the damage distribution of the projectiles it shoots whatsoever."
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "That should be it! Good luck out there, and happy adventuring!"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "- Yeelp"
         }
     ]
 }

@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability.impl;
+package yeelp.distinctdamagedescriptions.integration.tic.conarm.capability;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,9 +15,10 @@ import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
+import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 
 public class ConarmArmorDistribution extends AbstractTinkersDistribution<IArmorDistribution, IArmorDistribution> {

@@ -13,4 +13,9 @@ public final class DaylightTracker extends AbstractTracker {
 	public boolean shouldStopTracking(EntityLivingBase entity) {
 		return !entity.isBurning();
 	}
+
+	@Override
+	public String getName() {
+		return "daylight";
+	}
 }

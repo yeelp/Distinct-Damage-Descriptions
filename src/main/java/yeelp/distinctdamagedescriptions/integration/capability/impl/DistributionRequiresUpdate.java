@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability.impl;
+package yeelp.distinctdamagedescriptions.integration.capability.impl;
 
 import java.util.Map;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 
 public abstract class DistributionRequiresUpdate<D extends IDistribution> implements IDistributionRequiresUpdate {

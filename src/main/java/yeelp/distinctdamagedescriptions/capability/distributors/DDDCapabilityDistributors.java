@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public final class DDDCapabilityDistributors {

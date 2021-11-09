@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.capability.impl;
+package yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,9 +25,11 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType.Type;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
+import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;

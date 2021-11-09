@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
@@ -21,30 +20,25 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 
 	@Override
 	public Optional<DamageMap> classify(CombatContext context) {
-		IDamageDistribution dist = DDDRegistries.distributions.getDamageDistribution(context.getSource(), context.getDefender());
 		Entity source = context.getImmediateAttacker();
-		Entity trueSource = context.getSource().getTrueSource();
-		if(dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1) {
+		Entity trueSource = context.getTrueAttacker();
+		return DDDRegistries.distributions.getDamageDistribution(context.getSource(), context.getDefender()).map(Optional::of).orElseGet(() -> {
 			if(source != null && source instanceof IProjectile) {
-				dist = DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker());				
+				return Optional.ofNullable(DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker()));				
 			}
-			else {
-				EntityLivingBase entityAttacker = null;
-				if(source == null && trueSource instanceof EntityPlayer) {
-					entityAttacker = (EntityLivingBase) trueSource;
-				}
-				else if(source != null && source instanceof EntityLivingBase) {
-					entityAttacker = (EntityLivingBase) source;
-				}
-				dist = getDistForLivingEntity(entityAttacker);
+			EntityLivingBase entityAttacker = null;
+			if(source == null && trueSource instanceof EntityPlayer) {
+				entityAttacker = (EntityLivingBase) trueSource;
 			}
-		}
-		if(dist != null) {
+			else if(source != null && source instanceof EntityLivingBase) {
+				entityAttacker = (EntityLivingBase) source;
+			}
+			return Optional.ofNullable(getDistForLivingEntity(entityAttacker));
+		}).map((dist) -> {
 			DamageMap map = dist.distributeDamage(context.getAmount());
 			MinecraftForge.EVENT_BUS.post(new DetermineDamageEvent(source, trueSource, context.getDefender(), context.getSource(), map));
-			return Optional.of(map);
-		}
-		return Optional.empty();
+			return map;
+		});
 	}
 	
 	private static IDamageDistribution getDistForLivingEntity(@Nullable EntityLivingBase attacker) {

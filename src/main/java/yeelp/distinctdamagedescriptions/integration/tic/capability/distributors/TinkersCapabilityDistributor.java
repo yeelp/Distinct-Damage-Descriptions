@@ -1,7 +1,6 @@
-package yeelp.distinctdamagedescriptions.capability.distributors;
+package yeelp.distinctdamagedescriptions.integration.tic.capability.distributors;
 
 import c4.conarm.lib.tinkering.TinkersArmor;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import slimeknights.tconstruct.library.tools.TinkerToolCore;
@@ -9,13 +8,11 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.AbstractTinkersDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.ConarmArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.TinkerToolDistribution;
-import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.integration.capability.distributors.ModCompatCapabilityDistributor;
+import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.conarm.capability.ConarmArmorDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerToolDistribution;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
-import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public abstract class TinkersCapabilityDistributor<T, C extends AbstractTinkersDistribution<? extends IDistribution, T>> extends ModCompatCapabilityDistributor<ItemStack, C> {
 
@@ -57,33 +54,6 @@ public abstract class TinkersCapabilityDistributor<T, C extends AbstractTinkersD
 				return true; // all items have damage distribution
 			}
 		}
-
-		public static final class Shield extends Tool<ShieldDistribution> {
-			private static Shield instance;
-
-			protected Shield() {
-				super("Shield");
-			}
-
-			@Override
-			public boolean isApplicable(ItemStack t) {
-				return super.isApplicable(t) && t.getItemUseAction() == EnumAction.BLOCK;
-			}
-
-			@Override
-			protected TinkerToolDistribution<ShieldDistribution> getCapability(ItemStack t, String key) {
-				return new TinkerToolDistribution.Shield();
-			}
-
-			public static Shield getInstance() {
-				return instance == null ? instance = new Shield() : instance;
-			}
-
-			@Override
-			protected boolean hasDist(ItemStack stack) {
-				return TinkerBlankShieldDistributionCapabilityDistributor.getInstance().isApplicable(stack) || DDDConfigurations.shields.configured(YResources.getRegistryString(stack));
-			}
-		}
 	}
 
 	public static final class Armor extends TinkersCapabilityDistributor<IArmorDistribution, ConarmArmorDistribution> {
@@ -95,7 +65,7 @@ public abstract class TinkersCapabilityDistributor<T, C extends AbstractTinkersD
 
 		@Override
 		public boolean isApplicable(ItemStack t) {
-			return t.getItem() instanceof TinkersArmor && ConarmBlankArmorDistributionCapabilityDistributor.getInstance().isApplicable(t);
+			return t.getItem() instanceof TinkersArmor;
 		}
 
 		@Override

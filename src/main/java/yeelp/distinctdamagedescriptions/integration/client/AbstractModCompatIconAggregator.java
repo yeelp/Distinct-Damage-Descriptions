@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.AbstractCapabilityIconAggregator;
 
 public abstract class AbstractModCompatIconAggregator<T extends IDistributionRequiresUpdate> extends AbstractCapabilityIconAggregator implements IModCompatIconAggregator {

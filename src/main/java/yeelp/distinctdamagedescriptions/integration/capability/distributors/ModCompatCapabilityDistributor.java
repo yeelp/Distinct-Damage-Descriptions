@@ -1,9 +1,10 @@
-package yeelp.distinctdamagedescriptions.capability.distributors;
+package yeelp.distinctdamagedescriptions.integration.capability.distributors;
 
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.capability.IDistributionRequiresUpdate;
+import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
 
 public abstract class ModCompatCapabilityDistributor<T, C extends IDistributionRequiresUpdate> extends AbstractCapabilityDistributor<T, IDistributionRequiresUpdate, C> {
 

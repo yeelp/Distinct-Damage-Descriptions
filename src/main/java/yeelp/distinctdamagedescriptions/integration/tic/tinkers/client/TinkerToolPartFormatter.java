@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import slimeknights.tconstruct.library.materials.MaterialTypes;
 import slimeknights.tconstruct.library.tools.ToolPart;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
@@ -119,7 +120,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 
 	@Override
 	public boolean applicable(ItemStack t) {
-		return t.getItem() instanceof ToolPart;
+		return t.getItem() instanceof ToolPart && ((ToolPart) t.getItem()).hasUseForStat(MaterialTypes.HEAD);
 	}
 
 	@Override
