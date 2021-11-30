@@ -2,9 +2,9 @@ package yeelp.distinctdamagedescriptions.capability.distributors;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public abstract class AbstractCapabilityDistributorGeneratable<T, U, C extends DDDCapabilityBase<? extends NBTBase>> extends AbstractCapabilityDistributor<T, U, C> {
 
@@ -18,7 +18,7 @@ public abstract class AbstractCapabilityDistributorGeneratable<T, U, C extends D
 		if(config.configured(key)) {
 			return this.createCapability(config.get(key));
 		}
-		else if (ModConfig.generateStats) {
+		else if (ModConfig.core.generateStats) {
 			return this.generateCapability(t, new ResourceLocation(key));
 		}
 		else {

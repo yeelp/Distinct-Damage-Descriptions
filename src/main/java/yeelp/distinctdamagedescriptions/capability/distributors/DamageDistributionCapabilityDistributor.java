@@ -34,7 +34,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 	
 	@Override
 	protected IDamageDistribution createCapability(IDamageDistribution configResult) {
-		return (IDamageDistribution) configResult.copy();
+		return configResult;
 	}
 
 	public static final class ForEntity extends DamageDistributionCapabilityDistributor<EntityLivingBase> {

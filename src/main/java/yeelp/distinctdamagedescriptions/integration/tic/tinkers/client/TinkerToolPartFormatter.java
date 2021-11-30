@@ -14,7 +14,6 @@ import slimeknights.tconstruct.library.materials.MaterialTypes;
 import slimeknights.tconstruct.library.tools.ToolPart;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
-import yeelp.distinctdamagedescriptions.integration.client.IModCompatIconAggregator;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
@@ -26,6 +25,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.AbstractCapabilityIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
 
 public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<DistributionBias, ItemStack> implements IModCompatTooltipFormatter<ItemStack> {
@@ -74,12 +74,12 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 		return instance == null ? instance = new TinkerToolPartFormatter() : instance;
 	}
 	
-	protected static DistributionBias getDistributionBias(ItemStack stack) {
+	protected static Optional<DistributionBias> getDistributionBias(ItemStack stack) {
 		if(stack.getItem() instanceof ToolPart) {
 			ToolPart part = (ToolPart) stack.getItem();
-			return TiCConfigurations.toolMaterialBias.getOrFallbackToDefault(part.getMaterialID(stack));
+			return Optional.of(TiCConfigurations.toolMaterialBias.getOrFallbackToDefault(part.getMaterialID(stack)));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private final class BiasFormatter extends TooltipTypeFormatter {
@@ -99,7 +99,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 		}
 	}
 	
-	private final class BiasIconAggregator extends AbstractCapabilityIconAggregator implements IModCompatIconAggregator {
+	private final class BiasIconAggregator extends AbstractCapabilityIconAggregator implements IconAggregator {
 
 		BiasIconAggregator(String regex) {
 			super(TextFormatting.GRAY.toString() + regex, () -> TinkerToolPartFormatter.getInstance().shouldShow());
@@ -107,7 +107,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 
 		@Override
 		protected Stream<DDDDamageType> getOrderedTypes(ItemStack stack) {
-			return TinkerToolPartFormatter.getDistributionBias(stack).getPreferredMapCopy().keySet().stream().sorted();
+			return TinkerToolPartFormatter.getDistributionBias(stack).map((bias) -> bias.getPreferredMapCopy().keySet().stream().sorted()).orElse(Stream.empty());
 		}
 
 		@Override
@@ -124,7 +124,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 	}
 
 	@Override
-	public IModCompatIconAggregator getIconAggregator() {
+	public IconAggregator getIconAggregator() {
 		return this.biasAggregator;
 	}
 }

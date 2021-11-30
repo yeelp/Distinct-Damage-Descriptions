@@ -14,9 +14,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 
 /**
@@ -38,7 +38,7 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 	}
 	
 	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter) {
-		super(keyTooltip, numberFormatter, damageFormatter, (s) -> s == null ? null : DDDConfigurations.mobResists.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse("")), "mobresistances");
+		super(keyTooltip, numberFormatter, damageFormatter, (s) -> Optional.ofNullable(s == null ? MobResistanceCategories.EMPTY : DDDConfigurations.mobResists.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse(""))), "mobresistances");
 	}
 
 	/**
@@ -61,10 +61,10 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, MobResistanceCategories cap) {
-		if(stack == null && cap == null) {
+		if(stack == null && cap == MobResistanceCategories.EMPTY) {
 			return Optional.empty();
 		}
-		if(cap == null && ModConfig.generateStats) {
+		if(cap == MobResistanceCategories.EMPTY && ModConfig.core.generateStats) {
 			return Optional.of(ImmutableList.of(this.notGenerated.getFormattedText()));
 		}
 		else if (cap != null) {

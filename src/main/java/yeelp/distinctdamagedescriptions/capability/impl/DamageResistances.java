@@ -81,7 +81,7 @@ public abstract class DamageResistances implements IDamageResistances {
 
 	@Override
 	public void deserializeNBT(NBTTagCompound tag) {
-		this.resistances = new NonNullMap<DDDDamageType, Float>(0.0f);
+		this.resistances = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
 		this.immunities = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("resistances", new NBTTagCompound().getId())) {
 			NBTTagCompound resist = (NBTTagCompound) nbt;
@@ -97,6 +97,6 @@ public abstract class DamageResistances implements IDamageResistances {
 	}
 	
 	protected Map<DDDDamageType, Float> copyMap() {
-		return this.resistances.entrySet().stream().collect(() -> new NonNullMap<>(0.0f), (m, e) -> m.put(e.getKey(), e.getValue()), NonNullMap<DDDDamageType, Float>::putAll);
+		return this.resistances.entrySet().stream().collect(() -> new NonNullMap<DDDDamageType, Float>(() -> 0.0f), (m, e) -> m.put(e.getKey(), e.getValue()), NonNullMap<DDDDamageType, Float>::putAll);
 	}
 }

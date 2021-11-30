@@ -20,7 +20,7 @@ class ArmorClassifier implements IClassifier<ArmorMap> {
 			Item slottedItem = slottedStack.getItem();
 			if(slottedItem instanceof ItemArmor) {
 				ItemArmor armor = (ItemArmor) slottedItem;
-				DDDAPI.accessor.getArmorResistances(slottedStack).distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((k, v) -> aMap.merge(k, v, ArmorValues::merge));
+				DDDAPI.accessor.getArmorResistances(slottedStack).map((dist) -> dist.distributeArmor(armor.damageReduceAmount, armor.toughness)).ifPresent((m) -> m.forEach((k, v) -> aMap.merge(k, v, ArmorValues::merge)));
 			}
 		}
 		return Optional.of(aMap);

@@ -26,7 +26,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	private Map<ResourceLocation, Float> cache;
 	
 	private MobDamageDistributionFormatter() {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse("")), "mobdistribution");
+		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> Optional.ofNullable(DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse(""))), "mobdistribution");
 		this.cache = new HashMap<ResourceLocation, Float>();
 	}
 	

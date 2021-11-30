@@ -1,7 +1,9 @@
 package yeelp.distinctdamagedescriptions.api;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -21,11 +23,19 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * {@link IDamageDistribution}
 	 * 
 	 * @param stack
-	 * @return the IDamageDistribution capability for this ItemStack, null for an
+	 * @return the IDamageDistribution capability for this ItemStack, empty Optional for an
 	 *         empty stack.
 	 */
-	@Nullable
-	IDamageDistribution getDamageDistribution(ItemStack stack);
+	Optional<IDamageDistribution> getDamageDistribution(@Nullable ItemStack stack);
+	
+	/**
+	 * Get the damage distribution of an item, if it is known to exist
+	 * @param stack item stack. Can't be null
+	 * @return The damage distribution of the stack
+	 */
+	default IDamageDistribution getDamageDistributionUnsafe(@Nonnull ItemStack stack) {
+		return this.getDamageDistribution(Objects.requireNonNull(stack, "Null stack can't have Damage Distribution!")).get();
+	}
 
 	/**
 	 * Get the damage distribution for an EntityLivingBase - an instance of
@@ -34,8 +44,16 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param entity
 	 * @return the IDamageDistribution capability for this EntityLivingBase.
 	 */
-	@Nullable
-	IDamageDistribution getDamageDistribution(EntityLivingBase entity);
+	Optional<IDamageDistribution> getDamageDistribution(@Nullable EntityLivingBase entity);
+	
+	/**
+	 * Get the damage distribution of an entity if it is known to exist
+	 * @param entity target entity. Can't be null
+	 * @return the damage distribution of the entity.
+	 */
+	default IDamageDistribution getDamageDistributionUnsafe(@Nonnull EntityLivingBase entity) {
+		return this.getDamageDistribution(Objects.requireNonNull(entity, "Null entity can't have damage distribution!")).get();
+	}
 
 	/**
 	 * Get the damage distribution for an IProjectile - an instance of
@@ -44,19 +62,26 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param projectile
 	 * @return the IDamageDistribution capability for this IProjectile.
 	 */
-	@Nullable
-	IDamageDistribution getDamageDistribution(IProjectile projectile);
+	Optional<IDamageDistribution> getDamageDistribution(@Nullable IProjectile projectile);
+	
+	/**
+	 * Get the damage distribution for a projectile if it is known to exist
+	 * @param projectile projectile. Can't be null
+	 * @return the damage distribution of the projectile.
+	 */
+	default IDamageDistribution getDamageDistributionUnsafe(@Nonnull IProjectile projectile) {
+		return this.getDamageDistribution(Objects.requireNonNull(projectile, "Null projectile can't have damage distribution!")).get();
+	}
 
 	/**
 	 * Get the armor resistances for an ItemStack - an instance of
 	 * {@link IArmorDistribution}
 	 * 
 	 * @param stack
-	 * @return the IArmorResistances capability for this ItemStack, or null if it
+	 * @return the IArmorResistances capability for this ItemStack, or an empty Optional if it
 	 *         doesn't have it.
 	 */
-	@Nullable
-	IArmorDistribution getArmorResistances(ItemStack stack);
+	Optional<IArmorDistribution> getArmorResistances(@Nullable ItemStack stack);
 
 	/**
 	 * Get the mob resistances for an EntityLivingBase - an instance of
@@ -65,8 +90,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param entity
 	 * @return the IMobResistances for that entity
 	 */
-	@Nullable
-	IMobResistances getMobResistances(EntityLivingBase entity);
+	Optional<IMobResistances> getMobResistances(@Nullable EntityLivingBase entity);
 
 	/**
 	 * Get the mob's creature type - an instance of {@link ICreatureType}
@@ -76,8 +100,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 *         {@link CreatureType.UNKNOWN} for mobs that are instances of
 	 *         EntityPlayer
 	 */
-	@Nullable
-	ICreatureType getMobCreatureType(EntityLivingBase entity);
+	Optional<ICreatureType> getMobCreatureType(@Nullable EntityLivingBase entity);
 
 	/**
 	 * Get a stack's shield distribution
@@ -86,8 +109,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @return a ShieldDistribution, or null if the stack doesn't have this
 	 *         capability.
 	 */
-	@Nullable
-	ShieldDistribution getShieldDistribution(ItemStack stack);
+	Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack);
 	
 	/**
 	 * Get this entity's DDDCombatTracker, if present. If not present, then this entity hasn't finised construction yet, or replaced their combat tracker

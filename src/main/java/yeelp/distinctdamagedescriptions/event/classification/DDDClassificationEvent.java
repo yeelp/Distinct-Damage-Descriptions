@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.event.classification;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -26,12 +28,12 @@ public abstract class DDDClassificationEvent extends Event {
 	private final EntityLivingBase defender;
 	private final DamageSource src;
 
-	protected DDDClassificationEvent(Entity attacker, Entity trueAttacker, EntityLivingBase defender, DamageSource src) {
+	protected DDDClassificationEvent(Entity attacker, Entity trueAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src) {
 		super();
 		this.attacker = attacker;
-		this.defender = defender;
 		this.trueAttacker = trueAttacker;
-		this.src = src;
+		this.defender = Objects.requireNonNull(defender, "Defender can't be null!");
+		this.src = Objects.requireNonNull(src, "Source can't be null!");
 	}
 	
 	@Nonnull
@@ -49,6 +51,7 @@ public abstract class DDDClassificationEvent extends Event {
 		return this.trueAttacker;
 	}
 	
+	@Nonnull
 	public final DamageSource getSource() {
 		return this.src;
 	}

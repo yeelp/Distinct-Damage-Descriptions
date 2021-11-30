@@ -21,9 +21,9 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityToo
  */
 public abstract class DistributionIconAggregator<T extends IDistribution> extends AbstractCapabilityIconAggregator {
 
-	private final Function<ItemStack, T> capExtractor;
+	private final Function<ItemStack, Optional<T>> capExtractor;
 
-	protected DistributionIconAggregator(AbstractCapabilityTooltipFormatter<T, ItemStack> formatter, Function<ItemStack, T> capExtractor) {
+	protected DistributionIconAggregator(AbstractCapabilityTooltipFormatter<T, ItemStack> formatter, Function<ItemStack, Optional<T>> capExtractor) {
 		//Minecraft adds a gray colour formatting code at the beginning of every tooltip string (except the first one), so the formatting codes are duplicated
 		super(TextFormatting.GRAY.toString()+formatter.getTypeText().getFormattedText(), formatter::shouldShow);
 		this.capExtractor = capExtractor;
@@ -31,18 +31,6 @@ public abstract class DistributionIconAggregator<T extends IDistribution> extend
 
 	@Override
 	protected Stream<DDDDamageType> getOrderedTypes(ItemStack stack) {
-		return getDistribution(stack).map((c) -> c.getCategories().stream().sorted()).orElse(Stream.empty());
+		return this.capExtractor.apply(stack).map((c) -> c.getCategories().stream().sorted()).orElse(Stream.empty());
 	}
-	
-	/**
-	 * Get the capability from this ItemStack that this icon aggregator aggregates
-	 * icons for.
-	 * 
-	 * @param stack the stack in question
-	 * @return a Capability from the stack to aggregate icons for.
-	 */
-	private Optional<T> getDistribution(ItemStack stack) {
-		return Optional.ofNullable(this.capExtractor.apply(stack));
-	}
-
 }

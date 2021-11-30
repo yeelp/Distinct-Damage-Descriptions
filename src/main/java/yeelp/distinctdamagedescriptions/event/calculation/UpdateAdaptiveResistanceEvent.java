@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
+import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
@@ -44,11 +45,13 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 
 	private final ResistMap resists;
 	private final Set<DDDDamageType> immunities;
+	private float adaptiveAmount;
 
 	public UpdateAdaptiveResistanceEvent(@Nullable Entity attacker, @Nullable Entity trueAttacker, EntityLivingBase defender, DamageSource src, DamageMap dmg, ResistMap resists, Set<DDDDamageType> immunities) {
 		super(attacker, trueAttacker, defender, src, (DamageMap) dmg.clone());
 		this.immunities = immunities;
 		this.resists = resists;
+		this.adaptiveAmount = DDDAPI.accessor.getMobResistances(defender).get().getAdaptiveAmount();
 	}
 
 	/**
@@ -94,5 +97,21 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	 */
 	public DamageMap getDamageToAdaptTo() {
 		return this.dmg;
+	}
+	
+	/**
+	 * Get the adaptive amount this entity will be using.
+	 * @return the adaptive amount
+	 */
+	public float getAdaptiveAmount() {
+		return this.adaptiveAmount;
+	}
+	
+	/**
+	 * Set the adaptive amount for this entity. This amount will only be used for this calculation, then set back to whatever the amount was before
+	 * @param amount
+	 */
+	public void setAdaptiveAmount(float amount) {
+		this.adaptiveAmount = amount;
 	}
 }

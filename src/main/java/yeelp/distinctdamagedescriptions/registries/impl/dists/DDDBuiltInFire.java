@@ -7,9 +7,9 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public final class DDDBuiltInFire extends AbstractSingleTypeDist {
 	private static final Set<DamageSource> validSources = Sets.newHashSet(Lists.newArrayList(DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.LAVA, DamageSource.ON_FIRE));

@@ -10,6 +10,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
+import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
 
 @ZenClass("mods.ddd.CreatureType")
 @ZenRegister
@@ -19,7 +20,7 @@ public class CTCreatureType {
 
 	public CTCreatureType(IEntityLivingBase entityLiving) {
 		this.entityLiving = entityLiving;
-		this.type = DDDAPI.accessor.getMobCreatureType(CraftTweakerMC.getEntityLivingBase(this.entityLiving));
+		this.type = DDDAPI.accessor.getMobCreatureType(CraftTweakerMC.getEntityLivingBase(this.entityLiving)).orElse(CreatureType.UNKNOWN);
 	}
 
 	@ZenGetter("types")

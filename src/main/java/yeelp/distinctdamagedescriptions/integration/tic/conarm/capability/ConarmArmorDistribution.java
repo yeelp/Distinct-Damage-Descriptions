@@ -1,31 +1,30 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.capability;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 import c4.conarm.lib.materials.ArmorMaterialType;
-import c4.conarm.lib.tinkering.TinkersArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
-import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
-import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 
-public class ConarmArmorDistribution extends AbstractTinkersDistribution<IArmorDistribution, IArmorDistribution> {
+public class ConarmArmorDistribution extends ArmorDistribution {
 
 	@CapabilityInject(ConarmArmorDistribution.class)
 	public static Capability<ConarmArmorDistribution> cap;
-	
+
+	private Collection<String> cachedMats;
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
@@ -37,42 +36,27 @@ public class ConarmArmorDistribution extends AbstractTinkersDistribution<IArmorD
 	}
 
 	@Override
-	protected String getPartType() {
-		return ArmorMaterialType.PLATES;
+	public IArmorDistribution update(ItemStack owner) {
+		Collection<String> mats = TiCUtil.getKeyMaterialIdentifiers(owner, ArmorMaterialType.PLATES);
+		if(this.cachedMats == null || !this.cachedMats.containsAll(mats)) {
+			Map<DDDDamageType, Float> map = new DDDBaseMap<Float>(() -> 0.0f);
+			mats.forEach((mat) -> {
+				IArmorDistribution dist = TiCConfigurations.armorMaterialDist.getOrFallbackToDefault(mat);
+				dist.getCategories().forEach((t) -> map.merge(t, dist.getWeight(t) / mats.size(), Float::sum));
+			});
+			TiCUtil.getBaseDist(owner).forEach((t, f) -> map.merge(t, f, Float::sum));
+			this.setNewWeights(map);
+			this.cachedMats = mats;
+		}
+		return super.update(owner);
 	}
 
-	@Override
-	protected Iterator<PartMaterialType> getParts(ItemStack stack) {
-		return ((TinkersArmor) stack.getItem()).getRequiredComponents().iterator();
-	}
-
-	@Override
-	protected IDDDConfiguration<IArmorDistribution> getConfiguration() {
-		return TiCConfigurations.armorMaterialDist;
-	}
-
-	@Override
-	protected IArmorDistribution getDistributionCapabilityOnStack(ItemStack stack) {
-		return DDDAPI.accessor.getArmorResistances(stack);
-	}
-
-	@Override
-	protected Optional<Map<DDDDamageType, Float>> determineNewMap(ItemStack stack, Collection<String> mats, IDDDConfiguration<IArmorDistribution> config) {
-		Map<DDDDamageType, Float> map = new DDDBaseMap<Float>(0.0f);
-		mats.forEach((mat) -> {
-			IArmorDistribution dist = config.getOrFallbackToDefault(mat);
-			dist.getCategories().forEach((t) -> map.merge(t, dist.getWeight(t)/mats.size(), Float::sum));
-		});
-		this.baseDist.forEach((t, f) -> map.merge(t, f, Float::sum));
-		return Optional.of(map);
-	}
-	
 	public static void register() {
-		IDistributionRequiresUpdate.register(ConarmArmorDistribution.class, ConarmArmorDistribution::new);
+		DDDCapabilityBase.register(ConarmArmorDistribution.class, NBTTagList.class, ConarmArmorDistribution::new);
 	}
 	
 	@CapabilityInject(ConarmArmorDistribution.class)
-	public static void onRegister(Capability<ConarmArmorDistribution> cap) {
-		IDistributionRequiresUpdate.PlayerHandler.allowCapabilityUpdates(cap);
+	private static void onRegister(Capability<ConarmArmorDistribution> cap) {
+		DDDAPI.mutator.registerItemCap(IArmorDistribution.class, cap);
 	}
 }

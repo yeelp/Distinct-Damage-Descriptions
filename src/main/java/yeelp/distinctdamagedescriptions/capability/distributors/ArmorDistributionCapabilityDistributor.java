@@ -34,7 +34,7 @@ public final class ArmorDistributionCapabilityDistributor extends AbstractCapabi
 
 	@Override
 	protected IArmorDistribution createCapability(IArmorDistribution configResult) {
-		return (IArmorDistribution) configResult.copy();
+		return configResult;
 	}
 
 	public static final ArmorDistributionCapabilityDistributor getInstance() {

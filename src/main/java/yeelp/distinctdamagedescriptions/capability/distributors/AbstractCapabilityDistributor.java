@@ -18,6 +18,10 @@ public abstract class AbstractCapabilityDistributor<T, U, C extends DDDCapabilit
 		this.loc = loc;
 	}
 
+	protected AbstractCapabilityDistributor(AbstractCapabilityDistributor<T, U, C> distributor) {
+		this(distributor.loc);
+	}
+	
 	public abstract boolean isApplicable(T t);
 	
 	public final Tuple<ResourceLocation, C> getResourceLocationAndCapability(@Nonnull T t, @Nonnull String key) {

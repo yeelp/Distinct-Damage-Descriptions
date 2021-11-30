@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.event.classification;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -39,8 +40,8 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	 */
 	public GatherDefensesEvent(@Nullable Entity attacker, @Nullable Entity trueAttacker, EntityLivingBase defender, DamageSource src, ResistMap map, Set<DDDDamageType> immunities) {
 		super(attacker, trueAttacker, defender, src);
-		this.map = map;
-		this.immunities = immunities;
+		this.map = Objects.requireNonNull(map, "Resistances can't be null!");
+		this.immunities = Objects.requireNonNull(immunities, "Immunities can't be null!");
 	}
 
 	/**

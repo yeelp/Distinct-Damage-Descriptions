@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
@@ -46,7 +47,7 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 
 	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
 		T result;
-		Iterator<DDDPredefinedDistribution> it = this.map.values().iterator();
+		Iterator<DDDPredefinedDistribution> it = this.map.values().stream().sorted(Comparator.reverseOrder()).iterator();
 		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()));
 		return result;
 	}

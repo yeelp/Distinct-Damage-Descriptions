@@ -34,11 +34,11 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 public abstract class AbstractSingleTypeDist implements DDDPredefinedDistribution {
 	private final Supplier<Boolean> config;
 
-	AbstractSingleTypeDist() {
+	protected AbstractSingleTypeDist() {
 		this(() -> true);
 	}
 
-	AbstractSingleTypeDist(Supplier<Boolean> config) {
+	protected AbstractSingleTypeDist(Supplier<Boolean> config) {
 		this.config = config;
 	}
 

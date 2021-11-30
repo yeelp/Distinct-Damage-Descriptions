@@ -3,7 +3,7 @@ package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
-import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 
 public final class HwylaTooltipMaker {

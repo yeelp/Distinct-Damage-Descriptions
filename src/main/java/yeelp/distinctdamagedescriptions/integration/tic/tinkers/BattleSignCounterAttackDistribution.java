@@ -53,7 +53,8 @@ public class BattleSignCounterAttackDistribution implements DDDPredefinedDistrib
 	}
 	
 	private static IDamageDistribution getDist(EntityPlayer player) {
-		return DDDAPI.accessor.getDamageDistribution(player.getActiveItemStack());
+		//safe because the tracker guarantees a battlesign is being held
+		return DDDAPI.accessor.getDamageDistribution(player.getActiveItemStack()).get();
 	}
 
 }

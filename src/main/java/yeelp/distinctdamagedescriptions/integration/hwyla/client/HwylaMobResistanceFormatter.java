@@ -16,7 +16,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
@@ -70,10 +69,9 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		t.getArmorInventoryList().forEach((stack) -> {
 			if(stack.getItem() instanceof ItemArmor) {
 				ItemArmor armor = (ItemArmor) stack.getItem();
-				IArmorDistribution armorDist = DDDAPI.accessor.getArmorResistances(stack);
-				if(armorDist != null) {
-					armorDist.distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
-				}
+				DDDAPI.accessor.getArmorResistances(stack).ifPresent((armorDist) -> {
+					armorDist.distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));					
+				});
 			}
 		});
 		ResistMap rMap = cap.getAllResistances();

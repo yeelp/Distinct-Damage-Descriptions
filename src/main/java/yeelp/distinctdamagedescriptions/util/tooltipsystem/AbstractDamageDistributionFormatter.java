@@ -19,7 +19,7 @@ import yeelp.distinctdamagedescriptions.util.DamageMap;
  */
 public abstract class AbstractDamageDistributionFormatter extends AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> {
 	
-	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, IDamageDistribution> capExtractor, String typeTextKey) {
+	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
 		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
 	}
 
@@ -30,7 +30,7 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IDamageDistribution cap) {
-		if(cap == null || !this.shouldShowDist(stack)) {
+		if(!this.shouldShowDist(stack)) {
 			return Optional.empty();
 		}
 		final DamageMap vals = this.getVals(stack, cap);

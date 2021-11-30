@@ -17,7 +17,7 @@ public class MobDamageDistributionIconAggregator extends DistributionIconAggrega
 	private static MobDamageDistributionIconAggregator instance;
 	
 	private MobDamageDistributionIconAggregator () {
-		super(MobDamageDistributionFormatter.getInstance(), (s) -> DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse("")));
+		super(MobDamageDistributionFormatter.getInstance(), (s) -> Optional.ofNullable(DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse(""))));
 	}
 	
 	/**

@@ -2,15 +2,16 @@ package yeelp.distinctdamagedescriptions.config;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import net.minecraft.entity.Entity;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public class DDDProjectileConfiguration extends DDDBaseConfiguration<IDamageDistribution> implements IDDDProjectileConfiguration {
+public class DDDProjectileConfiguration extends DDDDistributionConfiguration<IDamageDistribution> implements IDDDProjectileConfiguration {
 	private final HashMap<String, String> itemProjMap = new HashMap<String, String>();
 
-	DDDProjectileConfiguration(IDamageDistribution defaultDist) {
+	DDDProjectileConfiguration(Supplier<IDamageDistribution> defaultDist) {
 		super(defaultDist);
 	}
 

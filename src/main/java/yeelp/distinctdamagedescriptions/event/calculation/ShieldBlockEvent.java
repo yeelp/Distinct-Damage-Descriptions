@@ -1,5 +1,9 @@
 package yeelp.distinctdamagedescriptions.event.calculation;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -26,10 +30,10 @@ public final class ShieldBlockEvent extends DDDCalculationEvent {
 	private final ItemStack shield;
 	private final ShieldDistribution shieldDist;
 
-	public ShieldBlockEvent(Entity attacker, Entity trueAttacker, EntityLivingBase defender, DamageSource src, DamageMap map, ItemStack shield) {
+	public ShieldBlockEvent(Entity attacker, Entity trueAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ItemStack shield) {
 		super(attacker, trueAttacker, defender, src, map);
-		this.shield = shield;
-		this.shieldDist = (ShieldDistribution) DDDAPI.accessor.getShieldDistribution(this.getShield()).copy();
+		this.shield = Objects.requireNonNull(shield, "Shield can't be null!");
+		this.shieldDist = DDDAPI.accessor.getShieldDistribution(this.getShield()).get().copy();
 	}
 
 	/**

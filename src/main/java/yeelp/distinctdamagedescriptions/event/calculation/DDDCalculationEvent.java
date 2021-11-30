@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.event.calculation;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -29,12 +31,12 @@ public abstract class DDDCalculationEvent extends Event {
 	private final DamageSource src;
 	protected final DamageMap dmg;
 
-	protected DDDCalculationEvent(Entity attacker, Entity trueAttacker, EntityLivingBase defender, DamageSource src, DamageMap dmg) {
+	protected DDDCalculationEvent(Entity attacker, Entity trueAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap dmg) {
 		this.attacker = attacker;
 		this.trueAttacker = trueAttacker;
-		this.defender = defender;
-		this.src = src;
-		this.dmg = dmg;
+		this.defender = Objects.requireNonNull(defender, "Defender can't be null!");
+		this.src = Objects.requireNonNull(src, "Source can't be null");
+		this.dmg = Objects.requireNonNull(dmg, "Damage map can't be null!");
 	}
 
 	/**
@@ -74,6 +76,7 @@ public abstract class DDDCalculationEvent extends Event {
 	 * 
 	 * @return The original damage source.
 	 */
+	@Nonnull
 	public final DamageSource getSource() {
 		return this.src;
 	}
@@ -86,7 +89,7 @@ public abstract class DDDCalculationEvent extends Event {
 	 * @return The damage inflicted of that type
 	 * @see DetermineDamageEvent
 	 */
-	public final float getDamage(DDDDamageType type) {
-		return this.dmg.get(type);
+	public final float getDamage(@Nonnull DDDDamageType type) {
+		return this.dmg.get(Objects.requireNonNull(type));
 	}
 }

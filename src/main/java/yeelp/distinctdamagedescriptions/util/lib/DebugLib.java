@@ -3,7 +3,7 @@ package yeelp.distinctdamagedescriptions.util.lib;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 /**
  * Organizes useful methods for debug info here

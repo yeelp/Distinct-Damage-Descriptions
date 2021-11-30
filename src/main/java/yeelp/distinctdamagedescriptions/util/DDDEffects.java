@@ -1,11 +1,14 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,7 +21,7 @@ import yeelp.distinctdamagedescriptions.network.ParticleMessage;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults;
 
 public class DDDEffects {
-	private static Random particleDisplacement = new Random();
+	private static Random particleDisplacement = new Random(), soundPitch = new Random();
 
 	public static class ParticleInfo {
 		private double x, y, z;
@@ -78,52 +81,42 @@ public class DDDEffects {
 	/**
 	 * Play sound effects and spawn particles based on combat results.
 	 * 
-	 * @param player   The attacking player
+	 * @param attacker   The attacking entity
 	 * @param defender the defending EntityLivingBase
 	 * @param results  the results from DDD's combat calculations
-	 * @param ratio    the ratio of final damage to unaltered damage.
 	 * @return true if immunity blocked all damage. I.e.
 	 *         {@code results.wasImmunityTriggered() && ratio == 0}
 	 */
-	public static boolean doEffects(EntityPlayer player, EntityLivingBase defender, CombatResults results, float ratio) {
-		List<ParticleInfo> particles = new LinkedList<ParticleInfo>();
-		SoundInfo soundInfo = null;
-		boolean result = false;
-		if(results.wasResistanceHit()) {
-			addParticles(defender, DDDParticleType.RESISTANCE, particles);
-		}
-		if(results.wasWeaknessHit()) {
-			addParticles(defender, DDDParticleType.WEAKNESS, particles);
-		}
-		if(results.wasImmunityTriggered()) {
-			addParticles(defender, DDDParticleType.IMMUNITY, particles);
-			result = ratio == 0;
-			soundInfo = result ? new SoundInfo(player, DDDSounds.IMMUNITY_HIT, 1.5f, 1.0f) : null;
-		}
-		if(ratio != 0) {
-			if(ratio > 1) {
-				soundInfo = new SoundInfo(player, DDDSounds.WEAKNESS_HIT, 0.6f, 1.0f);
+	public static void doEffects(Entity attacker, EntityLivingBase defender, CombatResults results) {
+		if(attacker instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) attacker;
+			List<ParticleInfo> particles = new LinkedList<ParticleInfo>();
+			List<SoundInfo> sounds = Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, true).map((evt) -> new SoundInfo(player, evt, sound.getRecommendedVolume(), 1.0f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+			if(results.wasResistanceHit()) {
+				addParticles(defender, DDDParticleType.RESISTANCE, particles);
 			}
-			else if(ratio < 1) {
-				soundInfo = new SoundInfo(player, DDDSounds.RESIST_DING, 1.7f, 1.0f);
+			if(results.wasWeaknessHit()) {
+				addParticles(defender, DDDParticleType.WEAKNESS, particles);
 			}
+			if(results.wasImmunityTriggered()) {
+				addParticles(defender, DDDParticleType.IMMUNITY, particles);
+			}
+			sendEffectPackets(player, particles, sounds);
 		}
-		else if (soundInfo == null){
-			soundInfo = new SoundInfo(player, DDDSounds.HIGH_RESIST_HIT, 1.7f, 1.0f);
+		
+		if(defender instanceof EntityPlayer) {
+			EntityPlayer defendingPlayer = (EntityPlayer) defender;
+			sendEffectPackets(defendingPlayer, Collections.emptyList(), Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, false).map((evt) -> new SoundInfo(defendingPlayer, evt, sound.getRecommendedVolume(), 0.8f + soundPitch.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
 		}
-		sendEffectPackets(player, particles, soundInfo);
-		return result;
 	}
 
-	private static void sendEffectPackets(EntityPlayer player, List<ParticleInfo> types, @Nullable SoundInfo info) {
+	private static void sendEffectPackets(EntityPlayer player, List<ParticleInfo> types, List<SoundInfo> sounds) {
 		if(player instanceof EntityPlayerMP) {
 			EntityPlayerMP mpPlayer = (EntityPlayerMP) player;
 			if(!types.isEmpty()) {
 				PacketHandler.INSTANCE.sendTo(new ParticleMessage(types), mpPlayer);
 			}
-			if(info != null) {
-				info.playSound();
-			}
+			sounds.forEach(SoundInfo::playSound);
 		}
 	}
 

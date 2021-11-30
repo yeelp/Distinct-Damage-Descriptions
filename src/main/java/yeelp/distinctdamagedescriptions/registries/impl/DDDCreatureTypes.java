@@ -10,7 +10,7 @@ import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DDDCreatureTypes extends DDDBaseRegistry<CreatureTypeData> implements IDDDCreatureTypeRegistry {
-	private final Map<String, Set<CreatureTypeData>> typeMap = new NonNullMap<String, Set<CreatureTypeData>>(Sets.newHashSet(CreatureTypeData.UNKNOWN));
+	private final Map<String, Set<CreatureTypeData>> typeMap = new NonNullMap<String, Set<CreatureTypeData>>(() -> Sets.newHashSet(CreatureTypeData.UNKNOWN));
 
 	public DDDCreatureTypes() {
 		super(d -> d.getTypeName(), "Creature Type");

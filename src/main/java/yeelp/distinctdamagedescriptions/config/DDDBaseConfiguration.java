@@ -2,12 +2,13 @@ package yeelp.distinctdamagedescriptions.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 	private final Map<String, T> map = new HashMap<String, T>();
-	protected final T defaultVal;
+	protected final Supplier<T> defaultVal;
 
-	DDDBaseConfiguration(T defaultVal) {
+	DDDBaseConfiguration(Supplier<T> defaultVal) {
 		this.defaultVal = defaultVal;
 	}
 
@@ -18,7 +19,7 @@ public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 
 	@Override
 	public T getDefaultValue() {
-		return this.defaultVal;
+		return this.defaultVal.get();
 	}
 
 	@Override

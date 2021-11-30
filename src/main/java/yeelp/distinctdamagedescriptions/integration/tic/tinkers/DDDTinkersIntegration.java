@@ -13,21 +13,18 @@ import slimeknights.tconstruct.library.modifiers.Modifier;
 import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
+import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
+import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
-import yeelp.distinctdamagedescriptions.integration.capability.distributors.ModCompatCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
-import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
-import yeelp.distinctdamagedescriptions.integration.tic.capability.distributors.TinkersCapabilityDistributor;
-import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerToolDistribution.Shield;
-import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerToolDistribution.Tool;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerDamageDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.distributors.TinkerProjectileCapabilityDistributor;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.distributors.TinkerToolCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.DDDTinkersBookTransformer;
-import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerProjectileDamageFormatter;
-import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerShieldFormatter;
-import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerToolDamageFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.TinkerToolPartFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.ModifierBruteForce;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.ModifierSlyStrike;
@@ -40,6 +37,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 	public boolean doSpecificInit(FMLInitializationEvent evt) {
 		slyStrike.addRecipeMatch(new RecipeMatch.ItemCombination(1, new ItemStack(Items.GHAST_TEAR), new ItemStack(Items.COMPASS), new ItemStack(Items.ENDER_EYE)));
 		bruteForce.addItem(Items.FIREWORK_CHARGE);
+		DDDCapabilityDistributors.addProjCap(TinkerProjectileCapabilityDistributor.getInstance());
 		return true;
 	}
 	
@@ -68,23 +66,22 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 
 	@Override
 	public Iterable<Handler> getHandlers() {
-		return ImmutableList.of(new TinkerProjectileHandler());
+		return ImmutableList.of();
 	}
 
 	@Override
-	protected Iterable<ModCompatCapabilityDistributor<ItemStack, ? extends AbstractTinkersDistribution<? extends IDistribution, ?>>> getItemDistributors() {
-		return ImmutableList.of(TinkersCapabilityDistributor.Tool.Damage.getInstance());
+	protected Iterable<AbstractCapabilityDistributor<ItemStack, ?, ? extends IDistribution>> getItemDistributors() {
+		return ImmutableList.of(TinkerToolCapabilityDistributor.getInstance());
 	}
 
 	@Override
 	protected Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters() {
-		return ImmutableList.of(TinkerToolDamageFormatter.getInstance(), TinkerProjectileDamageFormatter.getInstance(), TinkerShieldFormatter.getInstance(), TinkerToolPartFormatter.getInstance());
+		return ImmutableList.of(TinkerToolPartFormatter.getInstance());
 	}
 
 
 	@Override
 	protected void registerCapabilities() {
-		Tool.register();
-		Shield.register();
+		TinkerDamageDistribution.register();
 	}
 }

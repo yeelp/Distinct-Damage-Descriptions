@@ -1,5 +1,9 @@
 package yeelp.distinctdamagedescriptions.event.classification;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -20,9 +24,9 @@ public final class DetermineDamageEvent extends DDDClassificationEvent {
 
 	private final DamageMap map;
 
-	public DetermineDamageEvent(Entity attacker, Entity trueAttacker, EntityLivingBase defender, DamageSource src, DamageMap map) {
+	public DetermineDamageEvent(Entity attacker, Entity trueAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map) {
 		super(attacker, trueAttacker, defender, src);
-		this.map = map;
+		this.map = Objects.requireNonNull(map, "Damage map can't be null!");
 	}
 
 	/**

@@ -36,7 +36,7 @@ public final class DDDMobResistancesConfigReader extends DDDBasicConfigReader<Mo
 			if (!additionalInfo[1].matches(ConfigReaderUtilities.DECIMAL_REGEX) || !additionalInfo[2].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {
 				throw new ConfigInvalidException(entry);
 			}
-			return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, 0.0f), parseImmunities(entry, additionalInfo[0]), Float.parseFloat(additionalInfo[1]), Float.parseFloat(additionalInfo[2]));
+			return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f), parseImmunities(entry, additionalInfo[0]), Float.parseFloat(additionalInfo[1]), Float.parseFloat(additionalInfo[2]));
 		}
 		throw new ConfigInvalidException(entry);
 	}

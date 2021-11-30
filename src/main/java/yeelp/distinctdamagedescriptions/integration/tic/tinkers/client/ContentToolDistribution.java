@@ -39,7 +39,7 @@ public class ContentToolDistribution extends ContentTool {
 		super(tool);
 		this.parent = parent;
 		String key = YResources.getRegistryString(tool);
-		this.dist = (IDamageDistribution) DDDConfigurations.items.getOrFallbackToDefault(key).copy();
+		this.dist = DDDConfigurations.items.getOrFallbackToDefault(key).copy();
 		this.variability = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(key);
 		this.text = generateTextData(tool);
 		this.properties = this.dist.getCategories().stream().sorted().map((t) -> new TextComponentTranslation("distinctdamagedescriptions.tinkers.book.distributions.entry", (int)(this.dist.getWeight(t)*100), t.getDisplayName()).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);

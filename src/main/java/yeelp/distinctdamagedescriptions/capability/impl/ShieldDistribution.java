@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Map;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
@@ -20,7 +21,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	public static Capability<ShieldDistribution> cap;
 	
 	public ShieldDistribution() {
-		this(new NonNullMap<DDDDamageType, Float>(1.0f));
+		this(new NonNullMap<DDDDamageType, Float>(() -> 1.0f));
 	}
 
 	public ShieldDistribution(Map<DDDDamageType, Float> blockMap) {
@@ -55,10 +56,15 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 	
 	@Override
-	public IDistribution copy() {
+	public ShieldDistribution copy() {
 		return new ShieldDistribution(super.copyMap(1.0f));
 	}
 	
+	@Override
+	public ShieldDistribution update(ItemStack owner) {
+		return this;
+	}
+
 	private static float blockDamage(float damage, float weight) {
 		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
 	}

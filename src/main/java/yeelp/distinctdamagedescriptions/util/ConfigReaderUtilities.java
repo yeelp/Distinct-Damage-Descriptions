@@ -72,7 +72,7 @@ public final class ConfigReaderUtilities {
 	 *                                {@code kParser} returns {@code null} for any
 	 *                                parsed key
 	 */
-	public static <K, V> NonNullMap<K, V> parseMap(String s, Function<String, K> kParser, Function<String, V> vParser, V defaultValue) throws ConfigParsingException {
+	public static <K, V> NonNullMap<K, V> parseMap(String s, Function<String, K> kParser, Function<String, V> vParser, Supplier<V> defaultValue) throws ConfigParsingException {
 		return buildMap(defaultValue, parseStringAsListOfEntries(s, kParser, vParser));
 	}
 
@@ -129,7 +129,7 @@ public final class ConfigReaderUtilities {
 		return start + listEntrySubRegex + "(,\\s?" + listEntrySubRegex + ")*" + end;
 	}
 
-	private static <K, V> NonNullMap<K, V> buildMap(V defaultValue, Iterable<Entry<K, V>> mappings) {
+	private static <K, V> NonNullMap<K, V> buildMap(Supplier<V> defaultValue, Iterable<Entry<K, V>> mappings) {
 		if(mappings == null) {
 			return new NonNullMap<K, V>(defaultValue);
 		}

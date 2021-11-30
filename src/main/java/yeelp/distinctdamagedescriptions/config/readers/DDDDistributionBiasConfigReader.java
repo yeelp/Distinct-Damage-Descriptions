@@ -19,6 +19,6 @@ public class DDDDistributionBiasConfigReader extends DDDBasicConfigReader<Distri
 		if(additionalInfo.length > 1 || !additionalInfo[0].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {
 			throw new ConfigInvalidException(entry);
 		}
-		return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, this.defaultVal), Float.parseFloat(additionalInfo[0]));
+		return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> this.defaultVal), Float.parseFloat(additionalInfo[0]));
 	}
 }

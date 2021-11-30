@@ -43,7 +43,7 @@ public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistri
 		return instance == null ? instance = new HwylaMobDamageFormatter() : instance;
 	}
 	
-	private static IDamageDistribution getCap(EntityLivingBase entity) {
+	private static Optional<IDamageDistribution> getCap(EntityLivingBase entity) {
 		ItemStack heldItem = entity.getHeldItemMainhand();
 		boolean hasEmptyHand = heldItem.isEmpty();
 		if(!hasEmptyHand) {

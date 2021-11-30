@@ -22,10 +22,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDCustomDistributions;
 import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
@@ -65,7 +65,7 @@ public final class DDDJsonIO {
 	}
 
 	private static boolean writeExampleJSON(String filename, File parentDirectory) {
-		if(ModConfig.generateJSON) {
+		if(ModConfig.core.generateJSON) {
 			String relativePath = "example/" + filename;
 			File dest = new File(parentDirectory, filename);
 			try {
@@ -112,7 +112,7 @@ public final class DDDJsonIO {
 
 	private static void loadCreatureTypes() {
 		// CREATURE TYPES FROM JSON
-		if(ModConfig.resist.useCreatureTypes) {
+		if(ModConfig.core.useCreatureTypes) {
 			DistinctDamageDescriptions.info("Creature Types Enabled!");
 			JsonParser parser = new JsonParser();
 			for(File f : creatureJsonFiles) {
@@ -168,7 +168,7 @@ public final class DDDJsonIO {
 	private static DDDCustomDistributions loadDamageTypes() {
 		DDDCustomDistributions dists = new DDDCustomDistributions();
 		// CUSTOM DAMAGE TYPES FROM JSON
-		if(ModConfig.dmg.useCustomDamageTypes) {
+		if(ModConfig.core.useCustomDamageTypes) {
 			DistinctDamageDescriptions.info("Custom Damage Types Enabled!");
 			JsonParser parser = new JsonParser();
 			for(File f : damageTypeJsonFiles) {

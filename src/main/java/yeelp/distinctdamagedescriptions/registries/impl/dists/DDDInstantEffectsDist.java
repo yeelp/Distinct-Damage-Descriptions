@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.Entity;
@@ -21,11 +22,11 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 	private static final Field CLOUD_POTIONS = ObfuscationReflectionHelper.findField(EntityAreaEffectCloud.class, "field_184503_f");
@@ -51,40 +52,37 @@ public final class DDDInstantEffectsDist implements DDDPredefinedDistribution {
 	}
 
 	private Optional<DDDDamageType> classify(DamageSource source, EntityLivingBase target) {
+		Optional<DDDDamageType> inflictedType = Optional.empty();
 		DDDDamageType type = null;
 		if(this.enabled()) {
 			Entity sourceEntity = source.getImmediateSource();
-			List<PotionEffect> effects;
+			List<PotionEffect> effects = Collections.emptyList();
+			Potion potionToCheck;
+			switch(target.getCreatureAttribute()) {
+				case UNDEAD:
+					potionToCheck = MobEffects.INSTANT_HEALTH;
+					type = DDDBuiltInDamageType.RADIANT;
+					break;
+				default:
+					potionToCheck = MobEffects.INSTANT_DAMAGE;
+					type = DDDBuiltInDamageType.NECROTIC;
+			}
 			if(sourceEntity instanceof EntityPotion) {
 				EntityPotion potion = (EntityPotion) sourceEntity;
 				ItemStack stack = potion.getPotion();
 				if(stack.getItem() instanceof ItemPotion) {
 					effects = PotionUtils.getEffectsFromStack(potion.getPotion());
 				}
-				else {
-					return Optional.ofNullable(type);
-				}
 			}
 			else if(sourceEntity instanceof EntityAreaEffectCloud) {
 				EntityAreaEffectCloud cloud = (EntityAreaEffectCloud) sourceEntity;
 				effects = getEffectsForCloud(cloud);
 			}
-			else {
-				return Optional.ofNullable(type);
-			}
-			for(PotionEffect effect : effects) {
-				Potion appliedPotion = effect.getPotion();
-				if(appliedPotion.isInstant()) {
-					switch(target.getCreatureAttribute()) {
-						case UNDEAD:
-							type = appliedPotion == MobEffects.INSTANT_HEALTH ? DDDBuiltInDamageType.RADIANT : DDDBuiltInDamageType.NORMAL;
-						default:
-							type = appliedPotion == MobEffects.INSTANT_DAMAGE ? DDDBuiltInDamageType.NECROTIC : DDDBuiltInDamageType.NORMAL;
-					}
-				}
+			if(effects.stream().map(PotionEffect::getPotion).anyMatch(Predicates.and(Potion::isInstant, potionToCheck::equals))) {
+				inflictedType = Optional.of(type);
 			}
 		}
-		return Optional.ofNullable(type);
+		return inflictedType;
 	}
 
 	@SuppressWarnings("unchecked")

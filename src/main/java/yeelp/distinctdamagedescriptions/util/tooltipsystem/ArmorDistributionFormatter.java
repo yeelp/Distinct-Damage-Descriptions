@@ -51,9 +51,6 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IArmorDistribution cap) {
-		if(cap == null) {
-			return Optional.empty();
-		}
 		switch(this.getNumberFormatter()) {
 			case PLAIN:
 				ItemArmor armor = (ItemArmor) stack.getItem();

@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.config;
 
-import yeelp.distinctdamagedescriptions.ModConfig;
-
 /**
  * Where DDD's default config values are stored. <br>
  * Only String and String[] values are stored here. Primitives are stored in
@@ -99,7 +97,20 @@ public interface DefaultValues {
 			"tconstruct:crossbow;[(b, 1)]",
 			"tconstruct:arrow;[(p, 1)]",
 			"tconstruct:bolt;[(p, 1)]",
-			"tconstruct:shuriken;[(s, 1)]"};
+			"tconstruct:shuriken;[(s, 1)]",
+			"lycanitesmobs:grueclaw;[(s, 0.5), (ddd_necrotic, 0.25), (ddd_psychic, 0.25)]",
+			"lycanitesmobs:geonachspear;[(p, 1)]",
+			"lycanitesmobs:remobrawing;[(s, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:zephyrblade;[(s, 0.2), (ddd_lightning, 0.8)]",
+			"lycanitesmobs:clinkscythe;[(s, 0.7), (p, 0.3)]",
+			"lycanitesmobs:geonachfist;[(b, 1)]",
+			"lycanitesmobs:cinderblade;[(ddd_fire, 1)]",
+			"lycanitesmobs:vapulacrystal;[(p, 0.8), (b, 0.2)]",
+			"lycanitesmobs:reiverhorns;[(p, 0.2), (ddd_cold, 0.8)]",
+			"lycanitesmobs:woodenpaxel;[(s, 0.5), (b, 0.5)]",
+			"lycanitesmobs:ironpaxel;[(s, 0.8), (p, 0.2)]",
+			"lycanitesmobs:sprigganheart;[(b, 1)]",
+			"lycanitesmobs:gammasphere;[(ddd_radiant, 1)]"};
 
 	/**
 	 * {@link ModConfig.DamageCategory#projectileDamageTypes}
@@ -107,7 +118,42 @@ public interface DefaultValues {
 	final String[] PROJECTILE_BASE_DAMAGE = {
 			"minecraft:arrow;[(p, 1)];minecraft:arrow,minecraft:tipped_arrow",
 			"minecraft:spectral_arrow;[(p, 1)];minecraft:spectral_arrow",
-			"minecraft:llama_spit;[(b, 1)]"};
+			"minecraft:llama_spit;[(b, 1)]",
+			"lycanitesmobs:whirlwind;[(ddd_cold, 0.3), (ddd_thunder, 0.7)];lycanitesmobs:whirlwindcharge",
+			"lycanitesmobs:magma;[(ddd_fire, 0.6), (b, 0.4)];lycanitesmobs:magmacharge",
+			"lycanitesmobs:frostbolt;[(ddd_cold, 1)];lycanitesmobs:frostboltcharge",
+			"lycanitesmobs:spectralbolt;[(ddd_psychic, 0.5), (ddd_force, 0.5)];lycanitesmobs:spectralboltcharge",
+			"lycanitesmobs:venomshot;[(ddd_poison, 1)];lycanitesmobs:venomshotcharge",
+			"lycanitesmobs:boulderblast;[(b, 1)];lycanitesmobs:boulderblastcharge",
+			"lycanitesmobs:icefireball;[(ddd_cold, 1)];lycanitesmobs:icefireballcharge",
+			"lycanitesmobs:hellfireball;[(ddd_fire, 0.5), (ddd_necrotic, 0.5)];lycanitesmobs:hellfireballcharge",
+			"lycanitesmobs:quill;[(p, 1)];lycanitesmobs:quillcharge",
+			"lycanitesmobs:scorchfireball;[(ddd_fire, 0.5), (ddd_acid, 0.5)];lycanitesmobs:scorchfireballcharge",
+			"lycanitesmobs:throwingscythe;[(p, 1)];lycanitesmobs:throwingscythecharge",
+			"lycanitesmobs:acidsplash;[(ddd_acid, 1)];lycanitesmobs:acidsplashcharge",
+			"lycanitesmobs:lobdarklings;[(b, 1)];lycanitesmobs:lobdarklingscharge",
+			"lycanitesmobs:faebolt;[(ddd_necrotic, 0.5), (ddd_radiant, 0.5)];lycanitesmobs:faeboltcharge",
+			"lycanitesmobs:ember;[(ddd_fire, 1)];lycanitesmobs:embercharge",
+			"lycanitesmobs:poop;[(b, 0.3), (ddd_poison, 0.7)];lycanitesmobs:poopcharge",
+			"lycanitesmobs:lifedrain;[(ddd_necrotic, 1)];lycanitesmobs:lifedraincharge",
+			"lycanitesmobs:aquapulse;[(b, 1)];lycanitesmobs:aquapulsecharge",
+			"lycanitesmobs:arcanelaserstorm;[(b, 0.25), (ddd_lightning, 0.25), (ddd_thunder, 0.25), (ddd_force, 0.25)];lycanitesmobs:arcanelaserstormcharge",
+			"lycanitesmobs:aetherwave;[(ddd_radiant, 1)];lycanitesmobs:aetherwavecharge",
+			"lycanitesmobs:lightball;[(ddd_radiant, 1)];lycanitesmobs:lightballcharge",
+			"lycanitesmobs:mudshot;[(b, 1)];lycanitesmobs:mudshotcharge",
+			"lycanitesmobs:crystalshard;[(p, 0.8), (b, 0.2)];lycanitesmobs:crystalshardcharge",
+			"lycanitesmobs:tundra;[(ddd_cold, 0.5), (b, 0.5)];lycanitesmobs:tundracharge",
+			"lycanitesmobs:tricksterflare;[(ddd_force, 1)];lycanitesmobs:tricksterflarecharge",
+			"lycanitesmobs:demonicblast;[(ddd_lightning, 0.8), (ddd_necrotic, 0.2)];lycanitesmobs:demonicblastcharge",
+			"lycanitesmobs:bloodleach;[(ddd_necrotic, 1)];lycanitesmobs:bloodleachcharge",
+			"lycanitesmobs:frostweb;[(ddd_cold, 1)];lycanitesmobs:frostwebcharge",
+			"lycanitesmobs:chaosorb;[(ddd_force, 1)];lycanitesmobs:chaosorbcharge",
+			"lycanitesmobs:poisonray;[(ddd_poison, 0.5), (ddd_necrotic, 0.5)];lycanitesmobs:poisonraycharge",
+			"lycanitesmobs:blizzard;[(ddd_cold, 1)];lycanitesmobs:blizzardcharge",
+			"lycanitesmobs:doomfireball;[(ddd_fire, 0.5), (ddd_force, 0.5)];lycanitesmobs:doomfireballcharge",
+			"lycanitesmobs:waterjet;[(b, 0.5), (ddd_acid, 0.5)];lycanitesmobs:waterjetcharge",
+			"lycanitesmobs:devilstar;[(ddd_necrotic, 0.5), (ddd_force, 0.5)];lycanitesmobs:devilstarcharge"
+			};
 
 	/***************
 	 * RESISTANCES *
@@ -241,7 +287,13 @@ public interface DefaultValues {
 			"netherrack;[(ddd_necrotic, 0.7), (b, 0.3)];0.7",
 			"cobalt;[(s, 1)];0.2",
 			"ardite;[(ddd_necrotic, 0.3), (s, 0.7)];0.6",
-			"manyullyn;[(ddd_force, 0.7), (s, 0.3)];0.7"
+			"manyullyn;[(ddd_force, 0.7), (s, 0.3)];0.7",
+			"copper;[(p, 0.9), (b, 0.1)];0.1",
+			"bronze;[(p, 0.5), (s, 0.5)];0.1",
+			"lead;[(s, 0.8), (ddd_poison, 0.2)];0.6",
+			"silver;[(p, 0.8), (ddd_radiant, 0.2)];0.6",
+			"electrum;[(s, 0.6), (ddd_lightning, 0.4)];0.6",
+			"steel;[(s, 1)];0.1"
 	};
 	
 	/**
@@ -274,7 +326,35 @@ public interface DefaultValues {
 	/**
 	 * 
 	 */
-	final String[] ARMOR_MATERIAL_DISTRIBUTION = {};
+	final String[] ARMOR_MATERIAL_DISTRIBUTION = {
+			"wood;[(s, 0.5), (p, 0.3), (b, 1)]",
+			"stone;[(s, 1), (p, 1), (b, 1), (ddd_thunder, 0.5)]",
+			"flint;[(s, 0.7), (p, 0.4), (b, 1), (ddd_thunder, 0.3)]",
+			"cactus;[(s, 0.5), (p, 0.4), (b, 1)]",
+			"bone;[(s, 1), (p, 0.5), (b, 0.6), (ddd_poison, 0.8)]",
+			"obsidian;[(s, 0.6), (ddd_force, 0.8), (ddd_fire, 1), (ddd_acid, 0.4)]",
+			"prismarine;[(s, 1), (p, 0.7), (b, 1), (ddd_cold, 0.5)]",
+			"endstone;[(s, 1), (p, 1), (b, 1), (ddd_psychic, 0.7), (ddd_force, 0.3)]",
+			"paper;[(b, 0.5)]",
+			"sponge;[(s, 0.6), (b, 1), (ddd_lightning, 1)]",
+			"firewood;[(s, 0.5), (p, 0.3), (b, 1), (ddd_cold, 1)]",
+			"iron;[(s, 1), (p, 0.7), (b, 0.3)]",
+			"pigiron;[(s, 1), (p, 0.7), (b, 0.3)]",
+			"knightslime;[(s, 0.7), (p, 0.7), (b, 1), (ddd_acid, 1), (ddd_poison, 1), (ddd_psychic, 0.6)]",
+			"slime;[(b, 1), (ddd_acid, 1), (ddd_poison, 1), (ddd_force, 0.5)]",
+			"blueslime;[(b, 1), (ddd_acid, 1), (ddd_poison, 1), (ddd_force, 0.5)]",
+			"magmaslime;[(b, 1), (ddd_fire, 1), (ddd_acid, 1), (ddd_poison, 1), (ddd_cold, 0.4)]",
+			"netherrack;[(s, 0.25), (p, 0.25), (b, 1), (ddd_necrotic, 1)]",
+			"cobalt;[(s, 0.1), (p, 1), (b, 0.7)]",
+			"ardite;[(s, 0.6), (p, 0.6), (b, 0.6), (ddd_necrotic, 1), (ddd_psychic, 1)]",
+			"manyullyn;[(s, 0.7), (p, 1), (b, 0.6), (ddd_force, 1), (ddd_thunder, 1)]",
+			"copper;[(s, 1), (p, 0.7), (b, 0.3)]",
+			"bronze;[(s, 1), (p, 0.7), (b, 0.3)]",
+			"lead;[(s, 1), (p, 0.7), (b, 0.3), (ddd_acid, 0.3), (ddd_poison, 0.5), (ddd_necrotic, 0.4)]",
+			"silver;[(s, 1), (p, 0.7), (b, 0.3), (ddd_radiant, 1), (ddd_necrotic, 0.3)]",
+			"electrum;[(s, 1), (p, 0.7), (b, 0.3), (ddd_lightning, 1), (ddd_thunder, 1)]",
+			"steel;[(s, 1), (p, 0.7), (b, 0.5), (ddd_thunder, 0.7)]"
+	};
 	
 	/**
 	 * {@link ModConfig.CompatCategory.ConarmCategory#armorImmunities}
@@ -284,10 +364,10 @@ public interface DefaultValues {
 			"netherrack;ddd_necrotic",
 			"slime;ddd_acid",
 			"blueslime;ddd_acid",
-			"knightslime;ddd_slashing",
+			"knightslime;ddd_piercing",
 			"sponge;ddd_bludgeoning, ddd_thunder",
 			"manyullyn;ddd_force",
-			"obsidian;ddd_piercing",
+			"obsidian;ddd_slashing",
 			"electrum;ddd_lightning"
 	};
 

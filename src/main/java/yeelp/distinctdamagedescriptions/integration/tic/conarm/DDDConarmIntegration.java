@@ -17,21 +17,20 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.Material;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
+import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
-import yeelp.distinctdamagedescriptions.integration.capability.distributors.ModCompatCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
-import yeelp.distinctdamagedescriptions.integration.tic.capability.AbstractTinkersDistribution;
-import yeelp.distinctdamagedescriptions.integration.tic.capability.distributors.TinkersCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.capability.ConarmArmorDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.conarm.capability.distributors.ConarmArmorDistributor;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.client.DDDConarmBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.traits.DDDImmunityTrait;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.traits.DDDImmunityTrait.DamageHandler;
@@ -79,8 +78,8 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 	}
 
 	@Override
-	protected Iterable<ModCompatCapabilityDistributor<ItemStack, ? extends AbstractTinkersDistribution<? extends IDistribution, ?>>> getItemDistributors() {
-		return ImmutableList.of(TinkersCapabilityDistributor.Armor.getInstance());
+	protected Iterable<AbstractCapabilityDistributor<ItemStack, ?, ? extends IDistribution>> getItemDistributors() {
+		return ImmutableList.of(ConarmArmorDistributor.getInstance());
 	}
 
 	@Override

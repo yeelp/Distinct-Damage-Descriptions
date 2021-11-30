@@ -9,10 +9,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
+import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 
@@ -24,7 +23,7 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 		Entity trueSource = context.getTrueAttacker();
 		return DDDRegistries.distributions.getDamageDistribution(context.getSource(), context.getDefender()).map(Optional::of).orElseGet(() -> {
 			if(source != null && source instanceof IProjectile) {
-				return Optional.ofNullable(DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker()));				
+				return DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker());				
 			}
 			EntityLivingBase entityAttacker = null;
 			if(source == null && trueSource instanceof EntityPlayer) {
@@ -33,17 +32,17 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 			else if(source != null && source instanceof EntityLivingBase) {
 				entityAttacker = (EntityLivingBase) source;
 			}
-			return Optional.ofNullable(getDistForLivingEntity(entityAttacker));
+			return getDistForLivingEntity(entityAttacker);
 		}).map((dist) -> {
 			DamageMap map = dist.distributeDamage(context.getAmount());
-			MinecraftForge.EVENT_BUS.post(new DetermineDamageEvent(source, trueSource, context.getDefender(), context.getSource(), map));
+			DDDHooks.fireDetermineDamage(source, trueSource, context.getDefender(), context.getSource(), map);
 			return map;
 		});
 	}
 	
-	private static IDamageDistribution getDistForLivingEntity(@Nullable EntityLivingBase attacker) {
+	private static Optional<IDamageDistribution> getDistForLivingEntity(@Nullable EntityLivingBase attacker) {
 		if(attacker == null) {
-			return null;
+			return Optional.empty();
 		}
 		ItemStack heldItem = attacker.getHeldItemMainhand();
 		if(heldItem.isEmpty()) {

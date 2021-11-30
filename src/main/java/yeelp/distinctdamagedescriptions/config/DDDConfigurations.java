@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.config;
 import java.util.HashSet;
 import java.util.Map;
 
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
@@ -63,12 +62,12 @@ public abstract class DDDConfigurations {
 	 */
 	@Initializer
 	public static void init() {
-		items = new DDDBaseConfiguration<IDamageDistribution>(DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
-		armors = new DDDBaseConfiguration<IArmorDistribution>(new ArmorDistribution());
-		shields = new DDDBaseConfiguration<ShieldDistribution>(new ShieldDistribution());
-		mobDamage = new DDDBaseConfiguration<IDamageDistribution>(DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
-		mobResists = new DDDBaseConfiguration<MobResistanceCategories>(new MobResistanceCategories(new NonNullMap<DDDDamageType, Float>(0.0f), new HashSet<DDDDamageType>(), 0.0f, 0.0f));
-		projectiles = new DDDProjectileConfiguration(DDDBuiltInDamageType.PIERCING.getBaseDistribution());
+		items = new DDDDistributionConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
+		armors = new DDDDistributionConfiguration<IArmorDistribution>(() -> new ArmorDistribution());
+		shields = new DDDDistributionConfiguration<ShieldDistribution>(() -> new ShieldDistribution());
+		mobDamage = new DDDDistributionConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
+		mobResists = new DDDBaseConfiguration<MobResistanceCategories>(() -> new MobResistanceCategories(new NonNullMap<DDDDamageType, Float>(() -> 0.0f), new HashSet<DDDDamageType>(), 0.0f, 0.0f));
+		projectiles = new DDDProjectileConfiguration(() -> DDDBuiltInDamageType.PIERCING.getBaseDistribution());
 		String[] resistsConfig = new String[ModConfig.resist.mobBaseResist.length + 1];
 		System.arraycopy(ModConfig.resist.mobBaseResist, 0, resistsConfig, 1, ModConfig.resist.mobBaseResist.length);
 		resistsConfig[0] = "player;" + ModConfig.resist.playerResists;

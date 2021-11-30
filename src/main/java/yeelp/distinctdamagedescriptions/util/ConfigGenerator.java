@@ -300,7 +300,7 @@ public final class ConfigGenerator {
 		adaptChance = roundToTwoDecimals(adaptChance);
 		adaptAmount = roundToTwoDecimals(adaptAmount);
 		ADAPTABILITY_CHANCE_CACHE.put(loc, adaptChance);
-		Map<DDDDamageType, Float> resists = new NonNullMap<DDDDamageType, Float>(0.0f);
+		Map<DDDDamageType, Float> resists = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
 		Set<DDDDamageType> immunities = new HashSet<DDDDamageType>();
 		resists.put(DDDBuiltInDamageType.SLASHING, slash);
 		resists.put(DDDBuiltInDamageType.PIERCING, pierce);

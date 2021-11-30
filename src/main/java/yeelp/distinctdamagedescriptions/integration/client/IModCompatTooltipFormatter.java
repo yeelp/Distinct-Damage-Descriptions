@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.client;
 
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 
 /**
  * An extension of the tooltip formatting system for special mod compat.
@@ -21,7 +22,7 @@ public interface IModCompatTooltipFormatter<T> extends TooltipFormatter<T>, Comp
 	 * Get the icon aggregator for this formatter.
 	 * @returnThe aggregator
 	 */
-	IModCompatIconAggregator getIconAggregator();
+	IconAggregator getIconAggregator();
 
 	@Override
 	default int compareTo(IModCompatTooltipFormatter<?> o) {

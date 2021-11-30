@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
@@ -62,6 +63,12 @@ public interface IMobResistances extends IDamageResistances {
 	 */
 	boolean updateAdaptiveResistance(DamageMap dmgMap);
 	
+	@Override
+	IMobResistances copy();
+
+	@Override
+	IMobResistances update(EntityLivingBase owner);
+
 	static void register() {
 		DDDCapabilityBase.register(IMobResistances.class, NBTTagCompound.class, MobResistances::new);
 	}

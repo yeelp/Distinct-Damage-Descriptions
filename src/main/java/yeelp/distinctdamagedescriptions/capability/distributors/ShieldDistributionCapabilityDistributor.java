@@ -34,7 +34,7 @@ public final class ShieldDistributionCapabilityDistributor extends AbstractCapab
 
 	@Override
 	protected ShieldDistribution createCapability(ShieldDistribution configResult) {
-		return (ShieldDistribution) configResult.copy();
+		return configResult;
 	}
 
 	public static final ShieldDistributionCapabilityDistributor getInstance() {

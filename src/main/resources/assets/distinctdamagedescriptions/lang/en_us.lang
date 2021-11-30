@@ -60,7 +60,7 @@ distinctdamagedescriptions.tinkers.book.distributions.favoured.barely=This tool 
 distinctdamagedescriptions.tinkers.book.distributions.favoured.balanced=The %s strikes a nice balance between %s and %s damage.
 distinctdamagedescriptions.tinkers.book.distributions.shield=This tool also functions as a shield!
 distinctdamagedescriptions.tinkers.book.distributions.launcher=This tool launches projectiles. The %s's distribution is only used when attacking in melee.
-distinctdamagedescriptions.tinekrs.book.distributions.projectile=The %s is a projectile. Its distribution is used both when attacking with it in melee and when fired as a projectile.
+distinctdamagedescriptions.tinkers.book.distributions.projectile=The %s is a projectile. Its distribution is used both when attacking with it in melee and when fired as a projectile.
 distinctdamagedescriptions.tinkers.book.distributions.start=Base Distribution:
 distinctdamagedescriptions.tinkers.book.distributions.entry=%s%% %s
 

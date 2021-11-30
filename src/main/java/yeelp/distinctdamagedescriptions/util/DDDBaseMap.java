@@ -21,13 +21,13 @@ public class DDDBaseMap<T> extends NonNullMap<DDDDamageType, T> {
 	private static final String KEY = "type";
 	private static final String VALUE = "weight";
 
-	public DDDBaseMap(T defaultVal) {
+	public DDDBaseMap(Supplier<T> defaultVal) {
 		super(defaultVal);
 		// TODO Auto-generated constructor stub
 	}
 	
 	public static DDDBaseMap<Float> fromNBT(NBTTagList lst, float defaultVal) {
-		DDDBaseMap<Float> map = new DDDBaseMap<Float>(defaultVal);
+		DDDBaseMap<Float> map = new DDDBaseMap<Float>(() -> defaultVal);
 		lst.forEach((nbt) -> {
 			if(nbt instanceof NBTTagCompound) {
 				NBTTagCompound tag = (NBTTagCompound) nbt;
@@ -59,7 +59,7 @@ public class DDDBaseMap<T> extends NonNullMap<DDDDamageType, T> {
 	 * @param valueMapper the mapper that maps damage types to map values
 	 * @return The Collector
 	 */
-	public static <U> Collector<DDDDamageType, ?, DDDBaseMap<U>> typesToDDDBaseMap(U defaultVal, Function<DDDDamageType, ? extends U> valueMapper) {
+	public static <U> Collector<DDDDamageType, ?, DDDBaseMap<U>> typesToDDDBaseMap(Supplier<U> defaultVal, Function<DDDDamageType, ? extends U> valueMapper) {
 		return Collectors.toMap(Functions.identity(), valueMapper, (BinaryOperator<U>)(u1, u2) -> { 
 			throw new IllegalStateException("Can't collect on duplicate keys"); 
 		}, () -> new DDDBaseMap<U>(defaultVal));

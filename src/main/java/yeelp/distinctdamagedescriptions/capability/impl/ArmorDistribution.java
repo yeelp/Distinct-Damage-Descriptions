@@ -2,13 +2,13 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Map;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
@@ -19,7 +19,7 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	public static Capability<IArmorDistribution> cap;
 	
 	public ArmorDistribution() {
-		this(new NonNullMap<DDDDamageType, Float>(0.0f));
+		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f));
 	}
 
 	@SafeVarargs
@@ -47,7 +47,12 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	}
 
 	@Override
-	public IDistribution copy() {
+	public IArmorDistribution copy() {
 		return new ArmorDistribution(super.copyMap(0));
+	}
+
+	@Override
+	public IArmorDistribution update(ItemStack owner) {
+		return this;
 	}
 }

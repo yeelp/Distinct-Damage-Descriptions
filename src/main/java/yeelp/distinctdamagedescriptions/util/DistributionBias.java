@@ -28,7 +28,7 @@ public final class DistributionBias {
 		else if(newBias == 1) {
 			return Optional.of(this.preferred.entrySet().stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
 		}
-		return Optional.of(Stream.concat(this.preferred.keySet().stream(), base.keySet().stream()).distinct().collect(DDDBaseMap.typesToDDDBaseMap(0.0f, (d) -> this.preferred.get(d) * newBias + base.get(d) * (1 - newBias))));
+		return Optional.of(Stream.concat(this.preferred.keySet().stream(), base.keySet().stream()).distinct().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, (d) -> this.preferred.get(d) * newBias + base.get(d) * (1 - newBias))));
 	}
 
 	/**

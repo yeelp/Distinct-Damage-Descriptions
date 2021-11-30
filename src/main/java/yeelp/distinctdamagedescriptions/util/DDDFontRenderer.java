@@ -120,19 +120,20 @@ public final class DDDFontRenderer extends FontRenderer {
 	 * new one is created. The passed {@code currentFontRender} is updated in the
 	 * instance to reflect the current FontRenderer that was supposed to be used.
 	 * 
-	 * @param currentFontRenderer
+	 * @param currentFontRenderer. If null, DDD will fallback to Minecraft's font renderer
 	 * @return The DDDFontRender instance which wraps the specified font renderer
 	 */
 	public static FontRenderer getInstance(FontRenderer currentFontRenderer) {
-		if(currentFontRenderer == instance) {
+		FontRenderer fr = currentFontRenderer != null ? currentFontRenderer : Minecraft.getMinecraft().fontRenderer;
+		if(fr == instance) {
 			return currentFontRenderer;
 		}
 		if(instance == null) {
-			instance = new DDDFontRenderer(currentFontRenderer);
+			instance = new DDDFontRenderer(fr);
 			Minecraft mc = Minecraft.getMinecraft();
 			((IReloadableResourceManager) mc.getResourceManager()).registerReloadListener(instance);
 		}
-		instance.internal = currentFontRenderer;
+		instance.internal = fr;
 		return instance;
 	}
 

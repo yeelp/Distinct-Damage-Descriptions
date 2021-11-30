@@ -1,9 +1,15 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,62 +42,69 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	private DistinctDamageDescriptionsAPIImpl() {
 		DDDAPI.accessor = this;
 		DDDAPI.mutator = this;
+		for(String s : new String[] {
+				ITEM,
+				ENTITY,
+				PROJECTILE}) {
+			Multimap<Class<? extends DDDCapabilityBase<? extends NBTBase>>, Capability<? extends DDDCapabilityBase<? extends NBTBase>>> map = MultimapBuilder.hashKeys().arrayListValues().build();
+			this.caps.put(s, map);
+		}
 	}
+
+	private static final String ITEM = "item", ENTITY = "entity", PROJECTILE = "proj";
+	private final Map<String, Multimap<Class<? extends DDDCapabilityBase<? extends NBTBase>>, Capability<? extends DDDCapabilityBase<? extends NBTBase>>>> caps = Maps.newHashMap();
 
 	/************
 	 * ACCESSOR *
 	 ************/
 
 	@Override
-	@Nullable
-	public IDamageDistribution getDamageDistribution(ItemStack stack) {
-		return getDDDCap(DamageDistribution.cap, stack);
+	public Optional<IDamageDistribution> getDamageDistribution(@Nullable ItemStack stack) {
+		return this.findCaps(ITEM, stack, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(stack));
 	}
 
 	@Override
-	@Nullable
-	public IDamageDistribution getDamageDistribution(EntityLivingBase entity) {
-		return getDDDCap(DamageDistribution.cap, entity);
+	public Optional<IDamageDistribution> getDamageDistribution(@Nullable EntityLivingBase entity) {
+		return this.findCaps(ENTITY, entity, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(entity));
 	}
 
 	@Override
-	@Nullable
-	public IDamageDistribution getDamageDistribution(IProjectile projectile) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nullable IProjectile projectile) {
 		if(projectile != null && projectile instanceof Entity) {
-			return ((Entity) projectile).getCapability(DamageDistribution.cap, null);
+			return this.findCaps(PROJECTILE, (Entity) projectile, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(projectile));
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
-	@Nullable
-	public IArmorDistribution getArmorResistances(ItemStack stack) {
-		return getDDDCap(ArmorDistribution.cap, stack);
+	public Optional<IArmorDistribution> getArmorResistances(@Nullable ItemStack stack) {
+		return this.findCaps(ITEM, stack, IArmorDistribution.class, ArmorDistribution.cap).map((c) -> ((IArmorDistribution) c).update(stack));
 	}
 
 	@Override
-	@Nullable
-	public IMobResistances getMobResistances(EntityLivingBase entity) {
-		return getDDDCap(MobResistances.cap, entity);
+	public Optional<IMobResistances> getMobResistances(@Nullable EntityLivingBase entity) {
+		return getDDDCap(MobResistances.cap, entity).map((c) -> c.update(entity));
 	}
 
 	@Override
-	@Nullable
-	public ICreatureType getMobCreatureType(EntityLivingBase entity) {
+	public Optional<ICreatureType> getMobCreatureType(@Nullable EntityLivingBase entity) {
 		return getDDDCap(CreatureType.cap, entity);
 	}
 
 	@Override
-	@Nullable
-	public ShieldDistribution getShieldDistribution(ItemStack stack) {
-		return getDDDCap(ShieldDistribution.cap, stack);
+	public Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack) {
+		return this.findCaps(ITEM, stack, ShieldDistribution.class, ShieldDistribution.cap).map((c) -> ((ShieldDistribution) c).update(stack));
 	}
 
-	private static <Cap extends DDDCapabilityBase<? extends NBTBase>> Cap getDDDCap(Capability<Cap> cap, ICapabilityProvider thing) {
+	private Optional<? extends DDDCapabilityBase<? extends NBTBase>> findCaps(String type, ICapabilityProvider thing, Class<? extends DDDCapabilityBase<? extends NBTBase>> cap, Capability<? extends DDDCapabilityBase<? extends NBTBase>> fallback) {
+		return this.caps.get(type).get(cap).stream().filter((c) -> thing.hasCapability(c, null)).findFirst().<Optional<? extends DDDCapabilityBase<? extends NBTBase>>>map((c) -> getDDDCap(c, thing)).orElseGet(() -> getDDDCap(fallback, thing));
+	}
+	
+	private static <Cap extends DDDCapabilityBase<? extends NBTBase>> Optional<Cap> getDDDCap(Capability<Cap> cap, ICapabilityProvider thing) {
 		if(thing == null) {
 			return null;
 		}
-		return thing.getCapability(cap, null);
+		return Optional.ofNullable(thing.getCapability(cap, null));
 	}
 
 	/***********
@@ -99,7 +112,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	 ***********/
 	@Override
 	public void setPlayerResistances(EntityPlayer player, ResistMap newResists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount) {
-		IMobResistances mobResists = getMobResistances(player);
+		IMobResistances mobResists = getMobResistances(player).get();
 		for(Entry<DDDDamageType, Float> entry : newResists.entrySet()) {
 			mobResists.setResistance(entry.getKey(), entry.getValue());
 		}
@@ -114,7 +127,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	public boolean updateAdaptiveResistances(EntityLivingBase entity, DamageMap dmgMap) {
-		IMobResistances resists = getMobResistances(entity);
+		IMobResistances resists = getMobResistances(entity).get();
 		if(resists.hasAdaptiveResistance()) {
 			boolean sync = resists.updateAdaptiveResistance(dmgMap);
 			if(entity instanceof EntityPlayer) {
@@ -123,5 +136,24 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 			return sync;
 		}
 		return false;
+	}
+
+	@Override
+	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerItemCap(Class<T> clazz, Capability<? extends T> cap) {
+		this.registerCap(ITEM, clazz, cap);
+	}
+
+	@Override
+	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerProjectileCap(Class<T> clazz, Capability<? extends T> cap) {
+		this.registerCap(PROJECTILE, clazz, cap);
+	}
+
+	@Override
+	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerEntityCap(Class<T> clazz, Capability<? extends T> cap) {
+		this.registerCap(ENTITY, clazz, cap);
+	}
+
+	private final <T extends DDDCapabilityBase<? extends NBTBase>> void registerCap(String key, Class<T> clazz, Capability<? extends T> cap) {
+		this.caps.get(key).put(clazz, cap);
 	}
 }

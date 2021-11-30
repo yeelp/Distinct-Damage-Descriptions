@@ -5,15 +5,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
@@ -61,7 +63,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@Override
 	public DamageMap distributeDamage(float dmg) {
-		if(ModConfig.dmg.useCustomDamageTypes || this.distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0) {
+		if(ModConfig.core.useCustomDamageTypes || this.distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0) {
 			return super.distribute(new DamageMap(), (f) -> f * dmg);
 		}
 		Stream<Entry<DDDDamageType, Float>> stream = this.distMap.entrySet().stream();
@@ -81,8 +83,23 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	@Override
-	public IDistribution copy() {
+	public IDamageDistribution copy() {
 		return new DamageDistribution(super.copyMap(0));
+	}
+
+	@Override
+	public IDamageDistribution update(ItemStack owner) {
+		return this;
+	}
+
+	@Override
+	public IDamageDistribution update(EntityLivingBase owner) {
+		return this;
+	}
+
+	@Override
+	public IDamageDistribution update(IProjectile owner) {
+		return this;
 	}
 
 	@Override

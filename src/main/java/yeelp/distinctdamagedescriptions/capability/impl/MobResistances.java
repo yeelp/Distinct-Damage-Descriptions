@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,10 +16,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
@@ -34,7 +34,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	private Set<DDDDamageType> adaptiveTo;
 
 	public MobResistances() {
-		this(new NonNullMap<DDDDamageType, Float>(0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
+		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
 	}
 
 	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, boolean adaptitability, float adaptiveAmount) {
@@ -95,7 +95,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		boolean sameKeys = this.adaptiveTo.stream().allMatch(dmgMap::containsKey) && dmgMap.keySet().stream().allMatch(this.adaptiveTo::contains);
 		if(!sameKeys) {
 			this.adaptiveTo = new HashSet<DDDDamageType>(dmgMap.keySet());
-			if(ModConfig.resist.enableAdaptiveWeakness) {
+			if(ModConfig.core.enableAdaptiveWeakness) {
 				float total = (float) YMath.sum(dmgMap.values());
 				Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue()/total));
 				float avgWeakness = (float) weightMap.entrySet().stream().filter((e) -> this.getResistance(e.getKey()) < 0).mapToDouble((e) -> this.getResistance(e.getKey())*e.getValue()).average().orElse(0);
@@ -135,10 +135,15 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	}
 
 	@Override
-	public IDamageResistances copy() {
+	public IMobResistances copy() {
 		MobResistances copy = new MobResistances(super.copyMap(), super.copyImmunities(), this.adaptive, this.adaptiveAmount);
 		copy.adaptiveTo = new HashSet<DDDDamageType>(this.adaptiveTo);
 		return copy;
+	}
+
+	@Override
+	public IMobResistances update(EntityLivingBase owner) {
+		return this;
 	}
 
 	@Override

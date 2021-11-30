@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 /**
  * An abstract content formatter whose content depends on a KeyTooltip

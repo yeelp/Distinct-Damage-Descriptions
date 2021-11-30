@@ -4,9 +4,9 @@ import java.util.function.Supplier;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public final class SimpleBuiltInDist extends AbstractSingleTypeDist {
 	public static final SimpleBuiltInDist ANVIL = new SimpleBuiltInDist(() -> ModConfig.dmg.extraDamage.enableAnvilDamage, DamageSource.ANVIL, DDDBuiltInDamageType.BLUDGEONING);

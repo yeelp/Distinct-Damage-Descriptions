@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import yeelp.distinctdamagedescriptions.ModConfig;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 /**
  * Base registry for DDD
@@ -25,7 +25,7 @@ public interface IDDDRegistry<T> {
 	 * @param obj
 	 */
 	default void register(T obj) {
-		register(ModConfig.suppressRegistrationInfo, obj);
+		register(ModConfig.core.suppressRegistrationInfo, obj);
 	}
 
 	/**
@@ -43,7 +43,7 @@ public interface IDDDRegistry<T> {
 	 * @param objs
 	 */
 	default void registerAll(@SuppressWarnings("unchecked") T... objs) {
-		registerAll(ModConfig.suppressRegistrationInfo, objs);
+		registerAll(ModConfig.core.suppressRegistrationInfo, objs);
 	}
 
 	/**

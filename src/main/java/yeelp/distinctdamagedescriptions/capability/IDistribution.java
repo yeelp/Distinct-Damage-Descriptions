@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.capability;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
@@ -45,4 +46,11 @@ public abstract interface IDistribution extends DDDCapabilityBase<NBTTagList> {
 	 * @return a copy
 	 */
 	IDistribution copy();
+	
+	/**
+	 * Update this distribution with respect to it's ItemStack owner.
+	 * @param owner
+	 * @return The mutated distribution, updated.
+	 */
+	IDistribution update(ItemStack owner);
 }

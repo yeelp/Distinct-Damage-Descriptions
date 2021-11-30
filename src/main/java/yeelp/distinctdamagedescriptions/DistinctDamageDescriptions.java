@@ -18,6 +18,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
@@ -26,7 +27,6 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDInitialization;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.integration.ModIntegrationKernel;
-import yeelp.distinctdamagedescriptions.integration.capability.IDistributionRequiresUpdate;
 import yeelp.distinctdamagedescriptions.items.DDDDiscItem;
 import yeelp.distinctdamagedescriptions.proxy.Proxy;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
@@ -72,7 +72,6 @@ public class DistinctDamageDescriptions {
 		ICreatureType.register();
 		ShieldDistribution.register();
 		PacketHandler.init();
-		new IDistributionRequiresUpdate.PlayerHandler().register();
 		DDDSounds.init();
 		DDDEnchantments.init();
 		ModIntegrationKernel.doInit(event);
@@ -89,7 +88,7 @@ public class DistinctDamageDescriptions {
 	}
 
 	public static void warn(String msg) {
-		if(!ModConfig.suppressWarnings) {
+		if(!ModConfig.core.suppressWarnings) {
 			logger.warn("[DISTINCT DAMAGE DESCRIPTIONS] " + msg);
 		}
 	}

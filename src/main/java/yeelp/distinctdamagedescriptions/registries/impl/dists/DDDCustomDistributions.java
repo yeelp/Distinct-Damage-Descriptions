@@ -1,20 +1,21 @@
 package yeelp.distinctdamagedescriptions.registries.impl.dists;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
@@ -31,8 +32,8 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 		}
 
 		SourceMap(DDDDamageType defaultVal) {
-			this.direct = new NonNullMap<String, DDDDamageType>(defaultVal);
-			this.indirect = new NonNullMap<String, DDDDamageType>(defaultVal);
+			this.direct = new NonNullMap<String, DDDDamageType>(() -> defaultVal);
+			this.indirect = new NonNullMap<String, DDDDamageType>(() -> defaultVal);
 		}
 
 		void update(DDDDamageType type, DamageTypeData data) {
@@ -56,19 +57,21 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 	}
 
 	public DDDCustomDistributions() {
-		this.includeAllMap = new NonNullMap<String, DDDDamageType>(DDDBuiltInDamageType.NORMAL);
-		this.srcMap = new HashMap<String, SourceMap>();
+		this.includeAllMap = Maps.newHashMap();
+		this.srcMap = Maps.newHashMap();
 	}
 
 	@Override
 	public boolean enabled() {
-		return ModConfig.dmg.useCustomDamageTypes;
+		return ModConfig.core.useCustomDamageTypes;
 	}
 
 	@Override
 	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
-		set.add(this.includeAllMap.get(src.getDamageType()));
+		if(this.includeAllMap.containsKey(src.getDamageType())) {			
+			set.add(this.includeAllMap.get(src.getDamageType()));
+		}
 		if(this.srcMap.containsKey(src.getDamageType())) {
 			Optional<String> direct = YResources.getEntityIDString(src.getImmediateSource());
 			Optional<String> indirect = YResources.getEntityIDString(src.getTrueSource());
@@ -98,7 +101,7 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 		if(types.size() == 1) {
 			return Optional.of(types.iterator().next().getBaseDistribution());
 		}
-		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(0.0f);
+		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
 		float weight = 1.0f / types.size();
 		for(DDDDamageType type : types) {
 			map.put(type, weight);
