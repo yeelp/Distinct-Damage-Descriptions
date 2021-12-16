@@ -24,8 +24,8 @@ import yeelp.distinctdamagedescriptions.util.ArmorValues;
 public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatter<IArmorDistribution, ItemStack> {
 
 	private static ArmorDistributionFormatter instance;
-	
-	private ArmorDistributionFormatter() {
+
+	protected ArmorDistributionFormatter() {
 		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getArmorResistances, "armorresistances");
 	}
 
@@ -54,12 +54,16 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 		switch(this.getNumberFormatter()) {
 			case PLAIN:
 				ItemArmor armor = (ItemArmor) stack.getItem();
-				ArmorMap aMap = cap.distributeArmor(armor.damageReduceAmount, armor.toughness);
-				return Optional.of(aMap.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, ArmorValues>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.ARMOR.formatArmorAndToughness(e.getKey(), e.getValue().getArmor(), e.getValue().getToughness(), this)), LinkedList<String>::addAll));
+				return this.getArmorTooltip(cap, armor.damageReduceAmount, armor.toughness);
 			case PERCENT:
 			default:
 				return Optional.of(cap.getCategories().stream().sorted().collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.ARMOR.format(d, cap.getWeight(d), this)), LinkedList<String>::addAll));
 		}
+	}
+
+	protected Optional<List<String>> getArmorTooltip(IArmorDistribution cap, float armor, float toughness) {
+		ArmorMap aMap = cap.distributeArmor(armor, toughness);
+		return Optional.of(aMap.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, ArmorValues>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.ARMOR.formatArmorAndToughness(e.getKey(), e.getValue().getArmor(), e.getValue().getToughness(), this)), LinkedList<String>::addAll));
 	}
 
 	@Override

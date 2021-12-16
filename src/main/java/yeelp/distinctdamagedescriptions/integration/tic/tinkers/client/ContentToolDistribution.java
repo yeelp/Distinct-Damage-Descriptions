@@ -7,7 +7,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 import net.minecraft.util.Tuple;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import slimeknights.mantle.client.book.data.BookData;
@@ -19,12 +19,14 @@ import slimeknights.tconstruct.library.book.content.ContentTool;
 import slimeknights.tconstruct.library.tools.ToolCore;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
+import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
+import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
+import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 @SideOnly(Side.CLIENT)
 public class ContentToolDistribution extends ContentTool {
-	
+
 	public static final transient String ID = "toolDist";
 	private final transient IDamageDistribution dist;
 	private final transient float variability;
@@ -42,10 +44,10 @@ public class ContentToolDistribution extends ContentTool {
 		this.dist = DDDConfigurations.items.getOrFallbackToDefault(key).copy();
 		this.variability = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(key);
 		this.text = generateTextData(tool);
-		this.properties = this.dist.getCategories().stream().sorted().map((t) -> new TextComponentTranslation("distinctdamagedescriptions.tinkers.book.distributions.entry", (int)(this.dist.getWeight(t)*100), t.getDisplayName()).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);
+		this.properties = this.dist.getCategories().stream().sorted().map((t) -> TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.entry", (int) (this.dist.getWeight(t) * 100), TiCUtil.getDDDDamageTypeNameColoured(t)).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);
 		super.load();
 	}
-	
+
 	private TextData[] generateTextData(ToolCore tool) {
 		Queue<TextData> q = new LinkedList<TextData>();
 		Tuple<IBookString, Optional<IBookString>> distPreferences = DistributionPreference.determinePreferences(tool, this.dist);
@@ -53,23 +55,24 @@ public class ContentToolDistribution extends ContentTool {
 		q.add(TextData.LINEBREAK);
 		q.add(new TextData(distPreferences.getFirst().toBookString() + distPreferences.getSecond().map((b) -> " " + b.toBookString()).orElse("")));
 		q.add(TextData.LINEBREAK);
-		q.add(new TextData(new TextComponentTranslation("distinctdamagedescriptions.tinkers.book.flexibility.measure", this.variability).getFormattedText()));
+		q.add(new TextData(TextFormatting.BOLD + TiCBookTranslator.TINKERS.getTranslator().getComponent("flexibility.measure", TextFormatting.RESET.toString() + this.variability).getFormattedText()));
 		return q.toArray(new TextData[q.size()]);
 	}
 
 	@Override
 	public void build(BookData book, ArrayList<BookElement> list, boolean rightSide) {
 		super.build(book, list, rightSide);
-		//Replace the properties title only, leave everything else as is.
-		
+		// Replace the properties title only, leave everything else as is.
+
 		for(int i = 0; i < list.size(); i++) {
 			BookElement element = list.get(i);
 			if(element instanceof ElementText) {
 				ElementText text = (ElementText) element;
 				if(text.text[0].text.equals(this.parent.translate("tool.properties"))) {
-					TextData data = new TextData(new TextComponentTranslation("distinctdamagedescriptions.tinkers.book.distributions.start").getFormattedText());
+					TextData data = new TextData(TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.start").getFormattedText());
 					data.underlined = true;
 					list.set(i, new ElementText(text.x, text.y, text.width, text.height, data));
+					//Arrays.stream(((ElementText) list.get(++i)).text).filter(Predicates.and((td) -> td != TextData.LINEBREAK, (td) -> !td.text.equals("\u25CF "))).forEach((td) -> td.bold = true);
 					break;
 				}
 			}

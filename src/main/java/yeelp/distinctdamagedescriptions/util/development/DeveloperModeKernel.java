@@ -42,6 +42,7 @@ import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistan
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
 import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatTracker;
@@ -52,16 +53,8 @@ public final class DeveloperModeKernel {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String NEW_LINE = System.lineSeparator();
 	private static DeveloperStatus currMode = DeveloperStatus.DISABLED;
-	private static final Map<Class<? extends Event>, Supplier<DeveloperStatus>> statusMap = ImmutableMap.<Class<? extends Event>, Supplier<DeveloperStatus>>builder()
-			.put(LivingAttackEvent.class, () -> ModConfig.dev.showAttackInfo)
-			.put(LivingHurtEvent.class, () -> ModConfig.dev.showHurtInfo)
-			.put(LivingDamageEvent.class, () -> ModConfig.dev.showDamageInfo)
-			.put(DetermineDamageEvent.class, () -> ModConfig.dev.showDamageClassification)
-			.put(GatherDefensesEvent.class, () -> ModConfig.dev.showDefenseClassification)
-			.put(ShieldBlockEvent.class, () -> ModConfig.dev.showShieldCalculation)
-			.put(UpdateAdaptiveResistanceEvent.class, () -> ModConfig.dev.showAdaptiveCalculation)
-			.build();
-
+	private static final Map<Class<? extends Event>, Supplier<DeveloperStatus>> statusMap = ImmutableMap.<Class<? extends Event>, Supplier<DeveloperStatus>>builder().put(LivingAttackEvent.class, () -> ModConfig.dev.showAttackInfo).put(LivingHurtEvent.class, () -> ModConfig.dev.showHurtInfo).put(LivingDamageEvent.class, () -> ModConfig.dev.showDamageInfo).put(DetermineDamageEvent.class, () -> ModConfig.dev.showDamageClassification).put(GatherDefensesEvent.class, () -> ModConfig.dev.showDefenseClassification).put(ShieldBlockEvent.class, () -> ModConfig.dev.showShieldCalculation).put(UpdateAdaptiveResistanceEvent.class, () -> ModConfig.dev.showAdaptiveCalculation).build();
+	
 	public static void log(String msg, boolean inChat, Iterable<? extends EntityPlayer> players) {
 		LOGGER.info("[DISTINCT DAMAGE DESCRIPTIONS (DEVELOPER)]: " + msg);
 		if(inChat) {
@@ -74,11 +67,11 @@ public final class DeveloperModeKernel {
 			log(msg, inChat, players);
 		}
 	}
-	
+
 	public static void log(String msg, Iterable<? extends EntityPlayer> players) {
 		log(msg, currMode.sendInfoToChat(), players);
 	}
-	
+
 	public static void log(String msg, EntityPlayer player) {
 		log(msg, ImmutableList.of(player));
 	}
@@ -90,13 +83,13 @@ public final class DeveloperModeKernel {
 		}
 		return Objects.requireNonNull(backup, "backup can't be null!");
 	}
-	
+
 	private static final <T> void doIfEnabled(@Nonnull T t, @Nonnull BiFunction<T, StringBuilder, StringBuilder> log) {
 		if(ModConfig.dev.enabled && ((currMode = statusMap.get(t.getClass()).get()).isEnabled())) {
-			log(Objects.requireNonNull(log, "action can't be null!").andThen(Functions.toStringFunction()).apply(Objects.requireNonNull(t, "argument to action can't be null"), new StringBuilder()), FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers());			
+			log(Objects.requireNonNull(log, "action can't be null!").andThen(Functions.toStringFunction()).apply(Objects.requireNonNull(t, "argument to action can't be null"), new StringBuilder()), FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers());
 		}
 	}
-	
+
 	private static final String getEntityNameAndID(@Nonnull Entity entity) {
 		return String.format("%s (%s)", entity.getName(), YResources.getEntityIDString(entity).orElse("No Entity ID found!"));
 	}
@@ -150,8 +143,9 @@ public final class DeveloperModeKernel {
 			sb.append("GATHER DEFENSES: Defense Classification").append(NEW_LINE);
 			DDDRegistries.damageTypes.getAll().stream().flatMap((type) -> {
 				Stream.Builder<String> stream = Stream.builder();
-				if(e.hasResistance(type)) {
-					stream.accept(String.format("%s Resistance: %.2f%%", type.getDisplayName(), e.getResistance(type)*100));
+				String resistanceType = e.hasResistance(type) ? Translations.INSTANCE.translate("tooltips", "resistance") : e.hasWeakness(type) ? Translations.INSTANCE.translate("tooltips", "weakness") : "";
+				if(!resistanceType.isEmpty()) {
+					stream.accept(String.format("%s %s: %.2f%%", type.getDisplayName(), resistanceType, Math.abs(e.getResistance(type)) * 100));
 					stream.accept(e.hasImmunity(type) ? " | " : NEW_LINE);
 				}
 				if(e.hasImmunity(type)) {
@@ -198,7 +192,7 @@ public final class DeveloperModeKernel {
 			return sb;
 		});
 	}
-	
+
 	@SubscribeEvent
 	public static final void onPlayerJoin(PlayerLoggedInEvent evt) {
 		logIfEnabled("DDD has loaded in Developer Mode! This is to assist in debugging information about damage calculations and custom damage types etc. Depending on your settings, your chat log and console log may be filled with lots of messages. It is recommended you use Developer Mode in blank void worlds to minimize chat spam!", true, ImmutableList.of(evt.player));

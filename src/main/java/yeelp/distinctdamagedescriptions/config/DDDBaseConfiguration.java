@@ -8,7 +8,7 @@ public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 	private final Map<String, T> map = new HashMap<String, T>();
 	protected final Supplier<T> defaultVal;
 
-	DDDBaseConfiguration(Supplier<T> defaultVal) {
+	public DDDBaseConfiguration(Supplier<T> defaultVal) {
 		this.defaultVal = defaultVal;
 	}
 

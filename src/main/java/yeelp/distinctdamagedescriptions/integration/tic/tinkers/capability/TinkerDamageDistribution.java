@@ -23,7 +23,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
+import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;

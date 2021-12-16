@@ -38,13 +38,13 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	 * @param cap the capability instance
 	 * @return an Optional containing a List of Strings if any are to be added, or an empty Optional if no Strings are to be added.
 	 */
-	protected abstract Optional<List<String>> formatCapabilityFor(T t, @Nonnull C cap);
+	protected abstract Optional<List<String>> formatCapabilityFor(@Nonnull T t, @Nonnull C cap);
 	
 	@Override
 	public List<String> format(T t) {
 		List<String> result = new LinkedList<String>();
 		result.add(this.typeText.getFormattedText() + this.getKeyText());
-		if(this.shouldShow()) {
+		if(this.shouldShow() && t != null) {
 			Optional<List<String>> formattedCap = this.capExtractor.apply(t).flatMap((c) -> this.formatCapabilityFor(t, c));
 			formattedCap.ifPresent((l) -> {
 				if(this.getDamageFormatter() == DDDDamageFormatter.ICON) {

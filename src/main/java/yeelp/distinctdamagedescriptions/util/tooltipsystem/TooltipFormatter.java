@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * A tooltip formatter. Can format an ItemStack, adding DDD specific tooltip information
  * @author Yeelp
@@ -43,7 +45,7 @@ public interface TooltipFormatter<T> {
 	 * @param t the object to format for
 	 * @return A List of Strings to add to this stack's tooltip
 	 */
-	List<String> format(T t);
+	List<String> format(@Nullable T t);
 	
 	/**
 	 * Get the type strings this formatter creates. Used for ordering.

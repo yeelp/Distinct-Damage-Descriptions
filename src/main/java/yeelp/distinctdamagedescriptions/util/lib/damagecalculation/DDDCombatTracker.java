@@ -1,11 +1,12 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -19,12 +20,16 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.CombatTracker;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.common.ISpecialArmor.ArmorProperties;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -58,6 +63,7 @@ public class DDDCombatTracker extends CombatTracker {
 	private static final IClassifier<DamageMap> DAMAGE_CLASSIFIER = new DamageClassifier();
 	private static final IClassifier<ArmorMap> ARMOR_CLASSIFIER = new ArmorClassifier();
 	private static final IClassifier<MobDefenses> DEFENSES_CLASSIFIER = new DefensesClassifier();
+	private static final EntityEquipmentSlot[] ARMOR_SLOTS = Arrays.stream(EntityEquipmentSlot.values()).filter((ees) -> ees.getSlotType() == EntityEquipmentSlot.Type.ARMOR).toArray(EntityEquipmentSlot[]::new); 
 	public static final UUID ARMOR_CALC_UUID = UUID.fromString("72e5859a-02d8-4170-9632-f9786547d697");
 	public static final UUID TOUGHNESS_CALC_UUID = UUID.fromString("c19d6077-8772-460e-8250-d7780cbb85ca");
 
@@ -125,8 +131,9 @@ public class DDDCombatTracker extends CombatTracker {
 				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) (evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
 			this.type = m.keySet().stream().collect(Collectors.toList()).get(rand.nextInt(m.size()));
-			ArmorMap aMap = ARMOR_CLASSIFIER.classify(this.ctx).orElse(new ArmorMap());
-			this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);
+			ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
+				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);				
+			});
 		});
 	}
 
@@ -246,13 +253,25 @@ public class DDDCombatTracker extends CombatTracker {
 			tracker.handleHurtStage(evt);
 			tracker.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent(evt::setAmount);
 			tracker.getNewArmorValues().ifPresent((vals) -> {
-				Stream.Builder<ItemStack> builder = Stream.builder();
-				tracker.getFighter().getArmorInventoryList().forEach(builder::accept);
-				ArmorValues currVals = builder.build().filter((stack) -> stack.getItem() instanceof ItemArmor).map(Functions.compose((armor) -> new ArmorValues(armor.damageReduceAmount, armor.toughness), (stack) -> (ItemArmor) stack.getItem())).reduce(ArmorValues::merge).orElse(new ArmorValues());
-				tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).removeModifier(ARMOR_CALC_UUID);
-				tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).removeModifier(TOUGHNESS_CALC_UUID);
-				tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).applyModifier(new AttributeModifier(ARMOR_CALC_UUID, "DDD Armor Calculations Modifier", vals.getArmor() - currVals.getArmor(), 0));
-				tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).applyModifier(new AttributeModifier(TOUGHNESS_CALC_UUID, "DDD Toughness Calculations Modifier", vals.getToughness() - currVals.getToughness(), 0));
+				Arrays.stream(ARMOR_SLOTS).map((slot) -> {
+					ItemStack stack = tracker.getFighter().getItemStackFromSlot(slot);
+					Item item = stack.getItem();
+					ArmorValues aVals = null;
+					if(item instanceof ISpecialArmor) {
+						ArmorProperties props = ((ISpecialArmor) item).getProperties(tracker.getFighter(), stack, evt.getSource(), evt.getAmount(), slot.getIndex());
+						aVals = new ArmorValues((float) props.Armor, (float) props.Toughness);
+					}
+					else if(item instanceof ItemArmor) {
+						ItemArmor armor = (ItemArmor) item;
+						aVals = new ArmorValues(armor.damageReduceAmount, armor.toughness);
+					}
+					return aVals;
+				}).filter(Predicates.not(Objects::isNull)).reduce(ArmorValues::merge).ifPresent((aVals) -> {
+					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).removeModifier(ARMOR_CALC_UUID);
+					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).removeModifier(TOUGHNESS_CALC_UUID);
+					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).applyModifier(new AttributeModifier(ARMOR_CALC_UUID, "DDD Armor Calculations Modifier", vals.getArmor() - aVals.getArmor(), 0));
+					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).applyModifier(new AttributeModifier(TOUGHNESS_CALC_UUID, "DDD Toughness Calculations Modifier", vals.getToughness() - aVals.getToughness(), 0));					
+				});
 			});
 		});
 		DeveloperModeKernel.onHurtCallback(evt);

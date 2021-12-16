@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.util.ArmorMap;
  */
 public interface IArmorDistribution extends IDistribution {
 	/**
-	 * Distribute armor points into three categories
+	 * Distribute armor points into damage categories
 	 * 
 	 * @param armor
 	 * @param toughness

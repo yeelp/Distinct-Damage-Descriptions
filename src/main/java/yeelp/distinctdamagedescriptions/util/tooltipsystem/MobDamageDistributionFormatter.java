@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -13,7 +14,6 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 
 /**
  * A formatter for mob damage distributions
@@ -23,10 +23,16 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 public class MobDamageDistributionFormatter extends AbstractDamageDistributionFormatter {
 
 	private static MobDamageDistributionFormatter instance;
+	private final Function<ItemStack, Optional<ResourceLocation>> resourceLocationGetter;
 	private Map<ResourceLocation, Float> cache;
 	
 	private MobDamageDistributionFormatter() {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> Optional.ofNullable(DDDConfigurations.mobDamage.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse(""))), "mobdistribution");
+		this(TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
+	}
+	
+	protected MobDamageDistributionFormatter(Function<ItemStack, Optional<ResourceLocation>> f) {
+		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobDamageIfConfigured), "mobdistribution");
+		this.resourceLocationGetter = f;
 		this.cache = new HashMap<ResourceLocation, Float>();
 	}
 	
@@ -55,7 +61,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 				return 1.0f;
 			case PLAIN:
 			default:
-				Optional<ResourceLocation> oLoc = Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(stack));
+				Optional<ResourceLocation> oLoc = this.resourceLocationGetter.apply(stack);
 				if (oLoc.isPresent()) {
 					ResourceLocation loc = oLoc.get();
 					if(this.cache.containsKey(loc)) {

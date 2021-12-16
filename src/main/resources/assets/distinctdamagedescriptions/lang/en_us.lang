@@ -63,6 +63,10 @@ distinctdamagedescriptions.tinkers.book.distributions.launcher=This tool launche
 distinctdamagedescriptions.tinkers.book.distributions.projectile=The %s is a projectile. Its distribution is used both when attacking with it in melee and when fired as a projectile.
 distinctdamagedescriptions.tinkers.book.distributions.start=Base Distribution:
 distinctdamagedescriptions.tinkers.book.distributions.entry=%s%% %s
+distinctdamagedescriptions.tinkers.book.materialListingTitle=Material Distribution Bias
+distinctdamagedescriptions.tinkers.book.materialInfluenceStart=Material Bias:
+distinctdamagedescriptions.tinkers.book.materialInfluenceEntry=%s: %s
+distinctdamagedescriptions.tinkers.book.materialInfluenceBias=Influence Rating: %s
 
 modifier.slystrike.name=Sly Strike
 modifier.slystrike.desc=§oSneaky!§r\nYour attacks bypass immunities!
@@ -71,6 +75,10 @@ modifier.bruteforce.desc=§oFast and Furious!§r\nYour attacks are so powerful, 
 modifier.bruteforce.extra=%s%% of resistances bypassed.
 
 ### CONARM ###
+distinctdamagedescriptions.conarm.book.materialListingTitle=Material Armor Distributions
+distinctdamagedescriptions.conarm.book.materialInfluenceStart=Armor Distribution:
+distinctdamagedescriptions.conarm.book.materialInfluenceEntry=%s: %s
+
 modifier.ddd_slashing_immunity_armor.name=Slashing Impunity
 modifier.ddd_slashing_immunity_armor.desc=§oSlash n' Solo!§r\nYour armor makes you immune to Slashing damage!
 modifier.ddd_piercing_immunity_armor.name=Piercing Impunity

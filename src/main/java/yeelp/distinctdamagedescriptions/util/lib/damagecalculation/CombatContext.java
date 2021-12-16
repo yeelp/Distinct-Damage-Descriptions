@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec3d;
 final class CombatContext {
 
 	private static final Set<DamageSource> HELMET_ONLY = ImmutableSet.of(DamageSource.ANVIL, DamageSource.FALLING_BLOCK);
-	private static final Set<DamageSource> BOOTS_ONLY = ImmutableSet.of(DamageSource.FALL, DamageSource.HOT_FLOOR);
+	private static final Set<DamageSource> BOOTS_ONLY = ImmutableSet.of();
 	private static final EntityEquipmentSlot[] armorSlots = {
 			EntityEquipmentSlot.CHEST,
 			EntityEquipmentSlot.FEET,

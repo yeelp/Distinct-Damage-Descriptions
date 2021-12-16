@@ -62,13 +62,17 @@ public final class ExtraDamageDistsCategory {
 	public boolean enableGuardianDamage = true;
 
 	@Name("Fire Distribution")
-	@Comment("Enable/disable the fire damage distribution. All fire sources (fire, lava, magma etc.) will count as fire damage when enabled. Magma also is only blockable with boots.")
+	@Comment("Enable/disable the fire damage distribution. All fire sources (fire, lava, magma etc.) will count as fire damage when enabled.")
 	public boolean enableFireDamage = true;
 
 	@Name("Daylight Burning Distribution")
-	@Comment("Enable/disable daylight burning distribution. Undead burning in the day exposed to the sky will receive radiant damage when enabled.")
+	@Comment("Enable/disable daylight burning distribution. Undead burning in the day while exposed to the sky will receive radiant damage when enabled. Only those undead specified in Daylight Burning Entities will be susceptible.")
 	public boolean enableDaylightBurningDamage = true;
 
+	@Name("Daylight Burning Entities")
+	@Comment("Entities listed here will be susceptible to the Daylight Burning Distribution. Entities not listed won't take radiant damage, even if undead. Ideally, only put undead entities that actually burn in daylight here.")
+	public String[] daylightWhitelist = DefaultValues.ENTITIES_BURN_IN_DAYLIGHT;
+	
 	@Name("Guardian Thorns Damage")
 	@Comment("Enable/disable guardian thorn distribution. Guardian's thorn attack will inflict piercing damage when enabled.")
 	public boolean enableGuardianSpikesDamage = true;

@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.config;
 
+import java.util.Optional;
+
 /**
  * Stores values from config on startup for easy access.
  * 
@@ -17,9 +19,9 @@ public interface IDDDConfiguration<T> {
 	T get(String key);
 
 	/**
-	 * Get the default distribution
+	 * Get the default configuration
 	 * 
-	 * @return the default distribution
+	 * @return the default configuration
 	 */
 	T getDefaultValue();
 
@@ -39,11 +41,37 @@ public interface IDDDConfiguration<T> {
 	 * @return true if configured, false if not
 	 */
 	boolean configured(String key);
-	
+
+	/**
+	 * A fall back approach to {@link #get(String)}, where
+	 * {@link #getDefaultValue()} is returned if and only if
+	 * {@link #configured(String)} is false. Otherwise, returns the configured entry
+	 * like {@link #get(String)}.
+	 * 
+	 * @param key key
+	 * @return The configured entry if it exists, or the default value otherwise.
+	 * 
+	 * @see #getSafe(String)
+	 */
 	default T getOrFallbackToDefault(String key) {
 		if(this.configured(key)) {
 			return this.get(key);
 		}
 		return this.getDefaultValue();
+	}
+
+	/**
+	 * A safe version of {@link #get(String)}, that returns {@link Optional#empty()}
+	 * if the key isn't configured. A different alternative to
+	 * {@link #getOrFallbackToDefault(String)}, if the default value isn't needed.
+	 * 
+	 * @param key key
+	 * @return An Optional containing the result, or an empty Optional if the key
+	 *         isn't configured.
+	 * 
+	 * @see #getOrFallbackToDefault(String)
+	 */
+	default Optional<T> getSafe(String key) {
+		return Optional.ofNullable(this.get(key));
 	}
 }

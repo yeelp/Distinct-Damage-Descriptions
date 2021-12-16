@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.client;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -13,8 +14,8 @@ import net.minecraft.util.text.TextFormatting;
 import slimeknights.tconstruct.library.materials.MaterialTypes;
 import slimeknights.tconstruct.library.tools.ToolPart;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.config.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
+import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractTooltipFormatter;
@@ -112,7 +113,8 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 
 		@Override
 		public List<Icon> getIconsToDraw(ItemStack stack, int x, int y, List<String> tooltips) {
-			List<Icon> lst = ItemDamageDistributionIconAggregator.getInstance().getIconsToDraw(stack, x, y, tooltips);
+			List<Icon> lst = new ArrayList<Icon>();
+			lst.addAll(ItemDamageDistributionIconAggregator.getInstance().getIconsToDraw(stack, x, y, tooltips));
 			lst.addAll(super.getIconsToDraw(stack, x, y, tooltips));
 			return lst;
 		}

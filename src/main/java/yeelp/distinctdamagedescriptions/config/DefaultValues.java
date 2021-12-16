@@ -34,10 +34,129 @@ public interface DefaultValues {
 			"minecraft:vex;[(ddd_psychic, 1)]",
 			"minecraft:silverfish;[(p, 1)]",
 			"minecraft:endermite;[(p, 1)]",
+			"minecraft:shulker_bullet;[(ddd_psychic, 1)]",
 			"tconstruct:blueslime;[(b, 0.4), (ddd_acid, 0.6)]",
 			"thermalfoundation:blizz;[(b, 0.5), (ddd_cold, 0.5)]",
+			"thermalfoundation:blizz_bolt;[(ddd_cold, 1)]",
 			"thermalfoundation:basalz;[(b, 0.5), (ddd_force, 0.5)]",
-			"thermalfoundation:blitz;[(b, 0.5), (ddd_thunder, 0.5)]"};
+			"thermalfoundation:basalz_bolt;[(b, 1)]",
+			"thermalfoundation:blitz;[(b, 0.5), (ddd_thunder, 0.5)]",
+			"thermalfoundation:blitz_bolt;[(ddd_thunder, 1)]",
+			"lycanitesmobs:wendigo;[(b, 1)]",
+			"lycanitesmobs:amalgalich;[(ddd_force, 0.5), (ddd_necrotic, 0.5)]",
+			"lycanitesmobs:geist;[(b, 0.4), (ddd_necrotic, 0.6)]",
+			"lycanitesmobs:ghoul;[(b, 0.6), (ddd_necrotic, 0.4)]",
+			"lycanitesmobs:cryptkeeper;[(b, 0.5), (ddd_necrotic, 0.5)]",
+			"lycanitesmobs:reaper;[(b, 1)]",
+			"lycanitesmobs:gnekk;[(s, 0.3), (p, 0.2), (ddd_poison, 0.5)]",
+			"lycanitesmobs:pixen;[(b, 1)]",
+			"lycanitesmobs:clink;[(b, 1)]",
+			"lycanitesmobs:arix;[(b, 1)]",
+			"lycanitesmobs:afrit;[(b, 1)]",
+			"lycanitesmobs:jabberwock;[(s, 0.8), (p, 0.2)]",
+			"lycanitesmobs:arisaur;[(b, 1)]",
+			"lycanitesmobs:wraamon;[(p, 0.5), (ddd_force, 0.4), (ddd_psychic, 0.1)]",
+			"lycanitesmobs:manticore;[(p, 0.9), (ddd_poison, 0.1)]",
+			"lycanitesmobs:barghest;[(p, 1.0)]",
+			"lycanitesmobs:conba;[(b, 1)]",
+			"lycanitesmobs:warg;[(p, 1.0)]",
+			"lycanitesmobs:kobold;[(s, 0.2), (p, 0.8)]",
+			"lycanitesmobs:makaalpha;[(b, 1)]",
+			"lycanitesmobs:maka;[(b, 1)]",
+			"lycanitesmobs:salamander;[(p, 0.4), (ddd_fire, 0.6)]",
+			"lycanitesmobs:chupacabra;[(s, 0.4), (p, 0.4), (b, 0.2)]",
+			"lycanitesmobs:geken;[(s, 0.3), (p, 0.3), (ddd_poison, 0.4)]",
+			"lycanitesmobs:maug;[(s, 0.5), (b, 0.5)]",
+			"lycanitesmobs:aspid;[(b, 1)]",
+			"lycanitesmobs:dawon;[(s, 0.6), (p, 0.4)]",
+			"lycanitesmobs:khalk;[(p, 0.2), (b, 0.8)]",
+			"lycanitesmobs:quillbeast;[(b, 1)]",
+			"lycanitesmobs:yeti;[(b, 1)]",
+			"lycanitesmobs:yale;[(b, 1)]",
+			"lycanitesmobs:epion;[(b, 1)]",
+			"lycanitesmobs:uvaraptor;[(p, 1.0)]",
+			"lycanitesmobs:roc;[(p, 1.0)]",
+			"lycanitesmobs:raiko;[(p, 1.0)]",
+			"lycanitesmobs:ventoraptor;[(s, 0.25), (p, 0.75)]",
+			"lycanitesmobs:lobber;[(b, 0.5), (ddd_fire, 0.5)]",
+			"lycanitesmobs:wildkin;[(s, 0.5), (b, 0.5)]",
+			"lycanitesmobs:troll;[(b, 1.0)]",
+			"lycanitesmobs:ettin;[(b, 1.0)]",
+			"lycanitesmobs:lacedon;[(b, 1.0)]",
+			"lycanitesmobs:roa;[(p, 1.0)]",
+			"lycanitesmobs:silex;[(b, 1)]",
+			"lycanitesmobs:abtu;[(p, 1.0)]",
+			"lycanitesmobs:strider;[(p, 1.0)]",
+			"lycanitesmobs:skylus;[(p, 1.0)]",
+			"lycanitesmobs:thresher;[(p, 0.5), (b, 0.5)]",
+			"lycanitesmobs:aglebemu;[(b, 0.2), (ddd_poison, 0.8)]",
+			"lycanitesmobs:cephignis;[(b, 1)]",
+			"lycanitesmobs:abaia;[(ddd_lightning, 1.0)]",
+			"lycanitesmobs:ika;[(b, 1)]",
+			"lycanitesmobs:dweller;[(s, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:ioray;[(b, 1)]",
+			"lycanitesmobs:quetzodracl;[(s, 0.5), (p, 0.5)]",
+			"lycanitesmobs:cockatrice;[(s, 0.5), (p, 0.5)]",
+			"lycanitesmobs:morock;[(p, 1.0)]",
+			"lycanitesmobs:ignibus;[(b, 1)]",
+			"lycanitesmobs:zoataur;[(b, 1.0)]",
+			"lycanitesmobs:remobra;[(p, 0.4), (ddd_poison, 0.6)]",
+			"lycanitesmobs:spriggan;[(b, 1)]",
+			"lycanitesmobs:tremor;[(b, 0.5), (ddd_thunder, 0.5)]",
+			"lycanitesmobs:vapula;[(b, 1.0)]",
+			"lycanitesmobs:geonach;[(p, 0.5), (b, 0.5)]",
+			"lycanitesmobs:cinder;[(b, 1)]",
+			"lycanitesmobs:reiver;[(b, 1)]",
+			"lycanitesmobs:jengu;[(b, 1)]",
+			"lycanitesmobs:spectre;[(ddd_force, 1.0)]",
+			"lycanitesmobs:banshee;[(ddd_psychic, 1.0)]",
+			"lycanitesmobs:grue;[(s, 0.5), (ddd_necrotic, 0.25), (ddd_psychic, 0.25)]",
+			"lycanitesmobs:aegis;[(s, 0.5), (ddd_force, 0.5)]",
+			"lycanitesmobs:zephyr;[(ddd_lightning, 1.0)]",
+			"lycanitesmobs:djinn;[(b, 1)]",
+			"lycanitesmobs:eechetik;[(ddd_poison, 1.0)]",
+			"lycanitesmobs:wraith;[(ddd_necrotic, 1.0)]",
+			"lycanitesmobs:sylph;[(b, 1)]",
+			"lycanitesmobs:volcan;[(ddd_fire, 1.0)]",
+			"lycanitesmobs:wisp;[(b, 1)]",
+			"lycanitesmobs:argus;[(b, 1)]",
+			"lycanitesmobs:nymph;[(b, 1)]",
+			"lycanitesmobs:xaphan;[(b, 1)]",
+			"lycanitesmobs:herma;[(p, 1.0)]",
+			"lycanitesmobs:sutiramu;[(p, 0.6), (ddd_poison, 0.4)]",
+			"lycanitesmobs:vespidqueen;[(p, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:vespid;[(p, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:joustalpha;[(p, 1.0)]",
+			"lycanitesmobs:joust;[(p, 1.0)]",
+			"lycanitesmobs:tarantula;[(p, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:calpod;[(p, 1.0)]",
+			"lycanitesmobs:erepede;[(b, 1)]",
+			"lycanitesmobs:concapedesegment;[(p, 1.0)]",
+			"lycanitesmobs:concapede;[(p, 1.0)]",
+			"lycanitesmobs:frostweaver;[(p, 0.5), (ddd_cold, 0.5)]",
+			"lycanitesmobs:eyewig;[(p, 0.5), (ddd_acid, 0.25), (ddd_poison, 0.25)]",
+			"lycanitesmobs:gorgomite;[(p, 1.0)]",
+			"lycanitesmobs:darkling;[(p, 0.5), (ddd_necrotic, 0.5)]",
+			"lycanitesmobs:lurker;[(p, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:triffid;[(s, 0.25), (p, 0.25), (ddd_poison, 0.5)]",
+			"lycanitesmobs:treant;[(b, 1.0)]",
+			"lycanitesmobs:ent;[(b, 0.5), (ddd_necrotic, 0.5)]",
+			"lycanitesmobs:shambler;[(s, 0.5), (ddd_poison, 0.5)]",
+			"lycanitesmobs:beholder;[(b, 1)]",
+			"lycanitesmobs:trite;[(p, 0.5), (ddd_necrotic, 0.5)]",
+			"lycanitesmobs:shade;[(s, 0.8), (ddd_psychic, 0.2)]",
+			"lycanitesmobs:asmodeus;[(b, 1)]",
+			"lycanitesmobs:astaroth;[(b, 1)]",
+			"lycanitesmobs:krake;[(s, 0.25), (p, 0.25), (ddd_thunder, 0.5)]",
+			"lycanitesmobs:crusk;[(p, 1.0)]",
+			"lycanitesmobs:serpix;[(p, 0.8), (ddd_cold, 0.2)]",
+			"lycanitesmobs:gorger;[(p, 0.8), (ddd_fire, 0.2)]",
+			"lycanitesmobs:behemoth;[(b, 1)]",
+			"lycanitesmobs:belph;[(b, 1)]",
+			"lycanitesmobs:pinky;[(s, 0.5), (p, 0.5)]",
+			"lycanitesmobs:archvile;[(b, 1)]",
+			"lycanitesmobs:cacodemon;[(b, 1)]",
+			"lycanitesmobs:rahovart;[(ddd_fire, 0.5), (ddd_necrotic, 0.5)]"};
 
 	/**
 	 * {@link ModConfig.DamageCategory#itemBaseDamage}
@@ -120,40 +239,39 @@ public interface DefaultValues {
 			"minecraft:spectral_arrow;[(p, 1)];minecraft:spectral_arrow",
 			"minecraft:llama_spit;[(b, 1)]",
 			"lycanitesmobs:whirlwind;[(ddd_cold, 0.3), (ddd_thunder, 0.7)];lycanitesmobs:whirlwindcharge",
-			"lycanitesmobs:magma;[(ddd_fire, 0.6), (b, 0.4)];lycanitesmobs:magmacharge",
-			"lycanitesmobs:frostbolt;[(ddd_cold, 1)];lycanitesmobs:frostboltcharge",
-			"lycanitesmobs:spectralbolt;[(ddd_psychic, 0.5), (ddd_force, 0.5)];lycanitesmobs:spectralboltcharge",
+			"lycanitesmobs:magma;[(ddd_fire, 0.6), (b, 0.4)];lycanitesmobs:magmacharge,lycanitesmobs:magmascepter",
+			"lycanitesmobs:frostbolt;[(ddd_cold, 1)];lycanitesmobs:frostboltcharge,lycanitesmobs:frostboltscepter",
+			"lycanitesmobs:spectralbolt;[(ddd_psychic, 0.5), (ddd_force, 0.5)];lycanitesmobs:spectralboltcharge,lycanitesmobs:spectralboltscepter",
 			"lycanitesmobs:venomshot;[(ddd_poison, 1)];lycanitesmobs:venomshotcharge",
-			"lycanitesmobs:boulderblast;[(b, 1)];lycanitesmobs:boulderblastcharge",
-			"lycanitesmobs:icefireball;[(ddd_cold, 1)];lycanitesmobs:icefireballcharge",
-			"lycanitesmobs:hellfireball;[(ddd_fire, 0.5), (ddd_necrotic, 0.5)];lycanitesmobs:hellfireballcharge",
-			"lycanitesmobs:quill;[(p, 1)];lycanitesmobs:quillcharge",
-			"lycanitesmobs:scorchfireball;[(ddd_fire, 0.5), (ddd_acid, 0.5)];lycanitesmobs:scorchfireballcharge",
+			"lycanitesmobs:boulderblast;[(b, 1)];lycanitesmobs:boulderblastcharge,lycanitesmobs:boulderblastscepter",
+			"lycanitesmobs:icefireball;[(ddd_cold, 1)];lycanitesmobs:icefireballcharge,lycanitesmobs:icefirescepter",
+			"lycanitesmobs:hellfireball;[(ddd_fire, 0.5), (ddd_necrotic, 0.5)];lycanitesmobs:hellfireballcharge,lycanitesmobs:hellfirescepter",
+			"lycanitesmobs:quill;[(p, 1)];lycanitesmobs:quillcharge,lycanitesmobs:quillscepter",
+			"lycanitesmobs:scorchfireball;[(ddd_fire, 0.5), (ddd_acid, 0.5)];lycanitesmobs:scorchfireballcharge,lycanitesmobs:scorchfirescepter",
 			"lycanitesmobs:throwingscythe;[(p, 1)];lycanitesmobs:throwingscythecharge",
 			"lycanitesmobs:acidsplash;[(ddd_acid, 1)];lycanitesmobs:acidsplashcharge",
 			"lycanitesmobs:lobdarklings;[(b, 1)];lycanitesmobs:lobdarklingscharge",
 			"lycanitesmobs:faebolt;[(ddd_necrotic, 0.5), (ddd_radiant, 0.5)];lycanitesmobs:faeboltcharge",
 			"lycanitesmobs:ember;[(ddd_fire, 1)];lycanitesmobs:embercharge",
-			"lycanitesmobs:poop;[(b, 0.3), (ddd_poison, 0.7)];lycanitesmobs:poopcharge",
-			"lycanitesmobs:lifedrain;[(ddd_necrotic, 1)];lycanitesmobs:lifedraincharge",
-			"lycanitesmobs:aquapulse;[(b, 1)];lycanitesmobs:aquapulsecharge",
-			"lycanitesmobs:arcanelaserstorm;[(b, 0.25), (ddd_lightning, 0.25), (ddd_thunder, 0.25), (ddd_force, 0.25)];lycanitesmobs:arcanelaserstormcharge",
+			"lycanitesmobs:poop;[(b, 0.3), (ddd_poison, 0.7)];lycanitesmobs:poopcharge,lycanitesmobs:poopscepter",
+			"lycanitesmobs:lifedrain;[(ddd_necrotic, 1)];lycanitesmobs:lifedraincharge,lycanitesmobs:lifedrainscepter",
+			"lycanitesmobs:aquapulse;[(b, 1)];lycanitesmobs:aquapulsecharge,lycanitesmobs:aquapulsescepter",
+			"lycanitesmobs:arcanelaserstorm;[(b, 0.25), (ddd_lightning, 0.25), (ddd_thunder, 0.25), (ddd_force, 0.25)];lycanitesmobs:arcanelaserstormcharge,lycanitesmobs:arcanelaserstormscepter",
 			"lycanitesmobs:aetherwave;[(ddd_radiant, 1)];lycanitesmobs:aetherwavecharge",
 			"lycanitesmobs:lightball;[(ddd_radiant, 1)];lycanitesmobs:lightballcharge",
-			"lycanitesmobs:mudshot;[(b, 1)];lycanitesmobs:mudshotcharge",
+			"lycanitesmobs:mudshot;[(b, 1)];lycanitesmobs:mudshotcharge,lycanitesmobs:mudshotscepter",
 			"lycanitesmobs:crystalshard;[(p, 0.8), (b, 0.2)];lycanitesmobs:crystalshardcharge",
-			"lycanitesmobs:tundra;[(ddd_cold, 0.5), (b, 0.5)];lycanitesmobs:tundracharge",
+			"lycanitesmobs:tundra;[(ddd_cold, 0.5), (b, 0.5)];lycanitesmobs:tundracharge,lycanitesmobs:tundrascepter",
 			"lycanitesmobs:tricksterflare;[(ddd_force, 1)];lycanitesmobs:tricksterflarecharge",
-			"lycanitesmobs:demonicblast;[(ddd_lightning, 0.8), (ddd_necrotic, 0.2)];lycanitesmobs:demonicblastcharge",
-			"lycanitesmobs:bloodleach;[(ddd_necrotic, 1)];lycanitesmobs:bloodleachcharge",
-			"lycanitesmobs:frostweb;[(ddd_cold, 1)];lycanitesmobs:frostwebcharge",
+			"lycanitesmobs:demonicblast;[(ddd_lightning, 0.8), (ddd_necrotic, 0.2)];lycanitesmobs:demonicblastcharge,lycanitesmobs:demoniclightningscepter",
+			"lycanitesmobs:bloodleech;[(ddd_necrotic, 1)];lycanitesmobs:bloodleechcharge,lycanitesmobs:bloodleechscepter",
+			"lycanitesmobs:frostweb;[(ddd_cold, 1)];lycanitesmobs:frostwebcharge,lycanitesmobs:frostwebscepter",
 			"lycanitesmobs:chaosorb;[(ddd_force, 1)];lycanitesmobs:chaosorbcharge",
-			"lycanitesmobs:poisonray;[(ddd_poison, 0.5), (ddd_necrotic, 0.5)];lycanitesmobs:poisonraycharge",
-			"lycanitesmobs:blizzard;[(ddd_cold, 1)];lycanitesmobs:blizzardcharge",
-			"lycanitesmobs:doomfireball;[(ddd_fire, 0.5), (ddd_force, 0.5)];lycanitesmobs:doomfireballcharge",
-			"lycanitesmobs:waterjet;[(b, 0.5), (ddd_acid, 0.5)];lycanitesmobs:waterjetcharge",
-			"lycanitesmobs:devilstar;[(ddd_necrotic, 0.5), (ddd_force, 0.5)];lycanitesmobs:devilstarcharge"
-			};
+			"lycanitesmobs:poisonray;[(ddd_poison, 0.5), (ddd_necrotic, 0.5)];lycanitesmobs:poisonraycharge,lycanitesmobs:poisonrayscepter",
+			"lycanitesmobs:blizzard;[(ddd_cold, 1)];lycanitesmobs:blizzardcharge,lycanitesmobs:blizzardscepter",
+			"lycanitesmobs:doomfireball;[(ddd_fire, 0.5), (ddd_force, 0.5)];lycanitesmobs:doomfireballcharge,lycanitesmobs:doomfirescepter",
+			"lycanitesmobs:waterjet;[(b, 0.5), (ddd_acid, 0.5)];lycanitesmobs:waterjetcharge,lycanitesmobs:waterjetscepter",
+			"lycanitesmobs:devilstar;[(ddd_necrotic, 0.5), (ddd_force, 0.5)];lycanitesmobs:devilstarcharge"};
 
 	/***************
 	 * RESISTANCES *
@@ -232,12 +350,128 @@ public interface DefaultValues {
 			"minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
 			"minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[ddd_fire];0;0",
 			"minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
-			"minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65)];[ddd_poison, ddd_psychic];0;0",
+			"minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65), (ddd_fire, -0.25)];[ddd_poison, ddd_psychic, ddd_necrotic];0;0",
+			"minecraft:snow_golem;[(b, 0.3), (ddd_force, 0.5), (ddd_thunder, 0.65), (ddd_fire, -0.5)];[ddd_cold, ddd_poison, ddd_psychic, ddd_necrotic];0;0",
 			"minecraft:wither;[(s, 0.25), (ddd_necrotic, 1.25), (ddd_poison, 0.8), (ddd_radiant, -0.25)];[ddd_necrotic];0;0",
 			"tconstruct:blueslime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
 			"thermalfoundation:blizz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_cold, 1), (ddd_poison, 0.5), (ddd_fire, -1)];[ddd_cold];0;0",
 			"thermalfoundation:basalz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_force, 1), (ddd_poison, 0.5), (ddd_thunder, -1)];[ddd_force];0;0",
-			"thermalfoundation:blitz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_thunder, 1), (ddd_poison, 0.5), (ddd_force, -1)];[ddd_thunder];0;0"};
+			"thermalfoundation:blitz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_thunder, 1), (ddd_poison, 0.5), (ddd_force, -1)];[ddd_thunder];0;0",
+			"lycanitesmobs:wendigo;[(s, 0.15), (b, 0.15), (ddd_necrotic, 0.6), (ddd_radiant, -0.6)];[ddd_cold, ddd_poison];0;0",
+			"lycanitesmobs:amalgalich;[(ddd_cold, 0.4), (ddd_lightning, 0.3), (ddd_radiant, -0.5)];[ddd_slashing, ddd_piercing, ddd_bludgeoning, ddd_poison, ddd_necrotic];0;0",
+			"lycanitesmobs:geist;[(b, 0.3), (ddd_acid, 0.35), (ddd_fire, 0.45), (ddd_lightning, 0.4), (ddd_radiant, -0.7), (ddd_thunder, 0.9)];[ddd_necrotic, ddd_cold, ddd_poison];0.35;0.2",
+			"lycanitesmobs:ghoul;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_radiant, -0.5)];[ddd_poison];0;0",
+			"lycanitesmobs:cryptkeeper;[(ddd_fire, 0.2), (ddd_necrotic, 0.6), (ddd_psychic, 0.1), (ddd_radiant, -0.5), (ddd_thunder, 0.15)];[ddd_poison];0;0",
+			"lycanitesmobs:reaper;[(s, 0.4), (p, 0.4), (b, 0.2), (ddd_force, 1.0), (ddd_necrotic, 0.7), (ddd_radiant, -0.8), (ddd_thunder, 0.5)];[ddd_psychic, ddd_necrotic, ddd_poison, ddd_force];0;0",
+			"lycanitesmobs:gnekk;[(b, 0.2), (ddd_acid, 0.3)];[ddd_poison];0;0",
+			"lycanitesmobs:pixen;[];[ddd_psychic];0.4;0.4",
+			"lycanitesmobs:clink;[(s, 0.3), (p, 0.1), (b, 0.5), (ddd_acid, -0.3), (ddd_fire, -0.2), (ddd_lightning, -0.15)];[];0;0",
+			"lycanitesmobs:arix;[(s, 0.2), (p, 0.1), (b, 0.3), (ddd_cold, 1.0), (ddd_fire, -1.0)];[ddd_cold];0;0",
+			"lycanitesmobs:afrit;[(s, 0.2), (p, 0.1), (b, 0.3), (ddd_cold, -1.0), (ddd_fire, 1.0)];[ddd_fire];0;0",
+			"lycanitesmobs:jabberwock;[(s, -0.3), (p, -0.1), (b, 0.2), (ddd_cold, 0.1)];[];0;0",
+			"lycanitesmobs:arisaur;[(s, 0.1), (b, 0.5), (ddd_acid, -0.3), (ddd_fire, -0.8), (ddd_necrotic, -0.8), (ddd_poison, -0.5)];[];0;0",
+			"lycanitesmobs:wraamon;[(ddd_force, 0.6), (ddd_psychic, 0.4)];[];0.5;0.3",
+			"lycanitesmobs:manticore;[(s, 0.4), (b, -0.25), (ddd_poison, 0.1)];[];0;0",
+			"lycanitesmobs:barghest;[(b, 0.25)];[];0;0",
+			"lycanitesmobs:conba;[(b, 0.1), (ddd_poison, 0.1)];[];0;0",
+			"lycanitesmobs:warg;[(s, 0.2), (b, 0.25)];[];0;0",
+			"lycanitesmobs:kobold;[(b, -0.2), (ddd_poison, 0.1)];[];0.8;0.3",
+			"lycanitesmobs:makaalpha;[(p, 0.1), (b, 0.2), (ddd_cold, 0.1), (ddd_thunder, 0.2)];[];0;0",
+			"lycanitesmobs:maka;[(p, 0.1), (b, 0.2), (ddd_cold, 0.1), (ddd_thunder, 0.2)];[];0;0",
+			"lycanitesmobs:salamander;[(ddd_acid, 0.2), (ddd_cold, -0.8)];[ddd_fire];0;0",
+			"lycanitesmobs:chupacabra;[(s, 0.15), (b, 0.2), (ddd_necrotic, 0.2), (ddd_poison, 0.2), (ddd_psychic, -0.25)];[];0;0",
+			"lycanitesmobs:geken;[(s, 0.15), (b, 0.3), (ddd_necrotic, -0.2), (ddd_poison, 0.6)];[];0;0",
+			"lycanitesmobs:maug;[(b, 0.2)];[ddd_cold];0;0",
+			"lycanitesmobs:aspid;[(b, 0.2)];[ddd_poison];0;0",
+			"lycanitesmobs:dawon;[(s, 0.3), (p, 0.2), (b, 0.2), (ddd_thunder, -0.25)];[];0;0",
+			"lycanitesmobs:khalk;[(s, 0.8), (p, 0.8), (b, 0.8), (ddd_acid, 0.4), (ddd_cold, -0.8), (ddd_fire, 1.0), (ddd_thunder, -0.25)];[ddd_fire];0;0",
+			"lycanitesmobs:quillbeast;[(b, 0.2)];[];0;0",
+			"lycanitesmobs:yeti;[(b, 0.2), (ddd_fire, -0.8)];[ddd_cold];0;0",
+			"lycanitesmobs:yale;[(s, 0.1), (b, 0.2), (ddd_cold, 0.5), (ddd_fire, 0.5), (ddd_lightning, 0.1)];[];0;0",
+			"lycanitesmobs:epion;[(ddd_lightning, -0.25), (ddd_necrotic, 0.5), (ddd_psychic, 0.5), (ddd_radiant, -0.5)];[];0;0",
+			"lycanitesmobs:uvaraptor;[(b, -0.25), (ddd_lightning, -0.25)];[];0;0",
+			"lycanitesmobs:roc;[(b, -0.25), (ddd_lightning, -0.25)];[];0;0",
+			"lycanitesmobs:raiko;[(b, -0.25), (ddd_lightning, -0.25)];[];0;0",
+			"lycanitesmobs:ventoraptor;[(b, -0.25), (ddd_lightning, -0.25)];[];0;0",
+			"lycanitesmobs:lobber;[(s, 0.5), (b, 0.5), (ddd_cold, -0.5), (ddd_psychic, -0.25)];[ddd_fire];0;0",
+			"lycanitesmobs:wildkin;[(s, 0.2), (b, 0.5), (ddd_cold, 0.25), (ddd_fire, 0.25), (ddd_lightning, 0.1), (ddd_psychic, -0.25)];[];0;0",
+			"lycanitesmobs:troll;[(s, 0.5), (p, 0.5), (b, 0.5), (ddd_acid, 0.2), (ddd_cold, 0.2), (ddd_fire, 0.2), (ddd_psychic, -0.25), (ddd_thunder, -0.2)];[];1;0.25",
+			"lycanitesmobs:ettin;[(s, 0.15), (b, 0.3), (ddd_psychic, -0.25)];[];0;0",
+			"lycanitesmobs:lacedon;[(ddd_lightning, -0.25)];[];0.5;0.5",
+			"lycanitesmobs:roa;[(ddd_acid, -0.25), (ddd_lightning, -0.5)];[];0;0",
+			"lycanitesmobs:silex;[(ddd_acid, -0.25), (ddd_lightning, -1.0)];[];0;0",
+			"lycanitesmobs:abtu;[(ddd_acid, -0.25), (ddd_lightning, -0.75)];[];0;0",
+			"lycanitesmobs:strider;[(b, 0.2), (ddd_lightning, -0.5)];[];0;0",
+			"lycanitesmobs:skylus;[(s, 0.3), (p, -0.25), (b, 0.5), (ddd_acid, -0.15), (ddd_lightning, -0.5), (ddd_thunder, -0.2)];[];0;0",
+			"lycanitesmobs:thresher;[(s, 0.2), (b, 0.2), (ddd_lightning, -1.0)];[];0;0",
+			"lycanitesmobs:aglebemu;[(ddd_lightning, -0.5)];[];0.25;0.25",
+			"lycanitesmobs:cephignis;[(ddd_cold, -0.5), (ddd_lightning, -0.5)];[ddd_fire];1;0.35",
+			"lycanitesmobs:abaia;[(ddd_acid, -0.15), (ddd_lightning, 1.0), (ddd_thunder, 0.5)];[ddd_lightning];0;0",
+			"lycanitesmobs:ika;[(s, 0.25), (p, -0.25), (b, 0.3), (ddd_acid, -0.15), (ddd_lightning, -0.8), (ddd_thunder, 0.5)];[];0;0",
+			"lycanitesmobs:dweller;[(s, 0.2), (ddd_acid, -0.15), (ddd_cold, 0.1), (ddd_fire, 0.1), (ddd_lightning, -0.8), (ddd_poison, 0.5)];[];0;0",
+			"lycanitesmobs:ioray;[(ddd_lightning, -1.0)];[];0;0",
+			"lycanitesmobs:quetzodracl;[(ddd_acid, 0.2), (ddd_cold, 0.2), (ddd_fire, 0.2), (ddd_lightning, -0.2)];[];0;0",
+			"lycanitesmobs:cockatrice;[(ddd_acid, 0.2), (ddd_cold, 0.2), (ddd_fire, 0.2), (ddd_lightning, -0.5)];[];0;0",
+			"lycanitesmobs:morock;[(ddd_acid, 0.2), (ddd_cold, 0.2), (ddd_fire, 0.2)];[];0;0",
+			"lycanitesmobs:ignibus;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_acid, 0.2), (ddd_cold, -0.3), (ddd_fire, 1.0), (ddd_necrotic, 0.2)];[ddd_fire];0;0",
+			"lycanitesmobs:zoataur;[(s, 0.6), (p, 0.6), (b, 0.6), (ddd_acid, 0.2), (ddd_cold, 0.2), (ddd_fire, 0.2), (ddd_force, 0.3), (ddd_necrotic, 0.2), (ddd_thunder, 0.2)];[];0;0",
+			"lycanitesmobs:remobra;[(ddd_acid, 0.5), (ddd_cold, 0.2), (ddd_fire, 0.2), (ddd_lightning, -0.25), (ddd_poison, 1.0)];[];0;0",
+			"lycanitesmobs:spriggan;[(ddd_acid, -0.25), (ddd_fire, -0.75), (ddd_necrotic, -0.25), (ddd_poison, -0.5)];[];0;0",
+			"lycanitesmobs:tremor;[(ddd_force, 1.0), (ddd_psychic, -0.25), (ddd_thunder, 1.0)];[ddd_thunder];0;0",
+			"lycanitesmobs:vapula;[(s, 0.15), (p, 1.0), (b, 0.8), (ddd_acid, 0.2), (ddd_force, 0.25), (ddd_necrotic, 1.0), (ddd_poison, 1.0), (ddd_psychic, 0.5), (ddd_thunder, -1.0)];[ddd_necrotic, ddd_poison];0;0",
+			"lycanitesmobs:geonach;[(s, 0.75), (p, -0.25), (b, 1.0), (ddd_acid, -0.25), (ddd_necrotic, 1.0), (ddd_poison, 1.0), (ddd_thunder, -1.0)];[ddd_bludgeoning, ddd_necrotic, ddd_poison];0;0",
+			"lycanitesmobs:cinder;[(ddd_cold, -1.0), (ddd_fire, 1.0)];[ddd_fire];0;0",
+			"lycanitesmobs:reiver;[(ddd_cold, 1.0), (ddd_fire, -1.0)];[ddd_cold];0;0",
+			"lycanitesmobs:jengu;[(ddd_acid, -1.0), (ddd_cold, 0.25), (ddd_fire, 1.0), (ddd_lightning, -1.0), (ddd_poison, -0.5), (ddd_thunder, 0.25)];[ddd_fire];0;0",
+			"lycanitesmobs:spectre;[(ddd_force, 1.0), (ddd_psychic, 1.0)];[ddd_psychic];0;0",
+			"lycanitesmobs:banshee;[(ddd_force, 1.0), (ddd_necrotic, 0.5), (ddd_poison, 0.5), (ddd_psychic, 1.0), (ddd_thunder, 1.0)];[ddd_force, ddd_psychic];0;0",
+			"lycanitesmobs:grue;[(ddd_force, 1.0), (ddd_necrotic, 0.5), (ddd_psychic, 0.25), (ddd_radiant, -1.0)];[ddd_force];0;0",
+			"lycanitesmobs:aegis;[(s, 0.25), (b, 0.5), (ddd_force, -0.25), (ddd_necrotic, 0.25), (ddd_poison, 1.0), (ddd_psychic, 1.0), (ddd_thunder, 1.0)];[];0;0",
+			"lycanitesmobs:zephyr;[(ddd_lightning, 1.0)];[ddd_lightning, ddd_thunder];0;0",
+			"lycanitesmobs:djinn;[(ddd_cold, 0.25), (ddd_fire, 0.25), (ddd_lightning, -1.0), (ddd_thunder, 1.0)];[ddd_thunder];0;0",
+			"lycanitesmobs:eechetik;[(ddd_acid, 0.25), (ddd_necrotic, 0.25), (ddd_poison, 1.0), (ddd_psychic, -1.0)];[ddd_poison];0;0",
+			"lycanitesmobs:wraith;[(ddd_fire, 1.0), (ddd_force, 0.25), (ddd_necrotic, 1.0), (ddd_poison, 1.0), (ddd_radiant, -1.0), (ddd_thunder, 1.0)];[ddd_fire, ddd_necrotic, ddd_poison, ddd_thunder];0;0",
+			"lycanitesmobs:sylph;[(ddd_necrotic, 0.25), (ddd_poison, -0.25), (ddd_psychic, 0.15), (ddd_radiant, 1.0)];[ddd_radiant];0;0",
+			"lycanitesmobs:volcan;[(ddd_acid, 0.25), (ddd_cold, -0.5), (ddd_fire, 1.0)];[ddd_fire];0;0",
+			"lycanitesmobs:wisp;[(ddd_fire, 0.25), (ddd_lightning, 0.25), (ddd_radiant, 0.75), (ddd_thunder, -0.25)];[];0;0",
+			"lycanitesmobs:argus;[(ddd_force, -0.5), (ddd_psychic, 1.0)];[];0;0",
+			"lycanitesmobs:nymph;[(ddd_necrotic, 1.0), (ddd_poison, -1.0), (ddd_psychic, 0.5), (ddd_radiant, 1.0)];[ddd_radiant, ddd_necrotic];0;0",
+			"lycanitesmobs:xaphan;[(ddd_acid, 1.0), (ddd_poison, 0.5), (ddd_psychic, -0.5)];[ddd_acid];0;0",
+			"lycanitesmobs:herma;[(s, 0.5), (p, 0.5), (b, 0.3), (ddd_acid, 0.2), (ddd_lightning, -0.5)];[];0;0",
+			"lycanitesmobs:sutiramu;[(s, 0.2), (p, 0.2), (ddd_fire, -0.5), (ddd_poison, 1.0)];[ddd_poison];0;0",
+			"lycanitesmobs:vespidqueen;[(p, 0.15), (b, -0.25), (ddd_acid, -0.25), (ddd_fire, -1.0), (ddd_force, 0.25), (ddd_lightning, -0.25), (ddd_necrotic, -0.25), (ddd_poison, 1.25), (ddd_psychic, 0.25), (ddd_thunder, 0.25)];[ddd_poison];1;0.5",
+			"lycanitesmobs:vespid;[(p, 0.15), (b, -0.5), (ddd_acid, -0.5), (ddd_fire, -1.0), (ddd_lightning, -0.5), (ddd_necrotic, -0.25), (ddd_poison, 1.0)];[ddd_poison];0.3;0.25",
+			"lycanitesmobs:joustalpha;[(p, 0.8), (b, 0.2), (ddd_acid, -0.25), (ddd_necrotic, -0.25), (ddd_poison, 0.5)];[];0.6;0.3",
+			"lycanitesmobs:joust;[(p, 0.8), (b, 0.2), (ddd_acid, -0.25), (ddd_necrotic, -0.25), (ddd_poison, 0.5)];[];0.5;0.3",
+			"lycanitesmobs:tarantula;[(p, 0.3), (b, -0.3), (ddd_fire, -0.5)];[ddd_poison];0.3;0.25",
+			"lycanitesmobs:calpod;[(s, 0.15), (b, -0.25), (ddd_acid, -0.25), (ddd_fire, -1.0), (ddd_lightning, -0.25), (ddd_necrotic, -0.25), (ddd_poison, 0.5)];[];0.7;0.6",
+			"lycanitesmobs:erepede;[(p, 0.5), (ddd_fire, -1.0), (ddd_poison, 0.3)];[];0;0",
+			"lycanitesmobs:concapedesegment;[(b, -0.15), (ddd_fire, -1.0), (ddd_poison, 0.3)];[ddd_poison];0.5;0.5",
+			"lycanitesmobs:concapede;[(b, -0.15), (ddd_fire, -1.0), (ddd_poison, 0.3)];[ddd_poison];0.5;0.5",
+			"lycanitesmobs:frostweaver;[(p, 0.25), (b, -0.25), (ddd_cold, 1.0), (ddd_fire, -1.5)];[];0.3;0.25",
+			"lycanitesmobs:eyewig;[(ddd_acid, 0.5), (ddd_poison, 0.5)];[];0.25;0.15",
+			"lycanitesmobs:gorgomite;[(p, 0.2), (b, -0.25), (ddd_fire, -1.0), (ddd_poison, 0.25)];[];0.9;0.8",
+			"lycanitesmobs:darkling;[(p, 0.2), (b, -0.25), (ddd_fire, -1.0), (ddd_necrotic, 0.8), (ddd_poison, 0.25), (ddd_psychic, -0.25), (ddd_radiant, -0.5)];[];0.25;0.25",
+			"lycanitesmobs:lurker;[(p, 0.2), (b, -0.25), (ddd_fire, -1.0), (ddd_poison, 1.0)];[ddd_poison];0.25;0.25",
+			"lycanitesmobs:triffid;[(ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_lightning, -0.25), (ddd_necrotic, -1.0), (ddd_poison, 1.0), (ddd_psychic, 0.6), (ddd_thunder, 1.0)];[ddd_thunder, ddd_poison];0;0",
+			"lycanitesmobs:treant;[(s, -0.15), (b, 1.0), (ddd_acid, -0.5), (ddd_fire, -1.0), (ddd_necrotic, -0.25), (ddd_poison, -0.25)];[];0;0",
+			"lycanitesmobs:ent;[(s, -0.3), (b, 1.0), (ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_poison, -0.25)];[];0;0",
+			"lycanitesmobs:shambler;[(s, -0.25), (p, 1.0), (b, 0.5), (ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_lightning, -0.25), (ddd_necrotic, -0.5), (ddd_poison, 1.0), (ddd_psychic, 0.25), (ddd_thunder, 0.25)];[ddd_piercing, ddd_poison];0;0",
+			"lycanitesmobs:beholder;[];[];0.8;1",
+			"lycanitesmobs:trite;[(b, -0.25), (ddd_necrotic, 0.25), (ddd_poison, 0.25), (ddd_psychic, 0.25), (ddd_radiant, -0.5)];[];0.75;0.75",
+			"lycanitesmobs:shade;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_psychic, 1.0), (ddd_radiant, 0.5)];[ddd_psychic];0;0",
+			"lycanitesmobs:asmodeus;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_lightning, -0.5), (ddd_necrotic, 1.0), (ddd_poison, 1.0), (ddd_psychic, 1.0), (ddd_radiant, -0.5)];[ddd_necrotic, ddd_psychic];0;0",
+			"lycanitesmobs:astaroth;[(s, 0.15), (p, 0.15), (b, 0.15), (ddd_acid, -0.5), (ddd_lightning, -0.5), (ddd_necrotic, 1.0), (ddd_poison, 0.75), (ddd_psychic, 0.75), (ddd_radiant, -0.75)];[ddd_necrotic];0;0",
+			"lycanitesmobs:krake;[(s, 0.15), (ddd_fire, -0.5), (ddd_force, 0.5), (ddd_poison, -0.75)];[ddd_thunder];0.5;0.5",
+			"lycanitesmobs:crusk;[(s, 0.15), (p, 0.15), (b, 0.15)];[];0;0",
+			"lycanitesmobs:serpix;[(s, 0.15), (p, 0.15), (b, 0.15), (ddd_cold, 1.0), (ddd_fire, -1.0)];[ddd_cold];0;0",
+			"lycanitesmobs:gorger;[(s, 0.15), (p, 0.15), (b, 0.15), (ddd_cold, -1.0), (ddd_fire, 1.0)];[ddd_fire];0;0",
+			"lycanitesmobs:behemoth;[(ddd_fire, 0.9), (ddd_necrotic, 0.8), (ddd_psychic, 0.5), (ddd_radiant, -1.0)];[ddd_necrotic, ddd_fire];0;0",
+			"lycanitesmobs:belph;[(ddd_fire, 0.5), (ddd_necrotic, 0.4), (ddd_psychic, 0.5), (ddd_radiant, -1.0)];[ddd_necrotic, ddd_fire];0.1;0.25",
+			"lycanitesmobs:pinky;[(ddd_fire, 0.5), (ddd_necrotic, 0.5), (ddd_psychic, 0.5), (ddd_radiant, -0.8)];[ddd_necrotic, ddd_fire];0;0",
+			"lycanitesmobs:archvile;[(ddd_fire, 1.0), (ddd_necrotic, 1.0), (ddd_psychic, 1.0), (ddd_radiant, -1.0)];[ddd_necrotic, ddd_fire];0;0",
+			"lycanitesmobs:cacodemon;[(ddd_fire, 1.0), (ddd_force, 0.2), (ddd_lightning, 1.0), (ddd_necrotic, 1.0), (ddd_psychic, 0.6), (ddd_radiant, -1.0)];[ddd_necrotic, ddd_fire];0;0",
+			"lycanitesmobs:rahovart;[(s, 0.1), (p, 0.1), (b, 0.1), (ddd_fire, 1.0), (ddd_force, 0.6), (ddd_necrotic, 1.0), (ddd_poison, 0.5), (ddd_psychic, 1.0), (ddd_radiant, -1.0)];[ddd_necrotic, ddd_fire];0;0"};
 
 	/**
 	 * {@link ModConfig.ResistanceCategory#shieldResist}
@@ -245,24 +479,34 @@ public interface DefaultValues {
 	final String[] SHIELD_BASE_RESISTS = {
 			"minecraft:shield;[(s, 0.8), (p, 0.5), (b, 0.2)]"};
 
+	final String[] ENTITIES_BURN_IN_DAYLIGHT = {
+			"minecraft:zombie",
+			"minecraft:zombie_villager",
+			"minecraft:zombie_horse",
+			"minecraft:skeleton",
+			"minecraft:skeleton_horse",
+			"minecraft:stray",
+			"lycanitesmobs:ghoul",
+			"lycanitesmobs:geist"};
+
 	/******************
 	 * SINGLE STRINGS *
 	 ******************/
-	
+
 	/**
 	 * {@link ModConfig.DamageCategory.ExtraDamageDistsCategory#explosionDist}
 	 */
 	final String EXPLOSION_DIST = "[(b, 1)]";
-	
+
 	/**
 	 * {@link ModConfig.ResistanceCategory#playerResists}
 	 */
 	final String PLAYER_BASE_RESISTS = "[];[];0";
-	
+
 	/***********************
 	 * TCONSTRUCT & CONARM *
 	 ***********************/
-	
+
 	/**
 	 * 
 	 */
@@ -293,9 +537,8 @@ public interface DefaultValues {
 			"lead;[(s, 0.8), (ddd_poison, 0.2)];0.6",
 			"silver;[(p, 0.8), (ddd_radiant, 0.2)];0.6",
 			"electrum;[(s, 0.6), (ddd_lightning, 0.4)];0.6",
-			"steel;[(s, 1)];0.1"
-	};
-	
+			"steel;[(s, 1)];0.1"};
+
 	/**
 	 * {@link ModConfig.CompatCategory.TinkersCategory#toolBias}
 	 */
@@ -320,9 +563,8 @@ public interface DefaultValues {
 			"longbow;2",
 			"bolt;0.8",
 			"crossbow;2",
-			"shuriken;0"
-	};
-	
+			"shuriken;0"};
+
 	/**
 	 * 
 	 */
@@ -353,9 +595,8 @@ public interface DefaultValues {
 			"lead;[(s, 1), (p, 0.7), (b, 0.3), (ddd_acid, 0.3), (ddd_poison, 0.5), (ddd_necrotic, 0.4)]",
 			"silver;[(s, 1), (p, 0.7), (b, 0.3), (ddd_radiant, 1), (ddd_necrotic, 0.3)]",
 			"electrum;[(s, 1), (p, 0.7), (b, 0.3), (ddd_lightning, 1), (ddd_thunder, 1)]",
-			"steel;[(s, 1), (p, 0.7), (b, 0.5), (ddd_thunder, 0.7)]"
-	};
-	
+			"steel;[(s, 1), (p, 0.7), (b, 0.5), (ddd_thunder, 0.7)]"};
+
 	/**
 	 * {@link ModConfig.CompatCategory.ConarmCategory#armorImmunities}
 	 */
@@ -368,7 +609,45 @@ public interface DefaultValues {
 			"sponge;ddd_bludgeoning, ddd_thunder",
 			"manyullyn;ddd_force",
 			"obsidian;ddd_slashing",
-			"electrum;ddd_lightning"
-	};
+			"electrum;ddd_lightning"};
 
+	/*************
+	 * LYCANITES *
+	 *************/
+	
+	final String[] ENEMY_PROJECTILE_MAP = {
+		"acidsplash;xaphan",
+		"aetherwave;slyph",
+		"aquapulse;jengu",
+		"arcanelaserstorm;beholder",
+		"blizzard;serpix",
+		"bloodleech;epion",
+		"boulderblast;troll",
+		"chaosorb;argus",
+		"crystalshard;vapula",
+		"demonicblast;cacodemon",
+		"devilstar;astaroth",
+		"doomfireball;archvile,belph",
+		"ember;cinder",
+		"faebolt;nymph",
+		"frostweb;frostweaver",
+		"frostbolt;reiver",
+		"hellfireball;behemoth",
+		"icefireball;arix",
+		"lifedrain;spriggan",
+		"lightball;wisp",
+		"magma;lobber,gorger",
+		"mudshot;erepede",
+		"poisonray;eyewig",
+		"poop;conba",
+		"quill;quillbeast",
+		"scorchfireball;afrit,ignibus",
+		"spectralbolt;reaper",
+		"throwingscythe;clink",
+		"tricksterflare;pixen",
+		"tundra;wendigo",
+		"venomshot;remobra",
+		"waterjet;ioray",
+		"whirlwind;djinn"
+	};
 }

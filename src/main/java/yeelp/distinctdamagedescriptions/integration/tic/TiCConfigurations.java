@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.config;
+package yeelp.distinctdamagedescriptions.integration.tic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,11 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.config.DDDBaseConfiguration;
+import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
+import yeelp.distinctdamagedescriptions.config.DDDDistributionConfiguration;
+import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDBasicConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDistributionBiasConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDModIDPrependingConfigReader;

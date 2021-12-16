@@ -5,17 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 
@@ -37,8 +36,12 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 		this(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED);
 	}
 	
+	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<ResourceLocation>> f) {
+		super(keyTooltip, numberFormatter, damageFormatter, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobResistancesIfConfigured), "mobresistances");
+	}
+	
 	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter) {
-		super(keyTooltip, numberFormatter, damageFormatter, (s) -> Optional.ofNullable(s == null ? MobResistanceCategories.EMPTY : DDDConfigurations.mobResists.get(Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(s)).map(ResourceLocation::toString).orElse(""))), "mobresistances");
+		this(keyTooltip, numberFormatter, damageFormatter, TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
 	}
 
 	/**

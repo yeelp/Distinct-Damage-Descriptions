@@ -31,6 +31,8 @@ import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.capability.ConarmArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.capability.distributors.ConarmArmorDistributor;
+import yeelp.distinctdamagedescriptions.integration.tic.conarm.client.ConarmArmorFormatter;
+import yeelp.distinctdamagedescriptions.integration.tic.conarm.client.ConarmPlatesFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.client.DDDConarmBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.traits.DDDImmunityTrait;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.traits.DDDImmunityTrait.DamageHandler;
@@ -84,7 +86,7 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 
 	@Override
 	protected Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters() {
-		return ImmutableList.of();
+		return ImmutableList.of(ConarmArmorFormatter.getInstance(), ConarmPlatesFormatter.getInstance());
 	}
 
 	@Override

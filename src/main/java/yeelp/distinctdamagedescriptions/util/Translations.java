@@ -17,7 +17,7 @@ public enum Translations {
 	public class Translator {
 		private final String root;
 
-		Translator(String root) {
+		protected Translator(String root) {
 			this.root = root;
 		}
 
@@ -53,8 +53,12 @@ public enum Translations {
 			return this.getComponent(key, style, objects).getFormattedText();
 		}
 
-		private String getKey(String key) {
+		protected String getKey(String key) {
 			return this.root.concat("." + ModConsts.MODID).concat("." + key);
+		}
+		
+		protected final String getRoot() {
+			return this.root;
 		}
 	}
 
