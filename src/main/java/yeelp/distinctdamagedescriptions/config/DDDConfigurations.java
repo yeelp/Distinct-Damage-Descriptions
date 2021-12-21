@@ -76,6 +76,7 @@ public abstract class DDDConfigurations {
 		}
 		catch(NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 }

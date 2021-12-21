@@ -15,4 +15,8 @@ public final class CompatCategory {
 	@Name("Lycanite's Mobs Integration")
 	@Comment("Configure integration with Lycanite's Mobs")
 	public LycanitesConfigCategory lycanites = new LycanitesConfigCategory();
+	
+	@Name("Tetra Integration")
+	@Comment("Configure Tetra integration")
+	public TetraConfigCategory tetra = new TetraConfigCategory();
 }

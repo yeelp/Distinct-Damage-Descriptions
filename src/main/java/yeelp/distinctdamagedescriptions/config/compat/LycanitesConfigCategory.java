@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.config.compat;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
 public class LycanitesConfigCategory {
@@ -54,5 +55,6 @@ public class LycanitesConfigCategory {
 			"Format is <projectile name>;mobs",
 			"    <projectile name> is the name of the projectile used in the projectile distributions configuration, without the mod id.",
 			"    mobs is a comma separated list of mob ids (without their modid) that shoot that projectile."})
+	@RequiresMcRestart
 	public String[] creatureProjectiles = DefaultValues.ENEMY_PROJECTILE_MAP;
 }

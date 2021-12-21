@@ -1,17 +1,16 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.util.Map;
-
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DDDDistributionBiasConfigReader extends DDDBasicConfigReader<DistributionBias> {
 
 	public DDDDistributionBiasConfigReader(String name, String[] configList, IDDDConfiguration<DistributionBias> config) throws NoSuchMethodException, SecurityException {
-		super(name, configList, config, DistributionBias.class.getConstructor(Map.class, float.class), 0.0f);
+		super(name, configList, config, DistributionBias.class.getConstructor(NonNullMap.class, float.class), 0.0f);
 	}
 
 	@Override

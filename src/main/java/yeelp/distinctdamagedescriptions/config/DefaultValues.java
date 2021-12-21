@@ -650,4 +650,42 @@ public interface DefaultValues {
 		"waterjet;ioray",
 		"whirlwind;djinn"
 	};
+	
+	/*********
+	 * TETRA *
+	 *********/
+	
+	final String[] TETRA_PART_BIAS = {
+			"sword/heavy_blade;[(s, 0.5), (b, 0.5)];0.5",
+			"sword/machete;[(s, 1)];1",
+			"sword/basic_blade;[(s, 1)];0",
+			"sword/shortblade;[(s, 0.5), (p, 0.5)];0.25",
+			"duplex/adze;[(p, 1)];1",
+			"duplex/claw;[(s, 0.5), (p, 0.5)];0.5",
+			"duplex/basic_axe;[(s, 0.6), (b, 0.4)];0.3",
+			"duplex/basic_hammer;[(b, 1)];1",
+			"duplex/basic_pickaxe;[(p, 1)];0.5",
+			"duplex/hoe;[(p, 1)];0.3",
+			"duplex/sickle;[(s, 1)];0.4"
+	};
+	
+	final String[] TETRA_MAT_BIAS = {
+			"log;[(b, 1)];0.5",
+			"acacia;[(b, 1)];0.5",
+			"birch;[(b, 1)];0.5",
+			"dark_oak;[(b, 1)];0.5",
+			"jungle;[(b, 1)];0.5",
+			"oak;[(b, 1)];0.5",
+			"spruce;[(b, 1)];0.5",
+			"stone;[(b, 1)];1",
+			"cobblestone;[(b, 1)];1",
+			"diorite;[(b, 1)];1",
+			"granite;[(b, 1)];1",
+			"andesite;[(b, 1)];1",
+			"flint;[(b, 1)];0.3",
+			"iron;[(s, 1)];0",
+			"gold;[(b, 0.5), (p, 0.5)];0.4",
+			"diamond;[(s, 1)];0.5",
+			"obsidian;[(s, 0.8), (b, 0.2)];0.6"
+	};
 }

@@ -22,5 +22,6 @@ public final class TinkersCategory {
 		"A material's distribution is its preferred distribution it tries to lean the tool towards.",
 		"A material's influence rating is a measure of how good that material is at influencing head pieces."
 	})
+	@RequiresMcRestart
 	public String[] matBias = DefaultValues.MATERIAL_BIAS;
 }

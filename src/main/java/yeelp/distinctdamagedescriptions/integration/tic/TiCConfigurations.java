@@ -1,10 +1,8 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import yeelp.distinctdamagedescriptions.ModConsts;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
@@ -18,6 +16,7 @@ import yeelp.distinctdamagedescriptions.config.readers.DDDDistributionBiasConfig
 import yeelp.distinctdamagedescriptions.config.readers.DDDModIDPrependingConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
+import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
 
 /**
@@ -46,9 +45,9 @@ public abstract class TiCConfigurations {
 
 	@Initializer
 	public static void init() {
-		Map<DDDDamageType, Float> defaultWeaponMaterialBias = new HashMap<DDDDamageType, Float>();
+		DDDBaseMap<Float> defaultWeaponMaterialBias = new DDDBaseMap<Float>(() -> 0.0f);
 		defaultWeaponMaterialBias.put(DDDBuiltInDamageType.BLUDGEONING, 1.0f);
-		toolMaterialBias = new DDDBaseConfiguration<DistributionBias>(() -> new DistributionBias(defaultWeaponMaterialBias, 0));
+		toolMaterialBias = new DDDBaseConfiguration<DistributionBias>(() -> new DistributionBias(defaultWeaponMaterialBias, 0.0f));
 		armorMaterialDist = new DDDDistributionConfiguration<IArmorDistribution>(() -> new ArmorDistribution());
 		toolBiasResistance = new DDDBaseConfiguration<Float>(() -> 0.0f);
 		try {
@@ -56,6 +55,7 @@ public abstract class TiCConfigurations {
 		}
 		catch(NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 }

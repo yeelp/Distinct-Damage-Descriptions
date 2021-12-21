@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.integration.tic;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -68,11 +67,11 @@ public final class TiCUtil {
 		return identifiers;
 	}
 	
-	public static Map<DDDDamageType, Float> getBaseDist(ItemStack stack) {
+	public static DDDBaseMap<Float> getBaseDist(ItemStack stack) {
 		return getBaseDist(stack.getItem());
 	}
 	
-	public static Map<DDDDamageType, Float> getBaseDist(Item item) {
+	public static DDDBaseMap<Float> getBaseDist(Item item) {
 		String reg = YResources.getRegistryString(item);
 		if(item instanceof TinkerToolCore) {
 			return getMap(reg, DDDConfigurations.items);
@@ -91,7 +90,7 @@ public final class TiCUtil {
 		return CustomFontColor.encodeColor(colour);
 	}
 	
-	private static <Dist extends IDistribution> Map<DDDDamageType, Float> getMap(String key, IDDDConfiguration<Dist> config) {
+	private static <Dist extends IDistribution> DDDBaseMap<Float> getMap(String key, IDDDConfiguration<Dist> config) {
 		Dist d = config.getOrFallbackToDefault(key);
 		return d.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, d::getWeight));
 	}
