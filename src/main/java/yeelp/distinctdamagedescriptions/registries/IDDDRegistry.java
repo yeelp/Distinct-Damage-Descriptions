@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
  *
  * @param <T> the type registered in the registry
  */
-public interface IDDDRegistry<T> {
+public interface IDDDRegistry<T> extends Iterable<T> {
 	/**
 	 * Initialize this registry
 	 */

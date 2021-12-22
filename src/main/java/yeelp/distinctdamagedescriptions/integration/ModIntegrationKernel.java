@@ -23,6 +23,7 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesIntegration;
+import yeelp.distinctdamagedescriptions.integration.spartanweaponry.SpartanWeaponryCompat;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.DDDConarmIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.DDDTinkersIntegration;
@@ -45,6 +46,7 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.CONARM_ID, () -> new DDDConarmIntegration());
 		integratableMods.put(ModConsts.LYCANITES_ID, () -> new LycanitesIntegration());
 		integratableMods.put(ModConsts.TETRA_ID, () -> new TetraIntegration());
+		integratableMods.put(ModConsts.SPARTAN_WEAPONRY_ID, () -> new SpartanWeaponryCompat());
 	}
 
 	/**

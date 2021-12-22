@@ -18,6 +18,7 @@ public class ModConsts {
 	public static final String LYCANITES_ID = "lycanitesmobs";
 	public static final String TETRA_ID = "tetra";
 	public static final String HWYLA_ID = "waila";
+	public static final String SPARTAN_WEAPONRY_ID = "spartanweaponry";
 
 	/** MOD NAMES SECTION END **/
 

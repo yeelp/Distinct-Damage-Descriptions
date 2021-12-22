@@ -66,6 +66,7 @@ dependencies {
     deobfProvided "curse.maven:lycanitesmobs:2935745"
     deobfProvided "curse.maven:tetra:2752236"
     deobfProvided "curse.maven:conarm:3174535"
+    deobfProvided "curse.maven:spartanweaponry:2830166"
     
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..

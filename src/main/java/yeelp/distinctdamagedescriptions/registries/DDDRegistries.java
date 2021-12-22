@@ -5,6 +5,7 @@ import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributions;
+import yeelp.distinctdamagedescriptions.registries.impl.DDDPotionsRegistry;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDTrackers;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.util.DDDJsonIO;
@@ -38,6 +39,11 @@ public abstract class DDDRegistries {
 	 * Registry for tracking entities.
 	 */
 	public static IDDDTrackersRegistry trackers;
+	
+	/**
+	 * Registry for potions.
+	 */
+	public static IDDDPotionsRegistry potions;
 
 	/**
 	 * Initialize the registries, update the explosion distribution, and read from
@@ -51,5 +57,6 @@ public abstract class DDDRegistries {
 		trackers = new DDDTrackers();
 		DDDExplosionDist.update();
 		distributions.register(DDDJsonIO.init());
+		potions = new DDDPotionsRegistry();
 	}
 }
