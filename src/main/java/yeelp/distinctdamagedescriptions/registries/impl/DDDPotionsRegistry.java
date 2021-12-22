@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.potion.DDDPotion;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.IDDDPotionsRegistry;
@@ -27,6 +28,9 @@ public class DDDPotionsRegistry extends DDDBaseRegistry<DDDPotion> implements ID
 	
 	@Override
 	public void init() {
+		if(!ModConfig.core.enablePotionRegistration) {
+			return;
+		}
 		DDDRegistries.damageTypes.forEach((t) -> {
 			if(t != DDDBuiltInDamageType.NORMAL && t != DDDBuiltInDamageType.UNKNOWN) {
 				Stream.of(DDDPotion.EffectType.values()).map((e) -> new DDDPotion(e, t)).forEach(this::register);

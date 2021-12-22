@@ -48,4 +48,9 @@ public final class GeneralCategory {
 			"   avg is the average of all of the mobs weakness values that were hit (which is negative)",
 			"This triggers only when a mob's adaptability is triggered."})
 	public boolean enableAdaptiveWeakness = false;
+	
+	@Name("Register Potions")
+	@Comment("If true, DDD will register and add potions and potion effects that grant resistance buffs/debuffs")
+	@RequiresMcRestart
+	public boolean enablePotionRegistration = false;
 }
