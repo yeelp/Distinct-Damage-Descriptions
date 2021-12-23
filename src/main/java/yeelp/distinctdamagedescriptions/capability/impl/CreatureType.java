@@ -2,7 +2,6 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import com.google.common.collect.ImmutableList;
 
@@ -13,13 +12,15 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.Capability.IStorage;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
-import yeelp.distinctdamagedescriptions.capability.providers.CreatureTypeProvider;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 
 public class CreatureType implements ICreatureType {
+	
+	@CapabilityInject(ICreatureType.class)
+	public static Capability<ICreatureType> cap;
+	
 	public static final CreatureType UNKNOWN = new CreatureType(CreatureTypeData.UNKNOWN);
 	private Set<String> types;
 	private Set<String> potionImmunities;
@@ -46,12 +47,12 @@ public class CreatureType implements ICreatureType {
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == CreatureTypeProvider.creatureType;
+		return capability == cap;
 	}
 
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == CreatureTypeProvider.creatureType ? CreatureTypeProvider.creatureType.<T>cast(this) : null;
+		return capability == cap ? cap.<T>cast(this) : null;
 	}
 
 	@Override
@@ -91,34 +92,5 @@ public class CreatureType implements ICreatureType {
 	@Override
 	public boolean isImmuneToCriticalHits() {
 		return this.critImmunity;
-	}
-
-	public static void register() {
-		CapabilityManager.INSTANCE.register(ICreatureType.class, new CreatureTypeStorage(), new CreatureTypeFactory());
-	}
-
-	private static class CreatureTypeFactory implements Callable<ICreatureType> {
-		public CreatureTypeFactory() {
-		}
-
-		@Override
-		public ICreatureType call() throws Exception {
-			return CreatureType.UNKNOWN;
-		}
-	}
-
-	private static class CreatureTypeStorage implements IStorage<ICreatureType> {
-		public CreatureTypeStorage() {
-		}
-
-		@Override
-		public NBTBase writeNBT(Capability<ICreatureType> capability, ICreatureType instance, EnumFacing side) {
-			return instance.serializeNBT();
-		}
-
-		@Override
-		public void readNBT(Capability<ICreatureType> capability, ICreatureType instance, EnumFacing side, NBTBase nbt) {
-			instance.deserializeNBT((NBTTagCompound) nbt);
-		}
 	}
 }

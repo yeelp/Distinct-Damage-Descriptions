@@ -5,12 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 
 /**
@@ -20,11 +15,10 @@ import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
  */
 public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormatter<ShieldDistribution, ItemStack> {
 	
-	private final ITextComponent shieldEffectivenessSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.effectiveness").setStyle(new Style().setColor(TextFormatting.GRAY));
 	private static ShieldDistributionFormatter instance;
 	
 	protected ShieldDistributionFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, new TextComponentTranslation("tooltips.distinctdamagedescriptions.shielddist").setStyle(new Style().setColor(TextFormatting.GRAY)));
+		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, "shielddist");
 	}
 	
 	/**
@@ -50,11 +44,12 @@ public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormat
 		if(cap == null) {
 			return Optional.empty();
 		}
-		return Optional.of(cap.getCategories().stream().sorted().collect(LinkedList<String>::new, (l, d) -> l.add(makeOneShieldDistString(cap.getWeight(d), d)), LinkedList<String>::addAll));
+		return Optional.of(cap.getCategories().stream().sorted().collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.SHIELD.format(d, cap.getWeight(d), this)), LinkedList<String>::addAll));
 	}
-	
-	private String makeOneShieldDistString(float amount, DDDDamageType type) {
-		return String.format("   %s%s %s %s", TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), this.shieldEffectivenessSuffix.getFormattedText());
+
+	@Override
+	public TooltipOrder getType() {
+		return TooltipOrder.SHIELD;
 	}
 
 }

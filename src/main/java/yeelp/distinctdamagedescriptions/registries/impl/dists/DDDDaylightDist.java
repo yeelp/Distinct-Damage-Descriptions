@@ -3,10 +3,10 @@ package yeelp.distinctdamagedescriptions.registries.impl.dists;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
-import yeelp.distinctdamagedescriptions.handlers.DDDTrackers;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public final class DDDDaylightDist extends AbstractSingleTypeDist {
 	public DDDDaylightDist() {
@@ -21,7 +21,7 @@ public final class DDDDaylightDist extends AbstractSingleTypeDist {
 	@Override
 	protected boolean useType(DamageSource source, EntityLivingBase target) {
 		if(source == DamageSource.ON_FIRE && target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD) {
-			return DDDTrackers.daylight.isTracking(target.getUniqueID());
+			return DDDRegistries.trackers.isTracking("daylight", target);
 		}
 		return false;
 	}
@@ -31,4 +31,8 @@ public final class DDDDaylightDist extends AbstractSingleTypeDist {
 		return "daylight";
 	}
 
+	@Override
+	public int priority() {
+		return 1;
+	}
 }

@@ -1,0 +1,21 @@
+{ 
+    "modifier": "bruteforce",
+    "text": [ 
+        { 
+            "text": "Are pesky mobs resisting your strikes? Easy solution: hit them harder! Firework stars give your weapon that oomph it needs to hit fast and hard! Still not enough? Just add more! Only works for melee weapons"
+        }
+    ],
+    "effects": [ 
+        "Bypass 10% of mob resistances",
+        "Adding more firework stars only uses one modifier",
+        "Higher levels bypass more resistances",
+        "Incompatible with Sly Strike"
+    ],
+    "demoTool": [ 
+        "tconstruct:broadsword",
+        "tconstruct:rapier",
+        "tconstruct:longsword",
+        "tconstruct:cleaver",
+        "tconstruct:battlesign"
+    ]
+}

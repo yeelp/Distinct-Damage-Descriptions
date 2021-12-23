@@ -33,5 +33,14 @@
         "sounds": [
             "distinctdamagedescriptions:adaptability_zip"
         ]
+    },
+    "distinction": {
+        "category": "music",
+        "sounds": [ 
+            { 
+                "name": "distinctdamagedescriptions:record/distinction",
+                "stream": true
+            }
+        ] 
     }
 }

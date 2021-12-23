@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.OptionalDouble;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,21 +15,100 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.network.SoundMessage;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults;
 
 public final class DDDSounds {
 	private static final Map<String, SoundEvent> SOUND_MAP = new HashMap<String, SoundEvent>();
 	private static final List<String> ID_LIST = new ArrayList<String>();
+	
+	public enum DDDCombatSounds {
+		RESIST(RESIST_DING) {
+			@Override
+			protected boolean isApplicable(CombatResults results, boolean forAttacker) {
+				return forAttacker && results.wasResistanceHit() && isRatioWithinBounds(0, 1, results.getRatio());
+			}
+
+			@Override
+			public float getRecommendedVolume() {
+				return 1.7f;
+			}
+		},
+		WEAKNESS(WEAKNESS_HIT) {
+			@Override
+			protected boolean isApplicable(CombatResults results, boolean forAttacker) {
+				return forAttacker && results.wasWeaknessHit() && isRatioWithinBounds(1, Double.MAX_VALUE, results.getRatio());
+			}
+
+			@Override
+			public float getRecommendedVolume() {
+				return 0.6f;
+			}
+		},
+		IMMUNITY(IMMUNITY_HIT) {
+			@Override
+			protected boolean isApplicable(CombatResults results, boolean forAttacker) {
+				return (forAttacker && results.wasImmunityTriggered() && results.getAmount().orElse(Double.NaN) == 0) || (!forAttacker && results.wasShieldEffective() && results.getShieldRatio().orElse(1) == 0);
+			}
+
+			@Override
+			public float getRecommendedVolume() {
+				return 1.5f;
+			}
+		},
+		RESIST_NULLIFY(HIGH_RESIST_HIT) {
+			@Override
+			protected boolean isApplicable(CombatResults results, boolean forAttacker) {
+				return (forAttacker && !results.wasImmunityTriggered() && results.wasResistanceHit() && results.getAmount().orElse(Double.NaN) == 0) || (!forAttacker && results.wasShieldEffective() && isRatioWithinBounds(0, 1, results.getShieldRatio()));
+			}
+
+			@Override
+			public float getRecommendedVolume() {
+				return 1.7f;
+			}
+		},
+		ADAPTABILITY(ADAPTABILITY_CHANGE) {
+			@Override
+			protected boolean isApplicable(CombatResults results, boolean forAttacker) {
+				return forAttacker && results.wasAdaptabilityTriggered();
+			}
+
+			@Override
+			public float getRecommendedVolume() {
+				return 2.0f;
+			}
+		};
+		
+		private SoundEvent evt;
+		
+		private DDDCombatSounds(SoundEvent evt) {
+			this.evt = evt;
+		}
+		
+		public Optional<SoundEvent> getSoundIfApplicable(CombatResults results, boolean attacker) {
+			return Optional.ofNullable(this.isApplicable(results, attacker) ? this.evt : null);
+		}
+		
+		protected abstract boolean isApplicable(CombatResults results, boolean forAttacker);
+		
+		public abstract float getRecommendedVolume();
+		
+		protected static boolean isRatioWithinBounds(double lo, double hi, OptionalDouble opt) {
+			if(opt.isPresent()) {
+				return lo < opt.getAsDouble() && opt.getAsDouble() < hi;
+			}
+			return false;
+		}
+	}
 
 	public static final SoundEvent RESIST_DING = createSoundEvent("resist_ding");
 	public static final SoundEvent WEAKNESS_HIT = createSoundEvent("weakness_hit");
 	public static final SoundEvent IMMUNITY_HIT = createSoundEvent("immunity_hit");
 	public static final SoundEvent HIGH_RESIST_HIT = createSoundEvent("high_resist_hit");
 	public static final SoundEvent ADAPTABILITY_CHANGE = createSoundEvent("adaptability_change");
+	public static final SoundEvent DISTINCTION = createSoundEvent("distinction");
 
 	public static void init() {
-		for(Entry<String, SoundEvent> entry : SOUND_MAP.entrySet()) {
-			registerSound(entry.getKey(), entry.getValue());
-		}
+		SOUND_MAP.forEach(DDDSounds::registerSound);
 	}
 
 	private static SoundEvent createSoundEvent(String id) {

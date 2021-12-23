@@ -8,10 +8,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
@@ -22,11 +18,9 @@ import yeelp.distinctdamagedescriptions.util.DamageMap;
  *
  */
 public abstract class AbstractDamageDistributionFormatter extends AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> {
-
-	private final ITextComponent damageSuffix = new TextComponentTranslation("tooltips.distinctdamagedescriptions.damage").setStyle(new Style().setColor(TextFormatting.GRAY));
 	
-	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, IDamageDistribution> capExtractor, ITextComponent typeText) {
-		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeText);
+	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
+		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
 	}
 
 	@Override
@@ -36,11 +30,11 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IDamageDistribution cap) {
-		if(cap == null || !this.shouldShowDist(stack)) {
+		if(!this.shouldShowDist(stack)) {
 			return Optional.empty();
 		}
 		final DamageMap vals = this.getVals(stack, cap);
-		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(this.makeOneDamageString(vals.get(d.getKey()), d.getKey())), LinkedList<String>::addAll);
+		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.DEFAULT_DAMAGE.format(d.getKey(), vals.get(d.getKey()), this)), LinkedList<String>::addAll);
 		return Optional.of(lst);
 	}
 	
@@ -70,9 +64,4 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	protected DamageMap getVals(ItemStack stack, IDamageDistribution cap) {
 		return cap.distributeDamage(this.getDamageToDistribute(stack));
 	}
-	
-	private String makeOneDamageString(float amount, DDDDamageType type) {
-		return String.format("   %s%s %s %s", TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), this.damageSuffix.getFormattedText());
-	}
-
 }

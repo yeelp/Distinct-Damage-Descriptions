@@ -33,12 +33,14 @@ public abstract class AbstractTracker extends Handler {
 	public abstract boolean shouldStartTracking(EntityLivingBase entity);
 
 	public abstract boolean shouldStopTracking(EntityLivingBase entity);
+	
+	public abstract String getName();
 
-	public boolean isTracking(UUID id) {
+	public final boolean isTracking(UUID id) {
 		return this.tracking.contains(id);
 	}
 
-	public boolean isTracking(EntityLivingBase entity) {
+	public final boolean isTracking(EntityLivingBase entity) {
 		return isTracking(entity.getUniqueID());
 	}
 }

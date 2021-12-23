@@ -87,8 +87,9 @@ public final class ConfigGenerator {
 			return MOB_DAMAGE_CACHE.get(loc);
 		}
 		IDamageDistribution damageDist;
+		EnumCreatureAttribute creatureAttribute = entity.getCreatureAttribute();
 
-		switch(entity.getCreatureAttribute()) {
+		switch(creatureAttribute == null ? EnumCreatureAttribute.UNDEFINED : creatureAttribute) {
 			case ARTHROPOD:
 				// Arthropods typically bite, so give them piercing usually. Up to 20% of their
 				// damage can be bludgeoning instead.
@@ -299,7 +300,7 @@ public final class ConfigGenerator {
 		adaptChance = roundToTwoDecimals(adaptChance);
 		adaptAmount = roundToTwoDecimals(adaptAmount);
 		ADAPTABILITY_CHANCE_CACHE.put(loc, adaptChance);
-		Map<DDDDamageType, Float> resists = new NonNullMap<DDDDamageType, Float>(0.0f);
+		Map<DDDDamageType, Float> resists = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
 		Set<DDDDamageType> immunities = new HashSet<DDDDamageType>();
 		resists.put(DDDBuiltInDamageType.SLASHING, slash);
 		resists.put(DDDBuiltInDamageType.PIERCING, pierce);
@@ -339,7 +340,7 @@ public final class ConfigGenerator {
 		 * 
 		 * Then we check to see which tool type we have. We give precedence to pickaxes,
 		 * axes and shovels in that order. pickaxes get a piercing biased distribution.
-		 * Then, favor bludgeoning axes get a slashing biased distribution. Then, favor
+		 * Then, favor bludgeoning. Axes get a slashing biased distribution. Then, favor
 		 * bludgeoning. shovels get a bludgeoning biased distribution Then, ever so
 		 * lightly favor piercing.
 		 */

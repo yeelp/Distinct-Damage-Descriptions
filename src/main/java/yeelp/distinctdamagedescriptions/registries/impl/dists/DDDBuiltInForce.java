@@ -7,9 +7,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.projectile.EntityEvokerFangs;
 import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public abstract class DDDBuiltInForce extends AbstractSingleTypeDist {
 	public static final DDDBuiltInForce GUARDIAN_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableGuardianDamage, EntityGuardian.class, "guardian");

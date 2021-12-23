@@ -36,7 +36,7 @@ public class MobResistancesMessage extends AbstractCapabilityMessage<NBTTagCompo
 
 	@Override
 	public IMessageHandler<AbstractCapabilityMessage<NBTTagCompound>, IMessage> getMessageHandler() {
-		return new CapabilityMessageHandler<NBTTagCompound>((msg, plyer) -> DDDAPI.accessor.getMobResistances(plyer).deserializeNBT(msg.serializeNBT()));
+		return new CapabilityMessageHandler<NBTTagCompound>((msg, plyer) -> DDDAPI.accessor.getMobResistances(plyer).get().deserializeNBT(msg.serializeNBT()));
 	}
 
 }

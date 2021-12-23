@@ -1,8 +1,10 @@
 package yeelp.distinctdamagedescriptions.capability;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.ResistMap;
 
 /**
  * Damage Resistances capability base.
@@ -10,7 +12,8 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
  * @author Yeelp
  *
  */
-public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompound> {
+public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> {
+	
 	/**
 	 * Get resistance for a certain type.
 	 * 
@@ -53,5 +56,18 @@ public interface IDamageResistances extends ICapabilitySerializable<NBTTagCompou
 	 * @return a copy
 	 */
 	IDamageResistances copy();
+	
+	/**
+	 * Update this instance of damage resistances with respect to its owner
+	 * @param owner The owner of this capability
+	 * @return The updated copy. This mutates the original
+	 */
+	IDamageResistances update(EntityLivingBase owner);
+	
+	default ResistMap getAllResistances() {
+		ResistMap rMap = new ResistMap();
+		DDDRegistries.damageTypes.getAll().forEach((t) -> rMap.put(t, this.getResistance(t)));
+		return rMap;
+	}
 
 }

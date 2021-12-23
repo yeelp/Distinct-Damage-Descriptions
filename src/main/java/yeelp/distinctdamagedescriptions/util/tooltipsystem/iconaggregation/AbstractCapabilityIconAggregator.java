@@ -26,7 +26,6 @@ public abstract class AbstractCapabilityIconAggregator extends AbstractIconAggre
 
 	@Override
 	protected int getStartY(int initialY, List<String> currTooltip) {
-		//for(Iterator<String> it = currTooltip.iterator(); it.hasNext() && !it.next().matches(this.regex); initialY += AbstractIconAggregator.ICON_HEIGHT);
 		Iterator<String> it = currTooltip.iterator();
 		while(it.hasNext()) {
 			String s = it.next();

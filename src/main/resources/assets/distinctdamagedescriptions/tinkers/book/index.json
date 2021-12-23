@@ -1,0 +1,20 @@
+[ 
+    { 
+        "name": "dddmodifiers",
+        "data": "sections/modifiers.json",
+        "icon": { 
+            "item": { 
+                "id": "minecraft:redstone"
+            }
+        }
+    },
+    {
+        "name": "distributions",
+        "data": "sections/ddd.json",
+        "icon": { 
+            "item": { 
+                "id": "distinctdamagedescriptions:recorddistinction"
+            }
+        } 
+    }
+]

@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.registries.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -51,5 +52,10 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 	@Override
 	public boolean isRegistered(T obj) {
 		return this.map.containsKey(this.keyFunc.apply(obj));
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return this.map.values().iterator();
 	}
 }

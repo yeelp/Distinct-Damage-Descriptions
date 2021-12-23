@@ -1,0 +1,11 @@
+[
+    { 
+        "name": "distributions",
+        "data": "sections/ddd.json",
+        "icon": { 
+            "item": { 
+                "id": "distinctdamagedescriptions:recorddistinction"
+            }
+        }
+    }
+]

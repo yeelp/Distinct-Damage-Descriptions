@@ -13,7 +13,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 	
 	private static ArmorDistributionIconAggregator instance;
 
-	private ArmorDistributionIconAggregator() {
+	protected ArmorDistributionIconAggregator() {
 		super(ArmorDistributionFormatter.getInstance(), DDDAPI.accessor::getArmorResistances);
 	}
 	

@@ -1,3 +1,5 @@
+item.distinctdamagedescriptions.recorddistinction.name=Distinct Disc
+
 damagetypes.distinctdamagedescriptions.slashing=Slashing
 damagetypes.distinctdamagedescriptions.piercing=Piercing
 damagetypes.distinctdamagedescriptions.bludgeoning=Bludgeoning
@@ -24,6 +26,8 @@ tooltips.distinctdamagedescriptions.effectiveArmor=Armor
 tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
 tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:
 tooltips.distinctdamagedescriptions.hwyla.witharmor=Max: %s with armor
+tooltips.distinctdamagedescriptions.tic.distributionbias=Distribution Bias:
+tooltips.distinctdamagedescriptions.tic.influence=Influence:
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force
@@ -44,3 +48,60 @@ distinctdamagedescriptions.general.resistance.armorresist=Armor Resistances
 distinctdamagedescriptions.general.resistance.mobbaseresist=Mob Base Resistances
 distinctdamagedescriptions.general.resistance.shieldresist=Shield Resistances
 
+### TINKERS ###
+distinctdamagedescriptions.tinkers.book.flexibility.flexible=This tool's damage is very easily influenced by its head materials, making its damage very customizable.
+distinctdamagedescriptions.tinkers.book.flexibility.moderate=This tool's damage is only moderately influenced by its head materials. Its damage won't deviate a lot from its base distribution.
+distinctdamagedescriptions.tinkers.book.flexibility.inflexible=This tool's damage strictly adheres to its base distribution. You'll need some extremely influential head materials to change it.
+distinctdamagedescriptions.tinkers.book.flexibility.measure=Tool Bias: %s
+distinctdamagedescriptions.tinkers.book.distributions.favoured.only=The %s only does %d damage.
+distinctdamagedescriptions.tinkers.book.distributions.favoured.strongly=The %s strongly favours %s damage.
+distinctdamagedescriptions.tinkers.book.distributions.favoured.moderately=The %s moderately gravitates towards %s damage.
+distinctdamagedescriptions.tinkers.book.distributions.favoured.barely=This tool also does a splash of %s damage.
+distinctdamagedescriptions.tinkers.book.distributions.favoured.balanced=The %s strikes a nice balance between %s and %s damage.
+distinctdamagedescriptions.tinkers.book.distributions.shield=This tool also functions as a shield!
+distinctdamagedescriptions.tinkers.book.distributions.launcher=This tool launches projectiles. The %s's distribution is only used when attacking in melee.
+distinctdamagedescriptions.tinkers.book.distributions.projectile=The %s is a projectile. Its distribution is used both when attacking with it in melee and when fired as a projectile.
+distinctdamagedescriptions.tinkers.book.distributions.start=Base Distribution:
+distinctdamagedescriptions.tinkers.book.distributions.entry=%s%% %s
+distinctdamagedescriptions.tinkers.book.materialListingTitle=Material Distribution Bias
+distinctdamagedescriptions.tinkers.book.materialInfluenceStart=Material Bias:
+distinctdamagedescriptions.tinkers.book.materialInfluenceEntry=%s: %s
+distinctdamagedescriptions.tinkers.book.materialInfluenceBias=Influence Rating: %s
+
+modifier.slystrike.name=Sly Strike
+modifier.slystrike.desc=§oSneaky!§r\nYour attacks bypass immunities!
+modifier.bruteforce.name=Brute Force
+modifier.bruteforce.desc=§oFast and Furious!§r\nYour attacks are so powerful, pitiful mobs can't resist it all!
+modifier.bruteforce.extra=%s%% of resistances bypassed.
+
+### CONARM ###
+distinctdamagedescriptions.conarm.book.materialListingTitle=Material Armor Distributions
+distinctdamagedescriptions.conarm.book.materialInfluenceStart=Armor Distribution:
+distinctdamagedescriptions.conarm.book.materialInfluenceEntry=%s: %s
+
+modifier.ddd_slashing_immunity_armor.name=Slashing Impunity
+modifier.ddd_slashing_immunity_armor.desc=§oSlash n' Solo!§r\nYour armor makes you immune to Slashing damage!
+modifier.ddd_piercing_immunity_armor.name=Piercing Impunity
+modifier.ddd_piercing_immunity_armor.desc=§oYoink!§r\nYour armor makes you immune to Piercing damage!
+modifier.ddd_bludgeoning_immunity_armor.name=Bludgeoning Impunity
+modifier.ddd_bludgeoning_immunity_armor.desc=§oIron Skin!§r\nYour armor makes you immune to Bludgeoning damage!
+modifier.ddd_acid_immunity_armor.name=Acid Impunity
+modifier.ddd_acid_immunity_armor.desc=§oIt washes right off!§r\nYour armor makes you immune to Acid damage!
+modifier.ddd_cold_immunity_armor.name=Cold Impunity
+modifier.ddd_cold_immunity_armor.desc=§oLike wool armor!§r\nYour armor makes you immune to Cold damage!
+modifier.ddd_fire_immunity_armor.name=Fire Impunity
+modifier.ddd_fire_immunity_armor.desc=§oLight the house on fire!§r\nYour armor makes you immune to Fire damage!
+modifier.ddd_force_immunity_armor.name=Force Impunity
+modifier.ddd_force_immunity_armor.desc=§oThe force isn't with them.§r\nYour armor makes you immune to Force damage!
+modifier.ddd_lightning_immunity_armor.name=Lightning Impunity
+modifier.ddd_lightning_immunity_armor.desc=§oVolt Absorb!§r\nYour armor makes your immune to Lightning damage!
+modifier.ddd_necrotic_immunity_armor.name=Necrotic Impunity
+modifier.ddd_necrotic_immunity_armor.desc=§oBring out your undead!§r\nYour armor makes you immune to Necrotic damage!
+modifier.ddd_poison_immunity_armor.name=Poison Impunity
+modifier.ddd_poison_immunity_armor.desc=§oAntitoxin not required.§r\nYour armor makes you immune to Poison damage!
+modifier.ddd_psychic_immunity_armor.name=Psychic Impunity
+modifier.ddd_psychic_immunity_armor.desc=§oDedekind-complete!§r\nYour armor makes you immune to Psychic damage!
+modifier.ddd_radiant_immunity_armor.name=Radiant Impunity
+modifier.ddd_radiant_immunity_armor.desc=§oThe Savior is here!§r\nYour armor makes you immune to Radiant damage!
+modifier.ddd_thunder_immunity_armor.name=Thunder Impunity
+modifier.ddd_thunder_immunity_armor.desc=§oThunderstruck!§r\nYour armor makes you immune to Thunder damage!

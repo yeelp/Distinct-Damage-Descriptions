@@ -7,19 +7,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
-import yeelp.distinctdamagedescriptions.ModConfig;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public abstract class Distribution implements IDistribution {
-	protected DDDBaseMap<Float> distMap = new DDDBaseMap<Float>(0.0f);
+	protected DDDBaseMap<Float> distMap = new DDDBaseMap<Float>(() -> 0.0f);
 
 	protected static boolean invariantViolated(Collection<Float> weights) {
 		for(float f : weights) {
@@ -47,29 +44,18 @@ public abstract class Distribution implements IDistribution {
 		}
 	}
 
-	Distribution(Map<DDDDamageType, Float> weightMap) {
+	protected Distribution(Map<DDDDamageType, Float> weightMap) {
 		setNewMap(weightMap);
 	}
 
 	@Override
 	public NBTTagList serializeNBT() {
-		NBTTagList lst = new NBTTagList();
-		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("type", entry.getKey().getTypeName());
-			tag.setFloat("weight", entry.getValue());
-			lst.appendTag(tag);
-		}
-		return lst;
+		return DDDBaseMap.toNBT(this.distMap);
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagList lst) {
-		this.distMap = new DDDBaseMap<Float>(0.0f);
-		for(NBTBase nbt : lst) {
-			NBTTagCompound tag = (NBTTagCompound) nbt;
-			this.distMap.put(DDDRegistries.damageTypes.get(tag.getString("type")), tag.getFloat("weight"));
-		}
+		this.distMap = DDDBaseMap.fromNBT(lst, 0.0f);
 	}
 
 	@Override
@@ -79,6 +65,9 @@ public abstract class Distribution implements IDistribution {
 
 	@Override
 	public void setWeight(DDDDamageType type, float amount) {
+		if(amount < 0) {
+			throw new InvariantViolationException("Can't set negative weight!");
+		}
 		this.distMap.put(type, amount);
 	}
 
@@ -94,7 +83,7 @@ public abstract class Distribution implements IDistribution {
 	public Set<DDDDamageType> getCategories() {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
 		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
-			if((!entry.getKey().isCustomDamage() || ModConfig.dmg.useCustomDamageTypes) && entry.getValue() > 0) {
+			if((!entry.getKey().isCustomDamage() || ModConfig.core.useCustomDamageTypes) && entry.getValue() > 0) {
 				set.add(entry.getKey());
 			}
 		}
@@ -112,8 +101,12 @@ public abstract class Distribution implements IDistribution {
 		this.distMap.clear();
 		map.entrySet().stream().filter((e) -> e.getValue() > 0).forEach((e) -> this.distMap.put(e.getKey(), e.getValue()));
 	}
-	
+
 	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
-		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
+		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(() -> defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
+	}
+	
+	protected static final <Dist extends Distribution & IDistribution> DDDBaseMap<Float> copyMap(Dist dist) {
+		return dist.copyMap(dist.distMap.getDefaultValue());
 	}
 }

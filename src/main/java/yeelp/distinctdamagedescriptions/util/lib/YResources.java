@@ -1,12 +1,18 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import java.util.Arrays;
 import java.util.Optional;
+
+import javax.annotation.Nullable;
+
+import com.google.common.base.Functions;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * A collection of useful methods for dealing with ResourceLocations. Mainly to
@@ -34,15 +40,15 @@ public final class YResources {
 		return item.getRegistryName().toString();
 	}
 
-	public static Optional<ResourceLocation> getEntityID(Entity entity) {
-		return Optional.ofNullable(EntityList.getKey(entity));
+	public static Optional<ResourceLocation> getEntityID(@Nullable Entity entity) {
+		return Optional.ofNullable(entity).flatMap(Functions.compose(Optional::ofNullable, EntityList::getKey));
 	}
 
-	public static Optional<String> getEntityIDString(Entity entity) {
-		Optional<ResourceLocation> loc = getEntityID(entity);
-		if(loc.isPresent()) {
-			return Optional.of(loc.get().toString());
-		}
-		return Optional.empty();
+	public static Optional<String> getEntityIDString(@Nullable Entity entity) {
+		return getEntityID(entity).map(Functions.toStringFunction());
+	}
+	
+	public static String[] getOreDictEntries(ItemStack stack) {
+		return Arrays.stream(OreDictionary.getOreIDs(stack)).mapToObj(OreDictionary::getOreName).toArray(String[]::new);
 	}
 }

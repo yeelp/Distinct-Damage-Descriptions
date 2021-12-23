@@ -1,0 +1,34 @@
+{ 
+    "text": [ 
+        { 
+            "text": "Now projectiles are much simpler. The projectile inherits the same damage distribution it has sitting in your inventory when fired."
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "Of course, it doesn't hurt to mention that projectile launchers like bows and crossbows have their own damage distribution, but that is only used when using these launchers as melee weapons. Their damage distribution doesn't affect the damage distribution of the projectiles it shoots whatsoever."
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "That should be it! Good luck out there, and happy adventuring!"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "- Yeelp"
+        }
+    ]
+}

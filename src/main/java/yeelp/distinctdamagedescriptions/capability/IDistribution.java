@@ -3,12 +3,12 @@ package yeelp.distinctdamagedescriptions.capability;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
-public abstract interface IDistribution extends ICapabilitySerializable<NBTTagList> {
+public abstract interface IDistribution extends DDDCapabilityBase<NBTTagList> {
 	/**
 	 * Get the weight associated with a certain type
 	 * 
@@ -46,4 +46,11 @@ public abstract interface IDistribution extends ICapabilitySerializable<NBTTagLi
 	 * @return a copy
 	 */
 	IDistribution copy();
+	
+	/**
+	 * Update this distribution with respect to it's ItemStack owner.
+	 * @param owner
+	 * @return The mutated distribution, updated.
+	 */
+	IDistribution update(ItemStack owner);
 }

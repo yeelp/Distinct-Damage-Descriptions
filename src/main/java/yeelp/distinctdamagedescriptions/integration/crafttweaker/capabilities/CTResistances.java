@@ -11,7 +11,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenSetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
+import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 @ZenClass("mods.ddd.Resistances")
@@ -25,7 +25,7 @@ public class CTResistances {
 
 	public CTResistances(IEntityLivingBase entityLiving) {
 		EntityLivingBase base = CraftTweakerMC.getEntityLivingBase(entityLiving);
-		this.resists = DDDAPI.accessor.getMobResistances(base);
+		this.resists = DDDAPI.accessor.getMobResistances(base).orElseGet(MobResistances::new);
 		this.player = base instanceof EntityPlayerMP ? (EntityPlayerMP) base : null;
 		this.isPlayer = this.player != null ? true : false;
 	}
@@ -76,7 +76,7 @@ public class CTResistances {
 
 	private void update() {
 		if(this.isPlayer) {
-			CapabilityHandler.syncResistances(this.player);
+			this.resists.sync(this.player);
 		}
 	}
 }

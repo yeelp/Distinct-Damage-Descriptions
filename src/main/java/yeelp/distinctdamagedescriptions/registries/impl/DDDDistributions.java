@@ -1,7 +1,9 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -10,7 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.IDDDDistributionRegistry;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInFire;
@@ -40,13 +41,13 @@ public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistrib
 	}
 
 	@Override
-	public IDamageDistribution getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return checkDists(DDDBuiltInDamageType.NORMAL.getBaseDistribution(), (dist) -> dist.getWeight(DDDBuiltInDamageType.NORMAL) == 1, (dist) -> dist.getDamageDistribution(src, target));
+	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+		return checkDists(Optional.empty(), (dist) -> !dist.isPresent(), (dist) -> dist.getDamageDistribution(src, target));
 	}
 
 	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
 		T result;
-		Iterator<DDDPredefinedDistribution> it = this.map.values().iterator();
+		Iterator<DDDPredefinedDistribution> it = this.map.values().stream().sorted(Comparator.reverseOrder()).iterator();
 		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()));
 		return result;
 	}

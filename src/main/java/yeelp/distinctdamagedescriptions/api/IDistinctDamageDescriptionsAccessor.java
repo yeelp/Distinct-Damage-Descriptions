@@ -1,27 +1,21 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.DDDDamageSource;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatTracker;
 
 public abstract interface IDistinctDamageDescriptionsAccessor {
 	/**
@@ -29,11 +23,19 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * {@link IDamageDistribution}
 	 * 
 	 * @param stack
-	 * @return the IDamageDistribution capability for this ItemStack, null for an
+	 * @return the IDamageDistribution capability for this ItemStack, empty Optional for an
 	 *         empty stack.
 	 */
-	@Nullable
-	IDamageDistribution getDamageDistribution(ItemStack stack);
+	Optional<IDamageDistribution> getDamageDistribution(@Nullable ItemStack stack);
+	
+	/**
+	 * Get the damage distribution of an item, if it is known to exist
+	 * @param stack item stack. Can't be null
+	 * @return The damage distribution of the stack
+	 */
+	default IDamageDistribution getDamageDistributionUnsafe(@Nonnull ItemStack stack) {
+		return this.getDamageDistribution(Objects.requireNonNull(stack, "Null stack can't have Damage Distribution!")).get();
+	}
 
 	/**
 	 * Get the damage distribution for an EntityLivingBase - an instance of
@@ -42,7 +44,16 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param entity
 	 * @return the IDamageDistribution capability for this EntityLivingBase.
 	 */
-	IDamageDistribution getDamageDistribution(EntityLivingBase entity);
+	Optional<IDamageDistribution> getDamageDistribution(@Nullable EntityLivingBase entity);
+	
+	/**
+	 * Get the damage distribution of an entity if it is known to exist
+	 * @param entity target entity. Can't be null
+	 * @return the damage distribution of the entity.
+	 */
+	default IDamageDistribution getDamageDistributionUnsafe(@Nonnull EntityLivingBase entity) {
+		return this.getDamageDistribution(Objects.requireNonNull(entity, "Null entity can't have damage distribution!")).get();
+	}
 
 	/**
 	 * Get the damage distribution for an IProjectile - an instance of
@@ -51,18 +62,26 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param projectile
 	 * @return the IDamageDistribution capability for this IProjectile.
 	 */
-	IDamageDistribution getDamageDistribution(IProjectile projectile);
+	Optional<IDamageDistribution> getDamageDistribution(@Nullable IProjectile projectile);
+	
+	/**
+	 * Get the damage distribution for a projectile if it is known to exist
+	 * @param projectile projectile. Can't be null
+	 * @return the damage distribution of the projectile.
+	 */
+	default IDamageDistribution getDamageDistributionUnsafe(@Nonnull IProjectile projectile) {
+		return this.getDamageDistribution(Objects.requireNonNull(projectile, "Null projectile can't have damage distribution!")).get();
+	}
 
 	/**
 	 * Get the armor resistances for an ItemStack - an instance of
 	 * {@link IArmorDistribution}
 	 * 
 	 * @param stack
-	 * @return the IArmorResistances capability for this ItemStack, or null if it
+	 * @return the IArmorResistances capability for this ItemStack, or an empty Optional if it
 	 *         doesn't have it.
 	 */
-	@Nullable
-	IArmorDistribution getArmorResistances(ItemStack stack);
+	Optional<IArmorDistribution> getArmorResistances(@Nullable ItemStack stack);
 
 	/**
 	 * Get the mob resistances for an EntityLivingBase - an instance of
@@ -71,7 +90,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @param entity
 	 * @return the IMobResistances for that entity
 	 */
-	IMobResistances getMobResistances(EntityLivingBase entity);
+	Optional<IMobResistances> getMobResistances(@Nullable EntityLivingBase entity);
 
 	/**
 	 * Get the mob's creature type - an instance of {@link ICreatureType}
@@ -81,7 +100,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 *         {@link CreatureType.UNKNOWN} for mobs that are instances of
 	 *         EntityPlayer
 	 */
-	ICreatureType getMobCreatureType(EntityLivingBase entity);
+	Optional<ICreatureType> getMobCreatureType(@Nullable EntityLivingBase entity);
 
 	/**
 	 * Get a stack's shield distribution
@@ -90,74 +109,18 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @return a ShieldDistribution, or null if the stack doesn't have this
 	 *         capability.
 	 */
-	@Nullable
-	ShieldDistribution getShieldDistribution(ItemStack stack);
-
+	Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack);
+	
 	/**
-	 * Get a map of armor resistance for an entity
-	 * 
+	 * Get this entity's DDDCombatTracker, if present. If not present, then this entity hasn't finised construction yet, or replaced their combat tracker
 	 * @param entity
-	 * @return a Map that maps equipment slots to specific IArmorReistances present
-	 *         in that slot
+	 * @return The entity's DDDCombatTracker, if they have it.
 	 */
-	Map<EntityEquipmentSlot, IArmorDistribution> getArmorDistributionsForEntity(EntityLivingBase entity);
-
-	/**
-	 * Get all armor values per damage type for an entity
-	 * 
-	 * @param entity
-	 * @return A Map mapping damage types to a tuple (armor, toughness)
-	 */
-	default ArmorMap getArmorValuesForEntity(EntityLivingBase entity) {
-		return getArmorValuesForEntity(entity, ModConsts.ARMOR_SLOTS_ITERABLE);
-	}
-
-	/**
-	 * Get a map of damage types to armor values for that damage type.
-	 * 
-	 * @param entity
-	 * @param slots  the slots to consider. Other slots are ignored, even if they
-	 *               have armor in them.
-	 * @return A Map mapping damage types to a tuple (armor, toughness).
-	 */
-	ArmorMap getArmorValuesForEntity(EntityLivingBase entity, Iterable<EntityEquipmentSlot> slots);
-
-	/**
-	 * classify and categorize damage.
-	 * 
-	 * @param src    DamageSource
-	 * @param target the defending EntityLivingBase
-	 * @return The damage distribution that gives the context for the damage.
-	 */
-	Optional<IDamageDistribution> classifyDamage(@Nonnull DamageSource src, EntityLivingBase target);
-
-	/**
-	 * Divide resistances into categories
-	 * 
-	 * @param types
-	 * @param resists
-	 * @return a map of relevant resistances. If a mob is immune to a damage type,
-	 *         {@link Float#MAX_VALUE} is put in the map.
-	 */
-	ResistMap classifyResistances(Set<DDDDamageType> types, IMobResistances resists);
-
-	/**
-	 * Check if a {@link DDDDamageSource} is physical (slash, pierce, bludgeoning)
-	 * only.
-	 * 
-	 * @param src
-	 * @return true if only physical.
-	 */
-	boolean isPhysicalDamageOnly(DDDDamageSource src);
-
-	/**
-	 * Check if a damage type string is physical.
-	 * 
-	 * @param damageType
-	 * @return true if physical, false if not.
-	 */
-	default boolean isPhysicalDamage(DDDDamageType type) {
-		return type.getType() == DDDDamageType.Type.PHYSICAL;
+	default Optional<DDDCombatTracker> getDDDCombatTracker(EntityLivingBase entity) {
+		if(entity._combatTracker instanceof DDDCombatTracker) {
+			return Optional.of((DDDCombatTracker) entity._combatTracker);
+		}
+		return Optional.empty();
 	}
 
 }

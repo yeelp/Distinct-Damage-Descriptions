@@ -1,7 +1,9 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
+import java.util.Optional;
+
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.init.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ProjectileDistributionFormatter;
 
@@ -15,7 +17,7 @@ public class ProjectileDamageDistributionIconAggregator extends DistributionIcon
 	private static ProjectileDamageDistributionIconAggregator instance;
 	
 	private ProjectileDamageDistributionIconAggregator() {
-		super(ProjectileDistributionFormatter.getInstance(), (s) -> DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s)));
+		super(ProjectileDistributionFormatter.getInstance(), (s) -> Optional.ofNullable(DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s))));
 	}
 	
 	/**

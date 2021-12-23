@@ -1,0 +1,10 @@
+[ 
+    { 
+        "type": "modifier",
+        "data": "modifiers/slystrike.json"
+    },
+    { 
+        "type": "modifier",
+        "data": "modifiers/bruteforce.json"
+    }
+]

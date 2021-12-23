@@ -20,7 +20,7 @@ public final class YMath {
 	 *         double via {@link Number#doubleValue()}
 	 */
 	public static final <T extends Number> double sum(Collection<T> values) {
-		return values.stream().reduce(0.0d, (u, v) -> u + v.doubleValue(), (u, v) -> u + v);
+		return values.stream().mapToDouble(Number::doubleValue).sum();
 	}
 
 	/**
@@ -34,9 +34,9 @@ public final class YMath {
 	 */
 	public static final <X> Set<X> setMinus(Set<X> a, Set<X> b) {
 		HashSet<X> result = new HashSet<X>(a);
-		for(X x : a) // iterate over a, so removing elements from result won't cause problems by
-						// removing during iteration.
-		{
+		// iterate over a, so removing elements from result won't cause problems by
+		// removing during iteration.
+		for(X x : a) {
 			if(b.contains(x)) {
 				result.remove(x);
 			}

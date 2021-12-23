@@ -2,8 +2,8 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 
 /**
@@ -35,7 +35,7 @@ public enum KeyTooltip {
 
 	private ITextComponent comp;
 	private KeyTooltip(String string) {
-		this.comp = new TextComponentTranslation("keys.distinctdamagedescriptions."+string).setStyle(new Style().setColor(TextFormatting.YELLOW));
+		this.comp = Translations.INSTANCE.getTranslator("keys").getComponent(string, new Style().setColor(TextFormatting.YELLOW));
 	}
 	
 	/**

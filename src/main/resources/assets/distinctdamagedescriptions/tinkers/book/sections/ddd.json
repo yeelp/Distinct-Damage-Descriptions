@@ -1,0 +1,17 @@
+[ 
+    { 
+        "name": "distsabout1",
+        "type": "text",
+        "data": "ddd/about.json"
+    },
+    { 
+        "name": "about dists contd",
+        "type": "text",
+        "data": "ddd/about2.json"
+    },
+    { 
+        "name": "more dists contd",
+        "type": "text",
+        "data": "ddd/about3.json"
+    }
+]

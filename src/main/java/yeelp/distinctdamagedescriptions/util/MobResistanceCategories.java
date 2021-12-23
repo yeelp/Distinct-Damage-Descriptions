@@ -3,6 +3,8 @@ package yeelp.distinctdamagedescriptions.util;
 import java.util.Collection;
 import java.util.Map;
 
+import com.google.common.collect.Sets;
+
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 
@@ -17,6 +19,7 @@ public class MobResistanceCategories extends ResistanceCategories {
 	private float adaptive;
 	private float adaptiveAmount;
 
+	public static final MobResistanceCategories EMPTY = new MobResistanceCategories(new ResistMap(), Sets.newHashSet(), Float.NaN, Float.NaN);
 	/**
 	 * Build new Mob resistances
 	 * 

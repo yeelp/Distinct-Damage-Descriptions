@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.util.lib;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -16,7 +17,7 @@ import javax.annotation.Nullable;
 public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<Key, Value> {
 
 	private static final long serialVersionUID = -7597325545229879253L;
-	private Value defaultVal;
+	private Supplier<Value> defaultVal;
 
 	@SuppressWarnings("unused")
 	private NonNullMap() {
@@ -30,7 +31,7 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 *                   fall back to this value whenever it encounters a null
 	 *                   Value.
 	 */
-	public NonNullMap(Value defaultVal) {
+	public NonNullMap(Supplier<Value> defaultVal) {
 		super();
 		this.defaultVal = defaultVal;
 	}
@@ -43,26 +44,25 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 *                   NonNullMap will use this whenever it encounters null.
 	 */
 	@SafeVarargs
-	public NonNullMap(Value defaultVal, Key... keys) {
+	public NonNullMap(Supplier<Value> defaultVal, Key... keys) {
 		this(defaultVal);
 		for(Key k : keys) {
-			super.put(k, defaultVal);
+			super.put(k, defaultVal.get());
 		}
 	}
 
 	/**
-	 * Get the default value the map uses. Note updating the default value here will
-	 * change it across all mappings that are mapped to the default value.
+	 * Get the default value the map uses.
 	 * 
 	 * @return the default value
 	 */
 	public Value getDefaultValue() {
-		return this.defaultVal;
+		return this.defaultVal.get();
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		return value.equals(this.defaultVal) || super.containsValue(value);
+		return value.equals(this.defaultVal.get()) || super.containsValue(value);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 */
 	@Override
 	public Value get(Object key) {
-		return super.getOrDefault(key, this.defaultVal);
+		return super.getOrDefault(key, this.defaultVal.get());
 	}
 
 	/**
@@ -108,6 +108,6 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 */
 	@Nullable
 	public Value setDefault(Key key) {
-		return super.put(key, this.defaultVal);
+		return super.put(key, this.defaultVal.get());
 	}
 }

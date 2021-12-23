@@ -7,12 +7,13 @@ import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 
 public class MobHandler extends Handler {
 	@SuppressWarnings("static-method")
 	@SubscribeEvent
 	public void onPotionApplyEvent(PotionEvent.PotionApplicableEvent evt) {
-		evt.setResult(DDDAPI.accessor.getMobCreatureType(evt.getEntityLiving()).isImmuneToPotionEffect(evt.getPotionEffect()) ? Result.DENY : Result.DEFAULT);
+		DDDAPI.accessor.getMobCreatureType(evt.getEntityLiving()).filter((type) -> type.isImmuneToPotionEffect(evt.getPotionEffect())).ifPresent((type) -> evt.setResult(Result.DENY));
 	}
 
 	@SuppressWarnings("static-method")
@@ -20,7 +21,7 @@ public class MobHandler extends Handler {
 	public void onCrit(CriticalHitEvent evt) {
 		Entity target = evt.getTarget();
 		if(target instanceof EntityLivingBase) {
-			evt.setResult(DDDAPI.accessor.getMobCreatureType((EntityLivingBase) evt.getTarget()).isImmuneToCriticalHits() ? Result.DENY : Result.DEFAULT);
+			DDDAPI.accessor.getMobCreatureType((EntityLivingBase) evt.getTarget()).filter(ICreatureType::isImmuneToCriticalHits).ifPresent((type) -> evt.setResult(Result.DENY));
 		}
 	}
 }

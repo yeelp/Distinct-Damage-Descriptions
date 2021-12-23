@@ -1,0 +1,16 @@
+{ 
+    "title": "About Armor Distributions",
+    "text": [
+        { 
+            "text": "Adding Construct's Armory to the mix alongside Tinker's Construct and Distinct Damage Descriptions opens up some new defensive options!",
+            "paragraph": true
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "If you've read the basics on distributions from Materials and You, then you're aware that materials have their own influence and distribution that gets used to modify the tool's base distribution. Armor works very similarly.",
+            "paragraph": true 
+        }
+    ]
+}

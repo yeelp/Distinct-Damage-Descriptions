@@ -1,0 +1,12 @@
+[
+    {
+        "name": "aboutarmordists",
+        "type": "text",
+        "data": "ddd/about.json"
+    },
+    {
+        "name": "aboutarmordists contd",
+        "type": "text",
+        "data": "ddd/about2.json"
+    }
+]
