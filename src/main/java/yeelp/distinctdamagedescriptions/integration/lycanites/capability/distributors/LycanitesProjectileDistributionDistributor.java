@@ -24,7 +24,7 @@ public class LycanitesProjectileDistributionDistributor extends AbstractCapabili
 
 	@Override
 	protected IDamageDistribution getCapability(IProjectile t, String key) {
-		return new LycanitesProjectileDistribution();
+		return new LycanitesProjectileDistribution().update(t);
 	}
 
 	@Override

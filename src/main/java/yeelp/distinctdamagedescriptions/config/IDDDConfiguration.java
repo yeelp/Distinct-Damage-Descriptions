@@ -2,6 +2,9 @@ package yeelp.distinctdamagedescriptions.config;
 
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Stores values from config on startup for easy access.
  * 
@@ -16,6 +19,7 @@ public interface IDDDConfiguration<T> {
 	 * @param key
 	 * @return the capability
 	 */
+	@Nullable
 	T get(String key);
 
 	/**
@@ -53,6 +57,7 @@ public interface IDDDConfiguration<T> {
 	 * 
 	 * @see #getSafe(String)
 	 */
+	@Nonnull
 	default T getOrFallbackToDefault(String key) {
 		if(this.configured(key)) {
 			return this.get(key);

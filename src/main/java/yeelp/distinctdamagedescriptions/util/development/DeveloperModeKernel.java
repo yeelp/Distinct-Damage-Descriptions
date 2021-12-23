@@ -37,6 +37,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
+import yeelp.distinctdamagedescriptions.config.readers.DDDMultiEntryConfigReader;
 import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
@@ -196,5 +197,9 @@ public final class DeveloperModeKernel {
 	@SubscribeEvent
 	public static final void onPlayerJoin(PlayerLoggedInEvent evt) {
 		logIfEnabled("DDD has loaded in Developer Mode! This is to assist in debugging information about damage calculations and custom damage types etc. Depending on your settings, your chat log and console log may be filled with lots of messages. It is recommended you use Developer Mode in blank void worlds to minimize chat spam!", true, ImmutableList.of(evt.player));
+		if(ModConfig.dev.showConfigErrors) {
+			Iterable<EntityPlayer> player = ImmutableList.of(evt.player);
+			DDDMultiEntryConfigReader.getErrorMessages().forEach((s) -> log(s, true, player));
+		}
 	}
 }

@@ -13,6 +13,9 @@ public class DDDDistributionConfiguration<T extends IDistribution> extends DDDBa
 	@SuppressWarnings("unchecked")
 	@Override
 	public T get(String key) {
-		return (T) super.get(key).copy();
+		if(this.configured(key)) {
+			return (T) super.get(key).copy();			
+		}
+		return null;
 	}
 }

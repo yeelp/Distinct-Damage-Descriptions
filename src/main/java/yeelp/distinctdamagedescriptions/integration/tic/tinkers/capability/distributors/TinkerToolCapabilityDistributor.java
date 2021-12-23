@@ -24,7 +24,7 @@ public final class TinkerToolCapabilityDistributor extends AbstractCapabilityDis
 
 	@Override
 	protected IDamageDistribution getCapability(ItemStack t, String key) {
-		return new TinkerDamageDistribution(this.getConfig().get(key)).update(t);
+		return new TinkerDamageDistribution(this.getConfig().getOrFallbackToDefault(key)).update(t);
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public final class DevelopmentCategory {
 
 	@Name("Show Damage Info")
 	@Comment({
-			"If enabled, DDD will log information whenever a LivingDamageEvent is fired (when an entity is about to take damage, after vanilla armor and potion calculations, and when DDD applies mob resistances and immunities. DDD will log the final amount of damage being dealt to the entity after all DDD calculations.",
+			"If enabled, DDD will log information whenever a LivingDamageEvent is fired (when an entity is about to take damage, after vanilla armor and potion calculations, and when DDD applies mob resistances and immunities). DDD will log the final amount of damage being dealt to the entity after all DDD calculations.",
 			"Setting this to ENABED_AND_IN_CHAT will additionally send this information to the in game chat (i.e to all players in game)"})
 	public DeveloperStatus showDamageInfo = DeveloperStatus.DISABLED;
 
@@ -76,6 +76,6 @@ public final class DevelopmentCategory {
 	public DeveloperStatus showAdaptiveCalculation = DeveloperStatus.DISABLED;
 	
 	@Name("Show Config Errors on Join")
-	@Comment("If enabled, DDD will display config errors in the chat when a player joins the world.")
+	@Comment("If enabled, DDD will display config errors for any multi-entry config option in the chat when a player joins the world.")
 	public boolean showConfigErrors = false;
 }

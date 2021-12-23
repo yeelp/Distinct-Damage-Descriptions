@@ -1,12 +1,15 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
+import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesEquipmentDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesProjectileDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.distributors.LycanitesDamageDistributionDistributor;
@@ -37,7 +40,8 @@ public class LycanitesIntegration implements IModIntegration {
 		DDDCapabilityDistributors.addProjCap(LycanitesProjectileDistributionDistributor.getInstance());
 		LycanitesEquipmentDistribution.register();
 		LycanitesProjectileDistribution.register();
-		ImmutableList.of(LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEach(TooltipDistributor::registerModCompat);
+		//The cast here helps prevent a BootstrapMethodError since by default, the generic Iterators.forArray gives an Iterator<AbstractCapabilityTooltipFormatter> which is incompatible with TooltipDistributor::registerModCompat
+		Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);
 		DDDRegistries.distributions.registerAll(new SmitedDistribution(), new LycanitesMinionDistribution(), LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE);
 		return IModIntegration.super.init(evt);
 	}

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
@@ -85,6 +86,10 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 			DistinctDamageDescriptions.fatal("There were some problems reading from the config! Check the following:");
 			ERRORS.forEach(DDDConfigReaderException::log);
 		}
+	}
+	
+	public static final Collection<String> getErrorMessages() {
+		return ERRORS.stream().map(DDDConfigReaderException::getLocalizedMessage).collect(Collectors.toList());
 	}
 
 	protected final T constructInstance(Object... objects) {
