@@ -16,6 +16,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipFormatterUtili
 
 /**
  * An icon aggregator for mob resistances
+ * 
  * @author Yeelp
  *
  */
@@ -23,18 +24,19 @@ public class MobResistanceIconAggregator extends AbstractCapabilityIconAggregato
 
 	private static MobResistanceIconAggregator instance;
 	private final Function<ItemStack, Optional<ResourceLocation>> resourceLocationGetter;
-	
+
 	private MobResistanceIconAggregator() {
 		this(MobResistancesFormatter.getInstance(), TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
 	}
-	
+
 	protected <C, T> MobResistanceIconAggregator(AbstractCapabilityTooltipFormatter<C, T> formatter, Function<ItemStack, Optional<ResourceLocation>> f) {
 		super(TextFormatting.GRAY.toString().concat(formatter.getTypeText().getFormattedText()), formatter::shouldShow);
 		this.resourceLocationGetter = f;
 	}
-	
+
 	/**
 	 * Get the singleton instance
+	 * 
 	 * @return the singleton instance
 	 */
 	public static MobResistanceIconAggregator getInstance() {

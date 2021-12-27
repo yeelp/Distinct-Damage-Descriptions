@@ -76,7 +76,7 @@ public final class ModIntegrationKernel {
 		}
 		else {
 			DistinctDamageDescriptions.warn("DDD failed to load integrations with the following mods:");
-			loadedMods.stream().map(IModIntegration::getModID).filter(Predicates.not(foundMods::contains)).forEach(DistinctDamageDescriptions::warn);			
+			loadedMods.stream().map(IModIntegration::getModID).filter(Predicates.not(foundMods::contains)).forEach(DistinctDamageDescriptions::warn);
 		}
 	}
 

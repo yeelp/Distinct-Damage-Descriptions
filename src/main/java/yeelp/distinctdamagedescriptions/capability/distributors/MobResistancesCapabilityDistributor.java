@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 public final class MobResistancesCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<EntityLivingBase, MobResistanceCategories, IMobResistances> {
 	private static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "mobResists");
 	private static MobResistancesCapabilityDistributor instance;
-	
+
 	private MobResistancesCapabilityDistributor() {
 		super(LOC);
 	}
@@ -32,7 +32,7 @@ public final class MobResistancesCapabilityDistributor extends AbstractCapabilit
 	protected IDDDConfiguration<MobResistanceCategories> getConfig() {
 		return DDDConfigurations.mobResists;
 	}
-	
+
 	@Override
 	protected IMobResistances createCapability(MobResistanceCategories configResult) {
 		return new MobResistances(configResult.getResistanceMap(), configResult.getImmunities(), Math.random() < configResult.adaptiveChance(), configResult.getAdaptiveAmount());

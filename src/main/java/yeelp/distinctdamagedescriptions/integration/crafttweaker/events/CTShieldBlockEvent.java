@@ -28,5 +28,5 @@ public final class CTShieldBlockEvent extends CTDDDCalculationEvent<ShieldBlockE
 	@Override
 	public void setCanceled(boolean status) {
 		this.internal.setCanceled(status);
-	}	
+	}
 }

@@ -35,7 +35,7 @@ public final class DistributionBias {
 	public float getBias() {
 		return this.bias;
 	}
-	
+
 	public DDDBaseMap<Float> getPreferredMapCopy() {
 		return this.preferred.keySet().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, this.preferred::get));
 	}

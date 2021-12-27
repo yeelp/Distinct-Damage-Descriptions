@@ -98,17 +98,20 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	public DamageMap getDamageToAdaptTo() {
 		return this.dmg;
 	}
-	
+
 	/**
 	 * Get the adaptive amount this entity will be using.
+	 * 
 	 * @return the adaptive amount
 	 */
 	public float getAdaptiveAmount() {
 		return this.adaptiveAmount;
 	}
-	
+
 	/**
-	 * Set the adaptive amount for this entity. This amount will only be used for this calculation, then set back to whatever the amount was before
+	 * Set the adaptive amount for this entity. This amount will only be used for
+	 * this calculation, then set back to whatever the amount was before
+	 * 
 	 * @param amount
 	 */
 	public void setAdaptiveAmount(float amount) {

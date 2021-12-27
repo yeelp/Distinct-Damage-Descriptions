@@ -12,7 +12,7 @@ import yeelp.distinctdamagedescriptions.integration.lycanites.capability.Lycanit
 
 public class LycanitesProjectileDistributionDistributor extends AbstractCapabilityDistributor<IProjectile, IDamageDistribution, IDamageDistribution> {
 	private static LycanitesProjectileDistributionDistributor instance;
-	
+
 	protected LycanitesProjectileDistributionDistributor() {
 		super(DamageDistributionCapabilityDistributor.ForProjectile.getInstance());
 	}

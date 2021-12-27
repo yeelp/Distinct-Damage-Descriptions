@@ -6,20 +6,21 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 
 /**
  * A basic config reader
+ * 
  * @author Yeelp
  *
  */
 public interface DDDConfigReader extends Runnable {
 	void read();
-	
+
 	String getName();
-	
+
 	boolean shouldTime();
-	
+
 	default Thread toThread() {
 		return new Thread(this, this.getName());
 	}
-	
+
 	@Override
 	default void run() {
 		String msg;

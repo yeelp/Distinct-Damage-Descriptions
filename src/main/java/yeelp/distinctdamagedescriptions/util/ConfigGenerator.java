@@ -49,7 +49,6 @@ import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
 /**
@@ -300,7 +299,7 @@ public final class ConfigGenerator {
 		adaptChance = roundToTwoDecimals(adaptChance);
 		adaptAmount = roundToTwoDecimals(adaptAmount);
 		ADAPTABILITY_CHANCE_CACHE.put(loc, adaptChance);
-		Map<DDDDamageType, Float> resists = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
+		DDDBaseMap<Float> resists = new DDDBaseMap<Float>(() -> 0.0f);
 		Set<DDDDamageType> immunities = new HashSet<DDDDamageType>();
 		resists.put(DDDBuiltInDamageType.SLASHING, slash);
 		resists.put(DDDBuiltInDamageType.PIERCING, pierce);

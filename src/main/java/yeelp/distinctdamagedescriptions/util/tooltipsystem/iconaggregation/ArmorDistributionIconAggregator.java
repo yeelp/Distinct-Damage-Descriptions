@@ -6,19 +6,21 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionForm
 
 /**
  * An icon aggregator for IArmorDistributions
+ * 
  * @author Yeelp
  *
  */
 public class ArmorDistributionIconAggregator extends DistributionIconAggregator<IArmorDistribution> {
-	
+
 	private static ArmorDistributionIconAggregator instance;
 
 	protected ArmorDistributionIconAggregator() {
 		super(ArmorDistributionFormatter.getInstance(), DDDAPI.accessor::getArmorResistances);
 	}
-	
+
 	/**
 	 * Get the singleton instance
+	 * 
 	 * @return the singleton instance
 	 */
 	public static ArmorDistributionIconAggregator getInstance() {

@@ -28,7 +28,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * Set resistance for a type. Can set a weakness by passing in a negative
 	 * {@code amount}
 	 * 
-	 * @param type type name. Requires ddd_ prefix
+	 * @param type   type name. Requires ddd_ prefix
 	 * @param amount
 	 */
 	@ZenMethod("setResistance")
@@ -36,6 +36,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 
 	/**
 	 * Check if this entity has a resistance to this type
+	 * 
 	 * @param type type name. Requires ddd_prefix
 	 * @return true if they have a positive resistance to this type.
 	 */
@@ -46,6 +47,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 
 	/**
 	 * Check if this entity has a weakness to this type
+	 * 
 	 * @param type type name. Requires ddd_ prefix
 	 * @return true if they have a weakness to this type.
 	 */
@@ -56,6 +58,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 
 	/**
 	 * Check if this entity has immunity to this type.
+	 * 
 	 * @param type type name. Requires ddd_ prefix
 	 * @return true if this entity is immune to this type currently.
 	 */
@@ -63,14 +66,18 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	boolean hasImmunity(String type);
 
 	/**
-	 * Temporarily grant this entity immunity to the given type. If this entity already has immunity to this type, nothing happens.
+	 * Temporarily grant this entity immunity to the given type. If this entity
+	 * already has immunity to this type, nothing happens.
+	 * 
 	 * @param type type name. Requires ddd_ prefix
 	 */
 	@ZenMethod("grantImmunity")
 	void grantImmunity(String type);
 
 	/**
-	 * Temporarily revoke this entity's immunity to the given type. If the entity doesn't have immunity to this type, nothing happens.
+	 * Temporarily revoke this entity's immunity to the given type. If the entity
+	 * doesn't have immunity to this type, nothing happens.
+	 * 
 	 * @param type
 	 */
 	@ZenMethod("revokeImmunity")

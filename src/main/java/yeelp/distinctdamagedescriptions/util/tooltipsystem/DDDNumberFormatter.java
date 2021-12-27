@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 /**
  * Formatter for numbers
+ * 
  * @author Yeelp
  *
  */
@@ -12,12 +13,12 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 	 * Formats regular numbers to two decimal places.
 	 */
 	PLAIN(new DecimalFormat("##.##")),
-	
+
 	/**
 	 * Formats decimals as percents to two decimal places.
 	 */
 	PERCENT(new DecimalFormat("##.##%"));
-	
+
 	private DecimalFormat formatter;
 
 	private DDDNumberFormatter(DecimalFormat decimalFormat) {

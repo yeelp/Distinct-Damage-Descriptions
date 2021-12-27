@@ -11,11 +11,11 @@ class MobDefenses {
 
 	public ResistMap resistances;
 	public Set<DDDDamageType> immunities;
-	
+
 	public MobDefenses() {
 		this(new ResistMap(), Sets.newHashSet());
 	}
-	
+
 	public MobDefenses(ResistMap resistances, Set<DDDDamageType> immunities) {
 		this.resistances = resistances;
 		this.immunities = immunities;

@@ -18,7 +18,7 @@ public final class LycanitesProjectileDistribution extends DamageDistribution {
 
 	@CapabilityInject(LycanitesProjectileDistribution.class)
 	public static Capability<LycanitesProjectileDistribution> cap;
-	
+
 	private String proj;
 
 	@Override
@@ -40,7 +40,7 @@ public final class LycanitesProjectileDistribution extends DamageDistribution {
 		}
 		return super.update(owner);
 	}
-	
+
 	public static void register() {
 		DDDCapabilityBase.register(LycanitesProjectileDistribution.class, NBTTagList.class, LycanitesProjectileDistribution::new);
 	}
@@ -49,5 +49,5 @@ public final class LycanitesProjectileDistribution extends DamageDistribution {
 	public static void onRegister(Capability<LycanitesProjectileDistribution> cap) {
 		DDDAPI.mutator.registerProjectileCap(IDamageDistribution.class, cap);
 	}
-	
+
 }

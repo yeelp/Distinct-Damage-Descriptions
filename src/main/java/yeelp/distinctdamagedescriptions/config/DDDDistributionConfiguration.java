@@ -14,7 +14,7 @@ public class DDDDistributionConfiguration<T extends IDistribution> extends DDDBa
 	@Override
 	public T get(String key) {
 		if(this.configured(key)) {
-			return (T) super.get(key).copy();			
+			return (T) super.get(key).copy();
 		}
 		return null;
 	}

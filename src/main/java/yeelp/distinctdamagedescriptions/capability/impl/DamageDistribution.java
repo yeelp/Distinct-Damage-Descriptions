@@ -23,7 +23,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@CapabilityInject(IDamageDistribution.class)
 	public static Capability<IDamageDistribution> cap;
-	
+
 	protected static boolean invariantViolated(Collection<Float> weights) {
 		float sum = 0.0f;
 		for(float f : weights) {
@@ -106,6 +106,5 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	public void setWeight(DDDDamageType type, float amount) {
 		throw new InvariantViolationException("Can't set individual damage types weight as weights would no longer add to 1! Use setNewWeights() instead!");
 	}
-	
-	
+
 }

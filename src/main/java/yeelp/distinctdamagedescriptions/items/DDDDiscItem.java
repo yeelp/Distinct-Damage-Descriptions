@@ -32,9 +32,9 @@ public class DDDDiscItem extends ItemRecord {
 	public String getRecordNameLocal() {
 		return "Yeelp - Distinction";
 	}
-	
+
 	public static final class DropHandler extends Handler {
-		
+
 		private static final Set<Class<? extends EntityLivingBase>> BLACKLIST = ImmutableSet.of(EntityPlayer.class, AbstractSkeleton.class, EntityGolem.class, EntityTameable.class);
 
 		@SuppressWarnings("static-method")

@@ -15,15 +15,15 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 public abstract class DDDTiCIntegration implements IModIntegration {
 
 	protected abstract DDDBookTransformer getBookTransformer();
-	
+
 	protected abstract Iterable<AbstractCapabilityDistributor<ItemStack, ?, ? extends IDistribution>> getItemDistributors();
 
 	protected abstract Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters();
-	
+
 	protected abstract void registerCapabilities();
-	
+
 	protected abstract boolean doSpecificInit(FMLInitializationEvent evt);
-	
+
 	@Override
 	public final boolean preInit(FMLPreInitializationEvent evt) {
 		if(evt.getSide() == Side.CLIENT) {
@@ -42,9 +42,8 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 
 	@Override
 	public boolean postInit(FMLPostInitializationEvent evt) {
-		
+
 		return true;
 	}
-	
-	
+
 }

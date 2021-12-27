@@ -14,11 +14,12 @@ import yeelp.distinctdamagedescriptions.util.DamageMap;
 
 /**
  * A capability formatter specifically for {@link IDamageDistribution}
+ * 
  * @author Yeelp
  *
  */
 public abstract class AbstractDamageDistributionFormatter extends AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> {
-	
+
 	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
 		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
 	}
@@ -37,28 +38,34 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.DEFAULT_DAMAGE.format(d.getKey(), vals.get(d.getKey()), this)), LinkedList<String>::addAll);
 		return Optional.of(lst);
 	}
-	
+
 	/**
-	 * Should this distribution be shown? This differs from {@link AbstractKeyTooltipFormatter#shouldShow()} 
-	 * in that this determines if there is content to show and if said content should be shown, 
-	 * regardless if the conditions to show that content is met are met.
+	 * Should this distribution be shown? This differs from
+	 * {@link AbstractKeyTooltipFormatter#shouldShow()} in that this determines if
+	 * there is content to show and if said content should be shown, regardless if
+	 * the conditions to show that content is met are met.
+	 * 
 	 * @param stack
 	 * @return
 	 */
 	protected abstract boolean shouldShowDist(ItemStack stack);
-	
+
 	/**
 	 * Get the amount of damage to distribute for this ItemStack
+	 * 
 	 * @param stack
 	 * @return The amount of damage this ItemStack does
 	 */
 	protected abstract float getDamageToDistribute(ItemStack stack);
-	
+
 	/**
-	 * Get number values for this capability, depending on the current {@link DDDNumberFormatter}, if applicable. The default implementation
-	 * returns {@code cap.distributeDamage(1)}, which effectively is a Map that maps damage types to the passed capability's weights.
+	 * Get number values for this capability, depending on the current
+	 * {@link DDDNumberFormatter}, if applicable. The default implementation returns
+	 * {@code cap.distributeDamage(1)}, which effectively is a Map that maps damage
+	 * types to the passed capability's weights.
+	 * 
 	 * @param stack the stack context
-	 * @param cap the capability instance
+	 * @param cap   the capability instance
 	 * @return an Map mapping types to weights or the distributed damage values.
 	 */
 	protected DamageMap getVals(ItemStack stack, IDamageDistribution cap) {

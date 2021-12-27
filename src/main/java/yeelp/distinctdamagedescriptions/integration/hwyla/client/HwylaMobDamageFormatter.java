@@ -34,15 +34,16 @@ public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistri
 	private HwylaMobDamageFormatter() {
 		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD, HwylaMobDamageFormatter::getCap, "mobdistribution");
 	}
-	
+
 	/**
 	 * Get the singleton instance
+	 * 
 	 * @return the singleton instance
 	 */
 	public static HwylaMobDamageFormatter getInstance() {
 		return instance == null ? instance = new HwylaMobDamageFormatter() : instance;
 	}
-	
+
 	private static Optional<IDamageDistribution> getCap(EntityLivingBase entity) {
 		ItemStack heldItem = entity.getHeldItemMainhand();
 		boolean hasEmptyHand = heldItem.isEmpty();
@@ -83,7 +84,7 @@ public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistri
 		DamageMap dMap = cap.distributeDamage((float) dmg);
 		return Optional.of(dMap.entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).map((e) -> this.makeOneDamageString(e.getValue(), e.getKey())).collect(Collectors.toList()));
 	}
-	
+
 	private String makeOneDamageString(float amount, DDDDamageType type) {
 		return String.format("   %s%s %s %s", TextFormatting.GRAY.toString(), this.getNumberFormatter().format(amount), this.getDamageFormatter().format(type), this.damageSuffix.getFormattedText());
 	}

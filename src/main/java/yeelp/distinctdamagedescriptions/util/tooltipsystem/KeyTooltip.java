@@ -7,12 +7,14 @@ import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 
 /**
- * Tooltip pieces corresponding to the info displayed when the user is prompted to hold down either &lt;SHIFT&gt; or &lt;CTRL&gt;
+ * Tooltip pieces corresponding to the info displayed when the user is prompted
+ * to hold down either &lt;SHIFT&gt; or &lt;CTRL&gt;
+ * 
  * @author Yeelp
  *
  */
 public enum KeyTooltip {
-	
+
 	/**
 	 * The tooltip corresponding to holding down &lt;SHIFT&gt;
 	 */
@@ -22,7 +24,7 @@ public enum KeyTooltip {
 			return KeyHelper.isShiftHeld();
 		}
 	},
-	
+
 	/**
 	 * The tooltip corresponding to holding down &lt;CTRL&gt;
 	 */
@@ -34,20 +36,25 @@ public enum KeyTooltip {
 	};
 
 	private ITextComponent comp;
+
 	private KeyTooltip(String string) {
 		this.comp = Translations.INSTANCE.getTranslator("keys").getComponent(string, new Style().setColor(TextFormatting.YELLOW));
 	}
-	
+
 	/**
-	 * Get the formatted String associated with this key but only when the key is NOT held down.
-	 * @return the formatted String when the key is not held down, otherwise an empty String
+	 * Get the formatted String associated with this key but only when the key is
+	 * NOT held down.
+	 * 
+	 * @return the formatted String when the key is not held down, otherwise an
+	 *         empty String
 	 */
 	public String getKeyText() {
 		return this.checkKeyIsHeld() ? "" : " " + this.comp.getFormattedText();
 	}
-	
+
 	/**
 	 * Is the key for this KeyTooltip held down?
+	 * 
 	 * @return true if held down, false if not.
 	 */
 	public abstract boolean checkKeyIsHeld();

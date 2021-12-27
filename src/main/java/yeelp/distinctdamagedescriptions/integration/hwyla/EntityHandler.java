@@ -58,6 +58,5 @@ public class EntityHandler implements IWailaEntityProvider {
 	public NBTTagCompound getNBTData(EntityPlayerMP player, Entity ent, NBTTagCompound tag, World world) {
 		return tag;
 	}
-	
-	
+
 }

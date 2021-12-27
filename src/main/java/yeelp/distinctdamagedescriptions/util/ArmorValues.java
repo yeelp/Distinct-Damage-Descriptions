@@ -47,7 +47,7 @@ public final class ArmorValues implements Comparable<ArmorValues> {
 		if(a2 == null) {
 			return a1;
 		}
-		return a1.setValues(a1.armor + a2.armor, a1.toughness + a2.toughness);			
+		return a1.setValues(a1.armor + a2.armor, a1.toughness + a2.toughness);
 	}
 
 	@Override

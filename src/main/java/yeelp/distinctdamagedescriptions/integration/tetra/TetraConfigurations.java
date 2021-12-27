@@ -18,9 +18,9 @@ import yeelp.distinctdamagedescriptions.util.DistributionBias;
 public abstract class TetraConfigurations {
 
 	public static IDDDConfiguration<DistributionBias> toolBiasResistance;
-	
+
 	public static IDDDConfiguration<DistributionBias> toolMaterialBias;
-	
+
 	@Initializer
 	public static void init() {
 		final DDDBaseMap<Float> map = Stream.of(DDDBuiltInDamageType.BLUDGEONING).collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, (t) -> 1.0f));

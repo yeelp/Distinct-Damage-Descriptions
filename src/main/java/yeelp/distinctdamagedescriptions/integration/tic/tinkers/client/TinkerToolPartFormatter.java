@@ -63,7 +63,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 		lst.add(0, this.biasFormatter.format(null, cap.getBias(), this));
 		return Optional.of(lst);
 	}
-	
+
 	@Override
 	public List<String> format(ItemStack t) {
 		List<String> damageDistTip = ItemDistributionFormatter.getInstance().format(t);
@@ -74,7 +74,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 	public static TinkerToolPartFormatter getInstance() {
 		return instance == null ? instance = new TinkerToolPartFormatter() : instance;
 	}
-	
+
 	protected static Optional<DistributionBias> getDistributionBias(ItemStack stack) {
 		if(stack.getItem() instanceof ToolPart) {
 			ToolPart part = (ToolPart) stack.getItem();
@@ -94,12 +94,12 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 		public String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
 			return this.getStart().concat(" " + TinkerToolPartFormatter.super.getNumberFormatter().format(amount));
 		}
-		
+
 		public String getStart() {
 			return this.suffix.getFormattedText();
 		}
 	}
-	
+
 	private final class BiasIconAggregator extends AbstractCapabilityIconAggregator implements IconAggregator {
 
 		BiasIconAggregator(String regex) {

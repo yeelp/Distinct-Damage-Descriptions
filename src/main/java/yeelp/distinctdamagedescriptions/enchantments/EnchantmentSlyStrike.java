@@ -9,7 +9,8 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 public class EnchantmentSlyStrike extends Enchantment {
 
 	public EnchantmentSlyStrike() {
-		super(Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {EntityEquipmentSlot.MAINHAND});
+		super(Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {
+				EntityEquipmentSlot.MAINHAND});
 		this.setRegistryName("slystrike");
 		this.setName(ModConsts.MODID + ".slystrike");
 	}

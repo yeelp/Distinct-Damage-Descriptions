@@ -17,9 +17,9 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingE
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
 public final class DDDExplosionDist implements DDDPredefinedDistribution {
-	
+
 	private static final class ConfigReader extends DDDSingleStringConfigReader {
-		
+
 		ConfigReader() {
 			super("Explosion Distribution", () -> ModConfig.dmg.extraDamage.explosionDist, () -> DefaultValues.EXPLOSION_DIST);
 		}
@@ -36,11 +36,13 @@ public final class DDDExplosionDist implements DDDPredefinedDistribution {
 				dist = new DamageDistribution(ConfigReaderUtilities.parseMap(entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
 			}
 			catch(ConfigParsingException e) {
-				// If we get here, something went really badly. The default fallback should always work
+				// If we get here, something went really badly. The default fallback should
+				// always work
 				e.printStackTrace();
 			}
 		}
 	}
+
 	private static IDamageDistribution dist;
 	private static final ConfigReader READER = new ConfigReader();
 

@@ -49,7 +49,7 @@ public abstract class DDDBookTransformer extends BookTransformer {
 		void addTransformer(BookTransformer transformer) {
 			this.instance.addTransformer(transformer);
 		}
-		
+
 		protected abstract TiCBookTranslator getBookTranslator();
 	}
 
@@ -71,7 +71,7 @@ public abstract class DDDBookTransformer extends BookTransformer {
 	public final void transform(BookData book) {
 		this.transformBookWithRequestedSections(book, this.getRequestedSections(book));
 	}
-	
+
 	protected final TiCBookTranslator getTranslator() {
 		return this.target.getBookTranslator();
 	}
@@ -105,7 +105,7 @@ public abstract class DDDBookTransformer extends BookTransformer {
 			page.parent = data;
 			page.name = "ddd_" + m.identifier;
 			page.load();
-			
+
 			data.pages.add(page);
 			SizedBookElement icon;
 			if(m.getRepresentativeItem() != null) {
@@ -121,7 +121,7 @@ public abstract class DDDBookTransformer extends BookTransformer {
 		}
 		return Optional.of(ret);
 	}
-	
+
 	protected static final void createListingPage(SectionData section, BiConsumer<SectionData, ContentListing> populater) {
 		final ContentListing listing = new ContentListing();
 		final PageData listingPage = new PageData(true);

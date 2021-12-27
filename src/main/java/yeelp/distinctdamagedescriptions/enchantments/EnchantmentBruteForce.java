@@ -15,7 +15,8 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 public class EnchantmentBruteForce extends Enchantment {
 
 	public EnchantmentBruteForce() {
-		super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {EntityEquipmentSlot.MAINHAND});
+		super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {
+				EntityEquipmentSlot.MAINHAND});
 		this.setRegistryName("bruteforce");
 		this.setName(ModConsts.MODID + ".bruteforce");
 	}

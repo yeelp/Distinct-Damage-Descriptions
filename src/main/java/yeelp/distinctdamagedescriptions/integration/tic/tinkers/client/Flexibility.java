@@ -9,7 +9,7 @@ enum Flexibility implements IEnumTranslation {
 	public String getRootString() {
 		return "flexibility";
 	}
-	
+
 	static IBookString determineFlexibility(float variability) {
 		Flexibility flexibility;
 		if(variability > 0.7) {

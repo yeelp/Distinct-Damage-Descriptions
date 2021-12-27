@@ -31,11 +31,11 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 
 	@CapabilityInject(TetraToolDistribution.class)
 	public static Capability<TetraToolDistribution> cap;
-	
+
 	public TetraToolDistribution() {
 		super();
 	}
-	
+
 	public TetraToolDistribution(Map<DDDDamageType, Float> weights) {
 		super(weights);
 	}
@@ -62,7 +62,7 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 			return ImmutableSet.of("left", "right").stream().map((s) -> {
 				s = "_".concat(s);
 				String type = tag.getString(TetraNBT.DUPLEX_ROOT + s);
-				if(type.equals("duplex/butt"+s)) {
+				if(type.equals("duplex/butt" + s)) {
 					return null;
 				}
 				DistributionBias base = TetraConfigurations.toolBiasResistance.getOrFallbackToDefault(type.replace(s, "").trim());
@@ -76,7 +76,7 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 		String[] arr = tag.getString(root.concat(TetraNBT.MATERIAL_SUFFIX)).split("/");
 		return Optional.ofNullable(arr.length == 2 ? arr[1] : null);
 	}
-	
+
 	public static void register() {
 		DDDCapabilityBase.register(TetraToolDistribution.class, NBTTagList.class, TetraToolDistribution::new);
 	}

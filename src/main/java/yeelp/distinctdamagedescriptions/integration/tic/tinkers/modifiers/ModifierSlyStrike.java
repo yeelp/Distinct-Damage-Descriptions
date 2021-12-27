@@ -9,7 +9,7 @@ import slimeknights.tconstruct.tools.modifiers.ToolModifier;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
 public class ModifierSlyStrike extends ToolModifier {
-	
+
 	public ModifierSlyStrike() {
 		super("slystrike", 0x707070);
 		this.addAspects(ModifierAspect.weaponOnly);

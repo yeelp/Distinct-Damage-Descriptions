@@ -14,7 +14,7 @@ public abstract class LycanitesConfigurations {
 	 * Collection of which entity shoots what projectile
 	 */
 	public static IDDDConfiguration<String> creatureProjectiles;
-	
+
 	@Initializer
 	public static void init() {
 		creatureProjectiles = new DDDBaseConfiguration<String>(() -> "");

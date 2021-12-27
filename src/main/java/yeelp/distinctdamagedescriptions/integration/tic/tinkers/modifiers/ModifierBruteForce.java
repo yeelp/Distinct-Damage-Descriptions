@@ -10,7 +10,7 @@ import slimeknights.tconstruct.library.utils.ToolBuilder;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
 public class ModifierBruteForce extends ModifierTrait {
-	
+
 	private static final int max = 5, countPerLevel = 10;
 
 	public ModifierBruteForce() {
@@ -30,6 +30,6 @@ public class ModifierBruteForce extends ModifierTrait {
 
 	@Override
 	public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
-		for(int level = ToolBuilder.getEnchantmentLevel(rootCompound, DDDEnchantments.bruteForce); level++ < ModifierNBT.readInteger(modifierTag).current/10; ToolBuilder.addEnchantment(rootCompound, DDDEnchantments.bruteForce));
+		for(int level = ToolBuilder.getEnchantmentLevel(rootCompound, DDDEnchantments.bruteForce); level++ < ModifierNBT.readInteger(modifierTag).current / 10; ToolBuilder.addEnchantment(rootCompound, DDDEnchantments.bruteForce));
 	}
 }

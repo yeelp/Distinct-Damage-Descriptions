@@ -31,7 +31,7 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 
 	@CapabilityInject(TinkerDamageDistribution.class)
 	public static Capability<TinkerDamageDistribution> cap = null;
-	
+
 	private Collection<String> cachedKeys;
 
 	public TinkerDamageDistribution() {

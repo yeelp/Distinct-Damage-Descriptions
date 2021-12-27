@@ -27,11 +27,11 @@ public final class DDDHooks {
 		callback.accept(evt);
 		return evt;
 	}
-	
+
 	public static ShieldBlockEvent fireShieldBlock(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ItemStack shield) {
 		return fire(new ShieldBlockEvent(directAttacker, indirectAttacker, defender, src, map, shield), DeveloperModeKernel::onShieldBlockCallback);
 	}
-	
+
 	public static DetermineDamageEvent fireDetermineDamage(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map) {
 		return fire(new DetermineDamageEvent(directAttacker, indirectAttacker, defender, src, map), DeveloperModeKernel::onDetermineDamageCallback);
 	}
@@ -39,7 +39,7 @@ public final class DDDHooks {
 	public static GatherDefensesEvent fireGatherDefenses(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull ResistMap map, @Nonnull Set<DDDDamageType> immunities) {
 		return fire(new GatherDefensesEvent(directAttacker, indirectAttacker, defender, src, map, immunities), DeveloperModeKernel::onGatherDefensesCallback);
 	}
-	
+
 	public static UpdateAdaptiveResistanceEvent fireUpdateAdaptiveResistances(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ResistMap resists, @Nonnull Set<DDDDamageType> immunities) {
 		return fire(new UpdateAdaptiveResistanceEvent(directAttacker, indirectAttacker, defender, src, map, resists, immunities), DeveloperModeKernel::onUpdateAdaptabilityCallback);
 	}

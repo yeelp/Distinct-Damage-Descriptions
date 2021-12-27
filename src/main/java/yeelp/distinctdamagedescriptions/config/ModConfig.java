@@ -31,7 +31,7 @@ public class ModConfig {
 	@Name("Core")
 	@Comment("Alter core behaviour about Distinct Damage Descriptions")
 	public static final GeneralCategory core = new GeneralCategory();
-	
+
 	@Name("Damage")
 	@Comment("Alter the base damage of weapons and mobs")
 	public static final DamageCategory dmg = new DamageCategory();

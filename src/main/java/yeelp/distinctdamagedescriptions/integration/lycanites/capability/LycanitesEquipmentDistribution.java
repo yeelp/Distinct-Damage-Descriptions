@@ -54,18 +54,18 @@ public final class LycanitesEquipmentDistribution extends DamageDistribution {
 		if(this.cachedUsefulParts == null || !(parts.size() == this.cachedUsefulParts.size() && this.cachedUsefulParts.containsAll(parts))) {
 			List<IDamageDistribution> dists = parts.stream().map(Functions.<ItemEquipmentPart, String, IDamageDistribution>compose(DDDConfigurations.items::getOrFallbackToDefault, YResources::getRegistryString)).collect(Collectors.toList());
 			if(!dists.isEmpty()) {
-				dists.forEach((d) -> d.getCategories().forEach((type) -> map.merge(type, d.getWeight(type)/dists.size(), Float::sum)));
+				dists.forEach((d) -> d.getCategories().forEach((type) -> map.merge(type, d.getWeight(type) / dists.size(), Float::sum)));
 				this.setNewWeights(map);
 				this.cachedUsefulParts = parts;
 			}
 		}
 		return super.update(owner);
 	}
-	
+
 	public static void register() {
 		DDDCapabilityBase.register(LycanitesEquipmentDistribution.class, NBTTagList.class, LycanitesEquipmentDistribution::new);
 	}
-	
+
 	@CapabilityInject(LycanitesEquipmentDistribution.class)
 	private static void onRegister(Capability<LycanitesEquipmentDistribution> cap) {
 		DDDAPI.mutator.registerItemCap(IDamageDistribution.class, cap);

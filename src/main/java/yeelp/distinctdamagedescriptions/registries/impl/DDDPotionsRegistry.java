@@ -21,11 +21,11 @@ public class DDDPotionsRegistry extends DDDBaseRegistry<DDDPotion> implements ID
 
 	private static final int DURATION = 180 * 20;
 	private static final Map<DDDPotion, Map<String, PotionType>> POTION_TYPES = Maps.newHashMap();
-	
+
 	public DDDPotionsRegistry() {
 		super(Functions.compose(ResourceLocation::getResourcePath, DDDPotion::getRegistryName), "Potions");
 	}
-	
+
 	@Override
 	public void init() {
 		if(!ModConfig.core.enablePotionRegistration) {
@@ -37,9 +37,12 @@ public class DDDPotionsRegistry extends DDDBaseRegistry<DDDPotion> implements ID
 			}
 		});
 		this.iterator().forEachRemaining((p) -> {
-			PotionType normal = new PotionType(new PotionEffect[] {new PotionEffect(p, DURATION, 0)});
-			PotionType extended = new PotionType(new PotionEffect[] {new PotionEffect(p, 2 * DURATION, 0)});
-			PotionType strong = new PotionType(new PotionEffect[] {new PotionEffect(p, DURATION / 2, 1)});
+			PotionType normal = new PotionType(new PotionEffect[] {
+					new PotionEffect(p, DURATION, 0)});
+			PotionType extended = new PotionType(new PotionEffect[] {
+					new PotionEffect(p, 2 * DURATION, 0)});
+			PotionType strong = new PotionType(new PotionEffect[] {
+					new PotionEffect(p, DURATION / 2, 1)});
 			String name = p.getType().getTypeName() + "." + p.getEffect().getEffect();
 			normal.setRegistryName(new ResourceLocation(ModConsts.MODID, name));
 			extended.setRegistryName(new ResourceLocation(ModConsts.MODID, name.concat("_extended")));
@@ -58,6 +61,5 @@ public class DDDPotionsRegistry extends DDDBaseRegistry<DDDPotion> implements ID
 		ForgeRegistries.POTIONS.register(obj);
 		super.register(obj);
 	}
-	
-	
+
 }

@@ -18,7 +18,7 @@ public abstract class AbstractBiasedDamageDistribution extends DamageDistributio
 	protected AbstractBiasedDamageDistribution(IDamageDistribution base) {
 		super(base.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, base::getWeight)));
 	}
-	
+
 	protected AbstractBiasedDamageDistribution(Map<DDDDamageType, Float> weights) {
 		super(weights);
 	}

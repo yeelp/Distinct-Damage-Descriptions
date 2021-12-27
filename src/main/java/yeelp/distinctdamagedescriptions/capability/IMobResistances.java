@@ -27,15 +27,18 @@ public interface IMobResistances extends IDamageResistances {
 	 * @return the bonus resistance for adaptability.
 	 */
 	float getAdaptiveAmount();
-	
+
 	/**
 	 * Get the adaptive amount when modified by adpative weakness
-	 * @return the modifed adaptive amount. If adaptive weakness isn't enabled, returns the same value as {@link #getAdaptiveAmount()}
+	 * 
+	 * @return the modifed adaptive amount. If adaptive weakness isn't enabled,
+	 *         returns the same value as {@link #getAdaptiveAmount()}
 	 */
 	float getAdaptiveResistanceModified();
-	
+
 	/**
 	 * Is this mob adaptive to this type
+	 * 
 	 * @param type damage type
 	 * @return true if the mob's adaptability has triggered for this type.
 	 */
@@ -62,7 +65,7 @@ public interface IMobResistances extends IDamageResistances {
 	 * @return true if there was a net change in any resistances
 	 */
 	boolean updateAdaptiveResistance(DamageMap dmgMap);
-	
+
 	@Override
 	IMobResistances copy();
 

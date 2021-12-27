@@ -23,7 +23,7 @@ public class BattleSignTracker extends AbstractTracker {
 	public String getName() {
 		return "battlesign";
 	}
-	
+
 	private static boolean checkBattleSignUsage(EntityLivingBase entity) {
 		if(entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;

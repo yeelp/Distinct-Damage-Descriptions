@@ -74,7 +74,7 @@ public final class DevelopmentCategory {
 			"If enabled, DDD will log information whenever it checks if it should update mob resistances from adaptability. If adaptability is going to take place (forced or naturally), DDD will show what types the mob will be adapting to.",
 			"Setting this to ENABED_AND_IN_CHAT will additionally send this information to the in game chat (i.e to all players in game)"})
 	public DeveloperStatus showAdaptiveCalculation = DeveloperStatus.DISABLED;
-	
+
 	@Name("Show Config Errors on Join")
 	@Comment("If enabled, DDD will display config errors for any multi-entry config option in the chat when a player joins the world.")
 	public boolean showConfigErrors = false;

@@ -22,7 +22,9 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Proje
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ShieldDistributionIconAggregator;
 
 /**
- * Collected formatters and icon aggregators into single instance for tooltip creation
+ * Collected formatters and icon aggregators into single instance for tooltip
+ * creation
+ * 
  * @author Yeelp
  *
  * @see TooltipFormatter
@@ -67,23 +69,23 @@ public enum TooltipMaker {
 			return isMonsterPlacer && underlyingMobIsConfigured;
 		}
 	};
-	
+
 	static {
 		updateFormatters();
 	}
 
 	private TooltipFormatter<ItemStack> formatter;
 	private IconAggregator aggregator;
-	
+
 	private TooltipMaker() {
 		this(null, null);
 	}
-	
+
 	private TooltipMaker(TooltipFormatter<ItemStack> formatter, IconAggregator aggregator) {
 		this.formatter = formatter;
 		this.aggregator = aggregator;
 	}
-	
+
 	/**
 	 * Update formatters
 	 */
@@ -99,32 +101,36 @@ public enum TooltipMaker {
 			}
 		}
 	}
-	
+
 	/**
 	 * Make a tooltip addition for an ItemStack
+	 * 
 	 * @param stack stack to add a tooltip to.
-	 * @return A List of Strings with additional information about all the DDD capabilities present on the item, including mob resistances for spawn eggs.
+	 * @return A List of Strings with additional information about all the DDD
+	 *         capabilities present on the item, including mob resistances for spawn
+	 *         eggs.
 	 */
 	public static List<String> makeTooltipStrings(ItemStack stack) {
 		return getApplicableMakers(stack).map((m) -> m.formatter).<List<String>>collect(LinkedList<String>::new, (l, f) -> l.addAll(f.format(stack)), List<String>::addAll);
 	}
-	
+
 	/**
 	 * Get a list of icons to draw for a tooltip
-	 * @param stack the ItemStack
-	 * @param x the x coord of the event
-	 * @param y the y coord of the event
+	 * 
+	 * @param stack    the ItemStack
+	 * @param x        the x coord of the event
+	 * @param y        the y coord of the event
 	 * @param tooltips the tooltips on the string
 	 * @return a List of icons to draw
 	 */
 	public static List<Icon> getIconsFor(ItemStack stack, int x, int y, List<String> tooltips) {
 		return getApplicableMakers(stack).map((m) -> m.aggregator).<List<Icon>>collect(LinkedList<Icon>::new, (l, a) -> l.addAll(a.getIconsToDraw(stack, x, y, tooltips)), List<Icon>::addAll);
 	}
-	
+
 	private static Stream<TooltipMaker> getApplicableMakers(ItemStack stack) {
 		final String regKey = YResources.getRegistryString(stack);
 		return Arrays.stream(TooltipMaker.values()).filter((m) -> m.isApplicable(stack, regKey)).sorted();
 	}
-	
-	protected abstract boolean isApplicable(ItemStack stack, String registryString);	
+
+	protected abstract boolean isApplicable(ItemStack stack, String registryString);
 }

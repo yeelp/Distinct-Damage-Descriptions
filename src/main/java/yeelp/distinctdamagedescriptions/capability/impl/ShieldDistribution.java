@@ -16,10 +16,10 @@ import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ShieldDistribution extends Distribution implements IDistribution {
-	
+
 	@CapabilityInject(ShieldDistribution.class)
 	public static Capability<ShieldDistribution> cap;
-	
+
 	public ShieldDistribution() {
 		this(new NonNullMap<DDDDamageType, Float>(() -> 1.0f));
 	}
@@ -34,7 +34,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 
 	public DamageMap block(DamageMap fullDamage) {
-		this.getCategories().forEach((t) -> fullDamage.computeIfPresent(t, (k, v) -> { 
+		this.getCategories().forEach((t) -> fullDamage.computeIfPresent(t, (k, v) -> {
 			float f = blockDamage(v, this.getWeight(k));
 			return f <= 0 ? null : f;
 		}));
@@ -54,12 +54,12 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return capability == cap ? cap.<T>cast(this) : null;
 	}
-	
+
 	@Override
 	public ShieldDistribution copy() {
 		return new ShieldDistribution(super.copyMap(1.0f));
 	}
-	
+
 	@Override
 	public ShieldDistribution update(ItemStack owner) {
 		return this;

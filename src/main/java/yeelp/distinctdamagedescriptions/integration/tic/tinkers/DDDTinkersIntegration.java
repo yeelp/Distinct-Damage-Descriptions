@@ -32,7 +32,7 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class DDDTinkersIntegration extends DDDTiCIntegration {
 	public static final Modifier slyStrike = new ModifierSlyStrike(), bruteForce = new ModifierBruteForce();
-	
+
 	@Override
 	public boolean doSpecificInit(FMLInitializationEvent evt) {
 		slyStrike.addRecipeMatch(new RecipeMatch.ItemCombination(1, new ItemStack(Items.GHAST_TEAR), new ItemStack(Items.COMPASS), new ItemStack(Items.ENDER_EYE)));
@@ -40,7 +40,6 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 		DDDCapabilityDistributors.addProjCap(TinkerProjectileCapabilityDistributor.getInstance());
 		return true;
 	}
-	
 
 	@Override
 	public boolean postInit(FMLPostInitializationEvent evt) {
@@ -78,7 +77,6 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 	protected Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters() {
 		return ImmutableList.of(TinkerToolPartFormatter.getInstance());
 	}
-
 
 	@Override
 	protected void registerCapabilities() {

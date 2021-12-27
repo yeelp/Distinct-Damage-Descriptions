@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
 /**
  * Container for DDD damage type icons
+ * 
  * @author Yeelp
  *
  */
@@ -10,6 +11,7 @@ public class Icon {
 
 	/**
 	 * Construct a new Icon
+	 * 
 	 * @param x x pos on screen
 	 * @param y y pos on screen
 	 * @param u u coord in U-V tex map coords
@@ -22,6 +24,7 @@ public class Icon {
 
 	/**
 	 * Get this Icon's X value
+	 * 
 	 * @return the x
 	 */
 	public int getX() {
@@ -30,6 +33,7 @@ public class Icon {
 
 	/**
 	 * Get this Icon's Y value
+	 * 
 	 * @return the y
 	 */
 	public int getY() {
@@ -38,6 +42,7 @@ public class Icon {
 
 	/**
 	 * Get this Icon's U value in tex coords
+	 * 
 	 * @return the u
 	 */
 	public int getU() {

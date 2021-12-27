@@ -31,7 +31,7 @@ public class CapabilityHandler extends Handler {
 				evt.addCapability(creatureType, new CreatureType(DDDRegistries.creatureTypes.getCreatureTypeForMob(entityLiving)));
 				DDDCapabilityDistributors.getCapabilities(entityLiving).ifPresent((m) -> m.forEach(evt::addCapability));
 			}
-			else if (entity instanceof IProjectile) {
+			else if(entity instanceof IProjectile) {
 				DDDCapabilityDistributors.getCapabilities((IProjectile) entity).ifPresent((m) -> m.forEach(evt::addCapability));
 			}
 		}

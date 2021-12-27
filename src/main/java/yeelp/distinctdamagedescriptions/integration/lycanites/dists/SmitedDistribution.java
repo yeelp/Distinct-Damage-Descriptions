@@ -15,11 +15,11 @@ import yeelp.distinctdamagedescriptions.registries.impl.dists.AbstractSingleType
 public class SmitedDistribution extends AbstractSingleTypeDist {
 
 	private static final Optional<Potion> SMITED_POTION;
-	
+
 	static {
 		SMITED_POTION = Optional.ofNullable(ObjectManager.getEffect("smited"));
 	}
-	
+
 	public SmitedDistribution() {
 		super(() -> ModConfig.compat.lycanites.enableSmitedDist);
 	}

@@ -24,8 +24,9 @@ public abstract class DistributionIconAggregator<T extends IDistribution> extend
 	private final Function<ItemStack, Optional<T>> capExtractor;
 
 	protected DistributionIconAggregator(AbstractCapabilityTooltipFormatter<T, ItemStack> formatter, Function<ItemStack, Optional<T>> capExtractor) {
-		//Minecraft adds a gray colour formatting code at the beginning of every tooltip string (except the first one), so the formatting codes are duplicated
-		super(TextFormatting.GRAY.toString()+formatter.getTypeText().getFormattedText(), formatter::shouldShow);
+		// Minecraft adds a gray colour formatting code at the beginning of every
+		// tooltip string (except the first one), so the formatting codes are duplicated
+		super(TextFormatting.GRAY.toString() + formatter.getTypeText().getFormattedText(), formatter::shouldShow);
 		this.capExtractor = capExtractor;
 	}
 

@@ -27,13 +27,29 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 	public static final DDDDamageType PSYCHIC = new DDDBuiltInDamageType("psychic", false, "#defender got schooled by #attacker", "#defender had their mind blown", 0xff0084);
 	public static final DDDDamageType RADIANT = new DDDBuiltInDamageType("radiant", false, "#defender was smited by #attacker", "#defender was smited from above", 0xfffa5e);
 	public static final DDDDamageType THUNDER = new DDDBuiltInDamageType("thunder", false, "#defender was blasted to bits by #attacker", "#defender was destroyed by a lethal shockwave", 0xc9c9c9);
-	public static final DDDDamageType[] PHYSICAL_TYPES = {SLASHING, PIERCING, BLUDGEONING};
-	public static final DDDDamageType[] BUILT_IN_TYPES = {SLASHING, PIERCING, BLUDGEONING, ACID, COLD, FIRE, FORCE, LIGHTNING, NECROTIC, POISON, PSYCHIC, RADIANT, THUNDER};
+	public static final DDDDamageType[] PHYSICAL_TYPES = {
+			SLASHING,
+			PIERCING,
+			BLUDGEONING};
+	public static final DDDDamageType[] BUILT_IN_TYPES = {
+			SLASHING,
+			PIERCING,
+			BLUDGEONING,
+			ACID,
+			COLD,
+			FIRE,
+			FORCE,
+			LIGHTNING,
+			NECROTIC,
+			POISON,
+			PSYCHIC,
+			RADIANT,
+			THUNDER};
 
 	static {
 		Arrays.sort(BUILT_IN_TYPES);
 	}
-	
+
 	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		super(name, isPhysical, deathAttackerMessage, deathMessage, colour);
 		this.displayName = YLib.capitalize(this.getTypeName().substring("ddd_".length()));

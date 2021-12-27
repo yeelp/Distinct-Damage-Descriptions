@@ -20,7 +20,7 @@ import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults
 public final class DDDSounds {
 	private static final Map<String, SoundEvent> SOUND_MAP = new HashMap<String, SoundEvent>();
 	private static final List<String> ID_LIST = new ArrayList<String>();
-	
+
 	public enum DDDCombatSounds {
 		RESIST(RESIST_DING) {
 			@Override
@@ -77,21 +77,21 @@ public final class DDDSounds {
 				return 2.0f;
 			}
 		};
-		
+
 		private SoundEvent evt;
-		
+
 		private DDDCombatSounds(SoundEvent evt) {
 			this.evt = evt;
 		}
-		
+
 		public Optional<SoundEvent> getSoundIfApplicable(CombatResults results, boolean attacker) {
 			return Optional.ofNullable(this.isApplicable(results, attacker) ? this.evt : null);
 		}
-		
+
 		protected abstract boolean isApplicable(CombatResults results, boolean forAttacker);
-		
+
 		public abstract float getRecommendedVolume();
-		
+
 		protected static boolean isRatioWithinBounds(double lo, double hi, OptionalDouble opt) {
 			if(opt.isPresent()) {
 				return lo < opt.getAsDouble() && opt.getAsDouble() < hi;

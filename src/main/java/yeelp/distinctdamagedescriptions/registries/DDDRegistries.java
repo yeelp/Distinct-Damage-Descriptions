@@ -34,12 +34,12 @@ public abstract class DDDRegistries {
 	 * The registry for custom distributions.
 	 */
 	public static IDDDDistributionRegistry distributions;
-	
+
 	/**
 	 * Registry for tracking entities.
 	 */
 	public static IDDDTrackersRegistry trackers;
-	
+
 	/**
 	 * Registry for potions.
 	 */

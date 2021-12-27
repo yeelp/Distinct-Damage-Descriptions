@@ -14,6 +14,7 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 
 	/**
 	 * A skeletal {@link IStorage} implementation.
+	 * 
 	 * @author Yeelp
 	 *
 	 * @param <NBT> NBT type stored
@@ -21,9 +22,10 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 	 */
 	final class DDDCapStorage<NBT extends NBTBase, Cap extends DDDCapabilityBase<NBT>> implements IStorage<Cap> {
 		private final Class<NBT> nbtClass;
-		
+
 		/**
 		 * A new capability storage
+		 * 
 		 * @param nbtClass the nbt class used in storage
 		 */
 		public DDDCapStorage(Class<NBT> nbtClass) {
@@ -40,11 +42,12 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 			if(this.nbtClass.isInstance(nbt)) {
 				instance.deserializeNBT(this.nbtClass.cast(nbt));
 			}
-		}	
+		}
 	}
-	
+
 	/**
 	 * A skeletal default capability factory
+	 * 
 	 * @author Yeelp
 	 *
 	 * @param <NBT> NBT stored.
@@ -52,9 +55,10 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 	 */
 	final class DDDCapFactory<NBT extends NBTBase, Cap extends DDDCapabilityBase<NBT>> implements Callable<Cap> {
 		private final Supplier<Cap> sup;
-		
+
 		/**
 		 * New factory
+		 * 
 		 * @param sup default capability supplier
 		 */
 		public DDDCapFactory(Supplier<Cap> sup) {
@@ -66,7 +70,7 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 			return this.sup.get();
 		}
 	}
-	
+
 	static <NBT extends NBTBase, C extends DDDCapabilityBase<NBT>> void register(Class<C> capClass, Class<NBT> nbtClass, Supplier<C> factorySup) {
 		CapabilityManager.INSTANCE.register(capClass, new DDDCapStorage<NBT, C>(nbtClass), new DDDCapFactory<NBT, C>(factorySup));
 	}

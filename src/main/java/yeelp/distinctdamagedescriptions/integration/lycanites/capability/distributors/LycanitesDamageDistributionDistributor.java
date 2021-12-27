@@ -9,10 +9,10 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributi
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesEquipmentDistribution;
 
-public class LycanitesDamageDistributionDistributor extends AbstractCapabilityDistributor<ItemStack, IDamageDistribution, IDamageDistribution>{
+public class LycanitesDamageDistributionDistributor extends AbstractCapabilityDistributor<ItemStack, IDamageDistribution, IDamageDistribution> {
 
 	private static LycanitesDamageDistributionDistributor instance;
-	
+
 	protected LycanitesDamageDistributionDistributor() {
 		super(DamageDistributionCapabilityDistributor.ForItem.getInstance());
 	}
@@ -31,7 +31,7 @@ public class LycanitesDamageDistributionDistributor extends AbstractCapabilityDi
 	protected IDDDConfiguration<IDamageDistribution> getConfig() {
 		return null;
 	}
-	
+
 	public static LycanitesDamageDistributionDistributor getInstance() {
 		return instance == null ? instance = new LycanitesDamageDistributionDistributor() : instance;
 	}

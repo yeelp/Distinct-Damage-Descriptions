@@ -20,7 +20,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 	protected DamageDistributionCapabilityDistributor(ResourceLocation loc) {
 		super(loc);
 	}
-	
+
 	protected DamageDistributionCapabilityDistributor() {
 		this(LOC);
 	}
@@ -29,18 +29,16 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 	public boolean isApplicable(T t) {
 		return true;
 	}
-	
-	
-	
+
 	@Override
 	protected IDamageDistribution createCapability(IDamageDistribution configResult) {
 		return configResult;
 	}
 
 	public static final class ForEntity extends DamageDistributionCapabilityDistributor<EntityLivingBase> {
-		
+
 		private static ForEntity instance;
-		
+
 		@Override
 		protected IDDDConfiguration<IDamageDistribution> getConfig() {
 			return DDDConfigurations.mobDamage;
@@ -50,25 +48,26 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 		protected IDamageDistribution generateCapability(EntityLivingBase t, ResourceLocation key) {
 			return ConfigGenerator.getOrGenerateMobDamage(t, key);
 		}
-		
+
 		public static final ForEntity getInstance() {
 			return instance == null ? instance = new ForEntity() : instance;
 		}
 	}
-	
+
 	public static final class ForItem extends DamageDistributionCapabilityDistributor<ItemStack> {
-		
+
 		private static ForItem instance;
+
 		@Override
 		protected IDamageDistribution generateCapability(ItemStack t, ResourceLocation key) {
 			Item i = t.getItem();
 			if(i instanceof ItemSword) {
 				return ConfigGenerator.getOrGenerateWeaponCapabilities((ItemSword) i, t);
 			}
-			else if (i instanceof ItemTool) {
+			else if(i instanceof ItemTool) {
 				return ConfigGenerator.getOrGenerateWeaponCapabilities((ItemTool) i, t);
 			}
-			else if (i instanceof ItemHoe) {
+			else if(i instanceof ItemHoe) {
 				return ConfigGenerator.getOrGenerateWeaponCapabilities((ItemHoe) i, t);
 			}
 			else {
@@ -80,17 +79,17 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 		protected IDDDConfiguration<IDamageDistribution> getConfig() {
 			return DDDConfigurations.items;
 		}
-		
+
 		public static final ForItem getInstance() {
 			return instance == null ? instance = new ForItem() : instance;
 		}
 	}
-	
+
 	public static class ForProjectile extends DamageDistributionCapabilityDistributor<IProjectile> {
-		
+
 		static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "projectileDmgDistribution");
 		private static ForProjectile instance;
-		
+
 		private ForProjectile() {
 			super(LOC);
 		}
@@ -104,7 +103,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 		protected IDDDConfiguration<IDamageDistribution> getConfig() {
 			return DDDConfigurations.projectiles;
 		}
-		
+
 		public static final ForProjectile getInstance() {
 			return instance == null ? instance = new ForProjectile() : instance;
 		}

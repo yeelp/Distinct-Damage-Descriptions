@@ -52,8 +52,7 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 		Map<String, DDDDamageType> getIndirect() {
 			return this.indirect;
 		}
-		
-		
+
 	}
 
 	public DDDCustomDistributions() {
@@ -69,7 +68,7 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 	@Override
 	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
-		if(this.includeAllMap.containsKey(src.getDamageType())) {			
+		if(this.includeAllMap.containsKey(src.getDamageType())) {
 			set.add(this.includeAllMap.get(src.getDamageType()));
 		}
 		if(this.srcMap.containsKey(src.getDamageType())) {

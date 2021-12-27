@@ -9,11 +9,12 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReade
 public final class DDDModIDPrependingConfigReader<T extends Number> extends DDDNumericEntryConfigReader<T> {
 
 	private final String modid;
+
 	public DDDModIDPrependingConfigReader(String modID, String name, String[] configList, IDDDConfiguration<T> config, Function<String, T> factory) {
 		super(name, configList, config, factory);
 		this.modid = modID;
 	}
-	
+
 	@Override
 	protected Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
 		if(!s.contains(":")) {

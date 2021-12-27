@@ -47,7 +47,7 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 				location = ArmorMaterialType.CORE;
 				break;
 			default:
-				location  = ArmorMaterialType.PLATES;
+				location = ArmorMaterialType.PLATES;
 				break;
 		}
 		Map<String, DDDImmunityTrait> traits = Arrays.stream(DDDBuiltInDamageType.BUILT_IN_TYPES).map(DDDImmunityTrait::new).collect(Collectors.toMap(Functions.compose(DDDDamageType::getTypeName, DDDImmunityTrait::getType), Function.identity()));

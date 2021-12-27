@@ -39,7 +39,7 @@ public class LycanitesMinionDistribution implements DDDPredefinedDistribution {
 
 	private static final Optional<IDamageDistribution> getDamageDistribution(DamageSource src) {
 		if(src instanceof MinionEntityDamageSource) {
-			return YResources.getEntityIDString(src.getImmediateSource()).flatMap(Functions.compose((o) -> o.flatMap(DDDConfigurations.projectiles::getSafe), LycanitesConfigurations.creatureProjectiles::getSafe));			
+			return YResources.getEntityIDString(src.getImmediateSource()).flatMap(Functions.compose((o) -> o.flatMap(DDDConfigurations.projectiles::getSafe), LycanitesConfigurations.creatureProjectiles::getSafe));
 		}
 		return Optional.empty();
 	}

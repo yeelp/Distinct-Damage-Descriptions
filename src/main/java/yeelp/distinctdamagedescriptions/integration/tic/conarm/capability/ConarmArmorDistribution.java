@@ -54,7 +54,7 @@ public class ConarmArmorDistribution extends ArmorDistribution {
 	public static void register() {
 		DDDCapabilityBase.register(ConarmArmorDistribution.class, NBTTagList.class, ConarmArmorDistribution::new);
 	}
-	
+
 	@CapabilityInject(ConarmArmorDistribution.class)
 	private static void onRegister(Capability<ConarmArmorDistribution> cap) {
 		DDDAPI.mutator.registerItemCap(IArmorDistribution.class, cap);

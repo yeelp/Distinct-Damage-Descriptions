@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.util.ResistMap;
  *
  */
 public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> {
-	
+
 	/**
 	 * Get resistance for a certain type.
 	 * 
@@ -50,20 +50,22 @@ public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> 
 	 * Clear all immunities
 	 */
 	void clearImmunities();
-	
+
 	/**
 	 * Copy this instance
+	 * 
 	 * @return a copy
 	 */
 	IDamageResistances copy();
-	
+
 	/**
 	 * Update this instance of damage resistances with respect to its owner
+	 * 
 	 * @param owner The owner of this capability
 	 * @return The updated copy. This mutates the original
 	 */
 	IDamageResistances update(EntityLivingBase owner);
-	
+
 	default ResistMap getAllResistances() {
 		ResistMap rMap = new ResistMap();
 		DDDRegistries.damageTypes.getAll().forEach((t) -> rMap.put(t, this.getResistance(t)));

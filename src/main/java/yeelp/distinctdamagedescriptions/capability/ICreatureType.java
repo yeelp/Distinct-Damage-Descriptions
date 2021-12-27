@@ -57,7 +57,7 @@ public interface ICreatureType extends DDDCapabilityBase<NBTTagCompound> {
 	default boolean isSingleTyped() {
 		return getTypeCount() == 1;
 	}
-	
+
 	static void register() {
 		DDDCapabilityBase.register(ICreatureType.class, NBTTagCompound.class, CreatureType::new);
 	}

@@ -21,12 +21,12 @@ import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.network.MobResistancesMessage;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public class MobResistances extends DamageResistances implements IMobResistances {
-	
+
 	@CapabilityInject(IMobResistances.class)
 	public static Capability<IMobResistances> cap;
 	private boolean adaptive;
@@ -34,10 +34,10 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	private Set<DDDDamageType> adaptiveTo;
 
 	public MobResistances() {
-		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
+		this(new DDDBaseMap<Float>(() -> 0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
 	}
 
-	public MobResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities, boolean adaptitability, float adaptiveAmount) {
+	public MobResistances(DDDBaseMap<Float> resistances, Collection<DDDDamageType> immunities, boolean adaptitability, float adaptiveAmount) {
 		super(resistances, immunities);
 		this.adaptive = adaptitability;
 		this.adaptiveAmount = adaptiveAmount;
@@ -64,7 +64,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	public void setAdaptiveResistance(boolean status) {
 		this.adaptive = status;
 	}
-	
+
 	@Override
 	public boolean isAdaptiveTo(DDDDamageType type) {
 		return this.adaptiveTo.contains(type);
@@ -97,8 +97,8 @@ public class MobResistances extends DamageResistances implements IMobResistances
 			this.adaptiveTo = new HashSet<DDDDamageType>(dmgMap.keySet());
 			if(ModConfig.core.enableAdaptiveWeakness) {
 				float total = (float) YMath.sum(dmgMap.values());
-				Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue()/total));
-				float avgWeakness = (float) weightMap.entrySet().stream().filter((e) -> this.getResistance(e.getKey()) < 0).mapToDouble((e) -> this.getResistance(e.getKey())*e.getValue()).average().orElse(0);
+				Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue() / total));
+				float avgWeakness = (float) weightMap.entrySet().stream().filter((e) -> this.getResistance(e.getKey()) < 0).mapToDouble((e) -> this.getResistance(e.getKey()) * e.getValue()).average().orElse(0);
 				this.adaptiveAmountModified = (float) Math.exp(avgWeakness) * this.adaptiveAmount;
 			}
 		}

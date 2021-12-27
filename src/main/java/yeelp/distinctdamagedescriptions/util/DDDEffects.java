@@ -39,7 +39,10 @@ public class DDDEffects {
 		}
 
 		public double[] getCoordinates() {
-			return new double[] {this.x, this.y, this.z};
+			return new double[] {
+					this.x,
+					this.y,
+					this.z};
 		}
 
 		public DDDParticleType getType() {
@@ -81,7 +84,7 @@ public class DDDEffects {
 	/**
 	 * Play sound effects and spawn particles based on combat results.
 	 * 
-	 * @param attacker   The attacking entity
+	 * @param attacker The attacking entity
 	 * @param defender the defending EntityLivingBase
 	 * @param results  the results from DDD's combat calculations
 	 * @return true if immunity blocked all damage. I.e.
@@ -103,7 +106,7 @@ public class DDDEffects {
 			}
 			sendEffectPackets(player, particles, sounds);
 		}
-		
+
 		if(defender instanceof EntityPlayer) {
 			EntityPlayer defendingPlayer = (EntityPlayer) defender;
 			sendEffectPackets(defendingPlayer, Collections.emptyList(), Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, false).map((evt) -> new SoundInfo(defendingPlayer, evt, sound.getRecommendedVolume(), 0.8f + soundPitch.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));

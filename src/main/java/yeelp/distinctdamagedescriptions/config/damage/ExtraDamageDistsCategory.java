@@ -72,7 +72,7 @@ public final class ExtraDamageDistsCategory {
 	@Name("Daylight Burning Entities")
 	@Comment("Entities listed here will be susceptible to the Daylight Burning Distribution. Entities not listed won't take radiant damage, even if undead. Ideally, only put undead entities that actually burn in daylight here.")
 	public String[] daylightWhitelist = DefaultValues.ENTITIES_BURN_IN_DAYLIGHT;
-	
+
 	@Name("Guardian Thorns Damage")
 	@Comment("Enable/disable guardian thorn distribution. Guardian's thorn attack will inflict piercing damage when enabled.")
 	public boolean enableGuardianSpikesDamage = true;

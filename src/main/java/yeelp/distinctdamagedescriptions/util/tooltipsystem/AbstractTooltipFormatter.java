@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 /**
  * Basic implementation of {@link TooltipFormatter}
+ * 
  * @author Yeelp
  * 
  * @see TooltipFormatter
@@ -36,17 +37,19 @@ public abstract class AbstractTooltipFormatter<T> implements TooltipFormatter<T>
 			throw new IllegalArgumentException(f + " isn't supported by this formatter!");
 		}
 	}
-	
+
 	/**
 	 * Get the current DDDNumberFormatter
+	 * 
 	 * @return the current DDDNumberFormatter
 	 */
 	protected DDDNumberFormatter getNumberFormatter() {
 		return this.numberFormatter;
 	}
-	
+
 	/**
 	 * Get the current DDDDamageFormatter
+	 * 
 	 * @return the current DDDDamageFormatter
 	 */
 	protected DDDDamageFormatter getDamageFormatter() {

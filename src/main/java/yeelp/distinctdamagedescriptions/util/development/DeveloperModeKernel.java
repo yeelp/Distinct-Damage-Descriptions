@@ -55,7 +55,7 @@ public final class DeveloperModeKernel {
 	private static final String NEW_LINE = System.lineSeparator();
 	private static DeveloperStatus currMode = DeveloperStatus.DISABLED;
 	private static final Map<Class<? extends Event>, Supplier<DeveloperStatus>> statusMap = ImmutableMap.<Class<? extends Event>, Supplier<DeveloperStatus>>builder().put(LivingAttackEvent.class, () -> ModConfig.dev.showAttackInfo).put(LivingHurtEvent.class, () -> ModConfig.dev.showHurtInfo).put(LivingDamageEvent.class, () -> ModConfig.dev.showDamageInfo).put(DetermineDamageEvent.class, () -> ModConfig.dev.showDamageClassification).put(GatherDefensesEvent.class, () -> ModConfig.dev.showDefenseClassification).put(ShieldBlockEvent.class, () -> ModConfig.dev.showShieldCalculation).put(UpdateAdaptiveResistanceEvent.class, () -> ModConfig.dev.showAdaptiveCalculation).build();
-	
+
 	public static void log(String msg, boolean inChat, Iterable<? extends EntityPlayer> players) {
 		LOGGER.info("[DISTINCT DAMAGE DESCRIPTIONS (DEVELOPER)]: " + msg);
 		if(inChat) {

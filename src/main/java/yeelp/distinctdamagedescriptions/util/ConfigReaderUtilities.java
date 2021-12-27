@@ -25,7 +25,7 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 public final class ConfigReaderUtilities {
 
 	private static final String LIST_SPLIT_REGEX = "\\),(?:\\s?)\\(";
-	public static final String DAMAGE_TYPE_SUBREGEX = "([spb]|(ddd_[a-z]+))";
+	public static final String DAMAGE_TYPE_SUBREGEX = "([spb]|(ddd_[a-zA-Z]+))";
 	public static final String DECIMAL_REGEX = "\\d+(\\.\\d+)?";
 	public static final String POTENTIALLY_NEGATIVE_DECIMAL_REGEX = "-?\\d+(\\.\\d+)?";
 	public static final String ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + DECIMAL_REGEX + "\\)";
@@ -120,7 +120,7 @@ public final class ConfigReaderUtilities {
 	 * if {@code allowEmpty} is {@code true}.
 	 * 
 	 * @param listEntrySubRegex the subregex to use
-	 * @param allowEmpty if empty lists should be matched
+	 * @param allowEmpty        if empty lists should be matched
 	 * @return the corresponding subregex
 	 */
 	public static String buildListRegex(String listEntrySubRegex, boolean allowEmpty) {

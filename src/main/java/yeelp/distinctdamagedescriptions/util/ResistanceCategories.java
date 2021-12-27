@@ -14,11 +14,11 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
  *
  */
 public abstract class ResistanceCategories {
-	private Map<DDDDamageType, Float> resistMap;
+	private DDDBaseMap<Float> resistMap;
 	private Set<DDDDamageType> dmgImmunities;
 
-	public ResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities) {
-		this.resistMap = resistances;
+	protected ResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities) {
+		this.resistMap = resistances.keySet().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, resistances::get));
 		this.dmgImmunities = new HashSet<DDDDamageType>(immunities);
 	}
 
@@ -47,7 +47,7 @@ public abstract class ResistanceCategories {
 	 * 
 	 * @return the map of resistances
 	 */
-	public Map<DDDDamageType, Float> getResistanceMap() {
+	public DDDBaseMap<Float> getResistanceMap() {
 		return this.resistMap;
 	}
 

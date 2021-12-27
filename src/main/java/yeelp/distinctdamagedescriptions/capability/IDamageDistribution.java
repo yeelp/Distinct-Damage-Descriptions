@@ -29,16 +29,18 @@ public interface IDamageDistribution extends IDistribution {
 
 	@Override
 	IDamageDistribution update(ItemStack owner);
-	
+
 	/**
 	 * Update this capability with respect to its owner
+	 * 
 	 * @param owner
 	 * @return the mutated capability
 	 */
 	IDamageDistribution update(EntityLivingBase owner);
-	
+
 	/**
 	 * Update this capability with respect to its owner
+	 * 
 	 * @param owner
 	 * @return the mutated capability
 	 */

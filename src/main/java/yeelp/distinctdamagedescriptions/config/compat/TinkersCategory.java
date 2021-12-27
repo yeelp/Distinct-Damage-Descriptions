@@ -18,10 +18,9 @@ public final class TinkersCategory {
 
 	@Name("Material Influence")
 	@Comment({
-		"Control's a material's influence. A material has two parts to its influence: and actual influence rating and a distribution.",
-		"A material's distribution is its preferred distribution it tries to lean the tool towards.",
-		"A material's influence rating is a measure of how good that material is at influencing head pieces."
-	})
+			"Control's a material's influence. A material has two parts to its influence: and actual influence rating and a distribution.",
+			"A material's distribution is its preferred distribution it tries to lean the tool towards.",
+			"A material's influence rating is a measure of how good that material is at influencing head pieces."})
 	@RequiresMcRestart
 	public String[] matBias = DefaultValues.MATERIAL_BIAS;
 }

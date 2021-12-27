@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 /**
  * A formatter for mob damage distributions
+ * 
  * @author Yeelp
  *
  */
@@ -25,25 +26,26 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	private static MobDamageDistributionFormatter instance;
 	private final Function<ItemStack, Optional<ResourceLocation>> resourceLocationGetter;
 	private Map<ResourceLocation, Float> cache;
-	
+
 	private MobDamageDistributionFormatter() {
 		this(TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
 	}
-	
+
 	protected MobDamageDistributionFormatter(Function<ItemStack, Optional<ResourceLocation>> f) {
 		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobDamageIfConfigured), "mobdistribution");
 		this.resourceLocationGetter = f;
 		this.cache = new HashMap<ResourceLocation, Float>();
 	}
-	
+
 	/**
 	 * Get the singleton instance
+	 * 
 	 * @return the singleton instance
 	 */
 	public static MobDamageDistributionFormatter getInstance() {
 		return instance == null ? instance = new MobDamageDistributionFormatter() : instance;
 	}
-	
+
 	@Override
 	public boolean supportsNumberFormat(DDDNumberFormatter f) {
 		return true;
@@ -62,13 +64,13 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 			case PLAIN:
 			default:
 				Optional<ResourceLocation> oLoc = this.resourceLocationGetter.apply(stack);
-				if (oLoc.isPresent()) {
+				if(oLoc.isPresent()) {
 					ResourceLocation loc = oLoc.get();
 					if(this.cache.containsKey(loc)) {
 						return this.cache.get(loc);
 					}
 					Optional<Entity> oEntity = Optional.ofNullable(ForgeRegistries.ENTITIES.getValue(loc)).map((entry) -> entry.newInstance(Minecraft.getMinecraft().world));
-					Optional<IAttributeInstance> oAttribute = oEntity.filter((e) -> e instanceof EntityLivingBase).<EntityLivingBase>map((e) -> (EntityLivingBase)e).map((e) -> e.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE));
+					Optional<IAttributeInstance> oAttribute = oEntity.filter((e) -> e instanceof EntityLivingBase).<EntityLivingBase>map((e) -> (EntityLivingBase) e).map((e) -> e.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE));
 					if(oAttribute.isPresent()) {
 						float dmg = (float) oAttribute.get().getAttributeValue();
 						this.cache.put(loc, dmg);

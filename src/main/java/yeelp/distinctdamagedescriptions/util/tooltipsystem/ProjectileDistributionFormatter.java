@@ -8,20 +8,23 @@ import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 /**
  * A singleton formatter instance for formatting projectile distributions.
+ * 
  * @author Yeelp
  *
  */
 public class ProjectileDistributionFormatter extends AbstractDamageDistributionFormatter {
-	
+
 	private static ProjectileDistributionFormatter instance;
-	
-	protected ProjectileDistributionFormatter() {	
+
+	protected ProjectileDistributionFormatter() {
 		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> Optional.ofNullable(YResources.getRegistryString(s.getItem())).filter(DDDConfigurations.projectiles::isProjectilePairRegistered).map(DDDConfigurations.projectiles::getFromItemID), "projectiledistribution");
 	}
-	
+
 	/**
-	 * Get the singleton instance of this ProjectileDistributionFormatter if it exists.
-	 * If it doesn't exists, a new instance is created and stored, and that instance is returned.
+	 * Get the singleton instance of this ProjectileDistributionFormatter if it
+	 * exists. If it doesn't exists, a new instance is created and stored, and that
+	 * instance is returned.
+	 * 
 	 * @return The singleton instance, or a new one if it doesn't exist yet.
 	 */
 	public static ProjectileDistributionFormatter getInstance() {

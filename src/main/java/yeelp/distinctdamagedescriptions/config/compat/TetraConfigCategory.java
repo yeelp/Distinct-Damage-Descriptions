@@ -17,17 +17,16 @@ public final class TetraConfigCategory {
 			"A tool like /ct nbt or an NBT editor can be used to find the NBT tag names. All the defaults are included here."})
 	@RequiresMcRestart
 	public String[] toolPartDists = DefaultValues.TETRA_PART_BIAS;
-	
+
 	@Name("Tetra Material Distributions")
 	@Comment({
-		"Modify material distributions for Tetra tool parts.",
-		"This is how the base tool part distribution gets modified.",
-		"The format is <nbt_tag>;<distribution>;<bias> where:",
-		"   <nbt_tag> is the material name found in the item NBT. Only the material name is needed, the part type referenced in the tag should not be included here. (That is, you only need to specify a material once, not for each part it's usable in).",
-		"   <distribution> is the distribution the material has, as specified in item distributions",
-		"   <bias> is the measure of how well this material influences parts. The difference between this and the tool part bias is used to determine how much this matereial influences the part's distribution.",
-		"A tool like /ct nbt or an NBT editor is great for finding the material names. All the defaults are included here."
-	})
+			"Modify material distributions for Tetra tool parts.",
+			"This is how the base tool part distribution gets modified.",
+			"The format is <nbt_tag>;<distribution>;<bias> where:",
+			"   <nbt_tag> is the material name found in the item NBT. Only the material name is needed, the part type referenced in the tag should not be included here. (That is, you only need to specify a material once, not for each part it's usable in).",
+			"   <distribution> is the distribution the material has, as specified in item distributions",
+			"   <bias> is the measure of how well this material influences parts. The difference between this and the tool part bias is used to determine how much this matereial influences the part's distribution.",
+			"A tool like /ct nbt or an NBT editor is great for finding the material names. All the defaults are included here."})
 	@RequiresMcRestart
 	public String[] toolMatDists = DefaultValues.TETRA_MAT_BIAS;
 }

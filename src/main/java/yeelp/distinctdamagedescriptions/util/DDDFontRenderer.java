@@ -120,7 +120,8 @@ public final class DDDFontRenderer extends FontRenderer {
 	 * new one is created. The passed {@code currentFontRender} is updated in the
 	 * instance to reflect the current FontRenderer that was supposed to be used.
 	 * 
-	 * @param currentFontRenderer. If null, DDD will fallback to Minecraft's font renderer
+	 * @param currentFontRenderer. If null, DDD will fallback to Minecraft's font
+	 *                             renderer
 	 * @return The DDDFontRender instance which wraps the specified font renderer
 	 */
 	public static FontRenderer getInstance(FontRenderer currentFontRenderer) {

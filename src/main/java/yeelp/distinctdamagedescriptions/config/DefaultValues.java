@@ -614,47 +614,46 @@ public interface DefaultValues {
 	/*************
 	 * LYCANITES *
 	 *************/
-	
+
 	final String[] ENEMY_PROJECTILE_MAP = {
-		"acidsplash;xaphan",
-		"aetherwave;slyph",
-		"aquapulse;jengu",
-		"arcanelaserstorm;beholder",
-		"blizzard;serpix",
-		"bloodleech;epion",
-		"boulderblast;troll",
-		"chaosorb;argus",
-		"crystalshard;vapula",
-		"demonicblast;cacodemon",
-		"devilstar;astaroth",
-		"doomfireball;archvile,belph",
-		"ember;cinder",
-		"faebolt;nymph",
-		"frostweb;frostweaver",
-		"frostbolt;reiver",
-		"hellfireball;behemoth",
-		"icefireball;arix",
-		"lifedrain;spriggan",
-		"lightball;wisp",
-		"magma;lobber,gorger",
-		"mudshot;erepede",
-		"poisonray;eyewig",
-		"poop;conba",
-		"quill;quillbeast",
-		"scorchfireball;afrit,ignibus",
-		"spectralbolt;reaper",
-		"throwingscythe;clink",
-		"tricksterflare;pixen",
-		"tundra;wendigo",
-		"venomshot;remobra",
-		"waterjet;ioray",
-		"whirlwind;djinn"
-	};
-	
+			"acidsplash;xaphan",
+			"aetherwave;slyph",
+			"aquapulse;jengu",
+			"arcanelaserstorm;beholder",
+			"blizzard;serpix",
+			"bloodleech;epion",
+			"boulderblast;troll",
+			"chaosorb;argus",
+			"crystalshard;vapula",
+			"demonicblast;cacodemon",
+			"devilstar;astaroth",
+			"doomfireball;archvile,belph",
+			"ember;cinder",
+			"faebolt;nymph",
+			"frostweb;frostweaver",
+			"frostbolt;reiver",
+			"hellfireball;behemoth",
+			"icefireball;arix",
+			"lifedrain;spriggan",
+			"lightball;wisp",
+			"magma;lobber,gorger",
+			"mudshot;erepede",
+			"poisonray;eyewig",
+			"poop;conba",
+			"quill;quillbeast",
+			"scorchfireball;afrit,ignibus",
+			"spectralbolt;reaper",
+			"throwingscythe;clink",
+			"tricksterflare;pixen",
+			"tundra;wendigo",
+			"venomshot;remobra",
+			"waterjet;ioray",
+			"whirlwind;djinn"};
+
 	/*********
 	 * TETRA *
 	 *********/
-	
+
 	final String[] TETRA_PART_BIAS = {
 			"sword/heavy_blade;[(s, 0.5), (b, 0.5)];0.5",
 			"sword/machete;[(s, 1)];1",
@@ -666,9 +665,8 @@ public interface DefaultValues {
 			"duplex/basic_hammer;[(b, 1)];1",
 			"duplex/basic_pickaxe;[(p, 1)];0.5",
 			"duplex/hoe;[(p, 1)];0.3",
-			"duplex/sickle;[(s, 1)];0.4"
-	};
-	
+			"duplex/sickle;[(s, 1)];0.4"};
+
 	final String[] TETRA_MAT_BIAS = {
 			"log;[(b, 1)];0.5",
 			"acacia;[(b, 1)];0.5",
@@ -686,6 +684,5 @@ public interface DefaultValues {
 			"iron;[(s, 1)];0",
 			"gold;[(b, 0.5), (p, 0.5)];0.4",
 			"diamond;[(s, 1)];0.5",
-			"obsidian;[(s, 0.8), (b, 0.2)];0.6"
-	};
+			"obsidian;[(s, 0.8), (b, 0.2)];0.6"};
 }

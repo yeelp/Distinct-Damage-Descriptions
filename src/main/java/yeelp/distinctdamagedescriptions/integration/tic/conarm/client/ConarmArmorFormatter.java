@@ -27,7 +27,6 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 		return tooltips;
 	}
 
-	
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IArmorDistribution cap) {
 		switch(this.getNumberFormatter()) {
@@ -40,7 +39,6 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 		}
 	}
 
-
 	@Override
 	public boolean applicable(ItemStack t) {
 		return t.getItem() instanceof TinkersArmor;
@@ -50,7 +48,7 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 	public IconAggregator getIconAggregator() {
 		return ConarmArmorIconAggregator.getInstance();
 	}
-	
+
 	public static ConarmArmorFormatter getInstance() {
 		return instance == null ? instance = new ConarmArmorFormatter() : instance;
 	}

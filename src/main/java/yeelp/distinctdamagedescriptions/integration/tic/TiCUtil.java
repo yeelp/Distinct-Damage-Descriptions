@@ -29,11 +29,11 @@ public final class TiCUtil {
 	private TiCUtil() {
 		throw new RuntimeException("Class can't be instatiated!");
 	}
-	
+
 	public static Iterator<PartMaterialType> getParts(ItemStack stack) {
 		return getParts(stack.getItem());
 	}
-	
+
 	public static Iterator<PartMaterialType> getParts(Item item) {
 		if(item instanceof TinkerToolCore) {
 			TinkerToolCore tool = (TinkerToolCore) item;
@@ -45,15 +45,15 @@ public final class TiCUtil {
 		}
 		return Collections.emptyIterator();
 	}
-	
+
 	public static Iterator<PartMaterialType> getParts(TinkerToolCore tool) {
 		return tool.getRequiredComponents().iterator();
 	}
-	
+
 	public static Iterator<PartMaterialType> getParts(TinkersArmor armor) {
 		return armor.getRequiredComponents().iterator();
 	}
-	
+
 	public static Collection<String> getKeyMaterialIdentifiers(ItemStack stack, String partType) {
 		Iterator<Material> materials = TinkerUtil.getMaterialsFromTagList(TagUtil.getBaseMaterialsTagList(stack)).iterator();
 		Iterator<PartMaterialType> parts = getParts(stack);
@@ -66,11 +66,11 @@ public final class TiCUtil {
 		}
 		return identifiers;
 	}
-	
+
 	public static DDDBaseMap<Float> getBaseDist(ItemStack stack) {
 		return getBaseDist(stack.getItem());
 	}
-	
+
 	public static DDDBaseMap<Float> getBaseDist(Item item) {
 		String reg = YResources.getRegistryString(item);
 		if(item instanceof TinkerToolCore) {
@@ -81,15 +81,15 @@ public final class TiCUtil {
 		}
 		return new DDDBaseMap<Float>(() -> 0.0f);
 	}
-	
+
 	public static String getDDDDamageTypeNameColoured(DDDDamageType type) {
 		return (type.getColour() == 0xffffff ? encodeColour(0) : encodeColour(type.getColour())) + TextFormatting.BOLD + type.getDisplayName() + TextFormatting.RESET;
 	}
-	
+
 	private static String encodeColour(int colour) {
 		return CustomFontColor.encodeColor(colour);
 	}
-	
+
 	private static <Dist extends IDistribution> DDDBaseMap<Float> getMap(String key, IDDDConfiguration<Dist> config) {
 		Dist d = config.getOrFallbackToDefault(key);
 		return d.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, d::getWeight));

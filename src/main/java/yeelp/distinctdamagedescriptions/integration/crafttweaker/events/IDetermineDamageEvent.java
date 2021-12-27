@@ -18,18 +18,20 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass("mods.ddd.events.DetermineDamageEvent")
 @ZenRegister
 public interface IDetermineDamageEvent extends IDDDClassificationEvent {
-	
+
 	/**
 	 * Get damage for a certain type
+	 * 
 	 * @param type Type name. Requires ddd_ prefix
 	 * @return The damage inflicted of that type
 	 */
 	@ZenMethod("getDamage")
 	float getDamage(String type);
-	
+
 	/**
 	 * Set damage inflicted for a certain type
-	 * @param type Type name. Requires ddd_ prefix
+	 * 
+	 * @param type   Type name. Requires ddd_ prefix
 	 * @param amount Amount of damage to inflict
 	 */
 	@ZenMethod("setDamage")

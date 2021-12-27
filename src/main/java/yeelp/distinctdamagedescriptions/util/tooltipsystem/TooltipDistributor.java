@@ -30,13 +30,13 @@ public enum TooltipDistributor {
 
 		@Override
 		protected void registerModCompatFormatter(IModCompatTooltipFormatter<ItemStack> formatter) {
-			//no-op
+			// no-op
 		}
 	},
 	MOD_COMPAT {
-		
+
 		protected final List<IModCompatTooltipFormatter<ItemStack>> formatters = Lists.newArrayList();
-		
+
 		@Override
 		public List<String> getTooltip(ItemStack stack) {
 			return this.getApplicableFormatters(stack).map((f) -> f.format(stack)).reduce(this.listReduction()).orElse(Collections.emptyList());
@@ -51,11 +51,11 @@ public enum TooltipDistributor {
 		protected boolean applicable(ItemStack stack) {
 			return this.formatters.stream().anyMatch((f) -> f.applicable(stack));
 		}
-		
+
 		private Stream<IModCompatTooltipFormatter<ItemStack>> getApplicableFormatters(ItemStack stack) {
 			return this.formatters.stream().filter((f) -> f.applicable(stack)).sorted();
 		}
-		
+
 		private final <T> BinaryOperator<List<T>> listReduction() {
 			return (l1, l2) -> {
 				l1.addAll(l2);
@@ -68,19 +68,20 @@ public enum TooltipDistributor {
 			this.formatters.add(formatter);
 		}
 	};
+
 	public static TooltipDistributor getDistributor(ItemStack stack) {
 		return MOD_COMPAT.applicable(stack) ? MOD_COMPAT : BASE;
 	}
-	
+
 	public static void registerModCompat(IModCompatTooltipFormatter<ItemStack> formatter) {
 		MOD_COMPAT.registerModCompatFormatter(formatter);
 	}
-	
+
 	public abstract List<String> getTooltip(ItemStack stack);
-	
+
 	public abstract List<Icon> getIcons(ItemStack stack, int x, int y, List<String> lines);
-	
+
 	protected abstract boolean applicable(ItemStack stack);
-	
+
 	protected abstract void registerModCompatFormatter(IModCompatTooltipFormatter<ItemStack> formatter);
 }

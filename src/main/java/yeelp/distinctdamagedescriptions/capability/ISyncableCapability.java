@@ -8,6 +8,7 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 
 /**
  * A capability that can be synced to players.
+ * 
  * @author Yeelp
  *
  * @param <NBT> NBT types this capability stores.
@@ -16,12 +17,14 @@ public interface ISyncableCapability<NBT extends NBTBase> extends DDDCapabilityB
 
 	/**
 	 * Get the message to sync with
+	 * 
 	 * @return the IMessage
 	 */
 	IMessage getIMessage();
-	
+
 	/**
 	 * Sync capability to this player.
+	 * 
 	 * @param player
 	 */
 	default void sync(EntityPlayer player) {

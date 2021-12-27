@@ -71,7 +71,7 @@ public final class DDDPotion extends Potion {
 	public EffectType getEffect() {
 		return this.effect;
 	}
-	
+
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onGatherDefenses(GatherDefensesEvent evt) {
 		evt.getDefender().getActivePotionEffects().stream().filter((effect) -> effect.getPotion() instanceof DDDPotion).forEach((effect) -> {

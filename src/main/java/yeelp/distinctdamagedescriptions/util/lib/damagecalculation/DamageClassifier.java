@@ -23,7 +23,7 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 		Entity trueSource = context.getTrueAttacker();
 		return DDDRegistries.distributions.getDamageDistribution(context.getSource(), context.getDefender()).map(Optional::of).orElseGet(() -> {
 			if(source != null && source instanceof IProjectile) {
-				return DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker());				
+				return DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker());
 			}
 			EntityLivingBase entityAttacker = null;
 			if(source == null && trueSource instanceof EntityPlayer) {
@@ -39,7 +39,7 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 			return map;
 		});
 	}
-	
+
 	private static Optional<IDamageDistribution> getDistForLivingEntity(@Nullable EntityLivingBase attacker) {
 		if(attacker == null) {
 			return Optional.empty();

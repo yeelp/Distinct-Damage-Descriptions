@@ -80,8 +80,9 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	}
 
 	/**
-	 * @implNote The ordering is done via a {@link Comparator} that first compares this {@link DDDDamageType}'s {@link DDDDamageType.Type} by ordinal, then comparing type name lexicographically.
-	 * {@inheritDoc}
+	 * @implNote The ordering is done via a {@link Comparator} that first compares
+	 *           this {@link DDDDamageType}'s {@link DDDDamageType.Type} by ordinal,
+	 *           then comparing type name lexicographically. {@inheritDoc}
 	 */
 	@Override
 	public int compareTo(DDDDamageType o) {

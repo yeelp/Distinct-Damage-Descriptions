@@ -17,35 +17,38 @@ import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 /**
  * The singleton instance for formatting instances for generic items
+ * 
  * @author Yeelp
  *
  */
 public class ItemDistributionFormatter extends AbstractDamageDistributionFormatter {
-	
+
 	private static ItemDistributionFormatter instance;
-	
+
 	private ItemDistributionFormatter() {
 		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, "damagedistribution");
 	}
 
 	/**
-	 * Get the singleton instance for this ItemDistributionFormatter if it exists, creating a new instance if it doesn't
+	 * Get the singleton instance for this ItemDistributionFormatter if it exists,
+	 * creating a new instance if it doesn't
+	 * 
 	 * @return The singleton instance, or a new instance if it doesn't exist.
 	 */
 	public static ItemDistributionFormatter getInstance() {
 		return instance == null ? instance = new ItemDistributionFormatter() : instance;
 	}
-	
+
 	@Override
 	public boolean supportsNumberFormat(DDDNumberFormatter f) {
 		return true;
 	}
-	
+
 	@Override
 	protected boolean shouldShowDist(ItemStack stack) {
 		return DDDConfigurations.items.configured(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
 	}
-	
+
 	@Override
 	protected float getDamageToDistribute(ItemStack stack) {
 		double dmg;

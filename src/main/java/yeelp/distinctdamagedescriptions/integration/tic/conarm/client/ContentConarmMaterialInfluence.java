@@ -55,5 +55,5 @@ public final class ContentConarmMaterialInfluence extends ContentMaterialInfluen
 		IArmorDistribution dist = TiCConfigurations.armorMaterialDist.getOrFallbackToDefault(this.getMaterial().identifier);
 		return dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> dist.getWeight(DDDBuiltInDamageType.UNKNOWN), dist::getWeight));
 	}
-	
+
 }

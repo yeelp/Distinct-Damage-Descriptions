@@ -59,11 +59,11 @@ final class CombatContext {
 	Entity getImmediateAttacker() {
 		return this.attacker;
 	}
-	
+
 	Entity getTrueAttacker() {
 		return this.src.getTrueSource();
 	}
-	
+
 	EntityLivingBase getDefender() {
 		return this.defender;
 	}

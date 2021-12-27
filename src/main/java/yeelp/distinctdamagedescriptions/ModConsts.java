@@ -22,6 +22,10 @@ public class ModConsts {
 
 	/** MOD NAMES SECTION END **/
 
-	public static final EntityEquipmentSlot[] ARMOR_SLOTS = {EntityEquipmentSlot.CHEST, EntityEquipmentSlot.FEET, EntityEquipmentSlot.HEAD, EntityEquipmentSlot.LEGS};
+	public static final EntityEquipmentSlot[] ARMOR_SLOTS = {
+			EntityEquipmentSlot.CHEST,
+			EntityEquipmentSlot.FEET,
+			EntityEquipmentSlot.HEAD,
+			EntityEquipmentSlot.LEGS};
 	public static final Iterable<EntityEquipmentSlot> ARMOR_SLOTS_ITERABLE = ImmutableList.copyOf(ARMOR_SLOTS);
 }

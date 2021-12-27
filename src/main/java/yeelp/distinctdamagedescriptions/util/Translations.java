@@ -56,7 +56,7 @@ public enum Translations {
 		protected String getKey(String key) {
 			return this.root.concat("." + ModConsts.MODID).concat("." + key);
 		}
-		
+
 		protected final String getRoot() {
 			return this.root;
 		}

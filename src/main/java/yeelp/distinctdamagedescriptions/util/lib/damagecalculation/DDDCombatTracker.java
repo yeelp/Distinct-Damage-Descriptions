@@ -63,7 +63,7 @@ public class DDDCombatTracker extends CombatTracker {
 	private static final IClassifier<DamageMap> DAMAGE_CLASSIFIER = new DamageClassifier();
 	private static final IClassifier<ArmorMap> ARMOR_CLASSIFIER = new ArmorClassifier();
 	private static final IClassifier<MobDefenses> DEFENSES_CLASSIFIER = new DefensesClassifier();
-	private static final EntityEquipmentSlot[] ARMOR_SLOTS = Arrays.stream(EntityEquipmentSlot.values()).filter((ees) -> ees.getSlotType() == EntityEquipmentSlot.Type.ARMOR).toArray(EntityEquipmentSlot[]::new); 
+	private static final EntityEquipmentSlot[] ARMOR_SLOTS = Arrays.stream(EntityEquipmentSlot.values()).filter((ees) -> ees.getSlotType() == EntityEquipmentSlot.Type.ARMOR).toArray(EntityEquipmentSlot[]::new);
 	public static final UUID ARMOR_CALC_UUID = UUID.fromString("72e5859a-02d8-4170-9632-f9786547d697");
 	public static final UUID TOUGHNESS_CALC_UUID = UUID.fromString("c19d6077-8772-460e-8250-d7780cbb85ca");
 
@@ -99,7 +99,7 @@ public class DDDCombatTracker extends CombatTracker {
 	public Optional<ArmorValues> getNewArmorValues() {
 		return Optional.ofNullable(this.armors);
 	}
-	
+
 	public Optional<ShieldDistribution> getCurrentlyUsedShieldDistribution() {
 		return Optional.ofNullable(this.usedShieldDist);
 	}
@@ -111,7 +111,9 @@ public class DDDCombatTracker extends CombatTracker {
 			ItemStack shield = this.ctx.getShield().get();
 			ShieldBlockEvent blockEvt = DDDHooks.fireShieldBlock(this.ctx.getImmediateAttacker(), this.ctx.getTrueAttacker(), this.getFighter(), this.ctx.getSource(), dmg, shield);
 			if(!blockEvt.isCanceled() && Sets.intersection(blockEvt.getShieldDistribution().getCategories(), dmg.keySet()).size() > 0) {
-				//Set the currently used shield distribution, but don't actually block damage. We can't do that in LivingAttackEvent, save it and do it first thing in LivingHurtEvent
+				// Set the currently used shield distribution, but don't actually block damage.
+				// We can't do that in LivingAttackEvent, save it and do it first thing in
+				// LivingHurtEvent
 				this.usedShieldDist = blockEvt.getShieldDistribution();
 				if(this.ctx.getImmediateAttacker() instanceof EntityLivingBase) {
 					EntityLivingBase attacker = (EntityLivingBase) this.ctx.getImmediateAttacker();
@@ -132,7 +134,7 @@ public class DDDCombatTracker extends CombatTracker {
 			});
 			this.type = m.keySet().stream().collect(Collectors.toList()).get(rand.nextInt(m.size()));
 			ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
-				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);				
+				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);
 			});
 		});
 	}
@@ -186,7 +188,7 @@ public class DDDCombatTracker extends CombatTracker {
 							}
 						default:
 							break;
-					}					
+					}
 				});
 			});
 			this.results.withAmount((float) YMath.sum(m.values()));
@@ -213,7 +215,7 @@ public class DDDCombatTracker extends CombatTracker {
 		}
 		return Optional.empty();
 	}
-	
+
 	private void updateContextAndDamage(DamageSource newSrc, float amount, @Nullable Entity attacker) {
 		if(this.ctx == null) {
 			this.ctx = new CombatContext(newSrc, amount, attacker, this.getFighter());
@@ -224,18 +226,18 @@ public class DDDCombatTracker extends CombatTracker {
 				float dmg = (float) YMath.sum(map.values());
 				if(Math.abs(amount - dmg) >= 0.01 && dmg != 0) {
 					float ratio = amount / dmg;
-					map.keySet().forEach((k) -> map.computeIfPresent(k, (key, val) -> val * ratio));					
+					map.keySet().forEach((k) -> map.computeIfPresent(k, (key, val) -> val * ratio));
 				}
 			});
 		}
 	}
-	
+
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onEntityJoinWorld(EntityJoinWorldEvent evt) {
 		if(evt.getEntity() instanceof EntityLivingBase) {
 			EntityLivingBase entity = (EntityLivingBase) evt.getEntity();
 			if(!(entity._combatTracker instanceof DDDCombatTracker)) {
-				entity._combatTracker = new DDDCombatTracker(entity);				
+				entity._combatTracker = new DDDCombatTracker(entity);
 			}
 		}
 	}
@@ -270,14 +272,15 @@ public class DDDCombatTracker extends CombatTracker {
 					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).removeModifier(ARMOR_CALC_UUID);
 					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).removeModifier(TOUGHNESS_CALC_UUID);
 					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).applyModifier(new AttributeModifier(ARMOR_CALC_UUID, "DDD Armor Calculations Modifier", vals.getArmor() - aVals.getArmor(), 0));
-					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).applyModifier(new AttributeModifier(TOUGHNESS_CALC_UUID, "DDD Toughness Calculations Modifier", vals.getToughness() - aVals.getToughness(), 0));					
+					tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).applyModifier(new AttributeModifier(TOUGHNESS_CALC_UUID, "DDD Toughness Calculations Modifier", vals.getToughness() - aVals.getToughness(), 0));
 				});
 			});
 		});
 		DeveloperModeKernel.onHurtCallback(evt);
 	}
-	
-	//We want to try to act first to remove the armor/toughness attribute modifiers that are no longer needed.
+
+	// We want to try to act first to remove the armor/toughness attribute modifiers
+	// that are no longer needed.
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static final void onEntityDamage(LivingDamageEvent evt) {
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> {
@@ -289,7 +292,7 @@ public class DDDCombatTracker extends CombatTracker {
 		});
 		DeveloperModeKernel.onDamageCallback(evt);
 	}
-	
+
 	@SubscribeEvent
 	public static final void onEntityKnockback(LivingKnockBackEvent evt) {
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).map(DDDCombatTracker::getRecentResults).map(Predicates.or(Predicates.and(CombatResults::wasImmunityTriggered, (results) -> results.getAmount().orElse(Double.NaN) == 0), CombatResults::wasShieldEffective)::test).ifPresent(evt::setCanceled);

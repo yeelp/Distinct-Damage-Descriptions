@@ -39,7 +39,7 @@ public final class SpartanThrownWeaponDistribution extends DamageDistribution {
 	public static void register() {
 		DDDCapabilityBase.register(SpartanThrownWeaponDistribution.class, NBTTagList.class, SpartanThrownWeaponDistribution::new);
 	}
-	
+
 	@CapabilityInject(SpartanThrownWeaponDistribution.class)
 	private static void onRegister(Capability<SpartanThrownWeaponDistribution> cap) {
 		DDDAPI.mutator.registerProjectileCap(IDamageDistribution.class, cap);

@@ -21,7 +21,7 @@ public final class DDDProjectileConfigReader extends DDDBasicConfigReader<IDamag
 	protected IDamageDistribution parseMapping(final String entry, final String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
 		Stream<String> projectiles = Stream.empty();
 		if(additionalInfo.length == 1) {
-			projectiles = Arrays.stream(additionalInfo[0].split(",")).map(String::trim);			
+			projectiles = Arrays.stream(additionalInfo[0].split(",")).map(String::trim);
 		}
 		else if(additionalInfo.length > 1) {
 			throw new ConfigInvalidException(entry);

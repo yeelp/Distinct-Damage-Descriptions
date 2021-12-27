@@ -87,7 +87,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 			ERRORS.forEach(DDDConfigReaderException::log);
 		}
 	}
-	
+
 	public static final Collection<String> getErrorMessages() {
 		return ERRORS.stream().map(DDDConfigReaderException::getLocalizedMessage).collect(Collectors.toList());
 	}

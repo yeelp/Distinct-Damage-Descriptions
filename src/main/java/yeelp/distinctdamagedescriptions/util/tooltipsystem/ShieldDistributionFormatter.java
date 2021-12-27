@@ -10,19 +10,22 @@ import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 
 /**
  * The singleton instance for formatting {@link ShieldDistribution} instances
+ * 
  * @author Yeelp
  *
  */
 public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormatter<ShieldDistribution, ItemStack> {
-	
+
 	private static ShieldDistributionFormatter instance;
-	
+
 	protected ShieldDistributionFormatter() {
 		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, "shielddist");
 	}
-	
+
 	/**
-	 * Return the singleton formatter instance if it exists, creating a new instance if it doesn't.
+	 * Return the singleton formatter instance if it exists, creating a new instance
+	 * if it doesn't.
+	 * 
 	 * @return The singleton instance, or a new instance if it doesn't exist yet.
 	 */
 	public static ShieldDistributionFormatter getInstance() {

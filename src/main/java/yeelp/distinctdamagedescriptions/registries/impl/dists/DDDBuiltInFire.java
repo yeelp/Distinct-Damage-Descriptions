@@ -29,6 +29,6 @@ public final class DDDBuiltInFire extends AbstractSingleTypeDist {
 
 	@Override
 	public int priority() {
-		return -1; //want this last as a default "catch all" case for fire damage.
+		return -1; // want this last as a default "catch all" case for fire damage.
 	}
 }

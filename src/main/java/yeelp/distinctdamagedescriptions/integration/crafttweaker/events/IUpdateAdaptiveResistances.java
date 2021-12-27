@@ -72,6 +72,7 @@ public interface IUpdateAdaptiveResistances extends IDDDCalculationEvent {
 
 	/**
 	 * Set this event's result
+	 * 
 	 * @param result the result.
 	 */
 	void setResult(Result result);

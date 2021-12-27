@@ -42,7 +42,7 @@ public class BattleSignCounterAttackDistribution implements DDDPredefinedDistrib
 		}
 		return Optional.empty();
 	}
-	
+
 	private static boolean check(DamageSource src) {
 		if(src.getTrueSource() instanceof EntityLivingBase && src instanceof EntityDamageSource) {
 			EntityLivingBase entity = (EntityLivingBase) src.getTrueSource();
@@ -51,9 +51,9 @@ public class BattleSignCounterAttackDistribution implements DDDPredefinedDistrib
 		}
 		return false;
 	}
-	
+
 	private static IDamageDistribution getDist(EntityPlayer player) {
-		//safe because the tracker guarantees a battlesign is being held
+		// safe because the tracker guarantees a battlesign is being held
 		return DDDAPI.accessor.getDamageDistribution(player.getActiveItemStack()).get();
 	}
 

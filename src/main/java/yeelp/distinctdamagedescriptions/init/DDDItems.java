@@ -8,11 +8,12 @@ import yeelp.distinctdamagedescriptions.items.DDDDiscItem;
 public class DDDItems {
 
 	public static DDDDiscItem disc;
+
 	public static void init() {
 		disc = new DDDDiscItem();
 		ForgeRegistries.ITEMS.register(disc);
 	}
-	
+
 	public static void initRenders() {
 		ModelLoader.setCustomModelResourceLocation(disc, 0, new ModelResourceLocation(disc.getRegistryName(), "inventory"));
 	}

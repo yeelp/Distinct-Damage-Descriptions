@@ -9,19 +9,21 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.ProjectileDistributio
 
 /**
  * An icon aggregator for projectile damage
+ * 
  * @author Yeelp
  *
  */
 public class ProjectileDamageDistributionIconAggregator extends DistributionIconAggregator<IDamageDistribution> {
 
 	private static ProjectileDamageDistributionIconAggregator instance;
-	
+
 	private ProjectileDamageDistributionIconAggregator() {
 		super(ProjectileDistributionFormatter.getInstance(), (s) -> Optional.ofNullable(DDDConfigurations.projectiles.getFromItemID(YResources.getRegistryString(s))));
 	}
-	
+
 	/**
 	 * Get the singleton instance
+	 * 
 	 * @return the singleton instance
 	 */
 	public static ProjectileDamageDistributionIconAggregator getInstance() {

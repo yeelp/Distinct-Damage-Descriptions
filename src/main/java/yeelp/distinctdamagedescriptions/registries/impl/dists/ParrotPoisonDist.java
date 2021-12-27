@@ -20,8 +20,9 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
 public class ParrotPoisonDist extends AbstractSingleTypeDist {
-	
+
 	private static final HashSet<UUID> poisoned = new HashSet<UUID>();
+
 	public ParrotPoisonDist() {
 		super(() -> ModConfig.dmg.extraDamage.enableParrotPoisonDamage);
 	}

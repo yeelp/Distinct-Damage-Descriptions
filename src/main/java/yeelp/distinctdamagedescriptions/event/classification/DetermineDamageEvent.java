@@ -31,6 +31,7 @@ public final class DetermineDamageEvent extends DDDClassificationEvent {
 
 	/**
 	 * Get the damage inflicted of a certain type
+	 * 
 	 * @param type
 	 * @return The damage inflicted of that type.
 	 */
@@ -40,6 +41,7 @@ public final class DetermineDamageEvent extends DDDClassificationEvent {
 
 	/**
 	 * Set the damage to inflict of a certain type.
+	 * 
 	 * @param type
 	 * @param amount The amount of damage to inflict. Must be non-negative.
 	 * @throws IllegalArgumentException If {@code amount < 0}.

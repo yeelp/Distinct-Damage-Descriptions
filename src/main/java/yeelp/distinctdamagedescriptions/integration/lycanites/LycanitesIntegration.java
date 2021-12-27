@@ -40,7 +40,10 @@ public class LycanitesIntegration implements IModIntegration {
 		DDDCapabilityDistributors.addProjCap(LycanitesProjectileDistributionDistributor.getInstance());
 		LycanitesEquipmentDistribution.register();
 		LycanitesProjectileDistribution.register();
-		//The cast here helps prevent a BootstrapMethodError since by default, the generic Iterators.forArray gives an Iterator<AbstractCapabilityTooltipFormatter> which is incompatible with TooltipDistributor::registerModCompat
+		// The cast here helps prevent a BootstrapMethodError since by default, the
+		// generic Iterators.forArray gives an
+		// Iterator<AbstractCapabilityTooltipFormatter> which is incompatible with
+		// TooltipDistributor::registerModCompat
 		Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);
 		DDDRegistries.distributions.registerAll(new SmitedDistribution(), new LycanitesMinionDistribution(), LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE);
 		return IModIntegration.super.init(evt);

@@ -31,7 +31,7 @@ public final class CTEventHandler extends Handler implements IModIntegration {
 	public void onShieldBlock(ShieldBlockEvent evt) {
 		CTDDDEventManager.SHIELD_BLOCK.publish(new CTShieldBlockEvent(evt));
 	}
-	
+
 	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onUpdateAdpativeResistances(UpdateAdaptiveResistanceEvent evt) {

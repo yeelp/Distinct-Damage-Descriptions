@@ -70,9 +70,10 @@ public interface IDDDRegistry<T> extends Iterable<T> {
 	 */
 	@Nullable
 	T get(String key);
-	
+
 	/**
 	 * Get all registered values
+	 * 
 	 * @return all registered values
 	 */
 	Collection<T> getAll();

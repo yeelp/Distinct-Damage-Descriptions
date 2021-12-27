@@ -14,10 +14,10 @@ import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ArmorDistribution extends Distribution implements IArmorDistribution {
-	
+
 	@CapabilityInject(IArmorDistribution.class)
 	public static Capability<IArmorDistribution> cap;
-	
+
 	public ArmorDistribution() {
 		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f));
 	}

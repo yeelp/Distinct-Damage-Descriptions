@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import net.minecraft.nbt.NBTBase;
@@ -13,7 +14,7 @@ import net.minecraft.nbt.NBTTagString;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 
 /**
  * Base capability for damage resistance capabilities
@@ -22,11 +23,11 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
  *
  */
 public abstract class DamageResistances implements IDamageResistances {
-	private Map<DDDDamageType, Float> resistances;
+	private DDDBaseMap<Float> resistances;
 	private Set<DDDDamageType> immunities;
 
 	DamageResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities) {
-		this.resistances = resistances;
+		this.resistances = resistances.keySet().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, resistances::get));
 		this.immunities = new HashSet<DDDDamageType>(immunities);
 	}
 
@@ -81,22 +82,26 @@ public abstract class DamageResistances implements IDamageResistances {
 
 	@Override
 	public void deserializeNBT(NBTTagCompound tag) {
-		this.resistances = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
+		this.resistances = new DDDBaseMap<Float>(() -> 0.0f);
 		this.immunities = new HashSet<DDDDamageType>();
 		for(NBTBase nbt : tag.getTagList("resistances", new NBTTagCompound().getId())) {
 			NBTTagCompound resist = (NBTTagCompound) nbt;
-			this.resistances.put(DDDRegistries.damageTypes.get(resist.getString("type")), resist.getFloat("amount"));
+			this.resistances.put(validateNonNull(DDDRegistries.damageTypes.get(resist.getString("type"))), resist.getFloat("amount"));
 		}
 		for(NBTBase nbt : tag.getTagList("immunities", new NBTTagString().getId())) {
-			this.immunities.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
+			this.immunities.add(validateNonNull(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString())));
 		}
 	}
-	
+
 	protected Set<DDDDamageType> copyImmunities() {
 		return new HashSet<DDDDamageType>(this.immunities);
 	}
+
+	protected DDDBaseMap<Float> copyMap() {
+		return this.resistances.keySet().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, this.resistances::get));
+	}
 	
-	protected Map<DDDDamageType, Float> copyMap() {
-		return this.resistances.entrySet().stream().collect(() -> new NonNullMap<DDDDamageType, Float>(() -> 0.0f), (m, e) -> m.put(e.getKey(), e.getValue()), NonNullMap<DDDDamageType, Float>::putAll);
+	private static <T> T validateNonNull(T t) {
+		return Objects.requireNonNull(t, t + " isn't a valid registered damage type!");
 	}
 }

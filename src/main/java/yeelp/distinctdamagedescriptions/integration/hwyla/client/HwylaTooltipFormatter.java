@@ -11,13 +11,15 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 
 /**
  * The singleton formatter for Hwyla tooltip formatting.
+ * 
  * @author Yeelp
  * @param <C> The kind of content shown
  *
  */
 public abstract class HwylaTooltipFormatter<C> extends AbstractCapabilityTooltipFormatter<C, EntityLivingBase> {
-	
+
 	private final KeyTooltip key;
+
 	protected HwylaTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<EntityLivingBase, Optional<C>> capExtractor, String typeTextKey) {
 		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
 		this.key = keyTooltip;
@@ -37,6 +39,5 @@ public abstract class HwylaTooltipFormatter<C> extends AbstractCapabilityTooltip
 	public String getKeyText() {
 		return this.key.getKeyText();
 	}
-	
-	
+
 }

@@ -12,22 +12,24 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipFormatterUtili
 
 /**
  * An icon aggregator for mob damage distributions
+ * 
  * @author Yeelp
  *
  */
 public class MobDamageDistributionIconAggregator extends DistributionIconAggregator<IDamageDistribution> {
 	private static MobDamageDistributionIconAggregator instance;
-	
+
 	private MobDamageDistributionIconAggregator() {
 		this(MobDamageDistributionFormatter.getInstance(), TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
 	}
-	
+
 	protected MobDamageDistributionIconAggregator(AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> formatter, Function<ItemStack, Optional<ResourceLocation>> f) {
 		super(formatter, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobDamageIfConfigured));
 	}
-	
+
 	/**
 	 * Get the singleton instance
+	 * 
 	 * @return the singletons instance
 	 */
 	public static MobDamageDistributionIconAggregator getInstance() {

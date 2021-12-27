@@ -5,7 +5,9 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
 /**
- * DDD events for damage calculations. Includes a method to get damage inflicted of a certain type.
+ * DDD events for damage calculations. Includes a method to get damage inflicted
+ * of a certain type.
+ * 
  * @author Yeelp
  *
  */
@@ -15,6 +17,7 @@ public interface IDDDCalculationEvent extends IDDDEvent {
 
 	/**
 	 * Get damage inflicted of a certain type
+	 * 
 	 * @param type type name. Requires ddd_ prefix
 	 * @return the damage inflicted of that type.
 	 */

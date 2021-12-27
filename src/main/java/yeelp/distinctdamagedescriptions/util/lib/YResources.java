@@ -47,7 +47,7 @@ public final class YResources {
 	public static Optional<String> getEntityIDString(@Nullable Entity entity) {
 		return getEntityID(entity).map(Functions.toStringFunction());
 	}
-	
+
 	public static String[] getOreDictEntries(ItemStack stack) {
 		return Arrays.stream(OreDictionary.getOreIDs(stack)).mapToObj(OreDictionary::getOreName).toArray(String[]::new);
 	}

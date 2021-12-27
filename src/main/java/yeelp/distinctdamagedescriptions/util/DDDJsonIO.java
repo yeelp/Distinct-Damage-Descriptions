@@ -75,7 +75,7 @@ public final class DDDJsonIO {
 					File source = new File(DistinctDamageDescriptions.srcFile, relativePath);
 					return FileHelper.copyFile(source, dest, shouldOverwrite);
 				}
-				try (InputStream stream = DDDJsonIO.class.getClassLoader().getResourceAsStream(relativePath)) {
+				try(InputStream stream = DDDJsonIO.class.getClassLoader().getResourceAsStream(relativePath)) {
 					result = FileHelper.copyFile(stream, dest, shouldOverwrite);
 				}
 				return result;
@@ -119,7 +119,7 @@ public final class DDDJsonIO {
 				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json")) {
 					continue;
 				}
-				try (JsonReader reader = new JsonReader(new FileReader(f))){
+				try(JsonReader reader = new JsonReader(new FileReader(f))) {
 					reader.setLenient(true);
 					JsonElement elem = parser.parse(reader);
 					JsonObject obj = elem.getAsJsonObject();
@@ -175,7 +175,7 @@ public final class DDDJsonIO {
 				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json")) {
 					continue;
 				}
-				try (JsonReader reader = new JsonReader(new FileReader(f))){
+				try(JsonReader reader = new JsonReader(new FileReader(f))) {
 					reader.setLenient(true);
 					JsonElement elem = parser.parse(reader);
 					JsonObject obj = elem.getAsJsonObject();

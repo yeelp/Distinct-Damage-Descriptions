@@ -33,7 +33,8 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 
 	private static HwylaMobResistanceFormatter instance;
 
-	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE), AQUA = new Style().setColor(TextFormatting.AQUA),
+	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE),
+			AQUA = new Style().setColor(TextFormatting.AQUA),
 			LIGHT_PURPLE = new Style().setColor(TextFormatting.LIGHT_PURPLE);
 
 	private final ITextComponent noResists = AbstractCapabilityTooltipFormatter.getComponentWithStyle("noresists", WHITE),
@@ -70,7 +71,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			if(stack.getItem() instanceof ItemArmor) {
 				ItemArmor armor = (ItemArmor) stack.getItem();
 				DDDAPI.accessor.getArmorResistances(stack).ifPresent((armorDist) -> {
-					armorDist.distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));					
+					armorDist.distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
 				});
 			}
 		});
@@ -82,9 +83,9 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			}
 			String s = TooltipTypeFormatter.MOB_RESISTS.format(type, rMap.get(type), this);
 			if(aMap.containsKey(type)) {
-				result.add(s.concat(Translations.INSTANCE.getTranslator("tooltips").translate("hwyla.witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormatter().format(1-(1-rMap.get(type))*(1 - aMap.get(type).getArmor()/100.0f))))));
+				result.add(s.concat(Translations.INSTANCE.getTranslator("tooltips").translate("hwyla.witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormatter().format(1 - (1 - rMap.get(type)) * (1 - aMap.get(type).getArmor() / 100.0f))))));
 			}
-			else if (rMap.get(type) != 0) {
+			else if(rMap.get(type) != 0) {
 				result.add(s);
 			}
 		}
@@ -96,9 +97,9 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			result.add(String.format("   %s %s", this.adaptabilityAmountPrefix.getFormattedText(), this.getNumberFormatter().format(cap.getAdaptiveAmount())));
 		}
 		return Optional.of(result);
-		
+
 	}
-	
+
 	private Optional<String> makeImmunityString(Set<DDDDamageType> immunities) {
 		if(immunities.isEmpty()) {
 			return Optional.empty();

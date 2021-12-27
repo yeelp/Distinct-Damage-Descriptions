@@ -12,7 +12,7 @@ import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.Tinke
 public final class TinkerToolCapabilityDistributor extends AbstractCapabilityDistributor<ItemStack, IDamageDistribution, IDamageDistribution> {
 
 	private static TinkerToolCapabilityDistributor instance;
-	
+
 	protected TinkerToolCapabilityDistributor() {
 		super(DamageDistributionCapabilityDistributor.ForItem.getInstance());
 	}
@@ -31,7 +31,7 @@ public final class TinkerToolCapabilityDistributor extends AbstractCapabilityDis
 	protected IDDDConfiguration<IDamageDistribution> getConfig() {
 		return DDDConfigurations.items;
 	}
-	
+
 	public static TinkerToolCapabilityDistributor getInstance() {
 		return instance == null ? instance = new TinkerToolCapabilityDistributor() : instance;
 	}

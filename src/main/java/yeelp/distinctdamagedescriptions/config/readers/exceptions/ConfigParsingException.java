@@ -10,7 +10,7 @@ public final class ConfigParsingException extends DDDConfigReaderException {
 	public ConfigParsingException(String entry) {
 		this(entry, LogLevel.FATAL);
 	}
-	
+
 	public ConfigParsingException(String entry, LogLevel level) {
 		super(String.format("%s refers to an invalid damage type that doesn't exist! Check spelling!", entry), level);
 	}

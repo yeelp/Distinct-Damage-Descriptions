@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 /**
  * A skeletal icon aggregator for capabilities
+ * 
  * @author Yeelp
  *
  */
@@ -13,7 +14,7 @@ public abstract class AbstractCapabilityIconAggregator extends AbstractIconAggre
 
 	private final String regex;
 	private final Supplier<Boolean> shouldShow;
-	
+
 	protected AbstractCapabilityIconAggregator(String regex, Supplier<Boolean> shouldShow) {
 		this.regex = regex;
 		this.shouldShow = shouldShow;
@@ -36,7 +37,7 @@ public abstract class AbstractCapabilityIconAggregator extends AbstractIconAggre
 		}
 		return initialY + AbstractIconAggregator.ICON_HEIGHT + 1;
 	}
-	
+
 	@Override
 	public boolean shouldShowIcons() {
 		return this.shouldShow.get();

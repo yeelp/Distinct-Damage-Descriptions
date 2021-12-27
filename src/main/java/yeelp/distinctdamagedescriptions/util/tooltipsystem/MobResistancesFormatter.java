@@ -20,6 +20,7 @@ import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 
 /**
  * The singleton instance for formatting mob resistances
+ * 
  * @author yeelp
  *
  */
@@ -30,22 +31,24 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE);
 
 	private final ITextComponent notGenerated = super.getComponentWithStyle("notgenerated", new Style().setColor(TextFormatting.GOLD).setBold(true)),
-								 noResists = super.getComponentWithStyle("noresists", WHITE);
-	
+			noResists = super.getComponentWithStyle("noresists", WHITE);
+
 	private MobResistancesFormatter() {
 		this(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED);
 	}
-	
+
 	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<ResourceLocation>> f) {
 		super(keyTooltip, numberFormatter, damageFormatter, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobResistancesIfConfigured), "mobresistances");
 	}
-	
+
 	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter) {
 		this(keyTooltip, numberFormatter, damageFormatter, TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
 	}
 
 	/**
-	 * Get the singleton instance of this formatter if it exists, or create a new one if it doesn't
+	 * Get the singleton instance of this formatter if it exists, or create a new
+	 * one if it doesn't
+	 * 
 	 * @return The singleton instance if it exists, or a new instance if it doesn't.
 	 */
 	public static MobResistancesFormatter getInstance() {
@@ -70,8 +73,8 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 		if(cap == MobResistanceCategories.EMPTY && ModConfig.core.generateStats) {
 			return Optional.of(ImmutableList.of(this.notGenerated.getFormattedText()));
 		}
-		else if (cap != null) {
-			List<String> lst = cap.getResistanceMap().entrySet().stream().sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.MOB_RESISTS.format(e.getKey(), e.getValue(), this)), LinkedList<String>::addAll);
+		else if(cap != null) {
+			List<String> lst = cap.getResistanceMap().entrySet().stream().filter((e) -> e.getValue() != 0).sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.MOB_RESISTS.format(e.getKey(), e.getValue(), this)), LinkedList<String>::addAll);
 			if(lst.isEmpty()) {
 				lst.add(this.noResists.getFormattedText());
 			}
@@ -86,5 +89,5 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 	public TooltipOrder getType() {
 		return TooltipOrder.MOB_RESISTANCES;
 	}
-	
+
 }

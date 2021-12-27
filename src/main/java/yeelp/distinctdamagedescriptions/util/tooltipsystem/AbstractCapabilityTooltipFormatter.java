@@ -15,6 +15,7 @@ import yeelp.distinctdamagedescriptions.util.Translations.Translator;
 
 /**
  * An abstract capability content formatter for DDD tooltips.
+ * 
  * @author Yeelp
  *
  * @param <T> The type of capability this formatter formats.
@@ -31,15 +32,17 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 		this.capExtractor = capExtractor;
 		this.typeText = TRANSLATOR.getComponent(typeTextKey, GRAY_COLOUR);
 	}
-	
+
 	/**
 	 * Format a capability for placement in an ItemStack's tooltip
+	 * 
 	 * @param stack the stack whose tooltip will gain the content
-	 * @param cap the capability instance
-	 * @return an Optional containing a List of Strings if any are to be added, or an empty Optional if no Strings are to be added.
+	 * @param cap   the capability instance
+	 * @return an Optional containing a List of Strings if any are to be added, or
+	 *         an empty Optional if no Strings are to be added.
 	 */
 	protected abstract Optional<List<String>> formatCapabilityFor(@Nonnull T t, @Nonnull C cap);
-	
+
 	@Override
 	public List<String> format(T t) {
 		List<String> result = new LinkedList<String>();
@@ -57,15 +60,15 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 		}
 		return result;
 	}
-	
+
 	public ITextComponent getTypeText() {
 		return this.typeText;
 	}
-	
+
 	protected static ITextComponent getComponentWithGrayColour(String key) {
 		return getComponentWithStyle(key, GRAY_COLOUR);
 	}
-	
+
 	protected static ITextComponent getComponentWithStyle(String key, Style style) {
 		return TRANSLATOR.getComponent(key, style);
 	}

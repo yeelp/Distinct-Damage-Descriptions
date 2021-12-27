@@ -8,7 +8,7 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingE
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
 public class DDDBasicConfigReader<T> extends DDDMapParsingConfigReader<T> {
-	
+
 	protected final float defaultVal;
 
 	public <U extends T> DDDBasicConfigReader(String name, String[] configList, IDDDConfiguration<T> config, Constructor<U> constructor, float defaultVal) {

@@ -72,7 +72,9 @@ public class ContentToolDistribution extends ContentTool {
 					TextData data = new TextData(TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.start").getFormattedText());
 					data.underlined = true;
 					list.set(i, new ElementText(text.x, text.y, text.width, text.height, data));
-					//Arrays.stream(((ElementText) list.get(++i)).text).filter(Predicates.and((td) -> td != TextData.LINEBREAK, (td) -> !td.text.equals("\u25CF "))).forEach((td) -> td.bold = true);
+					// Arrays.stream(((ElementText) list.get(++i)).text).filter(Predicates.and((td)
+					// -> td != TextData.LINEBREAK, (td) -> !td.text.equals("\u25CF
+					// "))).forEach((td) -> td.bold = true);
 					break;
 				}
 			}

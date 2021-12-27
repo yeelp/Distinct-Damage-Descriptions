@@ -55,7 +55,7 @@ public abstract class Distribution implements IDistribution {
 
 	@Override
 	public void deserializeNBT(NBTTagList lst) {
-		this.distMap = DDDBaseMap.fromNBT(lst, 0.0f);
+		this.distMap = DDDBaseMap.fromNBT(lst, () -> 0.0f);
 	}
 
 	@Override
@@ -103,9 +103,9 @@ public abstract class Distribution implements IDistribution {
 	}
 
 	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
-		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(() -> defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap<Float>::putAll);
+		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(() -> defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap::putAll);
 	}
-	
+
 	protected static final <Dist extends Distribution & IDistribution> DDDBaseMap<Float> copyMap(Dist dist) {
 		return dist.copyMap(dist.distMap.getDefaultValue());
 	}

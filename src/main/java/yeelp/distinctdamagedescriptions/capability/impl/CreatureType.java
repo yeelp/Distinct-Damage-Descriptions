@@ -17,10 +17,10 @@ import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 
 public class CreatureType implements ICreatureType {
-	
+
 	@CapabilityInject(ICreatureType.class)
 	public static Capability<ICreatureType> cap;
-	
+
 	public static final CreatureType UNKNOWN = new CreatureType(CreatureTypeData.UNKNOWN);
 	private Set<String> types;
 	private Set<String> potionImmunities;

@@ -27,7 +27,7 @@ import yeelp.distinctdamagedescriptions.util.DistributionBias;
  */
 @DDDLoader(modid = ModConsts.TCONSTRUCT_ID, name = "TiC Configurations", requiredLoaders = "DDD Registries")
 public abstract class TiCConfigurations {
-	
+
 	/**
 	 * Configuration for weapon material biases for mod integration.
 	 */

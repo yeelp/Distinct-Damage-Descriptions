@@ -20,9 +20,9 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 public class DDDImmunityTrait extends AbstractArmorTrait {
 
 	private final DDDDamageType type;
-	
+
 	public DDDImmunityTrait(DDDDamageType type) {
-		super(type.getTypeName()+"_immunity", type.getColour());
+		super(type.getTypeName() + "_immunity", type.getColour());
 		this.type = type;
 	}
 
@@ -34,7 +34,7 @@ public class DDDImmunityTrait extends AbstractArmorTrait {
 	}
 
 	public static final class DamageHandler extends Handler {
-		
+
 		@SuppressWarnings("static-method")
 		@SubscribeEvent(priority = EventPriority.HIGHEST)
 		public final void onGatherImmunities(GatherDefensesEvent evt) {

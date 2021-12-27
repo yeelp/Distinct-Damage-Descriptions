@@ -23,13 +23,14 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * {@link IDamageDistribution}
 	 * 
 	 * @param stack
-	 * @return the IDamageDistribution capability for this ItemStack, empty Optional for an
-	 *         empty stack.
+	 * @return the IDamageDistribution capability for this ItemStack, empty Optional
+	 *         for an empty stack.
 	 */
 	Optional<IDamageDistribution> getDamageDistribution(@Nullable ItemStack stack);
-	
+
 	/**
 	 * Get the damage distribution of an item, if it is known to exist
+	 * 
 	 * @param stack item stack. Can't be null
 	 * @return The damage distribution of the stack
 	 */
@@ -45,9 +46,10 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @return the IDamageDistribution capability for this EntityLivingBase.
 	 */
 	Optional<IDamageDistribution> getDamageDistribution(@Nullable EntityLivingBase entity);
-	
+
 	/**
 	 * Get the damage distribution of an entity if it is known to exist
+	 * 
 	 * @param entity target entity. Can't be null
 	 * @return the damage distribution of the entity.
 	 */
@@ -63,9 +65,10 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @return the IDamageDistribution capability for this IProjectile.
 	 */
 	Optional<IDamageDistribution> getDamageDistribution(@Nullable IProjectile projectile);
-	
+
 	/**
 	 * Get the damage distribution for a projectile if it is known to exist
+	 * 
 	 * @param projectile projectile. Can't be null
 	 * @return the damage distribution of the projectile.
 	 */
@@ -78,8 +81,8 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * {@link IArmorDistribution}
 	 * 
 	 * @param stack
-	 * @return the IArmorResistances capability for this ItemStack, or an empty Optional if it
-	 *         doesn't have it.
+	 * @return the IArmorResistances capability for this ItemStack, or an empty
+	 *         Optional if it doesn't have it.
 	 */
 	Optional<IArmorDistribution> getArmorResistances(@Nullable ItemStack stack);
 
@@ -110,9 +113,11 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 *         capability.
 	 */
 	Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack);
-	
+
 	/**
-	 * Get this entity's DDDCombatTracker, if present. If not present, then this entity hasn't finised construction yet, or replaced their combat tracker
+	 * Get this entity's DDDCombatTracker, if present. If not present, then this
+	 * entity hasn't finised construction yet, or replaced their combat tracker
+	 * 
 	 * @param entity
 	 * @return The entity's DDDCombatTracker, if they have it.
 	 */

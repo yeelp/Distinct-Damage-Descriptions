@@ -21,7 +21,7 @@ public final class GeneralCategory {
 	@Name("Generate JSON")
 	@Comment("If set, DistinctDamageDescriptions will generate example JSON files on startup for custom damage types and creature types.")
 	public boolean generateJSON = true;
-	
+
 	@Name("Use Custom Damage Types")
 	@Comment("If true, Distinct Damage Descriptions will load and enable custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
 	@RequiresMcRestart
@@ -31,7 +31,7 @@ public final class GeneralCategory {
 	@Comment("Should Distinct Damage Descriptions use it's custom death messages for damage types?")
 	@RequiresWorldRestart
 	public boolean useCustomDeathMessages = false;
-	
+
 	@Name("Use Creature Types")
 	@Comment({
 			"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
@@ -48,7 +48,7 @@ public final class GeneralCategory {
 			"   avg is the average of all of the mobs weakness values that were hit (which is negative)",
 			"This triggers only when a mob's adaptability is triggered."})
 	public boolean enableAdaptiveWeakness = false;
-	
+
 	@Name("Register Potions")
 	@Comment("If true, DDD will register and add potions and potion effects that grant resistance buffs/debuffs")
 	@RequiresMcRestart

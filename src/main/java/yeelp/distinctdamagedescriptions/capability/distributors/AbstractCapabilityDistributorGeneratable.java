@@ -18,15 +18,15 @@ public abstract class AbstractCapabilityDistributorGeneratable<T, U, C extends D
 		if(config.configured(key)) {
 			return this.createCapability(config.get(key));
 		}
-		else if (ModConfig.core.generateStats) {
+		else if(ModConfig.core.generateStats) {
 			return this.generateCapability(t, new ResourceLocation(key));
 		}
 		else {
 			return this.createCapability(config.getDefaultValue());
 		}
 	}
-	
+
 	protected abstract C generateCapability(T t, ResourceLocation key);
-	
+
 	protected abstract C createCapability(U configResult);
 }

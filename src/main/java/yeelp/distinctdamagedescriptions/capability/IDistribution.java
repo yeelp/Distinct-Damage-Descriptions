@@ -40,15 +40,17 @@ public abstract interface IDistribution extends DDDCapabilityBase<NBTTagList> {
 	 * @return
 	 */
 	Set<DDDDamageType> getCategories();
-	
+
 	/**
 	 * Copy this instance
+	 * 
 	 * @return a copy
 	 */
 	IDistribution copy();
-	
+
 	/**
 	 * Update this distribution with respect to it's ItemStack owner.
+	 * 
 	 * @param owner
 	 * @return The mutated distribution, updated.
 	 */

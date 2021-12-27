@@ -43,7 +43,7 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 	public T get(String key) {
 		return this.map.get(key);
 	}
-	
+
 	@Override
 	public Collection<T> getAll() {
 		return this.map.values();

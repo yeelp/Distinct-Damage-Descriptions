@@ -52,7 +52,7 @@ public final class DamageCategory {
 			"Malformed entries in this list will be ignored."})
 	@RequiresMcRestart
 	public String[] projectileDamageTypes = DefaultValues.PROJECTILE_BASE_DAMAGE;
-	
+
 	@Name("Extra Damage Classification")
 	@Comment("Enable/disable damage distributions for certain vanilla damage sources.")
 	public ExtraDamageDistsCategory extraDamage = new ExtraDamageDistsCategory();
