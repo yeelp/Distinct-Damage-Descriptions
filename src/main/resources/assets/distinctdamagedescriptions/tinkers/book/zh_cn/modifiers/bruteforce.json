@@ -1,0 +1,21 @@
+{ 
+    "modifier": "bruteforce",
+    "text": [ 
+        { 
+            "text": "烦人的怪物在抵抗你的攻击？简单的办法：打得更加用力！烟火之星能给你的武器带来充足的能量，使得出手时又快又狠！还是不够？继续加！只能用于近战武器。"
+        }
+    ],
+    "effects": [ 
+        "穿透 10% 的生物伤害抗性",
+        "添加更多烟火之星也只占据一个强化槽",
+        "等级越高穿透的抗性越高",
+        "与诡秘打击不兼容"
+    ],
+    "demoTool": [ 
+        "tconstruct:broadsword",
+        "tconstruct:rapier",
+        "tconstruct:longsword",
+        "tconstruct:cleaver",
+        "tconstruct:battlesign"
+    ]
+}

@@ -3,6 +3,16 @@ item.distinctdamagedescriptions.recorddistinction.name=Distinct Disc
 damagetypes.distinctdamagedescriptions.slashing=Slashing
 damagetypes.distinctdamagedescriptions.piercing=Piercing
 damagetypes.distinctdamagedescriptions.bludgeoning=Bludgeoning
+damagetypes.distinctdamagedescriptions.acid=Acid
+damagetypes.distinctdamagedescriptions.cold=Cold
+damagetypes.distinctdamagedescriptions.fire=Fire
+damagetypes.distinctdamagedescriptions.force=Force
+damagetypes.distinctdamagedescriptions.lightning=Lightning
+damagetypes.distinctdamagedescriptions.necrotic=Necrotic
+damagetypes.distinctdamagedescriptions.poison=Poison
+damagetypes.distinctdamagedescriptions.psychic=Psychic
+damagetypes.distinctdamagedescriptions.radiant=Radiant
+damagetypes.distinctdamagedescriptions.thunder=Thunder
 
 keys.distinctdamagedescriptions.shift=<SHIFT>
 keys.distinctdamagedescriptions.ctrl=<CTRL>

@@ -1,0 +1,28 @@
+{ 
+    "modifier": "slystrike",
+    "text": [ 
+        { 
+            "text": "一滴恶魂之泪，一个指南针和一枚末影之眼给你的武器赋予了精准视野，使其能看见敌人天然防御中的弱点。"
+        },
+        { 
+            "text": "\n"
+        },
+        { 
+            "text": "……让我们祈祷它不会看着你睡觉。只能用于近战武器。"
+        }
+    ],
+    "effects": [ 
+        "无视怪物免疫",
+        "与蛮力打击不兼容",
+        "只能强化一次",
+        "只能强化近战武器，不能强化工具",
+        "记得睁眼睡觉"
+    ],
+    "demoTool": [ 
+        "tconstruct:broadsword",
+        "tconstruct:rapier",
+        "tconstruct:longsword",
+        "tconstruct:cleaver",
+        "tconstruct:battlesign"
+    ]
+}
