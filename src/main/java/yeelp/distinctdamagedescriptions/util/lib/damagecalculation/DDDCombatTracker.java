@@ -236,8 +236,8 @@ public class DDDCombatTracker extends CombatTracker {
 	public static void onEntityJoinWorld(EntityJoinWorldEvent evt) {
 		if(evt.getEntity() instanceof EntityLivingBase) {
 			EntityLivingBase entity = (EntityLivingBase) evt.getEntity();
-			if(!(entity._combatTracker instanceof DDDCombatTracker)) {
-				entity._combatTracker = new DDDCombatTracker(entity);
+			if(!(entity.combatTracker instanceof DDDCombatTracker)) {
+				entity.combatTracker = new DDDCombatTracker(entity);
 			}
 		}
 	}

@@ -1,11 +1,13 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.Comparator;
-
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.YLib;
+
+import java.util.Comparator;
 
 /**
  * An abstract skeleton implementation of DDDDamageType
@@ -66,7 +68,10 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 
 	@Override
 	public final String getDisplayName() {
-		return this.displayName;
+		if(I18n.canTranslate("damagetypes.distinctdamagedescriptions." + this.displayName)){
+			return I18n.translateToLocal("damagetypes.distinctdamagedescriptions." + this.displayName);
+		}
+		return YLib.capitalize(this.displayName);
 	}
 
 	@Override
