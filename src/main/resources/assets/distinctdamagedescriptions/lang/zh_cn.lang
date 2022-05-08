@@ -39,17 +39,17 @@ tooltips.distinctdamagedescriptions.hwyla.witharmor=最高抗性：着甲后 %s
 tooltips.distinctdamagedescriptions.tic.distributionbias=分布偏移：
 tooltips.distinctdamagedescriptions.tic.influence=影响：
 
-enchantment.distinctdamagedescriptions.slystrike=诡秘打击
-enchantment.distinctdamagedescriptions.bruteforce=蛮力打击
+enchantment.distinctdamagedescriptions.slystrike=诡巧一击
+enchantment.distinctdamagedescriptions.bruteforce=凶蛮猛击
 
 enchantment.distinctdamagedescriptions.slystrike.desc=附有此魔咒的工具或武器可以无视伤害免疫！
 enchantment.distinctdamagedescriptions.bruteforce.desc=工具或武器每附有一级此魔咒可以多无视 10% 的伤害抗性！
 
-distinctdamagedescriptions.subtitle.resist_ding=攻击被抗性削弱
-distinctdamagedescriptions.subtitle.weakness_hit=攻击因易伤增强
-distinctdamagedescriptions.subtitle.immunity_hit=攻击因免疫无效
+distinctdamagedescriptions.subtitle.resist_ding=攻击：被抗性削弱
+distinctdamagedescriptions.subtitle.weakness_hit=攻击：因易伤增强
+distinctdamagedescriptions.subtitle.immunity_hit=攻击：因免疫无效
 distinctdamagedescriptions.subtitle.adaptability_change=适应力改变
-distinctdamagedescriptions.subtitle.high_resist_hit=攻击被抗性完全抵挡
+distinctdamagedescriptions.subtitle.high_resist_hit=攻击：被抗性完全抵挡
 
 distinctdamagedescriptions.general.damage.mobbasedmg=生物基础伤害
 distinctdamagedescriptions.general.damage.projectiledamagetypes=弹射物伤害类型
@@ -78,9 +78,9 @@ distinctdamagedescriptions.tinkers.book.materialInfluenceStart=材料分布偏�
 distinctdamagedescriptions.tinkers.book.materialInfluenceEntry=%s：%s
 distinctdamagedescriptions.tinkers.book.materialInfluenceBias=影响率：%s
 
-modifier.slystrike.name=诡秘打击
+modifier.slystrike.name=诡巧一击
 modifier.slystrike.desc=§o偷袭！§r\n你的攻击能无视伤害免疫！
-modifier.bruteforce.name=蛮力打击
+modifier.bruteforce.name=凶蛮猛击
 modifier.bruteforce.desc=§o速度与激情！§r\n你的攻击如此强大，可怜的怪物根本无法承受！
 modifier.bruteforce.extra=能穿透 %s%% 的抗性。
 
