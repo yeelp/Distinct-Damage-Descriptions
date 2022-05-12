@@ -122,8 +122,8 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * @return The entity's DDDCombatTracker, if they have it.
 	 */
 	default Optional<DDDCombatTracker> getDDDCombatTracker(EntityLivingBase entity) {
-		if(entity._combatTracker instanceof DDDCombatTracker) {
-			return Optional.of((DDDCombatTracker) entity._combatTracker);
+		if(entity.combatTracker instanceof DDDCombatTracker) {
+			return Optional.of((DDDCombatTracker) entity.combatTracker);
 		}
 		return Optional.empty();
 	}

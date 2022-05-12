@@ -78,6 +78,8 @@ public final class DDDFontRenderer extends FontRenderer {
 		}
 		else {
 			try {
+				internal.posX = this.posX;
+				internal.posY = this.posY;
 				return (Float) renderUnicodeChar.invoke(this.internal, ch, italic);
 				// return super.renderUnicodeChar(ch, italic);
 			}
@@ -120,7 +122,7 @@ public final class DDDFontRenderer extends FontRenderer {
 	 * new one is created. The passed {@code currentFontRender} is updated in the
 	 * instance to reflect the current FontRenderer that was supposed to be used.
 	 * 
-	 * @param currentFontRenderer. If null, DDD will fallback to Minecraft's font
+	 * @param currentFontRenderer . If null, DDD will fallback to Minecraft's font
 	 *                             renderer
 	 * @return The DDDFontRender instance which wraps the specified font renderer
 	 */

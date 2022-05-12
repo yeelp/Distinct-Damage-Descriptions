@@ -23,7 +23,7 @@ public class DDDPotionsRegistry extends DDDBaseRegistry<DDDPotion> implements ID
 	private static final Map<DDDPotion, Map<String, PotionType>> POTION_TYPES = Maps.newHashMap();
 
 	public DDDPotionsRegistry() {
-		super(Functions.compose(ResourceLocation::getResourcePath, DDDPotion::getRegistryName), "Potions");
+		super(Functions.compose(ResourceLocation::getPath, DDDPotion::getRegistryName), "Potions");
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class DDDDiscItem extends ItemRecord {
 	public DDDDiscItem() {
 		super("distinction", DDDSounds.DISTINCTION);
 		this.setRegistryName(ModConsts.MODID, "recorddistinction");
-		this.setUnlocalizedName(ModConsts.MODID + ".recorddistinction");
+		this.setTranslationKey(ModConsts.MODID + ".recorddistinction");
 	}
 
 	@Override

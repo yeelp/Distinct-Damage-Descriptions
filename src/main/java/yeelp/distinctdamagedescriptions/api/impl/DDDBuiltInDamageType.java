@@ -52,7 +52,7 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 
 	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		super(name, isPhysical, deathAttackerMessage, deathMessage, colour);
-		this.displayName = YLib.capitalize(this.getTypeName().substring("ddd_".length()));
+		this.displayName = this.getTypeName().substring("ddd_".length());
 	}
 
 	@Override
