@@ -33,7 +33,7 @@ import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)
 public class DistinctDamageDescriptions {
-	private static Logger logger;
+	public static Logger logger;
 	private static File configDirectory;
 	private static Configuration config;
 

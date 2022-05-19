@@ -18,6 +18,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import slimeknights.tconstruct.library.entity.EntityProjectileBase;
 import slimeknights.tconstruct.library.materials.MaterialTypes;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -55,7 +56,10 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	@Override
 	public IDamageDistribution update(IProjectile owner) {
 		if(owner instanceof EntityProjectileBase) {
-			DDDAPI.accessor.getDamageDistribution(((EntityProjectileBase) owner).tinkerProjectile.getItemStack()).ifPresent((dist) -> this.setNewWeights(dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, dist::getWeight))));
+			EntityProjectileBase epb = ((EntityProjectileBase) owner);
+			if(epb.tinkerProjectile != null) {
+				DDDAPI.accessor.getDamageDistribution(epb.tinkerProjectile.getItemStack()).ifPresent((dist) -> this.setNewWeights(dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, dist::getWeight))));
+			}
 		}
 		return super.update(owner);
 	}
