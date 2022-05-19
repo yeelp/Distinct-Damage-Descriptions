@@ -126,8 +126,9 @@ public class DDDCombatTracker extends CombatTracker {
 				this.results.hasEffectiveShield(m);
 				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) (evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
-			this.type = new ArrayList<>(m.keySet()).get(
-					rand.nextInt(m.size()));
+			if(!m.isEmpty()) {
+				this.type = new ArrayList<>(m.keySet()).get(rand.nextInt(m.size()));
+			}
 			ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
 				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);
 			});
