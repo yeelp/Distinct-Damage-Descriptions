@@ -120,14 +120,14 @@ public class DDDCombatTracker extends CombatTracker {
 
 	public void handleHurtStage(LivingHurtEvent evt) {
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
-		this.getIncomingDamage().filter(((Predicate<DamageMap>) Map::isEmpty).negate()).ifPresent((m) -> {
+		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
 			this.getCurrentlyUsedShieldDistribution().ifPresent((shield) -> {
 				shield.block(m);
 				this.results.hasEffectiveShield(m);
 				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) (evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
 			if(!m.isEmpty()) {
-				this.type = new ArrayList<>(m.keySet()).get(rand.nextInt(m.size()));
+				this.type = m.keySet().stream().collect(Collectors.toList()).get(rand.nextInt(m.size()));
 			}
 			ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
 				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);

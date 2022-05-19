@@ -23,8 +23,7 @@ public class TinkerProjectileCapabilityDistributor extends AbstractCapabilityDis
 
 	@Override
 	protected IDamageDistribution getCapability(IProjectile t, String key) {
-		//return new TinkerDamageDistribution().update(t);
-		return new TinkerDamageDistribution();
+		return new TinkerDamageDistribution().update(t);
 	}
 
 	@Override
