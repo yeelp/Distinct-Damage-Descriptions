@@ -1,19 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
-
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,6 +44,11 @@ import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults.ResultsBuilder;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
 public class DDDCombatTracker extends CombatTracker {
@@ -126,13 +120,14 @@ public class DDDCombatTracker extends CombatTracker {
 
 	public void handleHurtStage(LivingHurtEvent evt) {
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
-		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
+		this.getIncomingDamage().filter(((Predicate<DamageMap>) Map::isEmpty).negate()).ifPresent((m) -> {
 			this.getCurrentlyUsedShieldDistribution().ifPresent((shield) -> {
 				shield.block(m);
 				this.results.hasEffectiveShield(m);
 				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) (evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
-			this.type = m.keySet().stream().collect(Collectors.toList()).get(rand.nextInt(m.size()));
+			this.type = new ArrayList<>(m.keySet()).get(
+					rand.nextInt(m.size()));
 			ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
 				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);
 			});

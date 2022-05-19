@@ -36,7 +36,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	public DamageMap block(DamageMap fullDamage) {
 		this.getCategories().forEach((t) -> fullDamage.computeIfPresent(t, (k, v) -> {
 			float f = blockDamage(v, this.getWeight(k));
-			return f <= 0 ? null : f;
+			return f < 0 ? null : f;
 		}));
 		return fullDamage;
 	}
