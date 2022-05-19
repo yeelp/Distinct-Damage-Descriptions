@@ -78,8 +78,8 @@ public final class DDDFontRenderer extends FontRenderer {
 		}
 		else {
 			try {
-				internal.posX = this.posX;
-				internal.posY = this.posY;
+				this.internal.posX = this.posX;
+				this.internal.posY = this.posY;
 				return (Float) renderUnicodeChar.invoke(this.internal, ch, italic);
 				// return super.renderUnicodeChar(ch, italic);
 			}

@@ -1,6 +1,5 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -66,10 +65,11 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 		return hasAttacker ? this.attackerDeathMessage : this.noAttackerDeathMessage;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public final String getDisplayName() {
-		if(I18n.canTranslate("damagetypes.distinctdamagedescriptions." + this.displayName)){
-			return I18n.translateToLocal("damagetypes.distinctdamagedescriptions." + this.displayName);
+		if(net.minecraft.util.text.translation.I18n.canTranslate("damagetypes.distinctdamagedescriptions." + this.displayName)){
+			return net.minecraft.util.text.translation.I18n.translateToLocal("damagetypes.distinctdamagedescriptions." + this.displayName);
 		}
 		return YLib.capitalize(this.displayName);
 	}

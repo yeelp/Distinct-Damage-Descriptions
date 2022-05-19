@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.api.impl;
 import java.util.Arrays;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
 /**
  * Implementation of all built in damage types
