@@ -42,7 +42,6 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 
 	@Override
 	public boolean postInit(FMLPostInitializationEvent evt) {
-
 		return true;
 	}
 

@@ -1,5 +1,8 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.init.Items;
@@ -11,6 +14,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.modifiers.Modifier;
 import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
@@ -31,8 +35,30 @@ import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.Modifi
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class DDDTinkersIntegration extends DDDTiCIntegration {
+	private static final Field TINKER_STENCIL_REGISTRY;
+	private static final Class<?> TINKER_REGISTRY;
 	public static final Modifier slyStrike = new ModifierSlyStrike(), bruteForce = new ModifierBruteForce();
 
+	static {
+		try {
+			TINKER_REGISTRY = Class.forName("slimeknights.tconstruct.library.TinkerRegistry");
+			TINKER_STENCIL_REGISTRY = TINKER_REGISTRY.getDeclaredField("stencilTableCrafting");
+			TINKER_STENCIL_REGISTRY.setAccessible(true);
+		}
+		catch(ClassNotFoundException e) {
+			DistinctDamageDescriptions.fatal("Could not find TinkerRegistry target class!");
+			throw new RuntimeException(e);
+		}
+		catch(NoSuchFieldException e) {
+			DistinctDamageDescriptions.fatal("Could not find stencilTableCrafting target field!");
+			throw new RuntimeException(e);
+		}
+		catch(SecurityException e) {
+			DistinctDamageDescriptions.fatal("Some security problem occured initializing Tinker's integration.");
+			throw new RuntimeException(e);			
+		}
+	}
+	
 	@Override
 	public boolean doSpecificInit(FMLInitializationEvent evt) {
 		slyStrike.addRecipeMatch(new RecipeMatch.ItemCombination(1, new ItemStack(Items.GHAST_TEAR), new ItemStack(Items.COMPASS), new ItemStack(Items.ENDER_EYE)));
@@ -47,6 +73,16 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 			String s = ForgeRegistries.ITEMS.getKey(i).toString();
 			DDDConfigurations.projectiles.registerItemProjectilePair(s, s);
 			DDDConfigurations.projectiles.put(s, new DamageDistribution());
+		}
+		//Add DDD specific information to Tinker's registry.
+		try {
+			@SuppressWarnings("unchecked")
+			List<ItemStack> registry = (List<ItemStack>)TINKER_STENCIL_REGISTRY.get(null);
+			registry.replaceAll(ItemStack::copy);
+		}
+		catch (IllegalAccessException | IllegalArgumentException e) {
+			DistinctDamageDescriptions.fatal("Could not get underlying stencil registry!");
+			throw new RuntimeException(e);
 		}
 		DDDRegistries.trackers.register(new BattleSignTracker());
 		DDDRegistries.distributions.register(new BattleSignCounterAttackDistribution());
