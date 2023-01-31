@@ -41,6 +41,7 @@ sourceSets.main.java.srcDirs += 'java'
 sourceSets.main.resources.srcDirs += 'resources'
 
 repositories {
+    mavenCentral()
     maven {
         url "https://cursemaven.com"
     }
@@ -66,6 +67,9 @@ dependencies {
     deobfProvided "curse.maven:tetra-289712:2815271"
     deobfProvided "curse.maven:conarm-287683:3174535"
     deobfProvided "curse.maven:spartanweaponry-278141:3634012"
+    
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
+
     
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
