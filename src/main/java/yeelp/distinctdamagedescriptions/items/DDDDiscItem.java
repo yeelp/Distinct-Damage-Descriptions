@@ -42,7 +42,7 @@ public class DDDDiscItem extends ItemRecord {
 		public final void onLivingDrops(LivingDropsEvent evt) {
 			EntityLivingBase entity = evt.getEntityLiving();
 			Entity source = evt.getSource().getTrueSource();
-			if(entity instanceof AbstractSkeleton && source != null && !BLACKLIST.contains(source.getClass()) && source instanceof EntityLivingBase) {
+			if(entity instanceof AbstractSkeleton && source != null && !BLACKLIST.stream().anyMatch((clazz) -> clazz.isInstance(source)) && source instanceof EntityLivingBase) {
 				evt.getDrops().add(new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, new ItemStack(DDDItems.disc)));
 			}
 		}
