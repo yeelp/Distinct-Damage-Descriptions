@@ -350,8 +350,8 @@ public interface DefaultValues {
 			"minecraft:zombie_horse;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
 			"minecraft:zombie_pigman;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[ddd_fire];0;0",
 			"minecraft:zombie_villager;[(b, 0.25), (ddd_necrotic, 0.75), (ddd_poison, 0.8), (ddd_radiant, -0.5)];[];0;0",
-			"minecraft:iron_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65), (ddd_fire, -0.25)];[ddd_poison, ddd_psychic, ddd_necrotic];0;0",
-			"minecraft:snow_golem;[(b, 0.3), (ddd_force, 0.5), (ddd_thunder, 0.65), (ddd_fire, -0.5)];[ddd_cold, ddd_poison, ddd_psychic, ddd_necrotic];0;0",
+			"minecraft:villager_golem;[(s, 0.5), (p, 0.75), (b, 1.0), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_thunder, 0.65), (ddd_fire, -0.25)];[ddd_poison, ddd_psychic, ddd_necrotic];0;0",
+			"minecraft:snowman;[(b, 0.3), (ddd_force, 0.5), (ddd_thunder, 0.65), (ddd_fire, -0.5)];[ddd_cold, ddd_poison, ddd_psychic, ddd_necrotic];0;0",
 			"minecraft:wither;[(s, 0.25), (ddd_necrotic, 1.25), (ddd_poison, 0.8), (ddd_radiant, -0.25)];[ddd_necrotic];0;0",
 			"tconstruct:blueslime;[(s, -0.25), (b, 0.25), (ddd_thunder, -0.5), (ddd_acid, 1)];[b, ddd_poison, ddd_psychic, ddd_thunder, ddd_acid];0;0",
 			"thermalfoundation:blizz;[(s, 0.2), (p, 0.2), (b, 0.2), (ddd_cold, 1), (ddd_poison, 0.5), (ddd_fire, -1)];[ddd_cold];0;0",
@@ -487,7 +487,8 @@ public interface DefaultValues {
 			"minecraft:skeleton_horse",
 			"minecraft:stray",
 			"lycanitesmobs:ghoul",
-			"lycanitesmobs:geist"};
+			"lycanitesmobs:geist",
+			"lycanitesmobs:necrovore"};
 
 	/******************
 	 * SINGLE STRINGS *
