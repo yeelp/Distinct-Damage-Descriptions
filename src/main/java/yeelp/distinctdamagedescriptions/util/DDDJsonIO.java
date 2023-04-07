@@ -8,28 +8,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDCustomDistributions;
 import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
-import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
 
 /**
  * Handles all of DDD's JSON IO
@@ -38,22 +34,24 @@ import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
  *
  */
 public final class DDDJsonIO {
-	private static File[] creatureJsonFiles, damageTypeJsonFiles;
-	private static File creatureDirectory, damageTypeDirectory;
+	private static File[] creatureJsonFiles, damageTypeJsonFiles, filterJsonFiles;
+	private static File creatureDirectory, damageTypeDirectory, filterDirectory;
 
 	public static DDDCustomDistributions init() {
 		File mainDirectory = DistinctDamageDescriptions.getModConfigDirectory();
 		creatureDirectory = new File(mainDirectory, "creatureTypes");
 		damageTypeDirectory = new File(mainDirectory, "damageTypes");
+		filterDirectory = new File(mainDirectory, "filters");
 		checkJSON();
 		return loadFromJSON();
 
 	}
 
 	private static void checkJSON() {
-		if((creatureDirectory.exists() && damageTypeDirectory.exists()) || (damageTypeDirectory.mkdirs() && creatureDirectory.mkdirs())) {
+		if((creatureDirectory.exists() && damageTypeDirectory.exists() && filterDirectory.exists()) || (damageTypeDirectory.mkdirs() && creatureDirectory.mkdirs() && filterDirectory.mkdirs())) {
 			creatureJsonFiles = creatureDirectory.listFiles();
 			damageTypeJsonFiles = damageTypeDirectory.listFiles();
+			filterJsonFiles = filterDirectory.listFiles();
 			if(writeExampleJSON("example_creature_type.json", creatureDirectory)) {
 				creatureJsonFiles = creatureDirectory.listFiles();
 			}
@@ -110,57 +108,19 @@ public final class DDDJsonIO {
 		return dists;
 	}
 
+	public static void loadFilters() {
+		
+	}
+
 	private static void loadCreatureTypes() {
 		// CREATURE TYPES FROM JSON
 		if(ModConfig.core.useCreatureTypes) {
 			DistinctDamageDescriptions.info("Creature Types Enabled!");
-			JsonParser parser = new JsonParser();
-			for(File f : creatureJsonFiles) {
-				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json")) {
-					continue;
-				}
-				try(JsonReader reader = new JsonReader(new FileReader(f))) {
-					reader.setLenient(true);
-					JsonElement elem = parser.parse(reader);
-					JsonObject obj = elem.getAsJsonObject();
-					String type = obj.get("name").getAsString().toLowerCase();
-					if(type.equals("unknown")) {
-						throw new IllegalArgumentException("unknown is an invaild creature type!");
-					}
-					boolean critImmunity = getJsonBoolean(obj, "critical_hit_immunity", f);
-					// We use a HashSet as that most likely guarantees a fast containment check.
-					HashSet<String> potionImmunities = new HashSet<String>();
-					for(JsonElement j : getJsonArray(obj, "potion_immunities", f)) {
-						if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString()) {
-							potionImmunities.add(j.getAsString());
-						}
-						else {
-							throw new SyntaxException("Invalid potion immunity in JSON " + f.getName());
-						}
-					}
-					CreatureTypeData creatureType = new CreatureTypeData(type, potionImmunities, critImmunity);
-					DDDRegistries.creatureTypes.register(creatureType);
-					// Update map with new info
-					for(JsonElement j : getJsonArray(obj, "mobs", f)) {
-						if(j.isJsonPrimitive() && j.getAsJsonPrimitive().isString()) {
-							DDDRegistries.creatureTypes.addTypeToEntity(j.getAsString(), creatureType);
-						}
-						else {
-							throw new SyntaxException("Invalid Entity ID for main type in JSON " + f.getName());
-						}
-					}
-					DistinctDamageDescriptions.debug("registered creature type: " + type);
-				}
-				catch(FileNotFoundException e) {
-					DistinctDamageDescriptions.err("Could not find JSON!");
-				}
-				catch(IllegalStateException | ClassCastException e) {
-					DistinctDamageDescriptions.err("Could not parse " + f.getName() + " as a CreatureType!");
-				}
-				catch(IOException e) {
-					DistinctDamageDescriptions.err("IO Exception occured!");
-				}
-			}
+			extractJsonFiles(creatureJsonFiles).forEach((f) -> {
+				Tuple<CreatureTypeData, Iterable<String>> result = parseJsonFile(f, DDDCreatureTypeJsonParser::new);
+				DDDRegistries.creatureTypes.register(result.getFirst());
+				result.getSecond().forEach((s) -> DDDRegistries.creatureTypes.addTypeToEntity(s, result.getFirst()));
+			});
 			DistinctDamageDescriptions.info("Loaded Creature Types!");
 		}
 	}
@@ -170,97 +130,31 @@ public final class DDDJsonIO {
 		// CUSTOM DAMAGE TYPES FROM JSON
 		if(ModConfig.core.useCustomDamageTypes) {
 			DistinctDamageDescriptions.info("Custom Damage Types Enabled!");
-			JsonParser parser = new JsonParser();
-			for(File f : damageTypeJsonFiles) {
-				if(FilenameUtils.getExtension(f.getName()).equalsIgnoreCase(".json")) {
-					continue;
-				}
-				try(JsonReader reader = new JsonReader(new FileReader(f))) {
-					reader.setLenient(true);
-					JsonElement elem = parser.parse(reader);
-					JsonObject obj = elem.getAsJsonObject();
-					String name = getJsonString(obj, "name", f);
-					String displayName;
-					try {
-						displayName = getJsonString(obj, "displayName", f);
-					}
-					catch(Exception e) {
-						displayName = name;
-					}
-					int colour = Integer.parseInt(getJsonString(obj, "displayColour", f), 16);
-					JsonArray arr = getJsonArray(obj, "damageTypes", f);
-					JsonObject msgs = obj.get("deathMessages").getAsJsonObject();
-					String entityMsg = getJsonString(msgs, "deathHasAttacker", f);
-					String otherMsg = getJsonString(msgs, "deathHasNoAttacker", f);
-					DamageTypeData[] datas = new DamageTypeData[arr.size()];
-					int i = 0;
-					for(JsonElement j : arr) {
-						try {
-							JsonObject dmgObj = j.getAsJsonObject();
-							String damageName = getJsonString(dmgObj, "dmgSource", f);
-							boolean includeAll = getJsonBoolean(dmgObj, "includeAll", f);
-							Set<String> indirectSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "indirectSources", f));
-							Set<String> directSources = parsePrimitiveJsonArrayAsSet(getJsonArray(dmgObj, "directSources", f));
-							datas[i++] = new DamageTypeData(damageName, directSources, indirectSources, includeAll);
-						}
-						catch(IllegalStateException e) {
-							DistinctDamageDescriptions.err("Invalid Json for damage type in file " + f.getName());
-							throw e;
-						}
-					}
-					DDDDamageType type = DDDRegistries.damageTypes.get(name);
-					if(type == null) {
-						type = new DDDCustomDamageType(name, displayName, false, entityMsg, otherMsg, colour);
-						DDDRegistries.damageTypes.register(type);
-					}
-					else {
-						DistinctDamageDescriptions.info(String.format("ddd_%s is already registered with display name %s; will use this instead...", name, type.getDisplayName()));
-					}
-					dists.registerDamageTypeData(type, datas);
-				}
-				catch(FileNotFoundException e) {
-					DistinctDamageDescriptions.err("Could not find JSON!");
-				}
-				catch(IOException e) {
-					DistinctDamageDescriptions.err("IO Exception occured!");
-				}
-			}
+			extractJsonFiles(damageTypeJsonFiles).forEach((f) -> {
+				Tuple<DDDDamageType, DamageTypeData[]> result = parseJsonFile(f, DDDDamageTypeJsonParser::new);
+				// unlike creature types, damage types (not the data, which is registered below)
+				// are registered in the parser's method. It's just simpler that way.
+				dists.registerDamageTypeData(result.getFirst(), result.getSecond());
+			});
 			DistinctDamageDescriptions.info("Loaded Custom Damage Types!");
 		}
 		return dists;
 	}
 
-	private static String getJsonString(JsonObject obj, String memberName, File f) {
-		return getJsonElement(obj, memberName, f).getAsString();
-	}
-
-	private static boolean getJsonBoolean(JsonObject obj, String memberName, File f) {
-		return getJsonElement(obj, memberName, f).getAsBoolean();
-	}
-
-	private static JsonArray getJsonArray(JsonObject obj, String memberName, File f) {
-		return getJsonElement(obj, memberName, f).getAsJsonArray();
-	}
-
-	@Nonnull
-	private static JsonElement getJsonElement(JsonObject obj, String memberName, File f) {
-		JsonElement e = obj.get(memberName);
-		if(e == null) {
-			throw new SyntaxException(memberName + " not found in JSON file " + f.getName() + "! Verify it's present and spelled correctly.");
+	private static <T> T parseJsonFile(File f, Function<JsonObject, ? extends AbstractJsonParser<T>> parserConstructor) {
+		JsonParser parser = new JsonParser();
+		try(JsonReader reader = new JsonReader(new FileReader(f))) {
+			reader.setLenient(true);
+			return parserConstructor.apply(parser.parse(reader).getAsJsonObject()).parseJson();
 		}
-		return e;
+		catch(IOException e) {
+			DistinctDamageDescriptions.fatal("An issue occurred when reading from file: " + f.getName());
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
-	private static Set<String> parsePrimitiveJsonArrayAsSet(JsonArray arr) {
-		Set<String> set = new HashSet<String>();
-		for(JsonElement e : arr) {
-			if(e.isJsonPrimitive() && e.getAsJsonPrimitive().isString()) {
-				set.add(e.getAsString());
-			}
-			else {
-				throw new SyntaxException("Invalid String JSON!");
-			}
-		}
-		return set;
+	private static Stream<File> extractJsonFiles(File[] files) {
+		return Arrays.stream(files).filter((f) -> FilenameUtils.getExtension(f.getName()).equals(".json"));
 	}
 }

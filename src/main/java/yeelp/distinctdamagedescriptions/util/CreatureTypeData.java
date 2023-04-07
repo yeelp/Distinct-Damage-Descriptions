@@ -66,4 +66,9 @@ public final class CreatureTypeData {
 	public boolean isImmuneToCriticals() {
 		return this.criticalImmunity;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%s (Critical Hit Immunity: %s, Potion Immunities: %s)", this.type, this.criticalImmunity, this.potionImmunities);
+	}
 }
