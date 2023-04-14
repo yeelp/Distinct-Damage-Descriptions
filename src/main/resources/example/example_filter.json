@@ -1,0 +1,93 @@
+// Mod Version: ${version}
+{ 
+    //The way this filter is applied. Either "base" or "modifier". "base" sets the resistances of the mob to exactly that value, and "modifier" modifies it with an operation.
+    "application_type": "base",
+    //How to combine multiple filters. Either "or" for logical OR, or "and" for logical AND
+    "filter_combination_type": "or",
+    //only read if application_type is "modifier" Either "add", "multiply" or "percent_multiply"
+    "resistance_combination_type": "add",
+    "filters": [
+        {
+            //The type of filter. Some filters need additional data which is specified in the metadata field (with field names in quotes and data type in parentheses): 
+            //isBoss: Checks the boss flag of the mob.
+            //isMonster: Checks the mob's creature type to see if it is a monster. Encapsulates all entities that implement IMob (So probably all hostiles)
+            //isAquatic: Checks the mob's creature type to see if it is an aquatic mob. Should represent all water mobs.
+            //isAnimal: Checks the mob's creature type to see if it is an animal. Should represent all passive mobs.
+            //isAmbient: Checks the mob's creature type to see if it is ambient (like bats).
+            //isUndead: Checks the mob's creature attribute to see if it is Undead. Anything that gets affected by Smite will have their attribute set to Undead.
+            //isArthopod: Checks the mob's creature attribute to see if it is an Arthopod. Anything that gets affected by Bane of Arthopods will have their attribute set to Arthopod.
+            //isIllager: Checks the mob's creature attribute to see if it is an Illager. Evokers, Vindicators and Illusioners (not Witches) fall into this category.
+            //isUndefined: Checks the mob's creature attribute to see if it is Undefined. Anything that isn't undead, arthopod or illager are undefined.
+            //dimension: Checks the mob's dimension it spawned in. Requires additional data in metadata: { "id": dimension id (number) }
+            //isBelowYLevel: Checks if the mob spawns STRICTLY below a specified Y level. Requires additional data in metadata: { "y_level": y level threshold (number) }
+            //isDDDCreatureType: Checks if the mob is a specified DDD creature type. Requires additional data in metadata: { "type_name": creature type name as written in JSON definition (string) }
+            //hasNBTKey: Checks if the mob has the specified NBT key. Ignores the value. Requires additional data in metadata: { "key": key to check (String) }
+            //hasNBTKeyValueNumber: Checks if the mob has the specified NBT key value pair. The value is a whole number (byte, short, int, long). Requires additional data in metadata: { "key": key to look for (String), "value": value to check (number) }
+            //hasNBTKeyValueBoolean: Checks if the mob has the specified NBT key value pair. The value is a boolean. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (true/false) }
+            //hasNBTKeyValueDecimal: Checks if the mob has the specified NBT key value pair. The value is a decimal (float, double). Requires additional metadata: { "key: key to look for (String), "value": value to check (decimal) }
+            //hasNBTKeyValueString: Checks if the mob has the specified NBT key value pair. The value is a String. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (String) }
+            //hasNBTKeyValueList: Checks if the mob has the specified NBT key value pair. The value is a List. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (JSON list), "exact": should exactness; both lists have the same elements, be checked or just containment; "value" list is contained in found list (true/false) }
+            //hasNBTKeyValueArray: Checks if the mob has the specified NBT key value pair. The value is an Array of whole numbers. Requires additional metadata: { "key": key to look for (String), "value": value to check (JSON list), "exact": should exactness; both lists have the same elements, be checked or just containment; "value" list is contained in found list (true/false) }
+            //hasNBTKeyValueCompound: Checks if the mob has the specified NBT key value pair. The value is a nested NBT Compound Tag (see next filter for example). Requires additional metadata: { "key": key to look for (String), "value": value to check (JSON object) }
+            //hasNBTRegex: Takes the mob's NBT data from the root tag as a String and checks it against the specified Java style regex. Requires additional metadata: { "regex": java regular expression (String) }
+            "type": "isBoss",
+            //If this filter should negate results. A negated isUndead filter would check for every mob that ISN'T undead for example.
+            "negate": false
+            //metadata field only read if needed.
+        },
+        { 
+            "type": "hasNBTKeyValueCompound",
+            "negate": false,
+            "metadata": {
+                //This is whatever compound tag you're looking for.
+                "key": "key_to_check",
+                "value": {
+                    //Each field corresponds to a key value pair. The field name is the key name and the value is the value to check.
+                    "number_key": 0,
+                    "decimal_key": 0.4,
+                    "boolean_key": true,
+                    "string_key": "something",
+                    "list_key": [ 
+                        "some",
+                        "stuff",
+                        "in",
+                        "a",
+                        "list"
+                    ],
+                    //NBT makes distinctions between numerical arrays and lists of numbers! Arrays are always numerical but lists may or may not be!
+                    "array_key": [
+                        2,
+                        3,
+                        65,
+                        21,
+                        389
+                    ],
+                    //We can go even deeper!
+                    "nested_compound": { 
+                        "number": 3,
+                        "number_list_not_array": [ 
+                            5,
+                            6,
+                            1,
+                            0,
+                            6,
+                            3
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    //Resistances to give. field names are "ddd_<damage type name>", values are decimals (0.6 = 60% resistance). If the type is "modifier", the values specified here are used to modify the exisiting resistances. Note that if two base filters apply to a mob, they get the resistances of whichever one is applied last!
+    "resistances":{
+        "ddd_slashing": 0.6,
+        "ddd_fire": -0.5,
+        //Immunities are given regardless of application type.
+        "immunities": [ 
+            "ddd_piercing",
+            "ddd_psychic"
+        ],
+        "adaptability_chance": 0.2,
+        "adaptability_amount": 0.3
+    }
+}

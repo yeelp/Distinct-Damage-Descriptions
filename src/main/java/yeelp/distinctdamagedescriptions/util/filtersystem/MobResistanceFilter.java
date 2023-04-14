@@ -1,17 +1,21 @@
 package yeelp.distinctdamagedescriptions.util.filtersystem;
 
+import java.util.Collection;
+
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 
 public class MobResistanceFilter implements IDDDFilter {
 
 	private FilterApplicationType type;
 	
-	private Iterable<FilterOperation> filters;
+	private FilterCombinationMethod method;
+	
+	private Collection<FilterOperation> filters;
 	
 	private MobResistanceCategories cat;
 	
 	@Override
-	public Iterable<FilterOperation> getAppliedFilters() {
+	public Collection<FilterOperation> getAppliedFilters() {
 		return this.filters;
 	}
 
@@ -22,6 +26,11 @@ public class MobResistanceFilter implements IDDDFilter {
 	
 	public MobResistanceCategories getResistances() {
 		return this.cat;
+	}
+
+	@Override
+	public FilterCombinationMethod getCombinationMethod() {
+		return this.method;
 	}
 
 }
