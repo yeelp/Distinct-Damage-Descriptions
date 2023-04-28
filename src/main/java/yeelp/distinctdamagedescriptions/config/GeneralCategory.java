@@ -19,7 +19,7 @@ public final class GeneralCategory {
 	public boolean generateStats = false;
 
 	@Name("Generate JSON")
-	@Comment("If set, DistinctDamageDescriptions will generate example JSON files on startup for custom damage types and creature types.")
+	@Comment("If set, DistinctDamageDescriptions will generate example JSON files on startup for custom damage types, creature types and filters.")
 	public boolean generateJSON = true;
 
 	@Name("Use Custom Damage Types")

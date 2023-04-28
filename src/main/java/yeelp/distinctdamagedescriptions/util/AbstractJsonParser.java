@@ -87,6 +87,10 @@ public abstract class AbstractJsonParser<T> {
 		return this.tryPrimitiveConversion(key, JsonPrimitive::isString, JsonPrimitive::getAsString);
 	}
 	
+	protected int getInt(String key) {
+		return this.tryPrimitiveConversion(key, JsonPrimitive::isNumber, JsonPrimitive::getAsInt);
+	}
+	
 	private Stream<JsonElement> buildStreamOfJsonElements(String key) {
 		Stream.Builder<JsonElement> builder = Stream.builder();
 		this.getArray(key).iterator().forEachRemaining(builder::add);

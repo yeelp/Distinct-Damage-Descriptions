@@ -48,7 +48,7 @@ public final class DDDDamageTypeJsonParser extends AbstractJsonParser<Tuple<DDDD
 		return new Tuple<DDDDamageType, DamageTypeData[]>(type, datas.stream().map(AbstractJsonParser<DamageTypeData>::parseJson).toArray(DamageTypeData[]::new));
 	}
 
-	private final class DamageTypeDataJsonParser extends AbstractJsonParser<DamageTypeData> {
+	private static final class DamageTypeDataJsonParser extends AbstractJsonParser<DamageTypeData> {
 
 		protected DamageTypeDataJsonParser(JsonObject root) {
 			super(root);

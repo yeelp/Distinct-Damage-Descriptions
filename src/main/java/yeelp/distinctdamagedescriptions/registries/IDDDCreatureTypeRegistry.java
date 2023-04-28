@@ -22,7 +22,7 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 	 * Get the CreatureTypeData(s) for a mob
 	 * 
 	 * @param entity the EntityLivingBase
-	 * @return a Tuple of CreatureTypeData. If the first is
+	 * @return a Set of CreatureTypeData. If the first is
 	 *         CreatureTypeData.UNKNOWN, then this mob has no creature type.
 	 */
 	default Set<CreatureTypeData> getCreatureTypeForMob(EntityLivingBase entity) {

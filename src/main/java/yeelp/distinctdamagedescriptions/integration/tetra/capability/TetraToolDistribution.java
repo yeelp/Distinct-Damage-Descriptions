@@ -60,12 +60,12 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 		}
 		else if(owner.getItem() instanceof ItemDuplexToolModular) {
 			return ImmutableSet.of("left", "right").stream().map((s) -> {
-				s = "_".concat(s);
-				String type = tag.getString(TetraNBT.DUPLEX_ROOT + s);
-				if(type.equals("duplex/butt" + s)) {
+				String suffix = "_".concat(s);
+				String type = tag.getString(TetraNBT.DUPLEX_ROOT + suffix);
+				if(type.equals("duplex/butt" + suffix)) {
 					return null;
 				}
-				DistributionBias base = TetraConfigurations.toolBiasResistance.getOrFallbackToDefault(type.replace(s, "").trim());
+				DistributionBias base = TetraConfigurations.toolBiasResistance.getOrFallbackToDefault(type.replace(suffix, "").trim());
 				return getMaterial(tag, type).flatMap((key) -> TetraConfigurations.toolMaterialBias.getSafe(key).flatMap((b) -> b.getBiasedDistributionMap(base.getPreferredMapCopy(), base.getBias()))).orElse(base.getPreferredMapCopy());
 			}).filter(Predicates.notNull()).collect(Collectors.toSet());
 		}

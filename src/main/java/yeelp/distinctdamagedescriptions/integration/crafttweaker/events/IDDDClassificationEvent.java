@@ -12,5 +12,5 @@ import stanhebben.zenscript.annotations.ZenClass;
 @ZenClass("mods.ddd.events.DDDClassificationEvent")
 @ZenRegister
 public interface IDDDClassificationEvent extends IDDDEvent {
-
+	//root
 }

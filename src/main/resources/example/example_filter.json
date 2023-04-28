@@ -21,14 +21,14 @@
             //dimension: Checks the mob's dimension it spawned in. Requires additional data in metadata: { "id": dimension id (number) }
             //isBelowYLevel: Checks if the mob spawns STRICTLY below a specified Y level. Requires additional data in metadata: { "y_level": y level threshold (number) }
             //isDDDCreatureType: Checks if the mob is a specified DDD creature type. Requires additional data in metadata: { "type_name": creature type name as written in JSON definition (string) }
-            //hasNBTKey: Checks if the mob has the specified NBT key. Ignores the value. Requires additional data in metadata: { "key": key to check (String) }
-            //hasNBTKeyValueNumber: Checks if the mob has the specified NBT key value pair. The value is a whole number (byte, short, int, long). Requires additional data in metadata: { "key": key to look for (String), "value": value to check (number) }
-            //hasNBTKeyValueBoolean: Checks if the mob has the specified NBT key value pair. The value is a boolean. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (true/false) }
-            //hasNBTKeyValueDecimal: Checks if the mob has the specified NBT key value pair. The value is a decimal (float, double). Requires additional metadata: { "key: key to look for (String), "value": value to check (decimal) }
-            //hasNBTKeyValueString: Checks if the mob has the specified NBT key value pair. The value is a String. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (String) }
-            //hasNBTKeyValueList: Checks if the mob has the specified NBT key value pair. The value is a List. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (JSON list), "exact": should exactness; both lists have the same elements, be checked or just containment; "value" list is contained in found list (true/false) }
-            //hasNBTKeyValueArray: Checks if the mob has the specified NBT key value pair. The value is an Array of whole numbers. Requires additional metadata: { "key": key to look for (String), "value": value to check (JSON list), "exact": should exactness; both lists have the same elements, be checked or just containment; "value" list is contained in found list (true/false) }
-            //hasNBTKeyValueCompound: Checks if the mob has the specified NBT key value pair. The value is a nested NBT Compound Tag (see next filter for example). Requires additional metadata: { "key": key to look for (String), "value": value to check (JSON object) }
+            //hasNBTKey: Checks if the mob has the specified NBT key. Ignores the value. Requires additional data in metadata: { "key": key to check (String), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueNumber: Checks if the mob has the specified NBT key value pair. The value is a whole number (byte, short, int, long). Requires additional data in metadata: { "key": key to look for (String), "value": value to check (number), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueBoolean: Checks if the mob has the specified NBT key value pair. The value is a boolean. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (true/false), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueDecimal: Checks if the mob has the specified NBT key value pair. The value is a decimal (float, double). Requires additional metadata: { "key: key to look for (String), "value": value to check (decimal), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueString: Checks if the mob has the specified NBT key value pair. The value is a String. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (String), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueList: Checks if the mob has the specified NBT key value pair. The value is a List. Requires additional data in metadata: { "key": key to look for (String), "value": value to check (JSON list), "exact": should exactness; both lists have the same elements, be checked or just containment; "value" list is contained in found list (true/false), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueArray: Checks if the mob has the specified NBT key value pair. The value is an Array of whole numbers. Requires additional metadata: { "key": key to look for (String), "value": value to check (JSON list), "exact": should exactness; both lists have the same elements, be checked or just containment; "value" list is contained in found list (true/false), "recursive": if the key should be searched for recursively in sub tags (true/false) }
+            //hasNBTKeyValueCompound: Checks if the mob has the specified NBT key value pair. The value is a nested NBT Compound Tag (see next filter for example). Requires additional metadata: { "key": key to look for (String), "value": value to check (JSON object), "recursive": if the key should be searched for recursively in sub tags (true/false) }
             //hasNBTRegex: Takes the mob's NBT data from the root tag as a String and checks it against the specified Java style regex. Requires additional metadata: { "regex": java regular expression (String) }
             "type": "isBoss",
             //If this filter should negate results. A negated isUndead filter would check for every mob that ISN'T undead for example.
@@ -41,6 +41,7 @@
             "metadata": {
                 //This is whatever compound tag you're looking for.
                 "key": "key_to_check",
+                //The following tag with key "key_to_check" must have the following must have the following tags. It can have additional tags, but these key value pairs must be present.
                 "value": {
                     //Each field corresponds to a key value pair. The field name is the key name and the value is the value to check.
                     "number_key": 0,
@@ -55,6 +56,9 @@
                         "list"
                     ],
                     //NBT makes distinctions between numerical arrays and lists of numbers! Arrays are always numerical but lists may or may not be!
+                    //For lists specified in JSON here, we will match against tag lists or tag arrays if applicable. At least the specified list elements must be present when we check.
+                    //In other words, exactness for lists/arrays are not checked.
+                    //Lists specified here can't be nested lists, compound tags, or
                     "array_key": [
                         2,
                         3,
@@ -74,7 +78,8 @@
                             3
                         ]
                     }
-                }
+                },
+                "recursive": true
             }
         }
     ],

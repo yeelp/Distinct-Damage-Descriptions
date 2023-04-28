@@ -13,4 +13,10 @@ public interface FilterOperation extends Predicate<EntityLivingBase>{
 	 */
 	@Override
 	boolean test(EntityLivingBase entity);
+	
+	/**
+	 * Set if this filter should negate its results.
+	 * @param shouldNegate
+	 */
+	void setNegateStatus(boolean shouldNegate);
 }

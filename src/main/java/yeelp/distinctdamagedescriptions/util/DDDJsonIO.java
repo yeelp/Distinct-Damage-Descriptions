@@ -58,6 +58,9 @@ public final class DDDJsonIO {
 			if(writeExampleJSON("example_damage_type.json", damageTypeDirectory)) {
 				damageTypeJsonFiles = damageTypeDirectory.listFiles();
 			}
+			if(writeExampleJSON("example_filter.json", filterDirectory)) {
+				filterJsonFiles = filterDirectory.listFiles();				
+			}
 			DistinctDamageDescriptions.debug("Checked JSON");
 		}
 	}

@@ -94,7 +94,7 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 		}
 
 		this.getRegistry().stream().filter(this::isValidPart).limit(9 - display.size()).map((p) -> new ElementTinkerItem(p.getItemstackWithMaterial(this.material))).forEach(display::add);
-		Iterator<Integer> ys = Stream.iterate(10, (i) -> i += ElementItem.ITEM_SIZE_HARDCODED).iterator();
+		Iterator<Integer> ys = Stream.iterate(10, (i) -> i + ElementItem.ITEM_SIZE_HARDCODED).iterator();
 		display.forEach((e) -> {
 			e.x = x;
 			e.y = ys.next();
