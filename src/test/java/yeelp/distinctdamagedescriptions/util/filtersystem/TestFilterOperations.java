@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.filtersystem;
 
-@Test
+import org.junit.Test;
+
 public final class TestFilterOperations {
 
 	
