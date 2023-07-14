@@ -12,7 +12,7 @@ import stanhebben.zenscript.annotations.ZenSetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 @ZenClass("mods.ddd.Resistances")
 @ZenRegister
@@ -31,13 +31,13 @@ public class CTResistances {
 	}
 
 	@ZenMethod("getResistance")
-	public float getResistance(String type) {
-		return this.resists.getResistance(DDDRegistries.damageTypes.get(type));
+	public float getResistance(ICTDDDDamageType type) {
+		return this.resists.getResistance(type.asDDDDamageType());
 	}
 
 	@ZenMethod("setResistance")
-	public void setResistance(String type, float amount) {
-		this.resists.setResistance(DDDRegistries.damageTypes.get(type), amount);
+	public void setResistance(ICTDDDDamageType type, float amount) {
+		this.resists.setResistance(type.asDDDDamageType(), amount);
 		update();
 	}
 
@@ -52,8 +52,8 @@ public class CTResistances {
 	}
 
 	@ZenMethod("hasImmunity")
-	public boolean hasImmunity(String type) {
-		return this.resists.hasImmunity(DDDRegistries.damageTypes.get(type));
+	public boolean hasImmunity(ICTDDDDamageType type) {
+		return this.resists.hasImmunity(type.asDDDDamageType());
 	}
 
 	@ZenSetter("adaptability")
@@ -69,8 +69,8 @@ public class CTResistances {
 	}
 
 	@ZenMethod("setImmunity")
-	public void setSlashingImmunity(String type, boolean status) {
-		this.resists.setImmunity(DDDRegistries.damageTypes.get(type), status);
+	public void setImmunity(ICTDDDDamageType type, boolean status) {
+		this.resists.setImmunity(type.asDDDDamageType(), status);
 		update();
 	}
 

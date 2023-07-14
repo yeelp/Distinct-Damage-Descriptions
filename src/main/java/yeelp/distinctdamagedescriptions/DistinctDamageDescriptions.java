@@ -55,13 +55,13 @@ public class DistinctDamageDescriptions {
 		DDDInitialization.runLoaders(event);
 		DebugLib.updateStatus();
 		proxy.preInit();
-		DDDConfigLoader.readConfig();
 		ModIntegrationKernel.doPreInit(event);
 	}
 
 	@SuppressWarnings("static-method")
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		DDDConfigLoader.readConfig();
 		new CapabilityHandler().register();
 		new TooltipHandler().register();
 		new MobHandler().register();
