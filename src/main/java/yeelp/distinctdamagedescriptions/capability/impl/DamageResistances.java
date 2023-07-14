@@ -44,6 +44,11 @@ public abstract class DamageResistances implements IDamageResistances {
 	@Override
 	public void setResistance(DDDDamageType type, float amount) {
 		this.resistances.put(type, amount);
+	}	
+
+	@Override
+	public void removeResistance(DDDDamageType type) {
+		this.resistances.remove(type);
 	}
 
 	@Override

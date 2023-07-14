@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 /**
  * Event fired when DDD tries to determine damage distributions.
@@ -26,7 +27,7 @@ public interface IDetermineDamageEvent extends IDDDClassificationEvent {
 	 * @return The damage inflicted of that type
 	 */
 	@ZenMethod("getDamage")
-	float getDamage(String type);
+	float getDamage(ICTDDDDamageType type);
 
 	/**
 	 * Set damage inflicted for a certain type
@@ -35,5 +36,5 @@ public interface IDetermineDamageEvent extends IDDDClassificationEvent {
 	 * @param amount Amount of damage to inflict
 	 */
 	@ZenMethod("setDamage")
-	void setDamage(String type, float amount);
+	void setDamage(ICTDDDDamageType type, float amount);
 }

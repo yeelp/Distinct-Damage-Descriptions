@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 public final class CTDetermineDamageEvent extends CTDDDClassificationEvent<DetermineDamageEvent> implements IDetermineDamageEvent {
 
@@ -9,13 +10,13 @@ public final class CTDetermineDamageEvent extends CTDDDClassificationEvent<Deter
 	}
 
 	@Override
-	public float getDamage(String type) {
-		return this.internal.getDamage(CTDDDEvent.parseDamageType(type));
+	public float getDamage(ICTDDDDamageType type) {
+		return this.internal.getDamage(type.asDDDDamageType());
 	}
 
 	@Override
-	public void setDamage(String type, float amount) {
-		this.internal.setDamage(CTDDDEvent.parseDamageType(type), amount);
+	public void setDamage(ICTDDDDamageType type, float amount) {
+		this.internal.setDamage(type.asDDDDamageType(), amount);
 	}
 
 }

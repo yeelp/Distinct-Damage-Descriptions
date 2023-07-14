@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 /**
  * Event fired when DDD gather mob defenses, which includes resistances and
@@ -18,21 +19,21 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	/**
 	 * Get resistance for a certain type
 	 * 
-	 * @param type type name. Requires ddd_ prefix.
+	 * @param type type name.
 	 * @return resistance for that type. Weakness if less than zero.
 	 */
 	@ZenMethod("getResistance")
-	float getResistance(String type);
+	float getResistance(ICTDDDDamageType type);
 
 	/**
 	 * Set resistance for a type. Can set a weakness by passing in a negative
 	 * {@code amount}
 	 * 
-	 * @param type   type name. Requires ddd_ prefix
+	 * @param type type name.
 	 * @param amount
 	 */
 	@ZenMethod("setResistance")
-	void setResistance(String type, float amount);
+	void setResistance(ICTDDDDamageType type, float amount);
 
 	/**
 	 * Check if this entity has a resistance to this type
@@ -41,7 +42,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * @return true if they have a positive resistance to this type.
 	 */
 	@ZenMethod("hasResistance")
-	default boolean hasResistance(String type) {
+	default boolean hasResistance(ICTDDDDamageType type) {
 		return this.getResistance(type) > 0;
 	}
 
@@ -52,7 +53,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * @return true if they have a weakness to this type.
 	 */
 	@ZenMethod("hasWeakness")
-	default boolean hasWeakness(String type) {
+	default boolean hasWeakness(ICTDDDDamageType type) {
 		return this.getResistance(type) < 0;
 	}
 
@@ -63,7 +64,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * @return true if this entity is immune to this type currently.
 	 */
 	@ZenMethod("hasImmunity")
-	boolean hasImmunity(String type);
+	boolean hasImmunity(ICTDDDDamageType type);
 
 	/**
 	 * Temporarily grant this entity immunity to the given type. If this entity
@@ -72,7 +73,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * @param type type name. Requires ddd_ prefix
 	 */
 	@ZenMethod("grantImmunity")
-	void grantImmunity(String type);
+	void grantImmunity(ICTDDDDamageType type);
 
 	/**
 	 * Temporarily revoke this entity's immunity to the given type. If the entity
@@ -81,7 +82,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * @param type
 	 */
 	@ZenMethod("revokeImmunity")
-	void revokeImmunity(String type);
+	void revokeImmunity(ICTDDDDamageType type);
 
 	/**
 	 * Clear all immunities this entity has for this calculation

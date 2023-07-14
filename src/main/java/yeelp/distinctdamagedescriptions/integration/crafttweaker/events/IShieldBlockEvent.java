@@ -5,6 +5,7 @@ import crafttweaker.api.item.IItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 /**
  * Fired whenever a shield attempts to reduce damage. Can be canceled. If
@@ -32,7 +33,7 @@ public interface IShieldBlockEvent extends IDDDClassificationEvent {
 	 * @return the shield's effectiveness for that type.
 	 */
 	@ZenMethod("getEffectiveness")
-	float getShieldEffectivenessForType(String type);
+	float getShieldEffectivenessForType(ICTDDDDamageType type);
 
 	/**
 	 * Set the shield's effectiveness for a type
@@ -41,7 +42,7 @@ public interface IShieldBlockEvent extends IDDDClassificationEvent {
 	 * @param amount the shield's effectiveness for that type.
 	 */
 	@ZenMethod("setEffectiveness")
-	void setShieldEffectivenessForType(String type, float amount);
+	void setShieldEffectivenessForType(ICTDDDDamageType type, float amount);
 
 	@Override
 	default boolean isCancelable() {

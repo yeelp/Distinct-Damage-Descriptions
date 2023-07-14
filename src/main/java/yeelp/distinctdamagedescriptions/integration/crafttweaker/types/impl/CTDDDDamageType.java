@@ -25,7 +25,7 @@ public final class CTDDDDamageType implements ICTDDDDamageType {
 		return getFromDamageType(type);
 	}
 	
-	public static final ICTDDDDamageType  getFromDamageType(DDDDamageType type) {
+	public static final ICTDDDDamageType getFromDamageType(DDDDamageType type) {
 		return POOL.computeIfAbsent(type, CTDDDDamageType::new);
 	}
 	

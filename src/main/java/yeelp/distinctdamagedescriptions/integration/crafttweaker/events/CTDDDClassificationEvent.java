@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.event.classification.DDDClassificationEv
  *
  * @param <Event> the kind of DDDClassificationEvent this CT event represents.
  */
-public abstract class CTDDDClassificationEvent<Event extends DDDClassificationEvent> extends CTDDDEvent implements IDDDClassificationEvent {
+public abstract class CTDDDClassificationEvent<Event extends DDDClassificationEvent> implements IDDDClassificationEvent {
 
 	protected final Event internal;
 
