@@ -43,6 +43,11 @@ public final class CoTDDDDistributionBuilder {
 	private final Map<String, Float> stringWeights;
 	private boolean wasBuilt = false;
 	
+	@ZenMethod
+	public static CoTDDDDistributionBuilder create(String name) {
+		return new CoTDDDDistributionBuilder(name);
+	}
+	
 	public CoTDDDDistributionBuilder(String name) {
 		this.name = name;
 		this.weights = new DDDBaseMap<Float>(() -> 0.0f);
@@ -64,6 +69,9 @@ public final class CoTDDDDistributionBuilder {
 		if(this.wasBuilt) {
 			return;
 		}
+		if(this.name == null) {
+			throw new ZenRuntimeException("Distribution name can not be null!");
+		}
 		Map<String, Float> combined = Maps.newHashMap();
 		combined.putAll(this.stringWeights);
 		this.weights.forEach((t, f) -> combined.put(t.getTypeName().substring("ddd_".length()), f));
@@ -82,9 +90,9 @@ public final class CoTDDDDistributionBuilder {
 	}
 	
 	public static void registerDists() {
-		BUILDERS.forEach((b) -> b.stringWeights.forEach((s, f) -> {
-			b.weights.put(DDDRegistries.damageTypes.get(s), f);
+		BUILDERS.forEach((b) -> { 
+			b.stringWeights.forEach((s, f) -> b.weights.put(DDDRegistries.damageTypes.get(s), f));
 			DDDRegistries.distributions.register(new CTDDDCustomDistribution(b.name, b.weights, b.isContextApplicable, b.priority));
-		}));	
+		});	
 	}
 }

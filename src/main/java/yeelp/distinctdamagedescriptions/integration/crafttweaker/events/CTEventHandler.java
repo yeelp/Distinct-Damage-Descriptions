@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.event.AssignMobResistancesEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
@@ -36,6 +37,12 @@ public final class CTEventHandler extends Handler implements IModIntegration {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onUpdateAdpativeResistances(UpdateAdaptiveResistanceEvent evt) {
 		CTDDDEventManager.UPDATE_ADAPTIVE.publish(new CTUpdateAdaptiveResistancesEvent(evt));
+	}
+	
+	@SuppressWarnings("static-method")
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onAssignMobResistances(AssignMobResistancesEvent evt) {
+		CTDDDEventManager.ASSIGN_RESISTS.publish(new CTAssignMobResistancesEvent(evt));
 	}
 
 	@Override

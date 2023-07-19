@@ -3,6 +3,8 @@ package yeelp.distinctdamagedescriptions.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.potion.Potion;
+
 /**
  * Data storage for CreatureTypes
  * 
@@ -18,7 +20,7 @@ public final class CreatureTypeData {
 
 	private String type;
 	private Set<String> potionImmunities;
-	private boolean criticalImmunity;
+	public boolean criticalImmunity;
 
 	/**
 	 * Build a new CreatureTypeData
@@ -56,6 +58,18 @@ public final class CreatureTypeData {
 	 */
 	public Set<String> getPotionImmunities() {
 		return this.potionImmunities;
+	}
+	
+	/**
+	 * Add a potion immunity to this creature type
+	 * @param potion Potion immunity to add.
+	 */
+	public void addPotionImmunity(Potion potion) {
+		this.potionImmunities.add(potion.getRegistryName().toString());
+	}
+	
+	public void removePotionImmunity(Potion potion) {
+		this.potionImmunities.remove(potion.getRegistryName().toString());
 	}
 
 	/**

@@ -1,5 +1,9 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.annotations.ZenRegister;
+import stanhebben.zenscript.ZenRuntimeException;
+import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenProperty;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -8,6 +12,8 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
+@ZenClass("mods.ddd.DamageTypeBuilder")
+@ZenRegister
 public final class CoTDDDDamageTypeBuilder {
 
 	@ZenProperty
@@ -23,7 +29,7 @@ public final class CoTDDDDamageTypeBuilder {
 	public String deathMessageHasAttacker;
 	
 	@ZenProperty
-	public int color;
+	public int color = 0xFFFFFF;
 	
 	private Type type = Type.SPECIAL;
 	
@@ -38,7 +44,22 @@ public final class CoTDDDDamageTypeBuilder {
 	}
 	
 	@ZenMethod
+	public static CoTDDDDamageTypeBuilder create(String name) {
+		return new CoTDDDDamageTypeBuilder(name);
+	}
+	
+	public CoTDDDDamageTypeBuilder(String name) {
+		this.name = name;
+	}
+	
+	@ZenMethod
 	public ICTDDDDamageType register() {
+		if(this.name == null) {
+			throw new ZenRuntimeException("internal damage type name can not be null!");
+		}
+		if(this.displayName == null) {
+			CraftTweakerAPI.logWarning(String.format("%s doesn't have a display name set! Will use internal name as display name, but it is recommended to set a display name with ZenProperty displayName!", this.name));
+		}
 		DDDDamageType type = new DDDCustomDamageType(this.name, this.displayName, this.type == Type.PHYSICAL, this.deathMessageHasAttacker, this.deathMessageNoAttacker, this.color);
 		DDDRegistries.damageTypes.register(type);
 		return CTDDDDamageType.getFromDamageType(type);

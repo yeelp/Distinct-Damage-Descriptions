@@ -10,7 +10,7 @@ import stanhebben.zenscript.annotations.ZenMemberGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenOperator;
 
-@ZenClass("mods.ddd.IDDDBaseMap")
+@ZenClass("mods.ddd.lib.IDDDBaseMap")
 @IterableMap(key = "mods.ddd.IDDDDamageType", value = "float")
 @ZenRegister
 public interface ICTDDDBaseMap extends Map<ICTDDDDamageType, Float>{

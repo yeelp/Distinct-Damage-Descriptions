@@ -5,7 +5,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
-@ZenClass("mods.ddd.IDDDDamageType")
+@ZenClass("mods.ddd.damagetypes.IDDDDamageType")
 @ZenRegister
 public interface ICTDDDDamageType {
 

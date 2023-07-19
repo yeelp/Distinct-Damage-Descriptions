@@ -6,7 +6,7 @@ import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 
-@ZenClass("mods.ddd.IDistribution")
+@ZenClass("mods.ddd.distributions.IDistribution")
 @ZenRegister
 public interface ICTDistribution {
 

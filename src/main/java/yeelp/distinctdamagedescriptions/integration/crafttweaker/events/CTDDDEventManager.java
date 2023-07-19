@@ -15,6 +15,7 @@ public final class CTDDDEventManager {
 	public static final EventList<CTGatherDefensesEvent> GATHER_DEFENSES = newEventList();
 	public static final EventList<CTShieldBlockEvent> SHIELD_BLOCK = newEventList();
 	public static final EventList<CTUpdateAdaptiveResistancesEvent> UPDATE_ADAPTIVE = newEventList();
+	public static final EventList<CTAssignMobResistancesEvent> ASSIGN_RESISTS = new EventList<CTAssignMobResistancesEvent>();
 
 	@ZenMethod
 	public static IEventHandle onDetermineDamage(IEventHandler<CTDetermineDamageEvent> handler) {
@@ -34,6 +35,11 @@ public final class CTDDDEventManager {
 	@ZenMethod
 	public static IEventHandle onUpdateAdaptiveResistances(IEventHandler<CTUpdateAdaptiveResistancesEvent> handler) {
 		return UPDATE_ADAPTIVE.add(handler);
+	}
+	
+	@ZenMethod
+	public static IEventHandle onAssignMobResistances(IEventHandler<CTAssignMobResistancesEvent> handler) {
+		return ASSIGN_RESISTS.add(handler);
 	}
 
 	private static <T extends IDDDEvent> EventList<T> newEventList() {
