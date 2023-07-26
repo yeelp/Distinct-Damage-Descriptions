@@ -27,6 +27,7 @@ final class CombatContext {
 	private final float amount;
 	private final Entity attacker;
 	private final EntityLivingBase defender;
+	private final int hitTime;
 	private Optional<ItemStack> shield;
 	private Iterable<EntityEquipmentSlot> validArmorSlots;
 
@@ -37,6 +38,7 @@ final class CombatContext {
 		this.defender = defender;
 		this.validArmorSlots = determineValidArmorSlots(this.src);
 		this.shield = getBlockingShield(this.defender, this.src);
+		this.hitTime = defender.ticksExisted;
 	}
 
 	/**
@@ -66,6 +68,10 @@ final class CombatContext {
 
 	EntityLivingBase getDefender() {
 		return this.defender;
+	}
+	
+	int getLastHitTime() {
+		return this.hitTime;
 	}
 
 	/**

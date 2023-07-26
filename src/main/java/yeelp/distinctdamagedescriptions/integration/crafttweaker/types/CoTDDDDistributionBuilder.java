@@ -3,8 +3,10 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.damage.IDamageSource;
@@ -23,6 +25,7 @@ import yeelp.distinctdamagedescriptions.util.lib.YLib;
 public final class CoTDDDDistributionBuilder {
 	
 	private static final Collection<CoTDDDDistributionBuilder> BUILDERS = new ArrayList<CoTDDDDistributionBuilder>();
+	private static final Set<String> USED_NAMES = Sets.newHashSet();
 
 	@ZenClass("mods.ddd.distributions.IsContextApplicable")
 	@ZenRegister
@@ -72,6 +75,12 @@ public final class CoTDDDDistributionBuilder {
 		if(this.name == null) {
 			throw new ZenRuntimeException("Distribution name can not be null!");
 		}
+		else if(USED_NAMES.contains(this.name)) {
+			throw new ZenRuntimeException(String.format("%s is a name already used by a distribution created in another script!", this.name));
+		}
+		else if(DDDRegistries.distributions.get(this.name) != null) {
+			throw new ZenRuntimeException(String.format("%s is a name already used by DDD!", this.name));
+		}
 		Map<String, Float> combined = Maps.newHashMap();
 		combined.putAll(this.stringWeights);
 		this.weights.forEach((t, f) -> combined.put(t.getTypeName().substring("ddd_".length()), f));
@@ -86,6 +95,7 @@ public final class CoTDDDDistributionBuilder {
 			throw new ZenRuntimeException(String.format("No applicable context function (isContextApplicable) defined for %s!", this.name));
 		}
 		BUILDERS.add(this);
+		USED_NAMES.add(this.name);
 		this.wasBuilt = true;
 	}
 	
@@ -93,6 +103,8 @@ public final class CoTDDDDistributionBuilder {
 		BUILDERS.forEach((b) -> { 
 			b.stringWeights.forEach((s, f) -> b.weights.put(DDDRegistries.damageTypes.get(s), f));
 			DDDRegistries.distributions.register(new CTDDDCustomDistribution(b.name, b.weights, b.isContextApplicable, b.priority));
-		});	
+		});
+		USED_NAMES.clear();
+		BUILDERS.clear();
 	}
 }

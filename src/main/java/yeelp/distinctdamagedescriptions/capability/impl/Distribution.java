@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
-import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
@@ -83,7 +82,7 @@ public abstract class Distribution implements IDistribution {
 	public Set<DDDDamageType> getCategories() {
 		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
 		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
-			if((!entry.getKey().isCustomDamage() || ModConfig.core.useCustomDamageTypes) && entry.getValue() > 0) {
+			if(entry.getKey().isUsable() && entry.getValue() > 0) {
 				set.add(entry.getKey());
 			}
 		}

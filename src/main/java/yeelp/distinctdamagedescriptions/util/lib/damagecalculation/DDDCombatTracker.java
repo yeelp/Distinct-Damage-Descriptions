@@ -79,8 +79,10 @@ public class DDDCombatTracker extends CombatTracker {
 	}
 
 	public void clear() {
-		this.type = null;
-		this.ctx = null;
+		if(this.getFighter().isEntityAlive()) {
+			this.type = null;			
+			this.ctx = null;
+		}
 		this.armors = null;
 		this.incomingDamage = null;
 		this.usedShieldDist = null;
@@ -104,6 +106,7 @@ public class DDDCombatTracker extends CombatTracker {
 	}
 
 	public void handleAttackStage(LivingAttackEvent evt) {
+		this.clear();
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
 		if(this.getIncomingDamage().isPresent() && this.ctx.getShield().isPresent() && this.ctx.getShield().get().hasCapability(ShieldDistribution.cap, null)) {
 			DamageMap dmg = this.getIncomingDamage().get();
@@ -198,13 +201,7 @@ public class DDDCombatTracker extends CombatTracker {
 
 	@Override
 	public ITextComponent getDeathMessage() {
-		return this.getTypeLastHitBy().filter((t) -> ModConfig.core.useCustomDeathMessages).map((t) -> DDDRegistries.damageTypes.getDeathMessageForType(t, this.ctx.getSource().getTrueSource(), this.getFighter())).orElse(super.getDeathMessage());
-	}
-
-	@Override
-	public void reset() {
-		this.clear();
-		super.reset();
+		return this.getTypeLastHitBy().filter((t) -> ModConfig.core.useCustomDeathMessages).flatMap((t) -> DDDRegistries.damageTypes.getDeathMessageForType(t, this.ctx.getSource().getTrueSource(), this.getFighter())).orElse(super.getDeathMessage());
 	}
 
 	private Optional<DamageMap> getIncomingDamage() {

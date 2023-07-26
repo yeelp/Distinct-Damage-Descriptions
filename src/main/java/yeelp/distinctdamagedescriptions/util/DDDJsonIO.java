@@ -108,7 +108,7 @@ public final class DDDJsonIO {
 
 	private static void loadCreatureTypes() {
 		// CREATURE TYPES FROM JSON
-		if(ModConfig.core.useCreatureTypes) {
+		if(ModConfig.core.useCreatureTypesFromJSON) {
 			DistinctDamageDescriptions.info("Creature Types Enabled!");
 			extractJsonFiles(creatureJsonFiles).forEach((f) -> {
 				Tuple<CreatureTypeData, Iterable<String>> result = parseJsonFile(f, DDDCreatureTypeJsonParser::new);
@@ -122,7 +122,7 @@ public final class DDDJsonIO {
 	private static DDDCustomDistributions loadDamageTypes() {
 		DDDCustomDistributions dists = new DDDCustomDistributions();
 		// CUSTOM DAMAGE TYPES FROM JSON
-		if(ModConfig.core.useCustomDamageTypes) {
+		if(ModConfig.core.useCustomDamageTypesFromJSON) {
 			DistinctDamageDescriptions.info("Custom Damage Types Enabled!");
 			extractJsonFiles(damageTypeJsonFiles).forEach((f) -> {
 				Tuple<DDDDamageType, DamageTypeData[]> result = parseJsonFile(f, DDDDamageTypeJsonParser::new);

@@ -22,22 +22,22 @@ public final class GeneralCategory {
 	@Comment("If set, DistinctDamageDescriptions will generate example JSON files on startup for custom damage types, creature types and filters.")
 	public boolean generateJSON = true;
 
-	@Name("Use Custom Damage Types")
+	@Name("Use Custom Damage Types From JSON")
 	@Comment("If true, Distinct Damage Descriptions will load and enable custom damage types from JSON found in config/distinctdamagedescriptions/damageTypes")
 	@RequiresMcRestart
-	public boolean useCustomDamageTypes = false;
+	public boolean useCustomDamageTypesFromJSON = false;
 
 	@Name("Use Custom Death Messages")
-	@Comment("Should Distinct Damage Descriptions use it's custom death messages for damage types?")
+	@Comment("Should Distinct Damage Descriptions use its custom death messages for damage types?")
 	@RequiresWorldRestart
 	public boolean useCustomDeathMessages = false;
 
-	@Name("Use Creature Types")
+	@Name("Use Creature Types From JSON")
 	@Comment({
 			"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
 			"These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usuable in CraftTweaker."})
 	@RequiresMcRestart
-	public boolean useCreatureTypes = false;
+	public boolean useCreatureTypesFromJSON = false;
 
 	@Name("Enable Adaptive Weakness")
 	@Comment({

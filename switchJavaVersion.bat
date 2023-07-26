@@ -11,3 +11,4 @@ echo JAVA_HOME set to Java 8 directory: "%JAVA_HOME%"
 ) else (
 echo JAVA_HOME already set to Java 8 directory.
 )
+pause

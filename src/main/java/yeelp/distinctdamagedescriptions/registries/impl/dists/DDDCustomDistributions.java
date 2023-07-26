@@ -62,7 +62,7 @@ public final class DDDCustomDistributions implements DDDPredefinedDistribution {
 
 	@Override
 	public boolean enabled() {
-		return ModConfig.core.useCustomDamageTypes;
+		return ModConfig.core.useCustomDamageTypesFromJSON;
 	}
 
 	@Override

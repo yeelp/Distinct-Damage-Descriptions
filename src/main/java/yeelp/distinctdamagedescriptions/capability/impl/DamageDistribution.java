@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Stream;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -15,7 +14,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
@@ -63,19 +61,18 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@Override
 	public DamageMap distributeDamage(float dmg) {
-		if(ModConfig.core.useCustomDamageTypes || this.distMap.keySet().stream().filter((k) -> k.isCustomDamage()).count() == 0) {
+		if(this.distMap.keySet().stream().filter((k) -> !k.isUsable()).count() == 0) {
 			return super.distribute(new DamageMap(), (f) -> f * dmg);
 		}
-		Stream<Entry<DDDDamageType, Float>> stream = this.distMap.entrySet().stream();
-		long regularTypes = stream.filter((e) -> !e.getKey().isCustomDamage()).count();
+		long regularTypes = this.distMap.entrySet().stream().filter((e) -> e.getKey().isUsable()).count();
 		if(regularTypes == 0) {
 			return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
 		}
 		DamageMap map = new DamageMap();
-		float lostWeight = stream.map((e) -> e.getKey().isCustomDamage() ? e.getValue() : 0.0f).reduce(0.0f, (u, v) -> u + v, (u, v) -> u + v);
+		float lostWeight = (float) this.distMap.entrySet().stream().mapToDouble((e) -> !e.getKey().isUsable() ? e.getValue() : 0.0f).sum();
 		float weightToAdd = lostWeight / regularTypes;
 		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {
-			if(!entry.getKey().isCustomDamage()) {
+			if(entry.getKey().isUsable()) {
 				map.put(entry.getKey(), (entry.getValue() + weightToAdd) * dmg);
 			}
 		}
