@@ -11,7 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.util.Translations;
-import yeelp.distinctdamagedescriptions.util.Translations.Translator;
+import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 /**
  * An abstract capability content formatter for DDD tooltips.
@@ -25,7 +25,7 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	private Function<T, Optional<C>> capExtractor;
 	private ITextComponent typeText;
 	private static final Style GRAY_COLOUR = new Style().setColor(TextFormatting.GRAY);
-	private static final Translator TRANSLATOR = Translations.INSTANCE.getTranslator("tooltips");
+	private static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator("tooltips");
 
 	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<T, Optional<C>> capExtractor, String typeTextKey) {
 		super(keyTooltip, numberFormatter, damageFormatter);

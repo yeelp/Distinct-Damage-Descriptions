@@ -3,8 +3,12 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import com.google.common.base.Functions;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -100,8 +104,18 @@ public final class CoTDDDDistributionBuilder {
 	}
 	
 	public static void registerDists() {
-		BUILDERS.forEach((b) -> { 
-			b.stringWeights.forEach((s, f) -> b.weights.put(DDDRegistries.damageTypes.get(s), f));
+		Predicate<String> isNotRegistered = Predicates.compose(Predicates.isNull(), Functions.compose(DDDRegistries.damageTypes::get, "ddd_"::concat));
+		BUILDERS.forEach((b) -> {
+			//@formatter:off
+			Optional<RuntimeException> e = b.stringWeights.keySet().stream()
+					.filter(isNotRegistered)
+					.reduce((s1, s2) -> s1.concat("\n").concat(s2))
+					.map((s) -> new RuntimeException(String.format("Unregistered damage type(s) used for %s: %s", b.name, s)));
+			//@formatter:on
+			if(e.isPresent()) {
+				throw e.get();
+			}
+			b.stringWeights.forEach((s, f) -> b.weights.put(DDDRegistries.damageTypes.get("ddd_"+s), f));
 			DDDRegistries.distributions.register(new CTDDDCustomDistribution(b.name, b.weights, b.isContextApplicable, b.priority));
 		});
 		USED_NAMES.clear();

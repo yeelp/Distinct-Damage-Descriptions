@@ -18,7 +18,7 @@ import yeelp.distinctdamagedescriptions.integration.tic.ContentMaterialInfluence
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
-import yeelp.distinctdamagedescriptions.util.Translations.Translator;
+import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 public final class ContentConarmMaterialInfluence extends ContentMaterialInfluence {
 
@@ -31,7 +31,7 @@ public final class ContentConarmMaterialInfluence extends ContentMaterialInfluen
 	}
 
 	@Override
-	protected Translator getTranslator() {
+	protected BasicTranslator getTranslator() {
 		return TiCBookTranslator.CONARM.getTranslator();
 	}
 

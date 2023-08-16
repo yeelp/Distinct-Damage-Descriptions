@@ -27,13 +27,19 @@ enum DistributionPreference implements IEnumTranslation {
 	MODERATELY {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, toolName, moderateType.getDisplayName());
+			return new EnumBookString<DistributionPreference>(this, toolName, strongType.getDisplayName());
 		}
 	},
 	BARELY {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
 			return new EnumBookString<DistributionPreference>(this, barelyType.getDisplayName());
+		}
+	},
+	BARELY_TWO {
+		@Override
+		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
+			return new EnumBookString<DistributionPreference>(this, moderateType.getDisplayName(), barelyType.getDisplayName());
 		}
 	},
 	BALANCED {
@@ -63,7 +69,7 @@ enum DistributionPreference implements IEnumTranslation {
 				}
 			}
 			else {
-				second = BARELY;
+				second = thirdType.isPresent() ? BARELY_TWO : BARELY;
 				if(dist.getWeight(firstType) > 0.7) {
 					first = STRONGLY;
 				}

@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import java.util.Arrays;
+
 /**
  * A collection of useful methods
  * 
@@ -16,19 +18,8 @@ public final class YLib {
 	 * @return a String that is the result of nicely joining the {@code strings}
 	 */
 	public static String joinNiceString(boolean addSpace, String sep, String... strings) {
-		StringBuilder result = new StringBuilder();
-		if(strings.length != 0) {
-			String last = strings[strings.length - 1];
-			for(int i = 0; i <= strings.length - 2; i++) {
-				result.append(strings[i]);
-				result.append(sep);
-				if(addSpace) {
-					result.append(" ");
-				}
-			}
-			result.append(last);
-		}
-		return result.toString();
+		String sepUsed = addSpace ? sep.concat(" ") : sep;
+		return Arrays.stream(strings).reduce((s1, s2) -> s1.concat(sepUsed).concat(s2)).orElse("");
 	}
 
 	/**

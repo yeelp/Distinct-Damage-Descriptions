@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions;
 
 import java.io.File;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 
@@ -12,11 +13,13 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.command.DDDStatCommand;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
@@ -43,6 +46,9 @@ public class DistinctDamageDescriptions {
 
 	@SidedProxy(clientSide = "yeelp.distinctdamagedescriptions.proxy.ClientProxy", serverSide = "yeelp.distinctdamagedescriptions.proxy.Proxy")
 	public static Proxy proxy;
+	
+	private static final String LOGGER_REGULAR_PREFIX = String.format("[%s]", ModConsts.NAME.toUpperCase());
+	private static final String LOGGER_DEBUG_PREFIX = String.format("[%s (DEBUG)]", ModConsts.NAME.toUpperCase());
 
 	@SuppressWarnings("static-method")
 	@EventHandler
@@ -82,29 +88,39 @@ public class DistinctDamageDescriptions {
 	public void postInit(FMLPostInitializationEvent event) {
 		ModIntegrationKernel.doPostInit(event);
 	}
+	
+	@SuppressWarnings("static-method")
+	@EventHandler
+	public void serverStarting(FMLServerStartingEvent event) {
+		event.registerServerCommand(new DDDStatCommand());
+	}
 
 	public static void info(String msg) {
-		logger.info("[DISTINCT DAMAGE DESCRIPTIONS] " + msg);
+		logNormal(msg, logger::info);
 	}
 
 	public static void warn(String msg) {
 		if(!ModConfig.core.suppressWarnings) {
-			logger.warn("[DISTINCT DAMAGE DESCRIPTIONS] " + msg);
+			logNormal(msg, logger::warn);
 		}
 	}
 
 	public static void err(String msg) {
-		logger.error("[DISTINCT DAMAGE DESCRIPTIONS] " + msg);
+		logNormal(msg, logger::error);
 	}
 
 	public static void fatal(String msg) {
-		logger.fatal("[DISTINCT DAMAGE DESCRIPTIONS] " + msg);
+		logNormal(msg, logger::fatal);
 	}
 
 	public static void debug(String msg) {
 		if(ModConfig.showDotsOn) {
-			logger.info("[DISTINCT DAMAGE DESCRIPTIONS (DEBUG)]" + msg);
+			logger.info(String.format("%s %s", LOGGER_DEBUG_PREFIX, msg));
 		}
+	}
+	
+	private static void logNormal(String msg, Consumer<String> method) {
+		method.accept(String.format("%s %s", LOGGER_REGULAR_PREFIX, msg));
 	}
 
 	public static File getModConfigDirectory() {

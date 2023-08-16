@@ -22,6 +22,7 @@ import yeelp.distinctdamagedescriptions.util.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.Translations;
+import yeelp.distinctdamagedescriptions.util.Translations.LayeredTranslator;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
@@ -32,6 +33,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
 public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResistances> {
 
 	private static HwylaMobResistanceFormatter instance;
+	private static final LayeredTranslator TRANSLATOR = Translations.INSTANCE.getLayeredTranslator("tooltips", "hwyla");
 
 	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE),
 			AQUA = new Style().setColor(TextFormatting.AQUA),
@@ -83,7 +85,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			}
 			String s = TooltipTypeFormatter.MOB_RESISTS.format(type, rMap.get(type), this);
 			if(aMap.containsKey(type)) {
-				result.add(s.concat(Translations.INSTANCE.getTranslator("tooltips").translate("hwyla.witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormatter().format(1 - (1 - rMap.get(type)) * (1 - aMap.get(type).getArmor() / 100.0f))))));
+				result.add(s.concat(TRANSLATOR.translate("witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormatter().format(1 - (1 - rMap.get(type)) * (1 - aMap.get(type).getArmor() / 100.0f))))));
 			}
 			else if(rMap.get(type) != 0) {
 				result.add(s);

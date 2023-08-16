@@ -39,8 +39,8 @@ public final class ResistanceCategory {
 			"   [(t,a)] is a list of comma separated tuples of damage types this shield blocks.",
 			"      t is the type this shield blocks. Requires the 'ddd_' prefix. Can use s, p, b as shorthand for slashing, piercing and bludgeoning damage, respectively.",
 			"      a is the effectiveness the shield has against that damage type.",
-			"Shields not listed here will act as normal shields (will block all damage they can interact with).",
-			"Shield effectiveness determines how much physical damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
+			"Shields not listed here will block no classified damage.",
+			"Shield effectiveness determines how much damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
 			"Blocking damage will still knock the attacker back, but the knockback strength is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by about 33% of the vanilla amount).",
 			"Malformed entries in this list will be ignored."})
 	@RequiresMcRestart

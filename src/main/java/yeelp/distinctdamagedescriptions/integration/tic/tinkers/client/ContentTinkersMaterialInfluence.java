@@ -16,7 +16,7 @@ import yeelp.distinctdamagedescriptions.integration.tic.ContentMaterialInfluence
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.util.DistributionBias;
-import yeelp.distinctdamagedescriptions.util.Translations.Translator;
+import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 public final class ContentTinkersMaterialInfluence extends ContentMaterialInfluence {
 
@@ -29,7 +29,7 @@ public final class ContentTinkersMaterialInfluence extends ContentMaterialInflue
 	}
 
 	@Override
-	protected Translator getTranslator() {
+	protected BasicTranslator getTranslator() {
 		return TiCBookTranslator.TINKERS.getTranslator();
 	}
 

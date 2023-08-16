@@ -232,7 +232,7 @@ public class DDDCombatTracker extends CombatTracker {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onEntityJoinWorld(EntityJoinWorldEvent evt) {
-		if(evt.getEntity() instanceof EntityLivingBase) {
+		if(evt.getEntity() instanceof EntityLivingBase && !evt.getEntity().world.isRemote) {
 			EntityLivingBase entity = (EntityLivingBase) evt.getEntity();
 			if(!(entity.combatTracker instanceof DDDCombatTracker)) {
 				entity.combatTracker = new DDDCombatTracker(entity);
@@ -243,12 +243,18 @@ public class DDDCombatTracker extends CombatTracker {
 // Lowest because we reset active hands, which means shields "aren't in use" past this point.
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static final void onEntityAttack(LivingAttackEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> tracker.handleAttackStage(evt));
 		DeveloperModeKernel.onAttackCallback(evt);
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static final void onEntityHurt(LivingHurtEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> {
 			tracker.handleHurtStage(evt);
 			tracker.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent(evt::setAmount);
@@ -281,6 +287,9 @@ public class DDDCombatTracker extends CombatTracker {
 	// that are no longer needed.
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static final void onEntityDamage(LivingDamageEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> {
 			tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).removeModifier(ARMOR_CALC_UUID);
 			tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).removeModifier(TOUGHNESS_CALC_UUID);
@@ -293,6 +302,9 @@ public class DDDCombatTracker extends CombatTracker {
 
 	@SubscribeEvent
 	public static final void onEntityKnockback(LivingKnockBackEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).map(DDDCombatTracker::getRecentResults).map(Predicates.or(Predicates.and(CombatResults::wasImmunityTriggered, (results) -> results.getAmount().orElse(Double.NaN) == 0), CombatResults::wasShieldEffective)::test).ifPresent(evt::setCanceled);
 	}
 }

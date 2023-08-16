@@ -17,6 +17,18 @@ damagetypes.distinctdamagedescriptions.thunder=Thunder
 keys.distinctdamagedescriptions.shift=<SHIFT>
 keys.distinctdamagedescriptions.ctrl=<CTRL>
 
+commands.distinctdamagedescriptions.notargets=%s found nothing...
+commands.distinctdamagedescriptions.invalidtype=%s is not a registered DDD type!
+commands.distinctdamagedescriptions.numerr=Could not parse numerical argument: %s
+commands.distinctdamagedescriptions.stat.usage=/ddd <resistance|immunity> ...
+commands.distinctdamagedescriptions.resistance.usage=/ddd resistance <set|add> <target> <dddtype> <amount>
+commands.distinctdamagedescriptions.resistance.set.usage=/ddd resistance set <target> <dddtype> <amount>
+commands.distinctdamagedescriptions.resistance.add.usage=/ddd resistance add <target> <dddtype> <amount>
+commands.distinctdamagedescriptions.immunity.usage=/ddd immunity <give|take|toggle> <target> <dddtype>
+commands.distinctdamagedescriptions.immunity.give.usage=/ddd immunity give <target> <dddtype>
+commands.distinctdamagedescriptions.immunity.take.usage=/ddd immunity take <target> <dddtype>
+commands.distinctdamagedescriptions.immunity.toggle.usage=/ddd immunity toggle <target> <dddtype>
+
 tooltips.distinctdamagedescriptions.damage=Damage
 tooltips.distinctdamagedescriptions.resistance=Resistance
 tooltips.distinctdamagedescriptions.immunities=Starting Immunities:
@@ -67,6 +79,7 @@ distinctdamagedescriptions.tinkers.book.distributions.favoured.only=The %s only 
 distinctdamagedescriptions.tinkers.book.distributions.favoured.strongly=The %s strongly favours %s damage.
 distinctdamagedescriptions.tinkers.book.distributions.favoured.moderately=The %s moderately gravitates towards %s damage.
 distinctdamagedescriptions.tinkers.book.distributions.favoured.barely=This tool also does a splash of %s damage.
+distinctdamagedescriptions.tinkers.book.distributions.favoured.barely_two=This tool also does a splash of %s damage and %s damage.
 distinctdamagedescriptions.tinkers.book.distributions.favoured.balanced=The %s strikes a nice balance between %s and %s damage.
 distinctdamagedescriptions.tinkers.book.distributions.shield=This tool also functions as a shield!
 distinctdamagedescriptions.tinkers.book.distributions.launcher=This tool launches projectiles. The %s's distribution is only used when attacking in melee.

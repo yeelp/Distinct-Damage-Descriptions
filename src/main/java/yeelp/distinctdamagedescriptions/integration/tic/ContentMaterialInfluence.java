@@ -31,7 +31,7 @@ import slimeknights.tconstruct.smeltery.block.BlockCasting;
 import slimeknights.tconstruct.tools.TinkerTools;
 import slimeknights.tconstruct.tools.common.block.BlockToolTable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.Translations.Translator;
+import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 public abstract class ContentMaterialInfluence extends ContentMaterial {
 	public static final String ID = "materialInfluence";
@@ -107,7 +107,7 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 		return this.material;
 	}
 
-	protected abstract Translator getTranslator();
+	protected abstract BasicTranslator getTranslator();
 
 	protected abstract Set<? extends IToolPart> getRegistry();
 
