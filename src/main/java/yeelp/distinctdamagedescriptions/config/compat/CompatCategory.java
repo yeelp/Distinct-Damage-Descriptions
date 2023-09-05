@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.config.compat;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 
 public final class CompatCategory {
 	@Name("Construct's Armory Integration")
@@ -19,4 +20,19 @@ public final class CompatCategory {
 	@Name("Tetra Integration")
 	@Comment("Configure Tetra integration")
 	public TetraConfigCategory tetra = new TetraConfigCategory();
+	
+	@Name("Only Use Defined Item Distributions")
+	@Comment({"With this enabled, DDD will not assign distributions to items not given an explicit distribution in the config or through mod integration.",
+		"These items will use a default damage distribution (bludgeoning) if one isn't defined, a default armor distribution if applicable (no effectiveness) if one isn't defined and a default shield distribution if applicable (no effectiveness) if one isn't defined, which can not be altered during gameplay.",
+		"This has the advantage of not saving any NBT data to these items, which may cause problems with some mod specific recipes, such as Mekanism.",
+		"Note this has no effect on items with distributions set in the config or items already created. Those will still have NBT data saved to them. This is just for everything else."})
+	@RequiresWorldRestart
+	public boolean definedItemsOnly = false;
+	
+	@Name("Only Use Defined Entity Distributions")
+	@Comment({"With this enabled, DDD will not assign distributions/resistances to entities not given an explicit distribution/resistances in the config or through mod integration.",
+		"These entities will use a default damage distribution (bludgeoning) and a default set of mob resistances (no resistances, no adaptability, no immunities), which can not be altered during gameplay.",
+		"This has the advantage to not saving any NBT data to these entities, which may theoretically cause problems with some mod behaviour, though extremely unlikely."})
+	@RequiresWorldRestart
+	public boolean definedEntitiesOnly = false;
 }
