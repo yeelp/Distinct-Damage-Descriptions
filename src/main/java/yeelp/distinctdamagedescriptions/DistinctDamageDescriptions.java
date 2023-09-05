@@ -96,24 +96,44 @@ public class DistinctDamageDescriptions {
 	}
 
 	public static void info(String msg) {
+		if(logger == null) {
+			System.out.println(msg);
+			return;
+		}
 		logNormal(msg, logger::info);
 	}
 
 	public static void warn(String msg) {
+		if(logger == null) {
+			System.out.println(msg);
+			return;
+		}
 		if(!ModConfig.core.suppressWarnings) {
 			logNormal(msg, logger::warn);
 		}
 	}
 
 	public static void err(String msg) {
+		if(logger == null) {
+			System.err.println(msg);
+			return;
+		}
 		logNormal(msg, logger::error);
 	}
 
 	public static void fatal(String msg) {
+		if(logger == null) {
+			System.err.println(msg);
+			return;
+		}
 		logNormal(msg, logger::fatal);
 	}
 
 	public static void debug(String msg) {
+		if(logger == null) {
+			System.out.println(msg);
+			return;
+		}
 		if(ModConfig.showDotsOn) {
 			logger.info(String.format("%s %s", LOGGER_DEBUG_PREFIX, msg));
 		}
