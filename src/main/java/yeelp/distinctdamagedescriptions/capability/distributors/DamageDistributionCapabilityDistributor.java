@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.capability.distributors;
 
+import java.util.function.Supplier;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.Item;
@@ -12,17 +14,18 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 public abstract class DamageDistributionCapabilityDistributor<T> extends AbstractCapabilityDistributorGeneratable<T, IDamageDistribution, IDamageDistribution> {
 	static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "dmgDistribution");
 
-	protected DamageDistributionCapabilityDistributor(ResourceLocation loc) {
-		super(loc);
+	protected DamageDistributionCapabilityDistributor(ResourceLocation loc, Supplier<Boolean> shouldAssignDefault) {
+		super(loc, shouldAssignDefault);
 	}
 
-	protected DamageDistributionCapabilityDistributor() {
-		this(LOC);
+	protected DamageDistributionCapabilityDistributor(Supplier<Boolean> shouldAssignDefault) {
+		this(LOC, shouldAssignDefault);
 	}
 
 	@Override
@@ -38,6 +41,10 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 	public static final class ForEntity extends DamageDistributionCapabilityDistributor<EntityLivingBase> {
 
 		private static ForEntity instance;
+		
+		private ForEntity() {
+			super(() -> !ModConfig.compat.definedEntitiesOnly);
+		}
 
 		@Override
 		protected IDDDConfiguration<IDamageDistribution> getConfig() {
@@ -57,6 +64,10 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 	public static final class ForItem extends DamageDistributionCapabilityDistributor<ItemStack> {
 
 		private static ForItem instance;
+		
+		private ForItem() {
+			super(() -> !ModConfig.compat.definedItemsOnly);
+		}
 
 		@Override
 		protected IDamageDistribution generateCapability(ItemStack t, ResourceLocation key) {
@@ -91,7 +102,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 		private static ForProjectile instance;
 
 		private ForProjectile() {
-			super(LOC);
+			super(LOC, () -> !ModConfig.compat.definedEntitiesOnly);
 		}
 
 		@Override

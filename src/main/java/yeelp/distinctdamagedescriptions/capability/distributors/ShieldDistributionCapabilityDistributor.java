@@ -7,6 +7,7 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 public final class ShieldDistributionCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<ItemStack, ShieldDistribution, ShieldDistribution> {
@@ -14,7 +15,7 @@ public final class ShieldDistributionCapabilityDistributor extends AbstractCapab
 	private static ShieldDistributionCapabilityDistributor instance;
 
 	private ShieldDistributionCapabilityDistributor() {
-		super(LOC);
+		super(LOC, () -> !ModConfig.compat.definedItemsOnly);
 	}
 
 	@Override

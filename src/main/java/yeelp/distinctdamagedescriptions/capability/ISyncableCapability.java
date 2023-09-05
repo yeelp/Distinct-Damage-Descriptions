@@ -4,7 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 
 /**
