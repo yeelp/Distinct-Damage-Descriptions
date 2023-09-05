@@ -12,6 +12,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenSetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDDamageType;
@@ -84,6 +85,11 @@ public class CTResistances extends NonNullMap<ICTDDDDamageType, Float> {
 	public void setImmunity(ICTDDDDamageType type, boolean status) {
 		this.resists.setImmunity(type.asDDDDamageType(), status);
 		this.update();
+	}
+	
+	@ZenMethod
+	public boolean isDefault() {
+		return this.resists == DefaultResistances.getInstance();
 	}
 
 	private void update() {
