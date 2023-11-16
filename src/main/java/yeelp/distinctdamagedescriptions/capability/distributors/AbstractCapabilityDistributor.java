@@ -38,4 +38,8 @@ public abstract class AbstractCapabilityDistributor<T, U, C extends DDDCapabilit
 	protected final boolean shouldAssignDefault() {
 		return this.shouldAssignDefault.get();
 	}
+	
+	public ResourceLocation getLoc() {
+		return this.loc;
+	}
 }
