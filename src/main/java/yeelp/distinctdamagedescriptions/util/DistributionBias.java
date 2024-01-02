@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import net.minecraft.util.math.MathHelper;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public final class DistributionBias {
@@ -14,7 +15,10 @@ public final class DistributionBias {
 	private final float bias;
 
 	public <M extends NonNullMap<DDDDamageType, Float>> DistributionBias(M preferred, float bias) {
-		this.preferred = Objects.requireNonNull(preferred, "Material Bias must have preferred distribution!");
+		if(Math.abs(Objects.requireNonNull(preferred, "Material Bias must have preferred distribution!").values().stream().mapToDouble(Double::valueOf).sum() - 1) >= 0.01) {
+			throw new InvariantViolationException("Material Bias' preferred distribution must add up to 1!");
+		}
+		this.preferred = preferred;
 		this.bias = bias;
 	}
 

@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.registries;
 
-import yeelp.distinctdamagedescriptions.potion.DDDPotion;
+import yeelp.distinctdamagedescriptions.potion.AbstractDDDPotion;
 
 /**
  * Potion registry.
@@ -8,6 +8,6 @@ import yeelp.distinctdamagedescriptions.potion.DDDPotion;
  * @author Yeelp
  *
  */
-public interface IDDDPotionsRegistry extends IDDDRegistry<DDDPotion> {
+public interface IDDDPotionsRegistry extends IDDDRegistry<AbstractDDDPotion> {
 	//
 }

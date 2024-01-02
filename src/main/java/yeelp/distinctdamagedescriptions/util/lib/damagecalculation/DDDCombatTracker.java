@@ -72,6 +72,7 @@ public class DDDCombatTracker extends CombatTracker {
 	private ArmorValues armors;
 	private ShieldDistribution usedShieldDist;
 	private Optional<DamageMap> incomingDamage;
+	private float damage;
 
 	public DDDCombatTracker(EntityLivingBase entity) {
 		super(entity);
@@ -80,7 +81,7 @@ public class DDDCombatTracker extends CombatTracker {
 
 	public void clear() {
 		if(this.getFighter().isEntityAlive()) {
-			this.type = null;			
+			this.type = null;
 			this.ctx = null;
 		}
 		this.armors = null;
@@ -103,6 +104,10 @@ public class DDDCombatTracker extends CombatTracker {
 
 	public Optional<ShieldDistribution> getCurrentlyUsedShieldDistribution() {
 		return Optional.ofNullable(this.usedShieldDist);
+	}
+	
+	public void setDamageReference(float amount) {
+		this.damage = amount;
 	}
 
 	public void handleAttackStage(LivingAttackEvent evt) {
@@ -218,15 +223,21 @@ public class DDDCombatTracker extends CombatTracker {
 		if(this.ctx == null) {
 			this.ctx = new CombatContext(newSrc, amount, attacker, this.getFighter());
 			this.results.withStartingDamage(amount);
+			this.damage = amount;
 		}
 		else if(this.incomingDamage != null) {
-			this.getIncomingDamage().ifPresent((map) -> {
-				float dmg = (float) YMath.sum(map.values());
-				if(Math.abs(amount - dmg) >= 0.01 && dmg != 0) {
-					float ratio = amount / dmg;
-					map.keySet().forEach((k) -> map.computeIfPresent(k, (key, val) -> val * ratio));
-				}
-			});
+			Entity trueAttacker = newSrc.getTrueSource();
+			if(amount != this.damage && newSrc.damageType.equals(this.ctx.getSource().damageType) && (trueAttacker == null || trueAttacker.getUniqueID().equals(this.ctx.getTrueAttacker().getUniqueID())) && (attacker == null || attacker.getUniqueID().equals(this.ctx.getImmediateAttacker().getUniqueID()))) {
+				//this is not "new" damage, so just update the damage map as needed.
+				this.getIncomingDamage().ifPresent((map) -> {
+					float dmg = this.ctx.getAmount();
+					if(Math.abs(amount - dmg) >= 0.01 && dmg != 0) {
+						float ratio = amount / dmg;
+						map.keySet().forEach((k) -> map.computeIfPresent(k, (key, val) -> val * ratio));
+					}
+				});
+			}
+
 		}
 	}
 
@@ -257,7 +268,10 @@ public class DDDCombatTracker extends CombatTracker {
 		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> {
 			tracker.handleHurtStage(evt);
-			tracker.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent(evt::setAmount);
+			tracker.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent((f) -> {
+				evt.setAmount(f);
+				tracker.setDamageReference(f);
+			});
 			tracker.getNewArmorValues().ifPresent((vals) -> {
 				Arrays.stream(ARMOR_SLOTS).map((slot) -> {
 					ItemStack stack = tracker.getFighter().getItemStackFromSlot(slot);

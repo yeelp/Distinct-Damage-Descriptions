@@ -50,7 +50,7 @@ public final class GeneralCategory {
 	public boolean enableAdaptiveWeakness = false;
 
 	@Name("Register Potions")
-	@Comment("If true, DDD will register and add potions and potion effects that grant resistance buffs/debuffs")
+	@Comment("If true, DDD will register and add potions and potion effects that grant damage/resistance buffs/debuffs")
 	@RequiresMcRestart
 	public boolean enablePotionRegistration = false;
 }

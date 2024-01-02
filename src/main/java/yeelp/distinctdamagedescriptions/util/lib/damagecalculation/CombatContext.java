@@ -118,4 +118,14 @@ final class CombatContext {
 		}
 		return Optional.empty();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof CombatContext) {
+			CombatContext otherCtx = (CombatContext) obj;
+			return this.src.damageType.equals(otherCtx.src.damageType);			
+		}
+		return false;
+	}
+	
 }

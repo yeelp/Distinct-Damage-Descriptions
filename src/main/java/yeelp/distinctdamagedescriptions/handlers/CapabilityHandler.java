@@ -1,15 +1,19 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
+import java.util.Map;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
@@ -28,15 +32,15 @@ public class CapabilityHandler extends Handler {
 		}
 		if(entity instanceof EntityPlayer) {
 			evt.addCapability(creatureType, CreatureType.UNKNOWN);
-			DDDCapabilityDistributors.getPlayerCapabilities((EntityPlayer) entity).forEach(evt::addCapability);
+			addCapsIfNonNull(evt, DDDCapabilityDistributors.getPlayerCapabilities((EntityPlayer) entity));
 		}
 		else if(entity instanceof EntityLivingBase) {
 			EntityLivingBase entityLiving = (EntityLivingBase) entity;
 			evt.addCapability(creatureType, new CreatureType(DDDRegistries.creatureTypes.getCreatureTypeForMob(entityLiving)));
-			DDDCapabilityDistributors.getCapabilities(entityLiving).ifPresent((m) -> m.forEach(evt::addCapability));
+			DDDCapabilityDistributors.getCapabilities(entityLiving).ifPresent((m) -> addCapsIfNonNull(evt, m));
 		}
 		else if(entity instanceof IProjectile) {
-			DDDCapabilityDistributors.getCapabilities((IProjectile) entity).ifPresent((m) -> m.forEach(evt::addCapability));
+			DDDCapabilityDistributors.getCapabilities((IProjectile) entity).ifPresent((m) -> addCapsIfNonNull(evt, m));
 		}
 	}
 
@@ -47,6 +51,14 @@ public class CapabilityHandler extends Handler {
 			DistinctDamageDescriptions.warn("Trying to get capabilities for null stack!");
 			return;
 		}
-		DDDCapabilityDistributors.getCapabilities(evt.getObject()).forEach(evt::addCapability);
+		addCapsIfNonNull(evt, DDDCapabilityDistributors.getCapabilities(evt.getObject()));
+	}
+	
+	private static <T> void addCapsIfNonNull(AttachCapabilitiesEvent<T> evt, Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> map) {
+		map.forEach((loc, cap) -> {
+			if(cap != null) {
+				evt.addCapability(loc, cap);
+			}
+		});
 	}
 }
