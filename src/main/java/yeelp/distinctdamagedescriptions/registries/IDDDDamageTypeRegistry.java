@@ -1,5 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -30,16 +32,16 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	 */
 	@Nonnull
 	@SuppressWarnings("null")
-	default ITextComponent getDeathMessageForType(@Nonnull DDDDamageType type, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
+	default Optional<ITextComponent> getDeathMessageForType(@Nonnull DDDDamageType type, @Nullable Entity attacker, @Nonnull EntityLivingBase defender) {
 		boolean hasAttacker = attacker != null;
 		String msg = type.getDeathMessage(hasAttacker);
 		if(msg == null) {
-			return defender.getCombatTracker().getDeathMessage();
+			return Optional.empty();
 		}
 		if(hasAttacker) {
 			msg = msg.replaceAll("#attacker", attacker.getName());
 		}
 		msg = msg.replaceAll("#defender", defender.getName());
-		return new TextComponentString(msg);
+		return Optional.of(new TextComponentString(msg));
 	}
 }

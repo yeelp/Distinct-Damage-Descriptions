@@ -5,6 +5,7 @@ import crafttweaker.api.entity.IEntity;
 import crafttweaker.api.entity.IEntityLivingBase;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import yeelp.distinctdamagedescriptions.event.calculation.DDDCalculationEvent;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 /**
  * Skeletal implementation of DDD calculation events
@@ -14,7 +15,7 @@ import yeelp.distinctdamagedescriptions.event.calculation.DDDCalculationEvent;
  * @param <Event> The underlying DDDCalculationEvent this wrapped CraftTweaker
  *                event represents
  */
-public abstract class CTDDDCalculationEvent<Event extends DDDCalculationEvent> extends CTDDDEvent implements IDDDCalculationEvent {
+public abstract class CTDDDCalculationEvent<Event extends DDDCalculationEvent> implements IDDDCalculationEvent {
 
 	protected final Event internal;
 
@@ -43,7 +44,7 @@ public abstract class CTDDDCalculationEvent<Event extends DDDCalculationEvent> e
 	}
 
 	@Override
-	public float getDamage(String type) {
-		return this.internal.getDamage(CTDDDEvent.parseDamageType(type));
+	public float getDamage(ICTDDDDamageType type) {
+		return this.internal.getDamage(type.asDDDDamageType());
 	}
 }

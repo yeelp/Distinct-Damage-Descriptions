@@ -13,6 +13,7 @@ public class ModConsts {
 	/** MOD NAMES SECTION **/
 
 	public static final String CRAFTTWEAKER_ID = "crafttweaker";
+	public static final String CONTENTTWEAKER_ID = "contenttweaker";
 	public static final String CONARM_ID = "conarm";
 	public static final String TCONSTRUCT_ID = "tconstruct";
 	public static final String LYCANITES_ID = "lycanitesmobs";

@@ -281,7 +281,7 @@ public interface DefaultValues {
 			"lycanitesmobs:waterjet;[(b, 0.5), (ddd_acid, 0.5)];lycanitesmobs:waterjetcharge,lycanitesmobs:waterjetscepter",
 			"lycanitesmobs:devilstar;[(ddd_necrotic, 0.5), (ddd_force, 0.5)];lycanitesmobs:devilstarcharge",
 			"lycanitesmobs:acidglob;[(ddd_acid, 0.5), (b, 0.5)];lycanitesmobs:acidglobcharge",
-			"lycanitesmobs:primeember;[(ddd_fire, 0.5)];lycanitesmobs:primeembercharge",
+			"lycanitesmobs:primeember;[(ddd_fire, 1)];lycanitesmobs:primeembercharge",
 			"lycanitesmobs:smitefireball;[(ddd_radiant, 0.8), (ddd_fire, 0.2)];lycanitesmobs:smitefireballcharge"};
 
 	/***************
@@ -474,9 +474,9 @@ public interface DefaultValues {
 			"lycanitesmobs:tpumpkyn;[(s, -0.3), (b, 0.5), (ddd_acid, -0.5), (ddd_fire, -1.0), (ddd_poison, -0.25)];[];0;0",			
 			"lycanitesmobs:shambler;[(s, -0.25), (p, 1.0), (b, 0.5), (ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_lightning, -0.25), (ddd_necrotic, -0.5), (ddd_poison, 1.0), (ddd_psychic, 0.25), (ddd_thunder, 0.25)];[ddd_piercing, ddd_poison];0;0",
 			"lycanitesmobs:beholder;[];[];0.8;1",
-			"lycanitesmobs:grell;[(ddd_necrotic;0.3)];[ddd_acid, ddd_fire];0;0",
-			"lycanitesmobs:grigori;[(ddd_necrotic;0.3)];[ddd_fire];0;0",
-			"lycanitesmobs:vorach;[(ddd_necrotic;0.75)];[ddd_fire];0;0",
+			"lycanitesmobs:grell;[(ddd_necrotic, 0.3)];[ddd_acid, ddd_fire];0;0",
+			"lycanitesmobs:grigori;[(ddd_necrotic, 0.3)];[ddd_fire];0;0",
+			"lycanitesmobs:vorach;[(ddd_necrotic, 0.75)];[ddd_fire];0;0",
 			"lycanitesmobs:trite;[(b, -0.25), (ddd_necrotic, 0.25), (ddd_poison, 0.25), (ddd_psychic, 0.25), (ddd_radiant, -0.5)];[];0.75;0.75",
 			"lycanitesmobs:shade;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_psychic, 1.0), (ddd_radiant, 0.5)];[ddd_psychic];0;0",
 			"lycanitesmobs:asmodeus;[(s, 0.25), (p, 0.25), (b, 0.25), (ddd_acid, -0.25), (ddd_force, 0.5), (ddd_lightning, -0.5), (ddd_necrotic, 1.0), (ddd_poison, 1.0), (ddd_psychic, 1.0), (ddd_radiant, -0.5)];[ddd_necrotic, ddd_psychic];0;0",

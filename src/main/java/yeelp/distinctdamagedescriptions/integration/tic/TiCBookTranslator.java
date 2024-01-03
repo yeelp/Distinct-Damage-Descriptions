@@ -1,23 +1,23 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
 import yeelp.distinctdamagedescriptions.util.Translations;
-import yeelp.distinctdamagedescriptions.util.Translations.Translator;
+import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 public enum TiCBookTranslator {
 	TINKERS("tinkers"),
 	CONARM("conarm");
 
-	private final Translator translator;
+	private final BasicTranslator translator;
 
 	private TiCBookTranslator(String root) {
 		this.translator = new TiCTranslator(root);
 	}
 
-	public Translator getTranslator() {
+	public BasicTranslator getTranslator() {
 		return this.translator;
 	}
 
-	private final class TiCTranslator extends Translator {
+	private final class TiCTranslator extends BasicTranslator {
 
 		private final String key;
 
@@ -27,7 +27,7 @@ public enum TiCBookTranslator {
 		}
 
 		@Override
-		protected String getKey(String key) {
+		public String getKey(String key) {
 			return super.getKey(this.key.concat(".").concat(key)).substring(1);
 		}
 	}

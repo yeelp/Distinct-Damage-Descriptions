@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.util.development;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -25,6 +26,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -38,8 +40,10 @@ import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 import yeelp.distinctdamagedescriptions.config.readers.DDDMultiEntryConfigReader;
+import yeelp.distinctdamagedescriptions.event.calculation.DDDCalculationEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
+import yeelp.distinctdamagedescriptions.event.classification.DDDClassificationEvent;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
 import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
@@ -59,7 +63,12 @@ public final class DeveloperModeKernel {
 	public static void log(String msg, boolean inChat, Iterable<? extends EntityPlayer> players) {
 		LOGGER.info("[DISTINCT DAMAGE DESCRIPTIONS (DEVELOPER)]: " + msg);
 		if(inChat) {
-			players.forEach((p) -> p.sendStatusMessage(new TextComponentString("[DDD DEVELOPER]: " + msg.replaceAll("\r", "")), false));
+			players.forEach((p) -> {
+				if(p.world.isRemote) {
+					return;
+				}
+				p.sendStatusMessage(new TextComponentString("[DDD DEVELOPER]: " + msg.replaceAll("\r", "")), false);
+			});
 		}
 	}
 
@@ -86,9 +95,30 @@ public final class DeveloperModeKernel {
 	}
 
 	private static final <T> void doIfEnabled(@Nonnull T t, @Nonnull BiFunction<T, StringBuilder, StringBuilder> log) {
-		if(ModConfig.dev.enabled && ((currMode = statusMap.get(t.getClass()).get()).isEnabled())) {
+		if(ModConfig.dev.enabled && FMLCommonHandler.instance().getSide().isClient() && ((currMode = statusMap.get(t.getClass()).get()).isEnabled())) {
 			log(Objects.requireNonNull(log, "action can't be null!").andThen(Functions.toStringFunction()).apply(Objects.requireNonNull(t, "argument to action can't be null"), new StringBuilder()), FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers());
 		}
+	}
+	
+	private static final <E extends DDDCalculationEvent> void doDDDCalcEventCheckThen(@Nonnull E evt, Consumer<E> action) {
+		if(evt.getDefender().world.isRemote) {
+			return;
+		}
+		Objects.requireNonNull(action, "action must not be null!").accept(evt);
+	}
+	
+	private static final <E extends DDDClassificationEvent> void doDDDClassifyEventCheckThen(@Nonnull E evt, Consumer<E> action) {
+		if(evt.getDefender().world.isRemote) {
+			return;
+		}
+		Objects.requireNonNull(action, "action must not be null!").accept(evt);
+	}
+	
+	private static final <E extends LivingEvent> void doLivingEventCheckThen(@Nonnull E evt, @Nonnull Consumer<E> action) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
+		Objects.requireNonNull(action, "action must not be null!").accept(evt);
 	}
 
 	private static final String getEntityNameAndID(@Nonnull Entity entity) {
@@ -99,17 +129,17 @@ public final class DeveloperModeKernel {
 		if(evt.getSource().getImmediateSource() == null && evt.getSource().getTrueSource() == null && evt.getSource().damageType.equals("generic") && evt.getAmount() == 0) {
 			return;
 		}
-		doIfEnabled(evt, (e, sb) -> {
+		doLivingEventCheckThen(evt, (le) -> doIfEnabled(evt, (e, sb) -> {
 			DamageSource src = e.getSource();
 			String direct = mapIfNonNullElseGetDefault(src.getImmediateSource(), DeveloperModeKernel::getEntityNameAndID, "None");
 			String indirect = mapIfNonNullElseGetDefault(src.getTrueSource(), DeveloperModeKernel::getEntityNameAndID, "None");
 			sb.append(String.format("ATTACK: Direct Attacker: %s | Attacker: %s | Defender: %s | Source: %s | Current Damage: %.2f", direct, indirect, e.getEntityLiving().getName(), src.damageType, e.getAmount()));
 			return sb;
-		});
+		}));
 	}
 
 	public static final void onHurtCallback(LivingHurtEvent evt) {
-		doIfEnabled(evt, (e, sb) -> {
+		doLivingEventCheckThen(evt, (le) -> doIfEnabled(evt, (e, sb) -> {
 			DDDAPI.accessor.getDDDCombatTracker(e.getEntityLiving()).ifPresent((tracker) -> {
 				AbstractAttributeMap attributes = tracker.getFighter().getAttributeMap();
 				float armor = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR).getModifier(DDDCombatTracker.ARMOR_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
@@ -121,26 +151,26 @@ public final class DeveloperModeKernel {
 				sb.append(String.format("Current damage: %.2f", e.getAmount()));
 			});
 			return sb;
-		});
+		}));
 	}
 
 	public static final void onDamageCallback(LivingDamageEvent evt) {
-		doIfEnabled(evt, (e, sb) -> {
+		doLivingEventCheckThen(evt, (le) -> doIfEnabled(evt, (e, sb) -> {
 			sb.append(String.format("DAMAGE: Final damage amount for %s after resistances/immunities: %.2f", e.getEntityLiving().getName(), e.getAmount()));
 			return sb;
-		});
+		}));
 	}
 
 	public static final void onDetermineDamageCallback(DetermineDamageEvent evt) {
-		doIfEnabled(evt, (e, sb) -> {
+		doDDDClassifyEventCheckThen(evt, (ce) -> doIfEnabled(evt, (e, sb) -> {
 			sb.append("DETERMINE DAMAGE: Damage Classification").append(NEW_LINE);
 			DDDRegistries.damageTypes.getAll().stream().filter((type) -> e.getDamage(type) > 0).map((type) -> String.format("%s: %.2f%n", type.getDisplayName(), e.getDamage(type))).forEach(sb::append);
 			return sb;
-		});
+		}));
 	}
 
 	public static final void onGatherDefensesCallback(GatherDefensesEvent evt) {
-		doIfEnabled(evt, (e, sb) -> {
+		doDDDClassifyEventCheckThen(evt, (ce) -> doIfEnabled(evt, (e, sb) -> {
 			sb.append("GATHER DEFENSES: Defense Classification").append(NEW_LINE);
 			DDDRegistries.damageTypes.getAll().stream().flatMap((type) -> {
 				Stream.Builder<String> stream = Stream.builder();
@@ -156,11 +186,11 @@ public final class DeveloperModeKernel {
 				return stream.build();
 			}).forEach(sb::append);
 			return sb;
-		});
+		}));
 	}
 
 	public static final void onShieldBlockCallback(ShieldBlockEvent evt) {
-		doIfEnabled(evt, (e, sb) -> {
+		doDDDCalcEventCheckThen(evt, (ce) -> doIfEnabled(evt, (e, sb) -> {
 			sb.append("SHIELD: ");
 			if(e.isCanceled()) {
 				sb.append(String.format("Shield blocking disabled for %s", e.getDefender().getName()));
@@ -170,11 +200,11 @@ public final class DeveloperModeKernel {
 				DDDRegistries.damageTypes.getAll().stream().filter((type) -> e.getShieldDistribution().getWeight(type) > 0).map((type) -> String.format("%s: %.2f%n", type.getDisplayName(), e.getShieldDistribution().getWeight(type))).forEach(sb::append);
 			}
 			return sb;
-		});
+		}));
 	}
 
 	public static final void onUpdateAdaptabilityCallback(UpdateAdaptiveResistanceEvent evt) {
-		doIfEnabled(evt, (e, sb) -> {
+		doDDDCalcEventCheckThen(evt, (ce) -> doIfEnabled(evt, (e, sb) -> {
 			sb.append("ADAPTIVE: ");
 			switch(e.getResult()) {
 				case DEFAULT:
@@ -191,7 +221,7 @@ public final class DeveloperModeKernel {
 					break;
 			}
 			return sb;
-		});
+		}));
 	}
 
 	@SubscribeEvent

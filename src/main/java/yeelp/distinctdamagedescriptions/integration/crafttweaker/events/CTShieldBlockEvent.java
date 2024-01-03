@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 public final class CTShieldBlockEvent extends CTDDDCalculationEvent<ShieldBlockEvent> implements IShieldBlockEvent {
 
@@ -16,13 +17,13 @@ public final class CTShieldBlockEvent extends CTDDDCalculationEvent<ShieldBlockE
 	}
 
 	@Override
-	public float getShieldEffectivenessForType(String type) {
-		return this.internal.getShieldDistribution().getWeight(CTDDDEvent.parseDamageType(type));
+	public float getShieldEffectivenessForType(ICTDDDDamageType type) {
+		return this.internal.getShieldDistribution().getWeight(type.asDDDDamageType());
 	}
 
 	@Override
-	public void setShieldEffectivenessForType(String type, float amount) {
-		this.internal.getShieldDistribution().setWeight(CTDDDEvent.parseDamageType(type), amount);
+	public void setShieldEffectivenessForType(ICTDDDDamageType type, float amount) {
+		this.internal.getShieldDistribution().setWeight(type.asDDDDamageType(), amount);
 	}
 
 	@Override

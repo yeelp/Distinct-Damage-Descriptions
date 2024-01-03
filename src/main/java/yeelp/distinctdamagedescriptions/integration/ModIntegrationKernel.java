@@ -21,6 +21,7 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.DDDCoTIntegration;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesIntegration;
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.SpartanWeaponryCompat;
@@ -41,6 +42,7 @@ public final class ModIntegrationKernel {
 		// that isn't actually the same as using lambdas and those minor differences CAN
 		// cause problems here with optional dependencies so ONLY use lambdas here!!
 		integratableMods.put(ModConsts.CRAFTTWEAKER_ID, () -> new CTEventHandler());
+		integratableMods.put(ModConsts.CONTENTTWEAKER_ID, () -> new DDDCoTIntegration());
 		integratableMods.put(ModConsts.HWYLA_ID, () -> new Hwyla());
 		integratableMods.put(ModConsts.TCONSTRUCT_ID, () -> new DDDTinkersIntegration());
 		integratableMods.put(ModConsts.CONARM_ID, () -> new DDDConarmIntegration());

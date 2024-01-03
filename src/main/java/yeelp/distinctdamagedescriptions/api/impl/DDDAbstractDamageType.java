@@ -52,7 +52,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 
 	@Override
 	public IDamageDistribution getBaseDistribution() {
-		return this.dist;
+		return this.dist.copy();
 	}
 
 	@Override

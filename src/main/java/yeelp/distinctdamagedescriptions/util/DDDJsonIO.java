@@ -34,32 +34,27 @@ import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
  *
  */
 public final class DDDJsonIO {
-	private static File[] creatureJsonFiles, damageTypeJsonFiles, filterJsonFiles;
-	private static File creatureDirectory, damageTypeDirectory, filterDirectory;
+	private static File[] creatureJsonFiles, damageTypeJsonFiles;
+	private static File creatureDirectory, damageTypeDirectory;
 
 	public static DDDCustomDistributions init() {
 		File mainDirectory = DistinctDamageDescriptions.getModConfigDirectory();
 		creatureDirectory = new File(mainDirectory, "creatureTypes");
 		damageTypeDirectory = new File(mainDirectory, "damageTypes");
-		filterDirectory = new File(mainDirectory, "filters");
 		checkJSON();
 		return loadFromJSON();
 
 	}
 
 	private static void checkJSON() {
-		if((creatureDirectory.exists() && damageTypeDirectory.exists() && filterDirectory.exists()) || (damageTypeDirectory.mkdirs() && creatureDirectory.mkdirs() && filterDirectory.mkdirs())) {
+		if((creatureDirectory.exists() && damageTypeDirectory.exists()) || (damageTypeDirectory.mkdirs() && creatureDirectory.mkdirs())) {
 			creatureJsonFiles = creatureDirectory.listFiles();
 			damageTypeJsonFiles = damageTypeDirectory.listFiles();
-			filterJsonFiles = filterDirectory.listFiles();
 			if(writeExampleJSON("example_creature_type.json", creatureDirectory)) {
 				creatureJsonFiles = creatureDirectory.listFiles();
 			}
 			if(writeExampleJSON("example_damage_type.json", damageTypeDirectory)) {
 				damageTypeJsonFiles = damageTypeDirectory.listFiles();
-			}
-			if(writeExampleJSON("example_filter.json", filterDirectory)) {
-				filterJsonFiles = filterDirectory.listFiles();				
 			}
 			DistinctDamageDescriptions.debug("Checked JSON");
 		}
@@ -111,13 +106,9 @@ public final class DDDJsonIO {
 		return dists;
 	}
 
-	public static void loadFilters() {
-		
-	}
-
 	private static void loadCreatureTypes() {
 		// CREATURE TYPES FROM JSON
-		if(ModConfig.core.useCreatureTypes) {
+		if(ModConfig.core.useCreatureTypesFromJSON) {
 			DistinctDamageDescriptions.info("Creature Types Enabled!");
 			extractJsonFiles(creatureJsonFiles).forEach((f) -> {
 				Tuple<CreatureTypeData, Iterable<String>> result = parseJsonFile(f, DDDCreatureTypeJsonParser::new);
@@ -131,7 +122,7 @@ public final class DDDJsonIO {
 	private static DDDCustomDistributions loadDamageTypes() {
 		DDDCustomDistributions dists = new DDDCustomDistributions();
 		// CUSTOM DAMAGE TYPES FROM JSON
-		if(ModConfig.core.useCustomDamageTypes) {
+		if(ModConfig.core.useCustomDamageTypesFromJSON) {
 			DistinctDamageDescriptions.info("Custom Damage Types Enabled!");
 			extractJsonFiles(damageTypeJsonFiles).forEach((f) -> {
 				Tuple<DDDDamageType, DamageTypeData[]> result = parseJsonFile(f, DDDDamageTypeJsonParser::new);

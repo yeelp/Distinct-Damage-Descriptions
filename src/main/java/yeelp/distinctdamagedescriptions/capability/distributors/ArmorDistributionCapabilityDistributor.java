@@ -7,6 +7,7 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 
 public final class ArmorDistributionCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<ItemStack, IArmorDistribution, IArmorDistribution> {
@@ -14,7 +15,7 @@ public final class ArmorDistributionCapabilityDistributor extends AbstractCapabi
 	private static ArmorDistributionCapabilityDistributor instance;
 
 	private ArmorDistributionCapabilityDistributor() {
-		super(LOC);
+		super(LOC, () -> ModConfig.compat.definedItemsOnly);
 	}
 
 	@Override

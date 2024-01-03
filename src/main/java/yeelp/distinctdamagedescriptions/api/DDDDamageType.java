@@ -96,4 +96,8 @@ public interface DDDDamageType extends Comparable<DDDDamageType> {
 	 * @return the hex colour as an int.
 	 */
 	int getColour();
+	
+	default boolean isUsable() {
+		return true;
+	}
 }

@@ -72,6 +72,7 @@ public class DDDCombatTracker extends CombatTracker {
 	private ArmorValues armors;
 	private ShieldDistribution usedShieldDist;
 	private Optional<DamageMap> incomingDamage;
+	private float damage;
 
 	public DDDCombatTracker(EntityLivingBase entity) {
 		super(entity);
@@ -79,8 +80,10 @@ public class DDDCombatTracker extends CombatTracker {
 	}
 
 	public void clear() {
-		this.type = null;
-		this.ctx = null;
+		if(this.getFighter().isEntityAlive()) {
+			this.type = null;
+			this.ctx = null;
+		}
 		this.armors = null;
 		this.incomingDamage = null;
 		this.usedShieldDist = null;
@@ -102,8 +105,13 @@ public class DDDCombatTracker extends CombatTracker {
 	public Optional<ShieldDistribution> getCurrentlyUsedShieldDistribution() {
 		return Optional.ofNullable(this.usedShieldDist);
 	}
+	
+	public void setDamageReference(float amount) {
+		this.damage = amount;
+	}
 
 	public void handleAttackStage(LivingAttackEvent evt) {
+		this.clear();
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
 		if(this.getIncomingDamage().isPresent() && this.ctx.getShield().isPresent() && this.ctx.getShield().get().hasCapability(ShieldDistribution.cap, null)) {
 			DamageMap dmg = this.getIncomingDamage().get();
@@ -198,13 +206,7 @@ public class DDDCombatTracker extends CombatTracker {
 
 	@Override
 	public ITextComponent getDeathMessage() {
-		return this.getTypeLastHitBy().filter((t) -> ModConfig.core.useCustomDeathMessages).map((t) -> DDDRegistries.damageTypes.getDeathMessageForType(t, this.ctx.getSource().getTrueSource(), this.getFighter())).orElse(super.getDeathMessage());
-	}
-
-	@Override
-	public void reset() {
-		this.clear();
-		super.reset();
+		return this.getTypeLastHitBy().filter((t) -> ModConfig.core.useCustomDeathMessages).flatMap((t) -> DDDRegistries.damageTypes.getDeathMessageForType(t, this.ctx.getSource().getTrueSource(), this.getFighter())).orElse(super.getDeathMessage());
 	}
 
 	private Optional<DamageMap> getIncomingDamage() {
@@ -221,21 +223,27 @@ public class DDDCombatTracker extends CombatTracker {
 		if(this.ctx == null) {
 			this.ctx = new CombatContext(newSrc, amount, attacker, this.getFighter());
 			this.results.withStartingDamage(amount);
+			this.damage = amount;
 		}
 		else if(this.incomingDamage != null) {
-			this.getIncomingDamage().ifPresent((map) -> {
-				float dmg = (float) YMath.sum(map.values());
-				if(Math.abs(amount - dmg) >= 0.01 && dmg != 0) {
-					float ratio = amount / dmg;
-					map.keySet().forEach((k) -> map.computeIfPresent(k, (key, val) -> val * ratio));
-				}
-			});
+			Entity trueAttacker = newSrc.getTrueSource();
+			if(amount != this.damage && newSrc.damageType.equals(this.ctx.getSource().damageType) && (trueAttacker == null || trueAttacker.getUniqueID().equals(this.ctx.getTrueAttacker().getUniqueID())) && (attacker == null || attacker.getUniqueID().equals(this.ctx.getImmediateAttacker().getUniqueID()))) {
+				//this is not "new" damage, so just update the damage map as needed.
+				this.getIncomingDamage().ifPresent((map) -> {
+					float dmg = this.ctx.getAmount();
+					if(Math.abs(amount - dmg) >= 0.01 && dmg != 0) {
+						float ratio = amount / dmg;
+						map.keySet().forEach((k) -> map.computeIfPresent(k, (key, val) -> val * ratio));
+					}
+				});
+			}
+
 		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onEntityJoinWorld(EntityJoinWorldEvent evt) {
-		if(evt.getEntity() instanceof EntityLivingBase) {
+		if(evt.getEntity() instanceof EntityLivingBase && !evt.getEntity().world.isRemote) {
 			EntityLivingBase entity = (EntityLivingBase) evt.getEntity();
 			if(!(entity.combatTracker instanceof DDDCombatTracker)) {
 				entity.combatTracker = new DDDCombatTracker(entity);
@@ -246,15 +254,24 @@ public class DDDCombatTracker extends CombatTracker {
 // Lowest because we reset active hands, which means shields "aren't in use" past this point.
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static final void onEntityAttack(LivingAttackEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> tracker.handleAttackStage(evt));
 		DeveloperModeKernel.onAttackCallback(evt);
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static final void onEntityHurt(LivingHurtEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> {
 			tracker.handleHurtStage(evt);
-			tracker.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent(evt::setAmount);
+			tracker.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent((f) -> {
+				evt.setAmount(f);
+				tracker.setDamageReference(f);
+			});
 			tracker.getNewArmorValues().ifPresent((vals) -> {
 				Arrays.stream(ARMOR_SLOTS).map((slot) -> {
 					ItemStack stack = tracker.getFighter().getItemStackFromSlot(slot);
@@ -284,6 +301,9 @@ public class DDDCombatTracker extends CombatTracker {
 	// that are no longer needed.
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static final void onEntityDamage(LivingDamageEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((tracker) -> {
 			tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR).removeModifier(ARMOR_CALC_UUID);
 			tracker.getFighter().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).removeModifier(TOUGHNESS_CALC_UUID);
@@ -296,6 +316,9 @@ public class DDDCombatTracker extends CombatTracker {
 
 	@SubscribeEvent
 	public static final void onEntityKnockback(LivingKnockBackEvent evt) {
+		if(evt.getEntityLiving().world.isRemote) {
+			return;
+		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).map(DDDCombatTracker::getRecentResults).map(Predicates.or(Predicates.and(CombatResults::wasImmunityTriggered, (results) -> results.getAmount().orElse(Double.NaN) == 0), CombatResults::wasShieldEffective)::test).ifPresent(evt::setCanceled);
 	}
 }

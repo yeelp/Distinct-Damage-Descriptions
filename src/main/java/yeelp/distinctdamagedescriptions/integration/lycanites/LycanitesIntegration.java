@@ -5,6 +5,7 @@ import com.google.common.collect.Iterators;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
@@ -44,7 +45,9 @@ public class LycanitesIntegration implements IModIntegration {
 		// generic Iterators.forArray gives an
 		// Iterator<AbstractCapabilityTooltipFormatter> which is incompatible with
 		// TooltipDistributor::registerModCompat
-		Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);
+		if(evt.getSide() == Side.CLIENT) {
+			Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);	
+		}
 		DDDRegistries.distributions.registerAll(new SmitedDistribution(), new LycanitesMinionDistribution(), LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE);
 		return IModIntegration.super.init(evt);
 	}

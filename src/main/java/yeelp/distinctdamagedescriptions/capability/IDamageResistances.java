@@ -31,6 +31,16 @@ public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> 
 	void setResistance(DDDDamageType type, float value);
 
 	/**
+	 * Removes the resistance for a certain type. This is similar, but not
+	 * necessarily the same as {@code setResistance(type, 0.0f)}, as that sets the
+	 * resistance to zero but the mob still technically "has" that resistance,
+	 * whereas this method removes the resistance altogether.
+	 * 
+	 * @param type
+	 */
+	void removeResistance(DDDDamageType type);
+
+	/**
 	 * Get immunity status for a type
 	 * 
 	 * @param type

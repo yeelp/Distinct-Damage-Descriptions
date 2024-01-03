@@ -7,6 +7,7 @@ import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
 
@@ -15,7 +16,7 @@ public final class MobResistancesCapabilityDistributor extends AbstractCapabilit
 	private static MobResistancesCapabilityDistributor instance;
 
 	private MobResistancesCapabilityDistributor() {
-		super(LOC);
+		super(LOC, () -> !ModConfig.compat.definedEntitiesOnly);
 	}
 
 	@Override
