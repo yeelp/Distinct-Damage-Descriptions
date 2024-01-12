@@ -50,6 +50,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 	protected static final class MeltingListener extends Handler {
 
 		private static MeltingListener instance;
+		private boolean isFixing = false;
 
 		private final List<MeltingRecipe> recipesToFix;
 
@@ -60,12 +61,13 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public void onMeltingRegister(MeltingRegisterEvent evt) {
 			// The only NBT-sensitive recipe we need to edit. Leave the others.
-			if(evt.getRecipe().input instanceof ItemCombination) {
+			if(!this.isFixing && evt.getRecipe().input instanceof ItemCombination) {
 				this.recipesToFix.add(evt.getRecipe());
 			}
 		}
 
 		public void fixRecipes() {
+			this.isFixing = true;
 			this.recipesToFix.forEach((mr) -> TinkerRegistry.registerMelting(new MeltingRecipe(new RecipeMatch.ItemCombination(mr.input.amountMatched, mr.input.getInputs().get(0).copy()), mr.output, mr.temperature)));
 		}
 
