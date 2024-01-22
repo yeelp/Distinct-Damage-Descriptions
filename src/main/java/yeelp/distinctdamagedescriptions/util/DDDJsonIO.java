@@ -37,13 +37,13 @@ public final class DDDJsonIO {
 	private static File[] creatureJsonFiles, damageTypeJsonFiles;
 	private static File creatureDirectory, damageTypeDirectory;
 
-	public static DDDCustomDistributions init() {
-		File mainDirectory = DistinctDamageDescriptions.getModConfigDirectory();
-		creatureDirectory = new File(mainDirectory, "creatureTypes");
-		damageTypeDirectory = new File(mainDirectory, "damageTypes");
-		checkJSON();
-		return loadFromJSON();
-
+	public static void init() {
+		if(ModConfig.core.useCustomDamageTypesFromJSON || ModConfig.core.useCreatureTypesFromJSON) {
+			File mainDirectory = DistinctDamageDescriptions.getModConfigDirectory();
+			creatureDirectory = new File(mainDirectory, "creatureTypes");
+			damageTypeDirectory = new File(mainDirectory, "damageTypes");
+			checkJSON();			
+		}
 	}
 
 	private static void checkJSON() {
@@ -100,13 +100,7 @@ public final class DDDJsonIO {
 		}
 	}
 
-	private static DDDCustomDistributions loadFromJSON() {
-		DDDCustomDistributions dists = loadDamageTypes();
-		loadCreatureTypes();
-		return dists;
-	}
-
-	private static void loadCreatureTypes() {
+	public static void loadCreatureTypes() {
 		// CREATURE TYPES FROM JSON
 		if(ModConfig.core.useCreatureTypesFromJSON) {
 			DistinctDamageDescriptions.info("Creature Types Enabled!");
@@ -119,7 +113,7 @@ public final class DDDJsonIO {
 		}
 	}
 
-	private static DDDCustomDistributions loadDamageTypes() {
+	public static DDDCustomDistributions loadDamageTypes() {
 		DDDCustomDistributions dists = new DDDCustomDistributions();
 		// CUSTOM DAMAGE TYPES FROM JSON
 		if(ModConfig.core.useCustomDamageTypesFromJSON) {
@@ -149,6 +143,6 @@ public final class DDDJsonIO {
 	}
 
 	private static Stream<File> extractJsonFiles(File[] files) {
-		return Arrays.stream(files).filter((f) -> FilenameUtils.getExtension(f.getName()).equals(".json"));
+		return Arrays.stream(files).filter((f) -> FilenameUtils.getExtension(f.getName()).equals("json"));
 	}
 }

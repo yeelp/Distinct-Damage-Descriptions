@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
+package yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl;
 
 import java.util.Map;
 
@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import crafttweaker.api.entity.IEntityDefinition;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.potions.IPotion;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
 

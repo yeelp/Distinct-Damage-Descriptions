@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
@@ -56,7 +57,12 @@ public abstract class DDDRegistries {
 		distributions = new DDDDistributions();
 		trackers = new DDDTrackers();
 		DDDExplosionDist.update();
-		distributions.register(DDDJsonIO.init());
 		potions = new DDDPotionsRegistry();
+		if(ModConfig.core.useCustomDamageTypesFromJSON) {
+			distributions.register(DDDJsonIO.loadDamageTypes());
+		}
+		if(ModConfig.core.useCreatureTypesFromJSON) {
+			DDDJsonIO.loadCreatureTypes();
+		}
 	}
 }

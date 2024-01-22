@@ -2,7 +2,7 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.brackets;
 
 import crafttweaker.annotations.BracketHandler;
 import crafttweaker.annotations.ZenRegister;
-import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.CTCreatureTypeDefinition;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 
 @BracketHandler
 @ZenRegister

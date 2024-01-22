@@ -13,8 +13,8 @@ import stanhebben.zenscript.annotations.ZenOperator;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
-import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.CTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTCreatureTypeDefinition;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 
 @ZenClass("mods.ddd.CreatureType")
 @IterableSimple("mods.ddd.CreatureTypeDefinition")

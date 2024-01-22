@@ -39,7 +39,10 @@ public abstract class AbstractJsonParser<T> {
 	}
 	
 	private Optional<JsonElement> getOptionalElement(String key) {
-		Queue<String> path = new LinkedList<String>(Arrays.asList(key.split(".")));
+		Queue<String> path = new LinkedList<String>(Arrays.asList(key.split("\\.")));
+		if(path.isEmpty()) {
+			path.add(key);
+		}
 		JsonObject e = this.root;
 		JsonElement elem = null;
 		while(path.size() > 0) {

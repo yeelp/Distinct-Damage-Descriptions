@@ -32,6 +32,7 @@ import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.integration.ModIntegrationKernel;
 import yeelp.distinctdamagedescriptions.items.DDDDiscItem;
 import yeelp.distinctdamagedescriptions.proxy.Proxy;
+import yeelp.distinctdamagedescriptions.util.DDDJsonIO;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)
@@ -58,6 +59,7 @@ public class DistinctDamageDescriptions {
 		configDirectory = event.getModConfigurationDirectory();
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		srcFile = event.getSourceFile();
+		DDDJsonIO.init();
 		DDDInitialization.runLoaders(event);
 		DebugLib.updateStatus();
 		proxy.preInit();
