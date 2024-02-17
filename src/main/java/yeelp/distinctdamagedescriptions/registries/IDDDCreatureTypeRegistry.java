@@ -17,6 +17,14 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 	 * @param type
 	 */
 	void addTypeToEntity(String entityID, CreatureTypeData type);
+	
+	/**
+	 * Remove a type from an entity with this ID
+	 * 
+	 * @param entityID
+	 * @param type
+	 */
+	void removeTypeFromEntity(String entityID, CreatureTypeData type);
 
 	/**
 	 * Get the CreatureTypeData(s) for a mob

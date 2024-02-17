@@ -44,7 +44,7 @@ public class MobHandler extends Handler {
 		}
 		EntityLivingBase livingEntity = (EntityLivingBase) entity;
 		DDDAPI.accessor.getMobResistances(livingEntity).ifPresent((mobResists) -> {
-			DDDHooks.fireAssignMobResistances(livingEntity, entity.world, mobResists);
+			DDDHooks.fireAssignMobResistances(livingEntity, entity.world, mobResists);			
 			tag.setByte(DDD_FIRST_LOAD, (byte) 1);
 		});
 	}

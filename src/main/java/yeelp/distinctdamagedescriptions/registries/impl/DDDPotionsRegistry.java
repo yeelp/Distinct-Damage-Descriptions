@@ -60,8 +60,8 @@ public class DDDPotionsRegistry extends DDDBaseRegistry<AbstractDDDPotion> imple
 
 	@Override
 	public void register(AbstractDDDPotion obj) {
-		ForgeRegistries.POTIONS.register(obj);
 		super.register(obj);
+		ForgeRegistries.POTIONS.register(obj);
 	}
 
 }

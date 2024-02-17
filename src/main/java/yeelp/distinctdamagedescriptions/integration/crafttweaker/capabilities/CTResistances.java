@@ -45,12 +45,14 @@ public class CTResistances extends NonNullMap<ICTDDDDamageType, Float> {
 	@ZenMethod("setResistance")
 	public void setResistance(ICTDDDDamageType type, float amount) {
 		this.resists.setResistance(type.asDDDDamageType(), amount);
+		this.put(type, amount);
 		this.update();
 	}
 	
 	@ZenMethod("removeResistance")
 	public void removeResistance(ICTDDDDamageType type) {
 		this.resists.removeResistance(type.asDDDDamageType());
+		this.remove(type);
 		this.update();
 	}
 

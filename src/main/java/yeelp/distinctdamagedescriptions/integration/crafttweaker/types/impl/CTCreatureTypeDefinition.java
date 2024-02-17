@@ -62,5 +62,13 @@ public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 		DDDRegistries.creatureTypes.addTypeToEntity(def.getId(), this.data);
 		return this;
 	}
+
+	@Override
+	public ICTCreatureTypeDefinition removeEntityFromType(IEntityDefinition def) {
+		DDDRegistries.creatureTypes.removeTypeFromEntity(def.getId(), this.data);
+		return this;
+	}
+	
+	
 	
 }
