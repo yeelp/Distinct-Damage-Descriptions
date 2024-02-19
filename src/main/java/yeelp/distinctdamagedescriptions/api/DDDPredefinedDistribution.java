@@ -15,7 +15,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
  * @author Yeelp
  *
  */
-public interface DDDPredefinedDistribution extends Comparable<DDDPredefinedDistribution> {
+public interface DDDPredefinedDistribution extends Comparable<DDDPredefinedDistribution>, IHasCreationSource {
 	/**
 	 * Is this distribution enabled?
 	 * 

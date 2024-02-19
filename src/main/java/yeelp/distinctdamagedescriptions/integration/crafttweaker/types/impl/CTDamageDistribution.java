@@ -5,7 +5,7 @@ import yeelp.distinctdamagedescriptions.capability.impl.DefaultDamageDistributio
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDBaseMap;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDamageDistribution;
 
-public final class CTDamageDistribution extends CTDistribution implements ICTDamageDistribution {
+public class CTDamageDistribution extends CTDistribution implements ICTDamageDistribution {
 
 	public CTDamageDistribution(IDamageDistribution dist) {
 		super(dist);

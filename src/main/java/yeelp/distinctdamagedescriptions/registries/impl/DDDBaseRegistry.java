@@ -14,7 +14,7 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 	private Function<T, String> keyFunc;
 	private final String name;
 
-	DDDBaseRegistry(Function<T, String> f, String name) {
+	protected DDDBaseRegistry(Function<T, String> f, String name) {
 		this.keyFunc = f;
 		this.name = name;
 		this.init();
@@ -28,34 +28,36 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 		String key = this.keyFunc.apply(obj);
 		this.map.put(key, obj);
 		if(!suppressOutput) {
-			DistinctDamageDescriptions.info(String.format("Registering %s: %s", this.name, key));
+			DistinctDamageDescriptions.info(String.format("Registering %s: %s", this.name, this.getRegistrationInfo(key, obj)));
 		}
 	}
-
+	
+	protected abstract String getRegistrationInfo(String regName, T regObj);
+	
 	@Override
-	public void registerAll(boolean suppressOutput, @SuppressWarnings("unchecked") T... objs) {
+	public final void registerAll(boolean suppressOutput, @SuppressWarnings("unchecked") T... objs) {
 		for(T t : objs) {
 			this.register(suppressOutput, t);
 		}
 	}
 
 	@Override
-	public T get(String key) {
+	public final T get(String key) {
 		return this.map.get(key);
 	}
 
 	@Override
-	public Collection<T> getAll() {
+	public final Collection<T> getAll() {
 		return this.map.values();
 	}
 
 	@Override
-	public boolean isRegistered(T obj) {
+	public final boolean isRegistered(T obj) {
 		return this.map.containsKey(this.keyFunc.apply(obj));
 	}
 
 	@Override
-	public Iterator<T> iterator() {
+	public final Iterator<T> iterator() {
 		return this.map.values().iterator();
 	}
 }

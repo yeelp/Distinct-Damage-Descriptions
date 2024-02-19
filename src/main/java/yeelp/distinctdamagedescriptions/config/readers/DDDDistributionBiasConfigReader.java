@@ -3,8 +3,8 @@ package yeelp.distinctdamagedescriptions.config.readers;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
+import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
-import yeelp.distinctdamagedescriptions.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class DDDDistributionBiasConfigReader extends DDDBasicConfigReader<DistributionBias> {

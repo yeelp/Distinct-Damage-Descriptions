@@ -15,7 +15,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.integration.tic.ContentMaterialInfluence;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
-import yeelp.distinctdamagedescriptions.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 public final class ContentTinkersMaterialInfluence extends ContentMaterialInfluence {

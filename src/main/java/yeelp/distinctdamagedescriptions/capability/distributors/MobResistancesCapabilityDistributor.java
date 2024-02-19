@@ -9,7 +9,7 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 
 public final class MobResistancesCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<EntityLivingBase, MobResistanceCategories, IMobResistances> {
 	private static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "mobResists");

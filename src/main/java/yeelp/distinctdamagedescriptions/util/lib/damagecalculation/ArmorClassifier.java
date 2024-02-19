@@ -7,14 +7,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 
 class ArmorClassifier implements IClassifier<ArmorMap> {
 
 	@Override
 	public Optional<ArmorMap> classify(CombatContext context) {
-		ArmorMap aMap = new ArmorMap();
+		ArmorMap aMap = DDDMaps.newArmorMap();
 		for(EntityEquipmentSlot slot : context.getValidArmorSlots()) {
 			ItemStack slottedStack = context.getDefender().getItemStackFromSlot(slot);
 			Item slottedItem = slottedStack.getItem();

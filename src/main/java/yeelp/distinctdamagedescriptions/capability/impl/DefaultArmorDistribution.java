@@ -2,8 +2,9 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 
 public final class DefaultArmorDistribution extends DefaultDistribution implements IArmorDistribution {
 
@@ -19,7 +20,7 @@ public final class DefaultArmorDistribution extends DefaultDistribution implemen
 	
 	@Override
 	public ArmorMap distributeArmor(float armor, float toughness) {
-		return super.distribute(new ArmorMap(), (f) -> new ArmorValues(armor * f, toughness * f));
+		return super.distribute(DDDMaps.newArmorMap(), (f) -> new ArmorValues(armor * f, toughness * f));
 	}
 
 	@Override

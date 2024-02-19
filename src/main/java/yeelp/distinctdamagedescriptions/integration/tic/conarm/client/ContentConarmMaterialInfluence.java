@@ -17,8 +17,8 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.ContentMaterialInfluence;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
 public final class ContentConarmMaterialInfluence extends ContentMaterialInfluence {
 

@@ -6,17 +6,17 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
-import yeelp.distinctdamagedescriptions.util.CreatureTypeData;
+import yeelp.distinctdamagedescriptions.api.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData> {
+public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureType> {
 	/**
 	 * Add a type to an entity with this ID
 	 * 
 	 * @param entityID
 	 * @param type
 	 */
-	void addTypeToEntity(String entityID, CreatureTypeData type);
+	void addTypeToEntity(String entityID, CreatureType type);
 	
 	/**
 	 * Remove a type from an entity with this ID
@@ -24,7 +24,7 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 	 * @param entityID
 	 * @param type
 	 */
-	void removeTypeFromEntity(String entityID, CreatureTypeData type);
+	void removeTypeFromEntity(String entityID, CreatureType type);
 
 	/**
 	 * Get the CreatureTypeData(s) for a mob
@@ -33,12 +33,12 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 	 * @return a Set of CreatureTypeData. If the first is
 	 *         CreatureTypeData.UNKNOWN, then this mob has no creature type.
 	 */
-	default Set<CreatureTypeData> getCreatureTypeForMob(EntityLivingBase entity) {
+	default Set<CreatureType> getCreatureTypeForMob(EntityLivingBase entity) {
 		Optional<String> oLoc = YResources.getEntityIDString(entity);
 		if(oLoc.isPresent()) {
 			return getCreatureTypeForMob(oLoc.get());
 		}
-		return Sets.newHashSet(CreatureTypeData.UNKNOWN);
+		return Sets.newHashSet(CreatureType.UNKNOWN);
 
 	}
 
@@ -49,5 +49,5 @@ public interface IDDDCreatureTypeRegistry extends IDDDRegistry<CreatureTypeData>
 	 * @return a Tuple of CreatureTypeData. If the first is
 	 *         CreatureTypeData.UNKNOWN, then this mob has no creature type.
 	 */
-	Set<CreatureTypeData> getCreatureTypeForMob(String key);
+	Set<CreatureType> getCreatureTypeForMob(String key);
 }

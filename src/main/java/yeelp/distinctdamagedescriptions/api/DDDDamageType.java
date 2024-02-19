@@ -11,7 +11,7 @@ import yeelp.distinctdamagedescriptions.util.DDDFontColour;
  * @author Yeelp
  *
  */
-public interface DDDDamageType extends Comparable<DDDDamageType> {
+public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSource {
 	/**
 	 * The Type of a DDDDamage type. Physical or Special
 	 * 
@@ -34,6 +34,8 @@ public interface DDDDamageType extends Comparable<DDDDamageType> {
 			}
 		}
 	}
+
+	static String DDD_PREFIX = "ddd_";
 
 	/**
 	 * Get the name of this type, with the "ddd_" prefix
@@ -96,8 +98,21 @@ public interface DDDDamageType extends Comparable<DDDDamageType> {
 	 * @return the hex colour as an int.
 	 */
 	int getColour();
-	
+
+	/**
+	 * Is this damage type usable?
+	 * 
+	 * @return If this damage type is allowed to be used in game.
+	 */
 	default boolean isUsable() {
 		return true;
+	}
+
+	static String addDDDPrefixIfNeeded(String s) {
+		return s.startsWith(DDD_PREFIX) ? s : DDD_PREFIX.concat(s);
+	}
+	
+	static String removeDDDPrefixIfPresent(String s) {
+		return s.startsWith(DDD_PREFIX) ? s.substring(DDD_PREFIX.length()) : s;
 	}
 }

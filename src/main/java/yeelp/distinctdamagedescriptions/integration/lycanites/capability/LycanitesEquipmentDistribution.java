@@ -24,7 +24,7 @@ import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public final class LycanitesEquipmentDistribution extends DamageDistribution {

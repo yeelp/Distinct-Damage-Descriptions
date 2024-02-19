@@ -33,6 +33,6 @@ public interface ICTCreatureTypeDefinition {
 	
 	@ZenMethod
 	static List<ICTCreatureTypeDefinition> getAllTypes() {
-		return DDDRegistries.creatureTypes.getAll().stream().map(CTCreatureTypeDefinition::getFromCreatureTypeData).collect(Collectors.toList());
+		return DDDRegistries.creatureTypes.getAll().stream().map(CTCreatureTypeDefinition::getFromCreatureType).collect(Collectors.toList());
 	}
 }

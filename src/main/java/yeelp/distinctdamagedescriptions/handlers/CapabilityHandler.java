@@ -15,7 +15,7 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
-import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class CapabilityHandler extends Handler {
@@ -31,12 +31,12 @@ public class CapabilityHandler extends Handler {
 			return;
 		}
 		if(entity instanceof EntityPlayer) {
-			evt.addCapability(creatureType, CreatureType.UNKNOWN);
+			evt.addCapability(creatureType, MobCreatureType.UNKNOWN);
 			addCapsIfNonNull(evt, DDDCapabilityDistributors.getPlayerCapabilities((EntityPlayer) entity));
 		}
 		else if(entity instanceof EntityLivingBase) {
 			EntityLivingBase entityLiving = (EntityLivingBase) entity;
-			evt.addCapability(creatureType, new CreatureType(DDDRegistries.creatureTypes.getCreatureTypeForMob(entityLiving)));
+			evt.addCapability(creatureType, new MobCreatureType(DDDRegistries.creatureTypes.getCreatureTypeForMob(entityLiving)));
 			DDDCapabilityDistributors.getCapabilities(entityLiving).ifPresent((m) -> addCapsIfNonNull(evt, m));
 		}
 		else if(entity instanceof IProjectile) {

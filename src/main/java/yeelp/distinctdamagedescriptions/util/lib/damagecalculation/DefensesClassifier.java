@@ -8,7 +8,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 final class DefensesClassifier implements IClassifier<MobDefenses> {
 

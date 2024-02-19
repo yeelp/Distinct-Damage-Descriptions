@@ -1,12 +1,12 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
+import java.util.Comparator;
+
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
-
-import java.util.Comparator;
 
 /**
  * An abstract skeleton implementation of DDDDamageType
@@ -37,7 +37,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	 * @param colour               the display colour to use in tooltips.
 	 */
 	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
-		this.name = "ddd_" + name;
+		this.name = DDDDamageType.addDDDPrefixIfNeeded(name);
 		this.attackerDeathMessage = deathAttackerMessage;
 		this.noAttackerDeathMessage = deathMessage;
 		this.dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(this, 1.0f));

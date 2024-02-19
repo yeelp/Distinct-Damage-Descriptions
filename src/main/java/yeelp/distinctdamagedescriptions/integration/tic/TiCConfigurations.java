@@ -16,8 +16,8 @@ import yeelp.distinctdamagedescriptions.config.readers.DDDDistributionBiasConfig
 import yeelp.distinctdamagedescriptions.config.readers.DDDModIDPrependingConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
-import yeelp.distinctdamagedescriptions.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
 /**
  * TConstruct and Conarm specific Configurations
@@ -25,7 +25,7 @@ import yeelp.distinctdamagedescriptions.util.DistributionBias;
  * @author Yeelp
  *
  */
-@DDDLoader(modid = ModConsts.TCONSTRUCT_ID, name = "TiC Configurations", requiredLoaders = "DDD Registries")
+@DDDLoader(modid = ModConsts.IntegrationIds.TCONSTRUCT_ID, name = "TiC Configurations", requiredLoaders = "DDD Registries")
 public abstract class TiCConfigurations {
 
 	/**
@@ -51,7 +51,7 @@ public abstract class TiCConfigurations {
 		armorMaterialDist = new DDDDistributionConfiguration<IArmorDistribution>(() -> new ArmorDistribution());
 		toolBiasResistance = new DDDBaseConfiguration<Float>(() -> 0.0f);
 		try {
-			DDDConfigLoader.getInstance().enqueueAll(new DDDModIDPrependingConfigReader<Float>(ModConsts.TCONSTRUCT_ID, "Tinker's Compat: Tool Bias", ModConfig.compat.tinkers.toolBias, toolBiasResistance, Float::parseFloat), new DDDDistributionBiasConfigReader("Tinker's Compat: Material Bias", ModConfig.compat.tinkers.matBias, toolMaterialBias), new DDDBasicConfigReader<IArmorDistribution>("Conarm Compat: Material Distribution", ModConfig.compat.conarm.armorMatDist, armorMaterialDist, ArmorDistribution.class.getConstructor(Map.class), 0.0f));
+			DDDConfigLoader.getInstance().enqueueAll(new DDDModIDPrependingConfigReader<Float>(ModConsts.IntegrationIds.TCONSTRUCT_ID, "Tinker's Compat: Tool Bias", ModConfig.compat.tinkers.toolBias, toolBiasResistance, Float::parseFloat), new DDDDistributionBiasConfigReader("Tinker's Compat: Material Bias", ModConfig.compat.tinkers.matBias, toolMaterialBias), new DDDBasicConfigReader<IArmorDistribution>("Conarm Compat: Material Distribution", ModConfig.compat.conarm.armorMatDist, armorMaterialDist, ArmorDistribution.class.getConstructor(Map.class), 0.0f));
 		}
 		catch(NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();

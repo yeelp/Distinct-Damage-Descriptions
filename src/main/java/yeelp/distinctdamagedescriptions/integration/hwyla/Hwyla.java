@@ -18,7 +18,7 @@ public class Hwyla implements IModIntegration {
 
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
-		return FMLInterModComms.sendMessage(new Hwyla().getModID(), "register", "yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.registerHwyla");
+		return FMLInterModComms.sendMessage(ModConsts.IntegrationIds.HWYLA_ID, "register", "yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.registerHwyla");
 	}
 
 	public static void registerHwyla(IWailaRegistrar registrar) {
@@ -28,12 +28,19 @@ public class Hwyla implements IModIntegration {
 	}
 
 	@Override
-	public String getModID() {
-		return ModConsts.HWYLA_ID;
-	}
-
-	@Override
 	public Iterable<Handler> getHandlers() {
 		return Collections.emptyList();
 	}
+
+	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.HWYLA_TITLE;
+	}
+
+	@Override
+	public String getModID() {
+		return ModConsts.IntegrationIds.HWYLA_ID;
+	}
+	
+	
 }

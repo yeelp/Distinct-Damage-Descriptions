@@ -132,8 +132,13 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 	}
 
 	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.TCONSTUCT_TITLE;
+	}
+
+	@Override
 	public String getModID() {
-		return ModConsts.TCONSTRUCT_ID;
+		return ModConsts.IntegrationIds.TCONSTRUCT_ID;
 	}
 
 	@Override

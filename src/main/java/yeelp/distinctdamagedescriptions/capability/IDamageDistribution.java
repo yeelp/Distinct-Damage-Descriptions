@@ -5,7 +5,7 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 /**
  * Damage Distribution capability.

@@ -24,8 +24,8 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.capability.AbstractBiasedDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraNBT;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
-import yeelp.distinctdamagedescriptions.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
 public final class TetraToolDistribution extends AbstractBiasedDamageDistribution {
 

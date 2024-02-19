@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.registries;
 
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
@@ -8,8 +9,7 @@ import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributions;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDPotionsRegistry;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDTrackers;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
-import yeelp.distinctdamagedescriptions.util.DDDJsonIO;
+import yeelp.distinctdamagedescriptions.util.json.DDDJsonIO;
 
 /**
  * All the registered info for DDD goes here. Damage Types, Creature Types,

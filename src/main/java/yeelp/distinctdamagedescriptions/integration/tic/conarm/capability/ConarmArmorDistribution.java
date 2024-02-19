@@ -16,7 +16,7 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
 public class ConarmArmorDistribution extends ArmorDistribution {
 

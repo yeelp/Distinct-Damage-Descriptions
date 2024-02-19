@@ -18,11 +18,12 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.ArmorValues;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.LayeredTranslator;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
@@ -68,7 +69,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		}
 		List<String> result = new LinkedList<String>();
 		Set<DDDDamageType> immunities = new HashSet<DDDDamageType>();
-		ArmorMap aMap = new ArmorMap();
+		ArmorMap aMap = DDDMaps.newArmorMap();
 		t.getArmorInventoryList().forEach((stack) -> {
 			if(stack.getItem() instanceof ItemArmor) {
 				ItemArmor armor = (ItemArmor) stack.getItem();

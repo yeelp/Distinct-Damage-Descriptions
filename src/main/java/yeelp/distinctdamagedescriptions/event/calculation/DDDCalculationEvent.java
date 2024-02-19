@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 /**
  * Fired when DDD does combat calculations. <br>

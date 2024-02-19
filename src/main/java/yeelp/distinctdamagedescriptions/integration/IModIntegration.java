@@ -49,6 +49,13 @@ public interface IModIntegration {
 	}
 
 	/**
+	 * Get the proper name for this mod.
+	 * 
+	 * @return The porper name of the mod.
+	 */
+	String getModTitle();
+
+	/**
 	 * Mod id needed for integration. If we know a mod by this name, we'll load
 	 * integration.
 	 * 
@@ -62,4 +69,34 @@ public interface IModIntegration {
 	 * @return all the handlers that should be registered for this integration.
 	 */
 	Iterable<Handler> getHandlers();
+
+	/**
+	 * Mod Integration Metadata. Every Mod Integration needs one of these.
+	 * 
+	 * @author Yeelp
+	 *
+	 */
+	public final class ModIntegrationMetadata {
+		private final String id, name;
+
+		public ModIntegrationMetadata(String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		/**
+		 * @return the id
+		 */
+		String getId() {
+			return this.id;
+		}
+
+		/**
+		 * @return the name
+		 */
+		String getName() {
+			return this.name;
+		}
+
+	}
 }

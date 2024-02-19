@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagString;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
 /**
  * Base capability for damage resistance capabilities

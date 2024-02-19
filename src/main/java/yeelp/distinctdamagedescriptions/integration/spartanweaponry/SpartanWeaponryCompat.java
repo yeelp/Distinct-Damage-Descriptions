@@ -23,7 +23,12 @@ public final class SpartanWeaponryCompat implements IModIntegration {
 
 	@Override
 	public String getModID() {
-		return ModConsts.SPARTAN_WEAPONRY_ID;
+		return ModConsts.IntegrationIds.SPARTAN_WEAPONRY_ID;
+	}
+	
+	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.SPARTAN_WEAPONRY_TITLE;
 	}
 
 	@Override

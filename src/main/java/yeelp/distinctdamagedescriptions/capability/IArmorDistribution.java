@@ -3,7 +3,7 @@ package yeelp.distinctdamagedescriptions.capability;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 
 /**
  * Armor resistances

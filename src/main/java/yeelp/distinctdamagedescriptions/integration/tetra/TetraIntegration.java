@@ -13,11 +13,6 @@ import yeelp.distinctdamagedescriptions.integration.tetra.capability.distributor
 public final class TetraIntegration implements IModIntegration {
 
 	@Override
-	public String getModID() {
-		return ModConsts.TETRA_ID;
-	}
-
-	@Override
 	public Iterable<Handler> getHandlers() {
 		return ImmutableList.of();
 	}
@@ -27,6 +22,16 @@ public final class TetraIntegration implements IModIntegration {
 		TetraToolDistribution.register();
 		DDDCapabilityDistributors.addItemCap(TetraToolDistributionDistributor.getInstance());
 		return IModIntegration.super.init(evt);
+	}
+
+	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.TETRA_TITLE;
+	}
+
+	@Override
+	public String getModID() {
+		return ModConsts.IntegrationIds.TETRA_ID;
 	}
 
 }

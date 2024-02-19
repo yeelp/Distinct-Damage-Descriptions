@@ -9,8 +9,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.dists.AbstractSingleTypeDist;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.AbstractSingleTypeDist;
 
 public class SmitedDistribution extends AbstractSingleTypeDist {
 
@@ -21,7 +21,7 @@ public class SmitedDistribution extends AbstractSingleTypeDist {
 	}
 
 	public SmitedDistribution() {
-		super(() -> ModConfig.compat.lycanites.enableSmitedDist);
+		super("lycanitesSmited", Source.BUILTIN, () -> ModConfig.compat.lycanites.enableSmitedDist);
 	}
 
 	@Override

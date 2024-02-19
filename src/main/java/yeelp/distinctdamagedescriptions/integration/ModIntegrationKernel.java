@@ -1,7 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration;
 
-import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +13,12 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import com.google.common.base.Predicates;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -33,22 +40,33 @@ public final class ModIntegrationKernel {
 	/**
 	 * Lists of mods that will try to load on DDD startup
 	 */
-	public static final Map<String, Supplier<IModIntegration>> integratableMods = new HashMap<String, Supplier<IModIntegration>>();
+	public static final Map<String, Supplier<IModIntegration>> integratableMods = Maps.newHashMap();
+	private static final BiMap<String, String> ID_NAME_CONVERTER = HashBiMap.create();
 	private static final Set<String> foundMods = new HashSet<String>();
 	private static final List<IModIntegration> loadedMods = new LinkedList<IModIntegration>();
-
 	static {
 		// Would love to do function notation like ClassName::new for the Supplier but
 		// that isn't actually the same as using lambdas and those minor differences CAN
 		// cause problems here with optional dependencies so ONLY use lambdas here!!
-		integratableMods.put(ModConsts.CRAFTTWEAKER_ID, () -> new CTEventHandler());
-		integratableMods.put(ModConsts.CONTENTTWEAKER_ID, () -> new DDDCoTIntegration());
-		integratableMods.put(ModConsts.HWYLA_ID, () -> new Hwyla());
-		integratableMods.put(ModConsts.TCONSTRUCT_ID, () -> new DDDTinkersIntegration());
-		integratableMods.put(ModConsts.CONARM_ID, () -> new DDDConarmIntegration());
-		integratableMods.put(ModConsts.LYCANITES_ID, () -> new LycanitesIntegration());
-		integratableMods.put(ModConsts.TETRA_ID, () -> new TetraIntegration());
-		integratableMods.put(ModConsts.SPARTAN_WEAPONRY_ID, () -> new SpartanWeaponryCompat());
+		integratableMods.put(ModConsts.IntegrationIds.CRAFTTWEAKER_ID, () -> new CTEventHandler());
+		integratableMods.put(ModConsts.IntegrationIds.CONTENTTWEAKER_ID, () -> new DDDCoTIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.HWYLA_ID, () -> new Hwyla());
+		integratableMods.put(ModConsts.IntegrationIds.TCONSTRUCT_ID, () -> new DDDTinkersIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.CONARM_ID, () -> new DDDConarmIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.LYCANITES_ID, () -> new LycanitesIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.TETRA_ID, () -> new TetraIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.SPARTAN_WEAPONRY_ID, () -> new SpartanWeaponryCompat());
+		
+		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
+		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));
+	}
+	
+	public static final String getTitleFromId(String id) {
+		return ID_NAME_CONVERTER.get(id);
+	}
+	
+	public static final String getIdFromTitle(String title) {
+		return ID_NAME_CONVERTER.inverse().get(title);
 	}
 
 	/**
@@ -56,9 +74,10 @@ public final class ModIntegrationKernel {
 	 */
 	public static final void load() {
 		integratableMods.entrySet().stream().filter(Predicates.compose(Loader::isModLoaded, Entry::getKey)).forEach((e) -> {
-			DistinctDamageDescriptions.info("Distinct Damage Descriptions found " + e.getKey() + "!");
-			foundMods.add(e.getKey());
-			loadedMods.add(e.getValue().get());
+			String id = e.getKey();
+			DistinctDamageDescriptions.info(String.format("Distinct Damage Descriptions found %s (%s)!", id, getTitleFromId(id)));
+			foundMods.add(id);
+			loadedMods.add(integratableMods.get(id).get());
 		});
 	}
 
@@ -78,7 +97,7 @@ public final class ModIntegrationKernel {
 		}
 		else {
 			DistinctDamageDescriptions.warn("DDD failed to load integrations with the following mods:");
-			loadedMods.stream().map(IModIntegration::getModID).filter(Predicates.not(foundMods::contains)).forEach(DistinctDamageDescriptions::warn);
+			loadedMods.stream().map(IModIntegration::getModID).filter(Predicates.not(foundMods::contains)).map((s) -> String.format("%s (%s)", getTitleFromId(s), s)).forEach(DistinctDamageDescriptions::warn);
 		}
 	}
 
@@ -88,5 +107,17 @@ public final class ModIntegrationKernel {
 
 	private static final <T, U> Predicate<T> partialApplyPredicate(U u, BiPredicate<T, U> p) {
 		return (t) -> p.test(t, u);
+	}
+	
+	private static final <C> Stream<String> getStaticFieldValuesSortedByFieldName(Class<C> clazz) {
+		return Arrays.stream(clazz.getFields()).sorted(Comparator.comparing(Field::getName)).map((f) -> {
+			try {
+				return (String) f.get(null);
+			}
+			catch(IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		});
 	}
 }

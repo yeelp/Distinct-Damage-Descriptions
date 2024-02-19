@@ -14,7 +14,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution {
@@ -62,13 +63,13 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	@Override
 	public DamageMap distributeDamage(float dmg) {
 		if(this.distMap.keySet().stream().filter((k) -> !k.isUsable()).count() == 0) {
-			return super.distribute(new DamageMap(), (f) -> f * dmg);
+			return super.distribute(DDDMaps.newDamageMap(), (f) -> f * dmg);
 		}
 		long regularTypes = this.distMap.entrySet().stream().filter((e) -> e.getKey().isUsable()).count();
 		if(regularTypes == 0) {
 			return DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution().distributeDamage(dmg);
 		}
-		DamageMap map = new DamageMap();
+		DamageMap map = DDDMaps.newDamageMap();
 		float lostWeight = (float) this.distMap.entrySet().stream().mapToDouble((e) -> !e.getKey().isUsable() ? e.getValue() : 0.0f).sum();
 		float weightToAdd = lostWeight / regularTypes;
 		for(Entry<DDDDamageType, Float> entry : this.distMap.entrySet()) {

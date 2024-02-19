@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 
 public final class TooltipFormatterUtilities {
 

@@ -4,23 +4,6 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public class DDDCustomDamageType extends DDDAbstractDamageType {
 	
-	public enum Source {
-		JSON {
-			@Override
-			public boolean isAllowed() {
-				return ModConfig.core.useCustomDamageTypesFromJSON;
-			}
-		},
-		CT {
-			@Override
-			public boolean isAllowed() {
-				return true;
-			}
-		};
-		
-		public abstract boolean isAllowed();
-	}
-	
 	private final Source src;
 	
 	public DDDCustomDamageType(String name, String displayName, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
@@ -40,6 +23,11 @@ public class DDDCustomDamageType extends DDDAbstractDamageType {
 
 	@Override
 	public boolean isUsable() {
-		return this.src.isAllowed();
+		return this.src != Source.JSON || ModConfig.core.useCustomDamageTypesFromJSON;
+	}
+	
+	@Override
+	public Source getCreationSource() {
+		return this.src;
 	}
 }

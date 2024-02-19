@@ -10,7 +10,7 @@ import java.util.function.Function;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 /**
  * A capability formatter specifically for {@link IDamageDistribution}

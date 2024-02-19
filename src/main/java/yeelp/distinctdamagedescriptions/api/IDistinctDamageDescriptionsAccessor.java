@@ -10,10 +10,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.ICreatureType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatTracker;
 
@@ -96,14 +96,14 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	Optional<IMobResistances> getMobResistances(@Nullable EntityLivingBase entity);
 
 	/**
-	 * Get the mob's creature type - an instance of {@link ICreatureType}
+	 * Get the mob's creature type - an instance of {@link IMobCreatureType}
 	 * 
 	 * @param entity
 	 * @return the ICreatureType the mob has. Always returns
-	 *         {@link CreatureType.UNKNOWN} for mobs that are instances of
+	 *         {@link MobCreatureType.UNKNOWN} for mobs that are instances of
 	 *         EntityPlayer
 	 */
-	Optional<ICreatureType> getMobCreatureType(@Nullable EntityLivingBase entity);
+	Optional<IMobCreatureType> getMobCreatureType(@Nullable EntityLivingBase entity);
 
 	/**
 	 * Get a stack's shield distribution

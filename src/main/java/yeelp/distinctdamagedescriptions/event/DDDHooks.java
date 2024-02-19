@@ -18,9 +18,9 @@ import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
 import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 public final class DDDHooks {
 

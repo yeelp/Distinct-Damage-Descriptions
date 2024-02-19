@@ -19,7 +19,7 @@ import yeelp.distinctdamagedescriptions.potion.DDDResistPotion;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.IDDDPotionsRegistry;
 
-public class DDDPotionsRegistry extends DDDBaseRegistry<AbstractDDDPotion> implements IDDDPotionsRegistry {
+public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> implements IDDDPotionsRegistry {
 
 	private static final int DURATION = 180 * 20;
 	private static final Map<AbstractDDDPotion, Map<String, PotionType>> POTION_TYPES = Maps.newHashMap();

@@ -51,7 +51,7 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
-import yeelp.distinctdamagedescriptions.util.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
 public class TestDefaultDistribution {
 

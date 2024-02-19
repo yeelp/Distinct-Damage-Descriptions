@@ -18,16 +18,22 @@ import yeelp.distinctdamagedescriptions.integration.lycanites.capability.distrib
 import yeelp.distinctdamagedescriptions.integration.lycanites.client.LycanitesSpawnItemResistancesFormatter;
 import yeelp.distinctdamagedescriptions.integration.lycanites.client.LycantiesCreatureSpawnItemDamageFormatter;
 import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesFireDistribution;
+import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesFluidDistribution;
+import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesMinionDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.dists.SmitedDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.LycanitesFluidDistribution;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 
 public class LycanitesIntegration implements IModIntegration {
 
 	@Override
 	public String getModID() {
-		return ModConsts.LYCANITES_ID;
+		return ModConsts.IntegrationIds.LYCANITES_ID;
+	}
+	
+	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.LYCANITES_TITLE;
 	}
 
 	@Override

@@ -12,19 +12,19 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInFire;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInForce;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInPiercing;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInPoison;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDDaylightDist;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDExplosionDist;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDInstantEffectsDist;
+import yeelp.distinctdamagedescriptions.api.impl.dists.ParrotPoisonDist;
+import yeelp.distinctdamagedescriptions.api.impl.dists.SimpleBuiltInDist;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.IDDDDistributionRegistry;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInFire;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInForce;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInPiercing;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDBuiltInPoison;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDDaylightDist;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDExplosionDist;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.DDDInstantEffectsDist;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.ParrotPoisonDist;
-import yeelp.distinctdamagedescriptions.registries.impl.dists.SimpleBuiltInDist;
 
-public final class DDDDistributions extends DDDBaseRegistry<DDDPredefinedDistribution> implements IDDDDistributionRegistry {
+public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDistribution> implements IDDDDistributionRegistry {
 	public DDDDistributions() {
 		super((dist) -> dist.getName(), "Distribution");
 	}

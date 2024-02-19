@@ -4,7 +4,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.registries.IDDDDamageTypeRegistry;
 
-public final class DDDDamageTypes extends DDDBaseRegistry<DDDDamageType> implements IDDDDamageTypeRegistry {
+public final class DDDDamageTypes extends DDDSourcedRegistry<DDDDamageType> implements IDDDDamageTypeRegistry {
 	public DDDDamageTypes() {
 		super(d -> d.getTypeName(), "Damage Type");
 	}

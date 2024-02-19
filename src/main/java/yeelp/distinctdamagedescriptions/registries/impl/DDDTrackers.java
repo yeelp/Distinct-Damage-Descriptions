@@ -5,7 +5,7 @@ import yeelp.distinctdamagedescriptions.handlers.AbstractTracker;
 import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 import yeelp.distinctdamagedescriptions.registries.IDDDTrackersRegistry;
 
-public final class DDDTrackers extends DDDBaseRegistry<AbstractTracker> implements IDDDTrackersRegistry {
+public final class DDDTrackers extends DDDUnsourcedRegistry<AbstractTracker> implements IDDDTrackersRegistry {
 
 	public DDDTrackers() {
 		super(AbstractTracker::getName, "tracker");

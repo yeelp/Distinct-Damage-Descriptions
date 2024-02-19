@@ -9,8 +9,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.ArmorMap;
-import yeelp.distinctdamagedescriptions.util.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public class ArmorDistribution extends Distribution implements IArmorDistribution {
@@ -43,7 +44,7 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 
 	@Override
 	public ArmorMap distributeArmor(float armor, float toughness) {
-		return super.distribute(new ArmorMap(), (f) -> new ArmorValues(armor * f, toughness * f));
+		return super.distribute(DDDMaps.newArmorMap(), (f) -> new ArmorValues(armor * f, toughness * f));
 	}
 
 	@Override

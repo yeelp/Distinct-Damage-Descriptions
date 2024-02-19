@@ -11,8 +11,8 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenOperator;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.ICreatureType;
-import yeelp.distinctdamagedescriptions.capability.impl.CreatureType;
+import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
+import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 
@@ -21,11 +21,11 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCr
 @ZenRegister
 public class CTCreatureType implements Iterable<ICTCreatureTypeDefinition> {
 	private final IEntityLivingBase entityLiving;
-	private final ICreatureType type;
+	private final IMobCreatureType type;
 
 	public CTCreatureType(IEntityLivingBase entityLiving) {
 		this.entityLiving = entityLiving;
-		this.type = DDDAPI.accessor.getMobCreatureType(CraftTweakerMC.getEntityLivingBase(this.entityLiving)).orElse(CreatureType.UNKNOWN);
+		this.type = DDDAPI.accessor.getMobCreatureType(CraftTweakerMC.getEntityLivingBase(this.entityLiving)).orElse(MobCreatureType.UNKNOWN);
 	}
 	
 	@ZenOperator(OperatorType.CONTAINS)

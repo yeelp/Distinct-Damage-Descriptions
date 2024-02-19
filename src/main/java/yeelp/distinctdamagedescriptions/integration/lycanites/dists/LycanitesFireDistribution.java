@@ -23,12 +23,12 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
-public final class LycanitesFireDistribution implements DDDPredefinedDistribution {
+public final class LycanitesFireDistribution extends DDDAbstractPredefinedDistribution {
 	public static final LycanitesFireDistribution SCORCHFIRE = new LycanitesFireDistribution("scorchfire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableScorchFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.5f), new Tuple<DDDDamageType, Float>(FORCE, 0.5f));
 	public static final LycanitesFireDistribution DOOMFIRE = new LycanitesFireDistribution("doomfire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableDoomFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.5f), new Tuple<DDDDamageType, Float>(NECROTIC, 0.5f));
 	public static final LycanitesFireDistribution HELLFIRE = new LycanitesFireDistribution("hellfire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableHellFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.3f), new Tuple<DDDDamageType, Float>(NECROTIC, 0.7f));
@@ -39,15 +39,14 @@ public final class LycanitesFireDistribution implements DDDPredefinedDistributio
 	public static final LycanitesFireDistribution PRIMEFIRE = new LycanitesFireDistribution("primefire", DamageSource.IN_FIRE, () -> ModConfig.dmg.extraDamage.enableFireDamage, new Tuple<DDDDamageType, Float>(FIRE, 1.0f));
 
 	private final BlockFireBase fire;
-	private final String name;
 	private final Supplier<Boolean> config;
 	private final IDamageDistribution dist;
 	private final DamageSource src;
 
 	@SafeVarargs
 	private LycanitesFireDistribution(String key, DamageSource src, Supplier<Boolean> config, Tuple<DDDDamageType, Float>... weights) {
+		super(key, Source.BUILTIN);
 		this.config = config;
-		this.name = key;
 		this.src = src;
 		this.dist = new DamageDistribution(weights);
 		Block block = ObjectManager.getBlock(key);
@@ -67,11 +66,6 @@ public final class LycanitesFireDistribution implements DDDPredefinedDistributio
 	@Override
 	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
 		return this.isApplicable(src, target) ? this.getTypes() : Collections.emptySet();
-	}
-
-	@Override
-	public String getName() {
-		return this.name;
 	}
 
 	@Override

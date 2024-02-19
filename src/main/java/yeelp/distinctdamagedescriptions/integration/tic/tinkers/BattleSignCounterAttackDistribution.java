@@ -11,11 +11,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
-public class BattleSignCounterAttackDistribution implements DDDPredefinedDistribution {
+public class BattleSignCounterAttackDistribution extends DDDAbstractPredefinedDistribution {
+
+	public BattleSignCounterAttackDistribution() {
+		super("battlesignCounter", Source.BUILTIN);
+	}
 
 	@Override
 	public boolean enabled() {
@@ -28,11 +32,6 @@ public class BattleSignCounterAttackDistribution implements DDDPredefinedDistrib
 			return getDist((EntityPlayer) src.getTrueSource()).getCategories();
 		}
 		return ImmutableSet.of();
-	}
-
-	@Override
-	public String getName() {
-		return "battlesign counter";
 	}
 
 	@Override

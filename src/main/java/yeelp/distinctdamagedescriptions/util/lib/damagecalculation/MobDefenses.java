@@ -5,7 +5,8 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 class MobDefenses {
 
@@ -13,7 +14,7 @@ class MobDefenses {
 	public Set<DDDDamageType> immunities;
 
 	public MobDefenses() {
-		this(new ResistMap(), Sets.newHashSet());
+		this(DDDMaps.newResistMap(), Sets.newHashSet());
 	}
 
 	public MobDefenses(ResistMap resistances, Set<DDDDamageType> immunities) {

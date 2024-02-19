@@ -11,8 +11,8 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 /**
  * This event fires every calculation to determine if a mob's resistances should

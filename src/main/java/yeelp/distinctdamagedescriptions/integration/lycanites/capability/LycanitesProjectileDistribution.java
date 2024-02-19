@@ -35,7 +35,7 @@ public final class LycanitesProjectileDistribution extends DamageDistribution {
 	public IDamageDistribution update(IProjectile owner) {
 		BaseProjectileEntity projectile = (BaseProjectileEntity) owner;
 		if(projectile.entityName != null && !projectile.entityName.equals(this.proj)) {
-			this.setNewWeights(copyMap((DamageDistribution) DDDConfigurations.projectiles.getOrFallbackToDefault(ModConsts.LYCANITES_ID.concat(":").concat(projectile.entityName))));
+			this.setNewWeights(copyMap((DamageDistribution) DDDConfigurations.projectiles.getOrFallbackToDefault(ModConsts.IntegrationIds.LYCANITES_ID.concat(":").concat(projectile.entityName))));
 			this.proj = projectile.entityName;
 		}
 		return super.update(owner);

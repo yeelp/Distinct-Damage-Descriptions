@@ -65,8 +65,13 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 	}
 
 	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.CONARM_TITLE;
+	}
+
+	@Override
 	public String getModID() {
-		return ModConsts.CONARM_ID;
+		return ModConsts.IntegrationIds.CONARM_ID;
 	}
 
 	@Override

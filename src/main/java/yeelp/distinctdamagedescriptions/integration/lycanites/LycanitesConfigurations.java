@@ -7,7 +7,7 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 
-@DDDLoader(modid = ModConsts.LYCANITES_ID, name = "Lycanites Configurations", requiredLoaders = "DDD Registries")
+@DDDLoader(modid = ModConsts.IntegrationIds.LYCANITES_ID, name = "Lycanites Configurations", requiredLoaders = "DDD Registries")
 public abstract class LycanitesConfigurations {
 
 	/**

@@ -2,7 +2,7 @@ package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
 import java.util.OptionalDouble;
 
-import yeelp.distinctdamagedescriptions.util.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 public final class CombatResults {
 	public static final CombatResults NO_RESULTS = new CombatResults();

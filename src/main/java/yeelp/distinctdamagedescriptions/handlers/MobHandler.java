@@ -9,7 +9,7 @@ import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.ICreatureType;
+import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 
 public class MobHandler extends Handler {
@@ -27,7 +27,7 @@ public class MobHandler extends Handler {
 	public void onCrit(CriticalHitEvent evt) {
 		Entity target = evt.getTarget();
 		if(target instanceof EntityLivingBase) {
-			DDDAPI.accessor.getMobCreatureType((EntityLivingBase) evt.getTarget()).filter(ICreatureType::isImmuneToCriticalHits).ifPresent((type) -> evt.setResult(Result.DENY));
+			DDDAPI.accessor.getMobCreatureType((EntityLivingBase) evt.getTarget()).filter(IMobCreatureType::isImmuneToCriticalHits).ifPresent((type) -> evt.setResult(Result.DENY));
 		}
 	}
 	

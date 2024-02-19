@@ -1,5 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.ZenRuntimeException;
@@ -8,15 +13,19 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenProperty;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType.Type;
+import yeelp.distinctdamagedescriptions.api.IHasCreationSource.Source;
 import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType.Source;
-import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 @ZenClass("mods.ddd.DamageTypeBuilder")
 @ZenRegister
 public final class CoTDDDDamageTypeBuilder {
 
+	private static final Collection<CoTDDDDamageTypeBuilder> BUILDERS = new ArrayList<CoTDDDDamageTypeBuilder>();
+	private static final Set<String> USED_NAMES = new HashSet<String>();
+	
+	private boolean wasBuilt = false;
+	
 	@ZenProperty
 	public String name;
 	
@@ -54,18 +63,34 @@ public final class CoTDDDDamageTypeBuilder {
 	}
 	
 	@ZenMethod
-	public ICTDDDDamageType register() {
+	public void register() {
+		if(this.wasBuilt) {
+			return;
+		}
+		if(USED_NAMES.contains(this.name)) {
+			throw new ZenRuntimeException(String.format("A Custom Damage Type with name %s was created in another script!", this.name));
+		}
 		if(this.name == null) {
 			throw new ZenRuntimeException("internal damage type name can not be null!");
 		}
 		if(this.displayName == null) {
 			CraftTweakerAPI.logWarning(String.format("%s doesn't have a display name set! Will use internal name as display name, but it is recommended to set a display name with ZenProperty displayName!", this.name));
+			this.displayName = this.name;
 		}
-		DDDDamageType type = new DDDCustomDamageType(this.name, this.displayName, this.type == Type.PHYSICAL, this.deathMessageHasAttacker, this.deathMessageNoAttacker, this.color, Source.CT);
-		if(DDDRegistries.damageTypes.isRegistered(type)) {
-			CraftTweakerAPI.logWarning(String.format("%s was already registered, either by another script or by JSON!", type.getTypeName()));
-		}
-		DDDRegistries.damageTypes.register(type);
-		return CTDDDDamageType.getFromDamageType(type);
+		BUILDERS.add(this);
+		USED_NAMES.add(this.name);
+	}
+	
+	private DDDDamageType createDamageType() {
+		return new DDDCustomDamageType(this.name, this.displayName, this.type == Type.PHYSICAL, this.deathMessageHasAttacker, this.deathMessageNoAttacker, this.color, Source.CoT);
+	}
+	
+	public static void registerTypes() {
+		BUILDERS.stream().map(CoTDDDDamageTypeBuilder::createDamageType).forEach((t) -> {
+			if(DDDRegistries.damageTypes.isRegistered(t)) {
+				throw new ZenRuntimeException(String.format("%s was already registered! Original registration source: %s!", t.getTypeName(), DDDRegistries.damageTypes.get(t.getTypeName()).getCreationSourceString()));
+			}
+			DDDRegistries.damageTypes.register(t);
+		});
 	}
 }

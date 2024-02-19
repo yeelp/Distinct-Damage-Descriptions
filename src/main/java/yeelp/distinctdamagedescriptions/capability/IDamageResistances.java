@@ -4,7 +4,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 /**
  * Damage Resistances capability base.
@@ -77,7 +78,7 @@ public interface IDamageResistances extends ISyncableCapability<NBTTagCompound> 
 	IDamageResistances update(EntityLivingBase owner);
 
 	default ResistMap getAllResistances() {
-		ResistMap rMap = new ResistMap();
+		ResistMap rMap = DDDMaps.newResistMap();
 		DDDRegistries.damageTypes.getAll().forEach((t) -> rMap.put(t, this.getResistance(t)));
 		return rMap;
 	}

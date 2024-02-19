@@ -51,11 +51,16 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 
 	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		super(name, isPhysical, deathAttackerMessage, deathMessage, colour);
-		this.displayName = this.getTypeName().substring("ddd_".length());
+		this.displayName = this.getTypeName().substring(DDDDamageType.DDD_PREFIX.length());
 	}
 
 	@Override
 	public boolean isCustomDamage() {
 		return false;
+	}
+
+	@Override
+	public Source getCreationSource() {
+		return Source.BUILTIN;
 	}
 }

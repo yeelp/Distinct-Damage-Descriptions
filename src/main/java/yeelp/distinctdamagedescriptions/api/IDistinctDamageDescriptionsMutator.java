@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
-import yeelp.distinctdamagedescriptions.util.DamageMap;
-import yeelp.distinctdamagedescriptions.util.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 @ParametersAreNonnullByDefault
 public interface IDistinctDamageDescriptionsMutator {

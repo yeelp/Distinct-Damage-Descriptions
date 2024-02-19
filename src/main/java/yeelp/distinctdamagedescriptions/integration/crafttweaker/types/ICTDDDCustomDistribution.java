@@ -7,10 +7,15 @@ import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 
 @ZenClass("mods.ddd.ICustomDistribution")
 @ZenRegister
-public interface ICTDDDCustomDistribution extends DDDPredefinedDistribution {
+public interface ICTDDDCustomDistribution extends ICTDamageDistribution, DDDPredefinedDistribution {
 
 	@Override
 	@ZenGetter("name")
 	String getName();
+
+	@Override
+	default Source getCreationSource() {
+		return Source.CoT;
+	}
 	
 }

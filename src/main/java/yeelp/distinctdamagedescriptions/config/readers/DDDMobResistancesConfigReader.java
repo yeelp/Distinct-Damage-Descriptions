@@ -9,7 +9,7 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 public final class DDDMobResistancesConfigReader extends DDDBasicConfigReader<MobResistanceCategories> {

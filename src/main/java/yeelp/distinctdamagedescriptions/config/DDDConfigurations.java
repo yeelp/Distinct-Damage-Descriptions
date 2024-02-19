@@ -15,7 +15,7 @@ import yeelp.distinctdamagedescriptions.config.readers.DDDMobResistancesConfigRe
 import yeelp.distinctdamagedescriptions.config.readers.DDDProjectileConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
-import yeelp.distinctdamagedescriptions.util.MobResistanceCategories;
+import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
 /**

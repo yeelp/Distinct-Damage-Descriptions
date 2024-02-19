@@ -47,7 +47,12 @@ public final class CTEventHandler extends Handler implements IModIntegration {
 
 	@Override
 	public String getModID() {
-		return ModConsts.CRAFTTWEAKER_ID;
+		return ModConsts.IntegrationIds.CRAFTTWEAKER_ID;
+	}
+
+	@Override
+	public String getModTitle() {
+		return ModConsts.IntegrationTitles.CRAFTWEAKER_TITLE;
 	}
 
 	@Override
