@@ -62,6 +62,15 @@ public final class CoTDDDDistributionBuilder {
 		this.stringWeights = Maps.newHashMap();
 	}
 	
+	private CoTDDDDistributionBuilder(CoTDDDDistributionBuilder builder) {
+		this.name = builder.name;
+		this.weights = builder.weights;
+		this.stringWeights = builder.stringWeights;
+		this.isContextApplicable = builder.isContextApplicable;
+		this.priority = builder.priority;
+		this.wasBuilt = builder.wasBuilt;
+	}
+	
 	@ZenMethod
 	public void setWeight(ICTDDDDamageType type, float weight) {
 		this.weights.put(type.asDDDDamageType(), weight);
@@ -96,7 +105,7 @@ public final class CoTDDDDistributionBuilder {
 		if(this.isContextApplicable == null) {
 			throw new ZenRuntimeException(String.format("No applicable context function (isContextApplicable) defined for %s!", this.name));
 		}
-		BUILDERS.add(this);
+		BUILDERS.add(new CoTDDDDistributionBuilder(this));
 		USED_NAMES.add(this.name);
 		this.wasBuilt = true;
 	}

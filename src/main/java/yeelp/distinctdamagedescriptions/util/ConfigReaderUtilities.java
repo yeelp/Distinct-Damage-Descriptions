@@ -30,6 +30,7 @@ public final class ConfigReaderUtilities {
 	public static final String POTENTIALLY_NEGATIVE_DECIMAL_REGEX = "-?\\d+(\\.\\d+)?";
 	public static final String ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + DECIMAL_REGEX + "\\)";
 	public static final String ALLOW_NEGATIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + POTENTIALLY_NEGATIVE_DECIMAL_REGEX + "\\)";
+	public static final String COMMENT_REGEX = "^(\\/\\/.*)?$";
 	public static final String DIST_REGEX = buildListRegex(ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX);
 
 	private ConfigReaderUtilities() {

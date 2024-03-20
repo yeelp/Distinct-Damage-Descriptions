@@ -12,6 +12,7 @@ import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
+import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
 /**
  * A skeletal reader that reads lists of config entries.
@@ -66,6 +67,10 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	@Override
 	public final void read() {
 		for(String string : this.configList) {
+			if(string.matches(ConfigReaderUtilities.COMMENT_REGEX)) {
+				DistinctDamageDescriptions.debug("Encountered Config Comment...");
+				continue;
+			}
 			Tuple<String, ? extends T> t;
 			try {
 				t = this.readEntry(string);

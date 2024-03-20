@@ -62,6 +62,16 @@ public final class CoTDDDDamageTypeBuilder {
 		this.name = name;
 	}
 	
+	private CoTDDDDamageTypeBuilder(CoTDDDDamageTypeBuilder builder) {
+		this.name = builder.name;
+		this.displayName = builder.displayName;
+		this.color = builder.color;
+		this.deathMessageHasAttacker = builder.deathMessageHasAttacker;
+		this.deathMessageNoAttacker = builder.deathMessageNoAttacker;
+		this.type = builder.type;
+		this.wasBuilt = builder.wasBuilt;
+	}
+	
 	@ZenMethod
 	public void register() {
 		if(this.wasBuilt) {
@@ -77,8 +87,9 @@ public final class CoTDDDDamageTypeBuilder {
 			CraftTweakerAPI.logWarning(String.format("%s doesn't have a display name set! Will use internal name as display name, but it is recommended to set a display name with ZenProperty displayName!", this.name));
 			this.displayName = this.name;
 		}
-		BUILDERS.add(this);
+		BUILDERS.add(new CoTDDDDamageTypeBuilder(this));
 		USED_NAMES.add(this.name);
+		this.wasBuilt = true;
 	}
 	
 	private DDDDamageType createDamageType() {
@@ -92,5 +103,7 @@ public final class CoTDDDDamageTypeBuilder {
 			}
 			DDDRegistries.damageTypes.register(t);
 		});
+		BUILDERS.clear();
+		USED_NAMES.clear();
 	}
 }
