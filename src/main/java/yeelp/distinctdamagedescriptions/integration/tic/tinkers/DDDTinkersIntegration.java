@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -95,6 +96,12 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 			throw new RuntimeException(e);
 		}
 		MeltingListener.getInstance().register();
+	}
+
+	
+	@Override
+	protected boolean doSpecificPreInit(FMLPreInitializationEvent evt) {
+		return true;
 	}
 
 	@Override

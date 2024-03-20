@@ -10,6 +10,9 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
@@ -53,6 +56,7 @@ public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> 
 			map.put("base", normal);
 			map.put("extended", extended);
 			map.put("strong", strong);
+			checkIfRegisteredByForge(ForgeRegistries.POTION_TYPES, normal, extended, strong);
 			ForgeRegistries.POTION_TYPES.registerAll(normal, extended, strong);
 			POTION_TYPES.put(p, map);
 		});
@@ -60,8 +64,15 @@ public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> 
 
 	@Override
 	public void register(AbstractDDDPotion obj) {
+		if(ForgeRegistries.POTIONS.containsKey(obj.getRegistryName())) {
+			DistinctDamageDescriptions.err(String.format("The object %s was registered by Forge before DDD registered it!", obj.getRegistryName()));
+		}
 		super.register(obj);
 		ForgeRegistries.POTIONS.register(obj);
 	}
-
+	
+	@SafeVarargs
+	private static final <T extends IForgeRegistryEntry<T>> void checkIfRegisteredByForge(IForgeRegistry<T> registry, T...ts) {
+		Stream.of(ts).map(IForgeRegistryEntry::getRegistryName).filter(registry::containsKey).forEach((loc) -> DistinctDamageDescriptions.err(String.format("The object %s was registered by Forge before DDD registered it!", loc)));
+	}
 }

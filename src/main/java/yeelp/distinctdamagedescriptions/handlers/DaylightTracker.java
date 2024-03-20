@@ -5,10 +5,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.base.Predicates;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public final class DaylightTracker extends AbstractTracker {
@@ -20,7 +23,7 @@ public final class DaylightTracker extends AbstractTracker {
 
 		@Override
 		public void read() {
-			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).forEach((c) -> ConfigReader.parse(c).ifPresent(WHITELIST::add));
+			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).forEach((c) -> ConfigReader.parse(c).ifPresent(WHITELIST::add));
 		}
 
 		@Override

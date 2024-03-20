@@ -67,7 +67,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	@Override
 	public final void read() {
 		for(String string : this.configList) {
-			if(string.matches(ConfigReaderUtilities.COMMENT_REGEX)) {
+			if(ConfigReaderUtilities.isCommentEntry(string)) {
 				DistinctDamageDescriptions.debug("Encountered Config Comment...");
 				continue;
 			}

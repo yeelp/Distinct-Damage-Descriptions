@@ -36,6 +36,15 @@ public final class ConfigReaderUtilities {
 	private ConfigReaderUtilities() {
 		throw new UnsupportedOperationException("Utilities can't be instatiated!");
 	}
+	
+	/**
+	 * Return false if this string is a comment or blank line. Useful for filtering with Predicates.
+	 * @param s The input string
+	 * @return True if it matches {@link #COMMENT_REGEX}
+	 */
+	public static boolean isCommentEntry(String s) {
+		return s.matches(COMMENT_REGEX);
+	}
 
 	/**
 	 * Validate an object is non null. This differs from
@@ -153,4 +162,5 @@ public final class ConfigReaderUtilities {
 		}
 		return result;
 	}
+	
 }

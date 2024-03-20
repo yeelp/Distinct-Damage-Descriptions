@@ -3,8 +3,10 @@ package yeelp.distinctdamagedescriptions.potion;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 public abstract class AbstractDDDPotion extends Potion {
@@ -32,7 +34,7 @@ public abstract class AbstractDDDPotion extends Potion {
 		this.type = type;
 		this.effect = effect;
 		String name = String.format("%s.%s.%s", this.type.getTypeName(), root, this.effect.getEffect());
-		this.setRegistryName(name);
+		this.setRegistryName(new ResourceLocation(ModConsts.MODID, name));
 		this.setPotionName("effect."+name);
 	}
 	

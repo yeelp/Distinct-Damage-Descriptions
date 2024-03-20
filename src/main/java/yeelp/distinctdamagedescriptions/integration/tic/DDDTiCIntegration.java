@@ -21,6 +21,8 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 	protected abstract Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters();
 
 	protected abstract void registerCapabilities();
+	
+	protected abstract boolean doSpecificPreInit(FMLPreInitializationEvent evt);
 
 	protected abstract boolean doSpecificInit(FMLInitializationEvent evt);
 
@@ -30,7 +32,7 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 			this.getBookTransformer().register();
 		}
 		this.getItemDistributors().forEach(DDDCapabilityDistributors::addItemCap);
-		return true;
+		return this.doSpecificPreInit(evt);
 	}
 
 	@Override
