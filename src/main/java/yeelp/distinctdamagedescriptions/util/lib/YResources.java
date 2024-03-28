@@ -24,20 +24,20 @@ import net.minecraftforge.oredict.OreDictionary;
  *
  */
 public final class YResources {
-	public static ResourceLocation getRegistryName(ItemStack stack) {
+	public static Optional<ResourceLocation> getRegistryName(ItemStack stack) {
 		return getRegistryName(stack.getItem());
 	}
 
-	public static ResourceLocation getRegistryName(Item item) {
-		return item.getRegistryName();
+	public static Optional<ResourceLocation> getRegistryName(Item item) {
+		return Optional.ofNullable(item.getRegistryName());
 	}
 
-	public static String getRegistryString(ItemStack stack) {
-		return getRegistryName(stack.getItem()).toString();
+	public static Optional<String> getRegistryString(ItemStack stack) {
+		return getRegistryName(stack.getItem()).map(Functions.toStringFunction());
 	}
 
-	public static String getRegistryString(Item item) {
-		return item.getRegistryName().toString();
+	public static Optional<String> getRegistryString(Item item) {
+		return Optional.ofNullable(item.getRegistryName().toString());
 	}
 
 	public static Optional<ResourceLocation> getEntityID(@Nullable Entity entity) {

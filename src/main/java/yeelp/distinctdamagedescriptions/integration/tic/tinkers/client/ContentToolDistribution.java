@@ -40,7 +40,7 @@ public class ContentToolDistribution extends ContentTool {
 	public ContentToolDistribution(PageData parent, ToolCore tool) {
 		super(tool);
 		this.parent = parent;
-		String key = YResources.getRegistryString(tool);
+		String key = YResources.getRegistryString(tool).orElse("");
 		this.dist = DDDConfigurations.items.getOrFallbackToDefault(key).copy();
 		this.variability = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(key);
 		this.text = generateTextData(tool);

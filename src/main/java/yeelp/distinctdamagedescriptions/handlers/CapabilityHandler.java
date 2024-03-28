@@ -51,7 +51,7 @@ public class CapabilityHandler extends Handler {
 			DistinctDamageDescriptions.warn("Trying to get capabilities for null stack!");
 			return;
 		}
-		addCapsIfNonNull(evt, DDDCapabilityDistributors.getCapabilities(evt.getObject()));
+		DDDCapabilityDistributors.getCapabilities(evt.getObject()).ifPresent((m) -> addCapsIfNonNull(evt, m));
 	}
 	
 	private static <T> void addCapsIfNonNull(AttachCapabilitiesEvent<T> evt, Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> map) {

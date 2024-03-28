@@ -128,8 +128,7 @@ public enum TooltipMaker {
 	}
 
 	private static Stream<TooltipMaker> getApplicableMakers(ItemStack stack) {
-		final String regKey = YResources.getRegistryString(stack);
-		return Arrays.stream(TooltipMaker.values()).filter((m) -> m.isApplicable(stack, regKey)).sorted();
+		return YResources.getRegistryString(stack).map((r) -> Arrays.stream(TooltipMaker.values()).filter((m) -> m.isApplicable(stack, r)).sorted()).orElse(Stream.empty());
 	}
 
 	protected abstract boolean isApplicable(ItemStack stack, String registryString);

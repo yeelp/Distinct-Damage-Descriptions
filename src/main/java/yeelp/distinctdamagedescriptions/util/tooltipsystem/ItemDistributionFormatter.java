@@ -46,7 +46,7 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 
 	@Override
 	protected boolean shouldShowDist(ItemStack stack) {
-		return DDDConfigurations.items.configured(YResources.getRegistryString(stack)) || ModConfig.client.alwaysShowDamageDistTooltip;
+		return YResources.getRegistryString(stack).filter(DDDConfigurations.items::configured).isPresent() || ModConfig.client.alwaysShowDamageDistTooltip;
 	}
 
 	@Override

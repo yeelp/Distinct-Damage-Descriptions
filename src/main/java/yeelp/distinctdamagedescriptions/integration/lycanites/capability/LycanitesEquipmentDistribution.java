@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import com.lycanitesmobs.core.item.equipment.ItemEquipment;
@@ -52,7 +51,7 @@ public final class LycanitesEquipmentDistribution extends DamageDistribution {
 		Map<DDDDamageType, Float> map = new DDDBaseMap<Float>(() -> 0.0f);
 		List<ItemEquipmentPart> parts = equipment.getEquipmentPartStacks(owner).stream().map(equipment::getEquipmentPart).filter(filter).collect(Collectors.toList());
 		if(this.cachedUsefulParts == null || !(parts.size() == this.cachedUsefulParts.size() && this.cachedUsefulParts.containsAll(parts))) {
-			List<IDamageDistribution> dists = parts.stream().map(Functions.<ItemEquipmentPart, String, IDamageDistribution>compose(DDDConfigurations.items::getOrFallbackToDefault, YResources::getRegistryString)).collect(Collectors.toList());
+			List<IDamageDistribution> dists = parts.stream().map(LycanitesEquipmentDistribution::retrieveFromConfig).collect(Collectors.toList());
 			if(!dists.isEmpty()) {
 				dists.forEach((d) -> d.getCategories().forEach((type) -> map.merge(type, d.getWeight(type) / dists.size(), Float::sum)));
 				this.setNewWeights(map);
@@ -69,6 +68,10 @@ public final class LycanitesEquipmentDistribution extends DamageDistribution {
 	@CapabilityInject(LycanitesEquipmentDistribution.class)
 	private static void onRegister(Capability<LycanitesEquipmentDistribution> cap) {
 		DDDAPI.mutator.registerItemCap(IDamageDistribution.class, cap);
+	}
+	
+	private static IDamageDistribution retrieveFromConfig(ItemEquipmentPart part) {
+		return YResources.getRegistryString(part).map(DDDConfigurations.items::getOrFallbackToDefault).orElse(DDDConfigurations.items.getDefaultValue());
 	}
 
 }

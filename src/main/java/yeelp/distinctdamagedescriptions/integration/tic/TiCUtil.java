@@ -72,14 +72,15 @@ public final class TiCUtil {
 	}
 
 	public static DDDBaseMap<Float> getBaseDist(Item item) {
-		String reg = YResources.getRegistryString(item);
-		if(item instanceof TinkerToolCore) {
-			return getMap(reg, DDDConfigurations.items);
-		}
-		if(item instanceof TinkersArmor) {
-			return getMap(reg, DDDConfigurations.armors);
-		}
-		return new DDDBaseMap<Float>(() -> 0.0f);
+		return YResources.getRegistryString(item).map((r) -> {
+			if(item instanceof TinkerToolCore) {
+				return getMap(r, DDDConfigurations.items);
+			}
+			if(item instanceof TinkersArmor) {
+				return getMap(r, DDDConfigurations.armors);
+			}
+			return null;
+		}).orElse(new DDDBaseMap<Float>(() -> 0.0f));
 	}
 
 	public static String getDDDDamageTypeNameColoured(DDDDamageType type) {

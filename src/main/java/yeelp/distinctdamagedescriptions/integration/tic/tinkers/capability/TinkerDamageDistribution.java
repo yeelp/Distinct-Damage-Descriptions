@@ -67,7 +67,7 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	protected Set<DDDBaseMap<Float>> computeBiasedMaps(ItemStack owner) {
 		Collection<String> mats = TiCUtil.getKeyMaterialIdentifiers(owner, MaterialTypes.HEAD);
 		if(this.cachedKeys == null || !this.cachedKeys.containsAll(mats)) {
-			float biasResist = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(YResources.getRegistryString(owner));
+			float biasResist = YResources.getRegistryString(owner).map(TiCConfigurations.toolBiasResistance::getOrFallbackToDefault).orElse(TiCConfigurations.toolBiasResistance.getDefaultValue());
 			DDDBaseMap<Float> base = TiCUtil.getBaseDist(owner);
 			Set<DDDBaseMap<Float>> dists = mats.stream().map(Functions.compose((b) -> b.getBiasedDistributionMap(base, biasResist), TiCConfigurations.toolMaterialBias::getOrFallbackToDefault)).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
 			if(dists.size() > 0) {

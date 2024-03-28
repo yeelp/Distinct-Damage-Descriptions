@@ -184,7 +184,7 @@ public class TestDefaultDistribution {
 	@SuppressWarnings("static-method")
 	@CompatTest(compat = true, type = Type.ITEM)
 	void testDefinedOnlyGivesDefaultForNonDefinedItem() {
-		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_APPLE);
+		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_APPLE).get();
 		assertEquals(1, caps.size());
 		assertNull(caps.values().iterator().next());
 		assertEquals(DefaultDamageDistribution.getInstance(), DDDAPI.accessor.getDamageDistribution(MOCK_APPLE).get());
@@ -193,7 +193,7 @@ public class TestDefaultDistribution {
 	@SuppressWarnings("static-method")
 	@CompatTest(compat = false, type = Type.ITEM)
 	void testNotDefinedOnlyGivesBludgeoningForNonDefinedItem() {
-		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_APPLE);
+		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_APPLE).get();
 		assertEquals(1, caps.size());
 		DDDCapabilityBase<?> cap = caps.values().iterator().next();
 		assertNotNull(cap);
@@ -206,7 +206,7 @@ public class TestDefaultDistribution {
 	@SuppressWarnings("static-method")
 	@CompatTest(compat = true, type = Type.ITEM)
 	void testDefinedOnlyGivesDefaultForNonDefinedArmor() {
-		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_CHESTPLATE);
+		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_CHESTPLATE).get();
 		assertEquals(2, caps.size());
 		assertTrue(caps.containsKey(ArmorDistributionCapabilityDistributor.LOC));
 		assertEquals(DefaultArmorDistribution.getInstance(), DDDAPI.accessor.getArmorResistances(MOCK_CHESTPLATE).get());
@@ -215,7 +215,7 @@ public class TestDefaultDistribution {
 	@SuppressWarnings("static-method")
 	@CompatTest(compat = true, type = Type.ITEM)
 	void testDefinedOnlyGivesDefaultForNonDefinedShield() {
-		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_SHIELD);
+		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_SHIELD).get();
 		assertEquals(2, caps.size());
 		assertTrue(caps.containsKey(ShieldDistributionCapabilityDistributor.LOC));
 		assertEquals(DefaultShieldDistribution.getInstance(), DDDAPI.accessor.getShieldDistribution(MOCK_SHIELD).get());
