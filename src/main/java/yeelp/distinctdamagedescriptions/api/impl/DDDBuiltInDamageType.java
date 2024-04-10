@@ -44,9 +44,14 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 			PSYCHIC,
 			RADIANT,
 			THUNDER};
+	public static final DDDDamageType[] INTERNAL_TYPES = {
+			NORMAL,
+			UNKNOWN
+	};
 
 	static {
 		Arrays.sort(BUILT_IN_TYPES);
+		Arrays.sort(INTERNAL_TYPES);
 	}
 
 	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {

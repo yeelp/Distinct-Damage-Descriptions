@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.api;
 
 import javax.annotation.Nullable;
 
+import scala.actors.threadpool.Arrays;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDFontColour;
 
@@ -35,6 +37,9 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 		}
 	}
 
+	/**
+	 * A prefix that DDd uses to recognize types it adds.
+	 */
 	static String DDD_PREFIX = "ddd_";
 
 	/**
@@ -108,11 +113,39 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 		return true;
 	}
 
+	/**
+	 * Add the DDD prefix to a damage type, or really to any string, but only if the prefix doesn't exist.
+	 * @param s
+	 * @return a String with {@link #DDD_PREFIX} added to the front if it isn't present.
+	 */
 	static String addDDDPrefixIfNeeded(String s) {
 		return s.startsWith(DDD_PREFIX) ? s : DDD_PREFIX.concat(s);
 	}
 	
+	/**
+	 * Remove the DDD prefix from a damage type string, or really any string, but only if it is present to begin with. 
+	 * @param s
+	 * @return a String with {@link #DDD_PREFIX} removed from the front if it is present.
+	 */
 	static String removeDDDPrefixIfPresent(String s) {
 		return s.startsWith(DDD_PREFIX) ? s.substring(DDD_PREFIX.length()) : s;
+	}
+	
+	/**
+	 * Is the type an internal type? Internal types are used by DDD and should not be used by external sources.
+	 * @param type
+	 * @return True if {@code type} is an internal type.
+	 */
+	static boolean isInternalType(DDDDamageType type) {
+		return Arrays.binarySearch(DDDBuiltInDamageType.INTERNAL_TYPES, type) >= 0;
+	}
+	
+	/**
+	 * Is this type the unknown damage type?
+	 * @param type
+	 * @return true if it is {@link DDDBuiltInDamageType#UNKNOWN}
+	 */
+	static boolean isUnknownType(DDDDamageType type) {
+		return DDDBuiltInDamageType.UNKNOWN.equals(type);
 	}
 }

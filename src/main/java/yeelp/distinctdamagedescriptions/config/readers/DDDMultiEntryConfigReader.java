@@ -3,10 +3,13 @@ package yeelp.distinctdamagedescriptions.config.readers;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
@@ -32,7 +35,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	private Constructor<? extends T> constructor;
 	private Function<Object[], ? extends T> generator;
 
-	private static final Collection<DDDConfigReaderException> ERRORS = new LinkedList<DDDConfigReaderException>();
+	private static final Collection<DDDConfigReaderException> ERRORS = Collections.synchronizedCollection(new LinkedList<DDDConfigReaderException>());
 
 	private DDDMultiEntryConfigReader(String name, String[] configList, IDDDConfiguration<T> config) {
 		this.configList = configList;
@@ -66,6 +69,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	 */
 	@Override
 	public final void read() {
+		Collection<DDDConfigReaderException> errors = Lists.newLinkedList();
 		for(String string : this.configList) {
 			if(ConfigReaderUtilities.isCommentEntry(string)) {
 				DistinctDamageDescriptions.debug("Encountered Config Comment...");
@@ -76,10 +80,15 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 				t = this.readEntry(string);
 			}
 			catch(DDDConfigReaderException e) {
-				ERRORS.add(e);
+				errors.add(e);
 				continue;
 			}
 			this.config.put(t.getFirst(), t.getSecond());
+		}
+		if(errors.size() > 0) {
+			synchronized(ERRORS) {
+				errors.forEach(ERRORS::add);
+			}
 		}
 	}
 
@@ -87,14 +96,18 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	 * Display all errors accumulated from all config readers thus far.
 	 */
 	public static final void displayErrors() {
-		if(ERRORS.size() > 0) {
-			DistinctDamageDescriptions.fatal("There were some problems reading from the config! Check the following:");
-			ERRORS.forEach(DDDConfigReaderException::log);
+		synchronized(ERRORS) {
+			if(ERRORS.size() > 0) {
+				DistinctDamageDescriptions.fatal("There were some problems reading from the config! Check the following:");
+				ERRORS.forEach(DDDConfigReaderException::log);
+			}			
 		}
 	}
 
 	public static final Collection<String> getErrorMessages() {
-		return ERRORS.stream().map(DDDConfigReaderException::getLocalizedMessage).collect(Collectors.toList());
+		synchronized(ERRORS) {
+			return ERRORS.stream().map(DDDConfigReaderException::getLocalizedMessage).collect(Collectors.toList());			
+		}
 	}
 
 	protected final T constructInstance(Object... objects) {

@@ -30,13 +30,11 @@ import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DefaultArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DefaultDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
-import yeelp.distinctdamagedescriptions.capability.impl.DefaultShieldDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
@@ -64,25 +62,25 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(@Nullable ItemStack stack) {
-		return Optional.of(this.findCaps(ITEM, stack, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(stack)).orElse(DefaultDamageDistribution.getInstance()));
+		return Optional.of(this.findCaps(ITEM, stack, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(stack)).orElse(ModConfig.dmg.defaultItemDamage));
 	}
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(@Nullable EntityLivingBase entity) {
-		return Optional.of(this.findCaps(ENTITY, entity, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(entity)).orElse(DefaultDamageDistribution.getInstance()));
+		return Optional.of(this.findCaps(ENTITY, entity, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(entity)).orElse(ModConfig.dmg.defaultMobDamage));
 	}
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(@Nullable IProjectile projectile) {
 		if(projectile != null && projectile instanceof Entity) {
-			return Optional.of(this.findCaps(PROJECTILE, (Entity) projectile, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(projectile)).orElse(DefaultDamageDistribution.getInstance()));
+			return Optional.of(this.findCaps(PROJECTILE, (Entity) projectile, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(projectile)).orElse(ModConfig.dmg.defaultProjectileDamage));
 		}
 		return Optional.empty();
 	}
 
 	@Override
 	public Optional<IArmorDistribution> getArmorResistances(@Nullable ItemStack stack) {
-		return Optional.of(this.findCaps(ITEM, stack, IArmorDistribution.class, ArmorDistribution.cap).map((c) -> ((IArmorDistribution) c).update(stack)).orElse(DefaultArmorDistribution.getInstance()));
+		return Optional.of(this.findCaps(ITEM, stack, IArmorDistribution.class, ArmorDistribution.cap).map((c) -> ((IArmorDistribution) c).update(stack)).orElse(ModConfig.resist.defaultArmorResists));
 	}
 
 	@Override
@@ -97,7 +95,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	public Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack) {
-		return Optional.of(this.findCaps(ITEM, stack, ShieldDistribution.class, ShieldDistribution.cap).map((c) -> ((ShieldDistribution) c).update(stack)).orElse(DefaultShieldDistribution.getInstance()));
+		return Optional.of(this.findCaps(ITEM, stack, ShieldDistribution.class, ShieldDistribution.cap).map((c) -> ((ShieldDistribution) c).update(stack)).orElse(ModConfig.resist.defaultShieldResists.getShieldDistribution()));
 	}
 
 	private Optional<? extends DDDCapabilityBase<? extends NBTBase>> findCaps(String type, ICapabilityProvider thing, Class<? extends DDDCapabilityBase<? extends NBTBase>> cap, Capability<? extends DDDCapabilityBase<? extends NBTBase>> fallback) {

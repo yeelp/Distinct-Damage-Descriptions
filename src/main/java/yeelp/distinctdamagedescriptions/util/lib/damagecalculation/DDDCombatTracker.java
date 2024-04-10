@@ -113,7 +113,7 @@ public class DDDCombatTracker extends CombatTracker {
 	public void handleAttackStage(LivingAttackEvent evt) {
 		this.clear();
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
-		if(this.getIncomingDamage().isPresent() && this.ctx.getShield().isPresent() && this.ctx.getShield().get().hasCapability(ShieldDistribution.cap, null)) {
+		if(this.getIncomingDamage().isPresent() && this.ctx.getShield().isPresent() && (ModConfig.compat.definedItemsOnly || this.ctx.getShield().get().hasCapability(ShieldDistribution.cap, null))) {
 			DamageMap dmg = this.getIncomingDamage().get();
 			ItemStack shield = this.ctx.getShield().get();
 			ShieldBlockEvent blockEvt = DDDHooks.fireShieldBlock(this.ctx.getImmediateAttacker(), this.ctx.getTrueAttacker(), this.getFighter(), this.ctx.getSource(), dmg, shield);
@@ -172,7 +172,7 @@ public class DDDCombatTracker extends CombatTracker {
 						if(resist > 0) {
 							this.results.hasResistance();
 						}
-						else if(resist < 0) {
+						else if(resist < 0 && m.get(k) > 0) {
 							this.results.hasWeakness();
 						}
 					}

@@ -15,7 +15,7 @@ public final class ArmorDistributionCapabilityDistributor extends AbstractCapabi
 	private static ArmorDistributionCapabilityDistributor instance;
 
 	private ArmorDistributionCapabilityDistributor() {
-		super(LOC, () -> ModConfig.compat.definedItemsOnly);
+		super(LOC, () -> !ModConfig.compat.definedItemsOnly);
 	}
 
 	@Override

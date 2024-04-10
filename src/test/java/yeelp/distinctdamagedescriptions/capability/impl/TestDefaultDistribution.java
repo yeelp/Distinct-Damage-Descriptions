@@ -166,19 +166,19 @@ public class TestDefaultDistribution {
 	@SuppressWarnings("static-method")
 	@Test
 	void testNoCapStackGivesDefault() {
-		assertEquals(DefaultDamageDistribution.getInstance(), DDDAPI.accessor.getDamageDistribution(MOCK_NO_CAPS_STACK).get());
+		assertEquals(ModConfig.dmg.defaultItemDamage, DDDAPI.accessor.getDamageDistribution(MOCK_NO_CAPS_STACK).get());
 	}
 	
 	@SuppressWarnings("static-method")
 	@Test
 	void testNoCapEntityGivesDefault() {
-		assertEquals(DefaultDamageDistribution.getInstance(), DDDAPI.accessor.getDamageDistribution(MOCK_NO_CAPS_ELB).get());
+		assertEquals(ModConfig.dmg.defaultMobDamage, DDDAPI.accessor.getDamageDistribution(MOCK_NO_CAPS_ELB).get());
 	}
 	
 	@SuppressWarnings("static-method")
 	@Test
 	void testNoCapProjectileGivesDefault() {
-		assertEquals(DefaultDamageDistribution.getInstance(), DDDAPI.accessor.getDamageDistribution(MOCK_NO_CAPS_PROJECTILE).get());
+		assertEquals(ModConfig.dmg.defaultProjectileDamage, DDDAPI.accessor.getDamageDistribution(MOCK_NO_CAPS_PROJECTILE).get());
 	}
 	
 	@SuppressWarnings("static-method")
@@ -187,7 +187,7 @@ public class TestDefaultDistribution {
 		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_APPLE).get();
 		assertEquals(1, caps.size());
 		assertNull(caps.values().iterator().next());
-		assertEquals(DefaultDamageDistribution.getInstance(), DDDAPI.accessor.getDamageDistribution(MOCK_APPLE).get());
+		assertEquals(ModConfig.dmg.defaultItemDamage, DDDAPI.accessor.getDamageDistribution(MOCK_APPLE).get());
 	}
 	
 	@SuppressWarnings("static-method")
@@ -199,7 +199,7 @@ public class TestDefaultDistribution {
 		assertNotNull(cap);
 		assertTrue(cap instanceof IDamageDistribution);
 		IDamageDistribution dist = (IDamageDistribution) cap;
-		assertNotEquals(DefaultDamageDistribution.getInstance(), dist);
+		assertNotEquals(ModConfig.dmg.defaultItemDamage, dist);
 		assertEquals(1.0f, dist.getWeight(DDDBuiltInDamageType.BLUDGEONING));
 	}
 	
@@ -209,7 +209,7 @@ public class TestDefaultDistribution {
 		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_CHESTPLATE).get();
 		assertEquals(2, caps.size());
 		assertTrue(caps.containsKey(ArmorDistributionCapabilityDistributor.LOC));
-		assertEquals(DefaultArmorDistribution.getInstance(), DDDAPI.accessor.getArmorResistances(MOCK_CHESTPLATE).get());
+		assertEquals(ModConfig.resist.defaultArmorResists, DDDAPI.accessor.getArmorResistances(MOCK_CHESTPLATE).get());
 	}
 	
 	@SuppressWarnings("static-method")
@@ -218,7 +218,7 @@ public class TestDefaultDistribution {
 		Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>> caps = DDDCapabilityDistributors.getCapabilities(MOCK_SHIELD).get();
 		assertEquals(2, caps.size());
 		assertTrue(caps.containsKey(ShieldDistributionCapabilityDistributor.LOC));
-		assertEquals(DefaultShieldDistribution.getInstance(), DDDAPI.accessor.getShieldDistribution(MOCK_SHIELD).get());
+		assertEquals(ModConfig.resist.defaultShieldResists.getShieldDistribution(), DDDAPI.accessor.getShieldDistribution(MOCK_SHIELD).get());
 	}
 	
 	@SuppressWarnings("static-method")
@@ -228,7 +228,7 @@ public class TestDefaultDistribution {
 		assertEquals(2, caps.size());
 		for(DDDCapabilityBase<?> cap : caps.values()) {
 			if(cap instanceof IDamageDistribution) {
-				assertNotEquals(DefaultDamageDistribution.getInstance(), cap);
+				assertNotEquals(ModConfig.dmg.defaultMobDamage, cap);
 			}
 		}
 	}

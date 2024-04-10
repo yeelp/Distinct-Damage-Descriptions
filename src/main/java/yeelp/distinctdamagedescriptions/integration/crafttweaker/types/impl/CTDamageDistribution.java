@@ -1,7 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl;
 
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DefaultDamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDefaultDistribution;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDBaseMap;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDamageDistribution;
 
@@ -18,7 +18,7 @@ public class CTDamageDistribution extends CTDistribution implements ICTDamageDis
 
 	@Override
 	public boolean isDefault() {
-		return this.getDist() == DefaultDamageDistribution.getInstance();
+		return this.getDist() instanceof IDefaultDistribution;
 	}
 
 }

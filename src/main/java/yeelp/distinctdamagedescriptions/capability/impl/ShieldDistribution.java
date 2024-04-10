@@ -21,7 +21,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	public static Capability<ShieldDistribution> cap;
 
 	public ShieldDistribution() {
-		this(new NonNullMap<DDDDamageType, Float>(() -> 1.0f));
+		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f));
 	}
 
 	public ShieldDistribution(Map<DDDDamageType, Float> blockMap) {
@@ -57,7 +57,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 
 	@Override
 	public ShieldDistribution copy() {
-		return new ShieldDistribution(super.copyMap(1.0f));
+		return new ShieldDistribution(super.copyMap(0.0f));
 	}
 
 	@Override

@@ -1,5 +1,15 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Functions;
+
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+
 public final class DDDMaps {
 
 	private DDDMaps() {
@@ -24,6 +34,10 @@ public final class DDDMaps {
 		DamageMap() {
 			super(() -> 0.0f);
 		}
+		
+		public static Collector<DDDDamageType, ?, DamageMap> typesToDamageMap(Function<DDDDamageType, Float> valueMapper) {
+			return DDDMaps.typesToMap(valueMapper, DDDMaps::newDamageMap);
+		}
 	}
 	
 	public static final class ArmorMap extends DDDBaseMap<ArmorValues> {
@@ -31,6 +45,10 @@ public final class DDDMaps {
 
 		ArmorMap() {
 			super(() -> new ArmorValues());
+		}
+		
+		public static Collector<DDDDamageType, ?, ArmorMap> typesToArmorMap(Function<DDDDamageType, ArmorValues> valueMapper) {
+			return DDDMaps.typesToMap(valueMapper, DDDMaps::newArmorMap);
 		}
 	}
 	
@@ -40,5 +58,15 @@ public final class DDDMaps {
 		ResistMap() {
 			super(() -> 0.0f);
 		}
+		
+		public static Collector<DDDDamageType, ?, ResistMap> typesToResistMap(Function<DDDDamageType, Float> valueMapper) {
+			return DDDMaps.typesToMap(valueMapper, DDDMaps::newResistMap);
+		}
+	}
+	
+	static <U, M extends DDDBaseMap<U>> Collector<DDDDamageType, ?, M> typesToMap(Function<DDDDamageType, U> valueMapper, Supplier<M> mapSup) {
+		return Collectors.toMap(Functions.identity(), valueMapper, (BinaryOperator<U>) (u1, u2) -> {
+			throw new IllegalArgumentException("Can't collect on duplicate keys!");
+		}, mapSup);
 	}
 }

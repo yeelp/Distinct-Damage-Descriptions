@@ -3,6 +3,8 @@ package yeelp.distinctdamagedescriptions.config.resists;
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
+import yeelp.distinctdamagedescriptions.capability.impl.DefaultArmorDistributionBehaviour;
+import yeelp.distinctdamagedescriptions.capability.impl.DefaultShieldDistributionBehaviour;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
 public final class ResistanceCategory {
@@ -39,7 +41,7 @@ public final class ResistanceCategory {
 			"   [(t,a)] is a list of comma separated tuples of damage types this shield blocks.",
 			"      t is the type this shield blocks. Requires the 'ddd_' prefix. Can use s, p, b as shorthand for slashing, piercing and bludgeoning damage, respectively.",
 			"      a is the effectiveness the shield has against that damage type.",
-			"Shields not listed here will block no classified damage.",
+			"Shields not listed here will use the default shield distribution option.",
 			"Shield effectiveness determines how much damage a shield can block. A shield with 0.3 slashing effectiveness can only block 30% of incoming slashing damage. The remaining 70% goes through the shield and damages the player, following regular damage calculation.",
 			"Blocking damage will still knock the attacker back, but the knockback strength is a percentage of the original vanilla knockback; that percentage comes from the amount of damage actually reduced (a shield that only blocks 33% of the incoming damage will knock the attacker back by about 33% of the vanilla amount).",
 			"Malformed entries in this list will be ignored."})
@@ -54,9 +56,27 @@ public final class ResistanceCategory {
 			"   [(t,a)] is a list of comma separated tuples of damage types this armor resists (if enabled).",
 			"      t is the damage type this armor resists. Requires the 'ddd_' prefix.",
 			"      a is the armor's effectiveness against that damage type.",
-			"Armors that aren't listed here will have no effectiveness (this doesn't mean the armor does nothing).",
+			"Armors that aren't listed here will use the default armor distribution option.",
 			"Resistances effectiveness determines how armor points are distributed. That is, an value of 0.5 means that armor only uses 50% of its usual armor points when defending against that type",
 			"Malformed entries in this list will be ignored."})
 	@RequiresMcRestart
 	public String[] armorResist = DefaultValues.ARMOR_BASE_RESISTS;
+
+	@Name("Default Armor Distribution")
+	@Comment({
+			"Change the default behaviour of armor pieces with no distribution defined in the Armor Resistance config. Note that setting this to anything but NO_EFFECTIVENESS will make undefined armor pieces very strong, as their armor values will basically be multiplied by the number of types being inflicted (that they are effective against)",
+			"    NO_EFFECTIVENESS: Armor not defined will have no effectiveness. DDD calculated damage will effectively go right through the armor.",
+			"    ALL_EFFECTIVENESS: Armor not defined will have 100% effectiveness against all types. This sort of reverts the armor to \"vanilla\" behaviour, though again, the strength of the armor will be multiplied by the amount of damage types inflicted.",
+			"    EFFECTIVE_TO_REGULAR_TYPES: Armor not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.",
+			"    ALLOW_BYPASS_DAMAGE_TYPE: Armor not defined will have 100% effectiveness to almost all types, except for one internal built-in type; the unknown type. This unknown type will bypass the armor entirely."})
+	public DefaultArmorDistributionBehaviour defaultArmorResists = DefaultArmorDistributionBehaviour.NO_EFFECTIVENESS;
+
+	@Name("Default Shield Distribution")
+	@Comment({
+			"Change the default behaviour of shields with no distribution defined in the Shield Effectiveness config.",
+			"    NO_EFFECTIVENESS: Shields not defined will have no effectiveness, i.e. they will block no damage at all.",
+			"    ALL_EFFECTIVENESS: Shields not defined will have 100% effectiveness to all types. This sort of reverts the shields to their normal \"vanilla\" behaviour.",
+			"    EFFECTIVE_TO_REGULAR_TYPES: Shields not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.",
+			"    ALLOW_BYPASS_DAMAGE_TYPE: Shields not defined will have 100% effectiveness to almost all types, except for one internal built-in type; the unknown type. This unknown type will bypass the shield entirely."})
+	public DefaultShieldDistributionBehaviour defaultShieldResists = DefaultShieldDistributionBehaviour.NO_EFFECTIVENESS;
 }
