@@ -33,6 +33,9 @@ public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> 
 
 	@Override
 	public void init() {
+		if(!ModConfig.core.enablePotionEffectRegistration) {
+			return;
+		}
 		DDDRegistries.damageTypes.forEach((t) -> {
 			if(t != DDDBuiltInDamageType.NORMAL && t != DDDBuiltInDamageType.UNKNOWN) {
 				Stream.of(AbstractDDDPotion.EffectType.values()).flatMap((e) -> Stream.of(new DDDResistPotion(e, t), new DDDDamagePotion(e, t))).forEach(this::register);
