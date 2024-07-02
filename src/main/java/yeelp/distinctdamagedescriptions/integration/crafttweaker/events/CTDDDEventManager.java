@@ -6,8 +6,9 @@ import crafttweaker.util.EventList;
 import crafttweaker.util.IEventHandler;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 
-@ZenClass("mods.ddd.events.DDDEvents")
+@ZenClass(CTConsts.CTClasses.EVENTMANAGER)
 @ZenRegister
 public final class CTDDDEventManager {
 

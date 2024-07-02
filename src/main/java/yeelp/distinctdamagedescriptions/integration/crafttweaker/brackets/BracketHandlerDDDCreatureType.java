@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.brackets;
 
 import crafttweaker.annotations.BracketHandler;
 import crafttweaker.annotations.ZenRegister;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 
 @BracketHandler
@@ -9,6 +10,6 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCr
 public final class BracketHandlerDDDCreatureType extends AbstractDDDBracketHandler {
 
 	public BracketHandlerDDDCreatureType() {
-		super("dddcreaturetype", CTCreatureTypeDefinition.class, "getFromString");
+		super("dddcreaturetype", CTCreatureTypeDefinition.class, CTConsts.CTStrings.GET_FROM_STRING_METHOD);
 	}
 }

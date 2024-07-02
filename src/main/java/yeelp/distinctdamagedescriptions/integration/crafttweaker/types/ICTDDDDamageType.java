@@ -8,10 +8,11 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
-@ZenClass("mods.ddd.damagetypes.IDDDDamageType")
+@ZenClass(CTConsts.CTClasses.CTDAMAGETYPE)
 @ZenRegister
 public interface ICTDDDDamageType {
 

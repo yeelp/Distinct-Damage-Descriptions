@@ -6,6 +6,7 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenSetter;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 /**
@@ -14,7 +15,7 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDam
  * @author Yeelp
  *
  */
-@ZenClass("mods.ddd.events.UpdateAdaptiveResistanceEvent")
+@ZenClass(CTConsts.CTClasses.EVENTUPDATEADAPTIVERESISTANCES)
 @ZenRegister
 public interface IUpdateAdaptiveResistances extends IDDDCalculationEvent {
 	

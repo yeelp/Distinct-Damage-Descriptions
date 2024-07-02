@@ -9,10 +9,11 @@ import crafttweaker.api.potions.IPotion;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
-@ZenClass("mods.ddd.CreatureTypeDefinition")
+@ZenClass(CTConsts.CTClasses.CTCREATURETYPEDEF)
 @ZenRegister
 public interface ICTCreatureTypeDefinition {
 	

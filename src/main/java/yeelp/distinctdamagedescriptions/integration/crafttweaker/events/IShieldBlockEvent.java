@@ -5,6 +5,7 @@ import crafttweaker.api.item.IItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 
 /**
@@ -14,7 +15,7 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDam
  * @author Yeelp
  *
  */
-@ZenClass("mods.ddd.events.ShieldBlockEvent")
+@ZenClass(CTConsts.CTClasses.EVENTSHIELDBLOCK)
 @ZenRegister
 public interface IShieldBlockEvent extends IDDDClassificationEvent {
 

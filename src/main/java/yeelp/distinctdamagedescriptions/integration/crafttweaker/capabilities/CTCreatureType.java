@@ -13,11 +13,12 @@ import stanhebben.zenscript.annotations.ZenOperator;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 
-@ZenClass("mods.ddd.CreatureType")
-@IterableSimple("mods.ddd.CreatureTypeDefinition")
+@ZenClass(CTConsts.CTClasses.CTCREATURETYPE)
+@IterableSimple(CTConsts.CTClasses.CTCREATURETYPEDEF)
 @ZenRegister
 public class CTCreatureType implements Iterable<ICTCreatureTypeDefinition> {
 	private final IEntityLivingBase entityLiving;

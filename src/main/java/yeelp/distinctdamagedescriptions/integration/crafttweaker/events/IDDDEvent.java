@@ -10,8 +10,9 @@ import stanhebben.zenscript.ZenRuntimeException;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 
-@ZenClass("mods.ddd.events.DDDEvent")
+@ZenClass(CTConsts.CTClasses.EVENT)
 @ZenRegister
 /**
  * Base CraftTweaker DistinctDamageDescription Event <br>

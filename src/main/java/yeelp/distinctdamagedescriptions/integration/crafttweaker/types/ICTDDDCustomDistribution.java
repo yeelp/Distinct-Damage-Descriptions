@@ -4,8 +4,9 @@ import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 
-@ZenClass("mods.ddd.ICustomDistribution")
+@ZenClass(CTConsts.CTClasses.CTCUSTOMDISTRIBUTION)
 @ZenRegister
 public interface ICTDDDCustomDistribution extends ICTDamageDistribution, DDDPredefinedDistribution {
 

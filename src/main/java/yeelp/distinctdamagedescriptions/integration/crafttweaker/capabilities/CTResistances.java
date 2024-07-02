@@ -14,12 +14,13 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
-@ZenClass("mods.ddd.Resistances")
-@IterableMap(key = "mods.ddd.IDDDDamageType", value = "float")
+@ZenClass(CTConsts.CTClasses.CTRESISTANCES)
+@IterableMap(key = CTConsts.CTClasses.CTDAMAGETYPE, value = "float")
 @ZenRegister
 public class CTResistances extends NonNullMap<ICTDDDDamageType, Float> {
 	private final IMobResistances resists;

@@ -9,9 +9,10 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMemberGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenOperator;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 
-@ZenClass("mods.ddd.lib.IDDDBaseMap")
-@IterableMap(key = "mods.ddd.damagetypes.IDDDDamageType", value = "float")
+@ZenClass(CTConsts.CTClasses.DDDMAP)
+@IterableMap(key = CTConsts.CTClasses.CTDAMAGETYPE, value = "float")
 @ZenRegister
 public interface ICTDDDBaseMap extends Map<ICTDDDDamageType, Float>{
 

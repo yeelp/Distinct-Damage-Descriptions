@@ -1,8 +1,9 @@
 package yeelp.distinctdamagedescriptions.api;
 
+import java.util.Arrays;
+
 import javax.annotation.Nullable;
 
-import scala.actors.threadpool.Arrays;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDFontColour;
