@@ -28,7 +28,7 @@ public class DDDCreatureTypes extends DDDSourcedRegistry<CreatureType> implement
 
 	@Override
 	public void addTypeToEntity(String entityID, CreatureType type) {
-		if(!this.typeMap.containsKey(entityID)) {
+		if(this.typeMap.containsKey(entityID)) {
 			this.typeMap.get(entityID).add(type);
 		}
 		else {

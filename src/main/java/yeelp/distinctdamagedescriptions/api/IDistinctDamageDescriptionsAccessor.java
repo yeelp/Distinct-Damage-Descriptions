@@ -99,7 +99,7 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	 * Get the mob's creature type - an instance of {@link IMobCreatureType}
 	 * 
 	 * @param entity
-	 * @return the ICreatureType the mob has. Always returns
+	 * @return the IMobCreatureType the mob has. Always returns
 	 *         {@link MobCreatureType.UNKNOWN} for mobs that are instances of
 	 *         EntityPlayer
 	 */
