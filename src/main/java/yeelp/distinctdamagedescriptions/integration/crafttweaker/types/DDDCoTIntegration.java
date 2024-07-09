@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 import java.util.Collections;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
@@ -18,9 +17,9 @@ public final class DDDCoTIntegration implements IModIntegration {
 	
 
 	@Override
-	public boolean preInit(FMLPreInitializationEvent evt) {
+	public boolean initStart(FMLInitializationEvent evt) {
 		CoTDDDDamageTypeBuilder.registerTypes();
-		return IModIntegration.super.preInit(evt);
+		return IModIntegration.super.initStart(evt);
 	}
 
 

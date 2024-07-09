@@ -84,6 +84,10 @@ public final class ModIntegrationKernel {
 	public static final void doPreInit(FMLPreInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::preInit, evt);
 	}
+	
+	public static final void doInitStart(FMLInitializationEvent evt) {
+		filterIfUnsuccessful(IModIntegration::initStart, evt);
+	}
 
 	public static final void doInit(FMLInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::init, evt);

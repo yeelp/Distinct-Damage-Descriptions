@@ -20,9 +20,20 @@ public interface IModIntegration {
 	 * 
 	 * @param evt The preinitialization event
 	 * @return true if preinit successful, will have integration continued in
-	 *         initialization phase.
+	 *         the start of initialization phase.
 	 */
 	default boolean preInit(FMLPreInitializationEvent evt) {
+		return true;
+	}
+
+	/**
+	 * START of Init stage. Ideally used for information that is not accessible
+	 * during pre init but needs to be handled before config is read.
+	 * 
+	 * @param evt Initialization event.
+	 * @return true if initialization before config was successful, will move on to init.
+	 */
+	default boolean initStart(FMLInitializationEvent evt) {
 		return true;
 	}
 

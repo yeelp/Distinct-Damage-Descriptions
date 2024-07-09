@@ -69,6 +69,7 @@ public class DistinctDamageDescriptions {
 	@SuppressWarnings("static-method")
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		ModIntegrationKernel.doInitStart(event);
 		DDDConfigLoader.readConfig();
 		new CapabilityHandler().register();
 		new TooltipHandler().register();
