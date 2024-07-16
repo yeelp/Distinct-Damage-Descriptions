@@ -19,6 +19,9 @@ public abstract class DDDMapParsingConfigReader<T> extends DDDMultiEntryConfigRe
 			throw new ConfigMalformedException(s);
 		}
 		String[] args = s.split(";");
+		if(args.length < 2) {
+			throw new ConfigMalformedException(s);
+		}
 		String[] additionalInfo = new String[args.length - 2];
 		System.arraycopy(args, 2, additionalInfo, 0, additionalInfo.length);
 		return new Tuple<String, T>(args[0], this.parseMapping(s, args[0], args[1], additionalInfo));
