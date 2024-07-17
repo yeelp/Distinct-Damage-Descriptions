@@ -20,6 +20,7 @@ public interface ModConsts {
 		final String TETRA_ID = "tetra";
 		final String LYCANITES_ID = "lycanitesmobs";
 		final String SPARTAN_WEAPONRY_ID = "spartanweaponry";
+		final String BETWEENLANDS_ID = "thebetweenlands";
 	}
 	
 	public interface IntegrationTitles {
@@ -31,6 +32,7 @@ public interface ModConsts {
 		final String TETRA_TITLE = "Tetra";
 		final String LYCANITES_TITLE = "Lycanite's Mobs";
 		final String SPARTAN_WEAPONRY_TITLE = "Spartan Weaponry";
+		final String BETWEENLANDS_TITLE = "The Betweenlands";
 	}
 
 	final EntityEquipmentSlot[] ARMOR_SLOTS = {
