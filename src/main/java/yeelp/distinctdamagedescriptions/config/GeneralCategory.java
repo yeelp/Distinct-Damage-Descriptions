@@ -6,6 +6,12 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 
 public final class GeneralCategory {
+	@Name("Enable Distinct Disc Drop")
+	@Comment({
+			"Enable the Distinct Disc to drop from Skeletons",
+			"The disc will drop if a Skeleton is killed by a non-player, non-skeleton, non-golem and non-tamable mob."})
+	public boolean enableDiscDrop = true;
+
 	@Name("Suppress Warnings")
 	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
 	public boolean suppressWarnings = false;
@@ -53,7 +59,7 @@ public final class GeneralCategory {
 	@Comment("If true, DDD will register and add potions that grant damage/resistance buffs/debuffs. Requires Register Potion Effects to be true.")
 	@RequiresMcRestart
 	public boolean enablePotionRegistration = false;
-	
+
 	@Name("Register Potion Effects")
 	@Comment("If true, DDD will register potion effects that grant damage/resistance buffs/debuffs")
 	@RequiresMcRestart

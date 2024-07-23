@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.init.DDDItems;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
@@ -42,7 +43,7 @@ public class DDDDiscItem extends ItemRecord {
 		public final void onLivingDrops(LivingDropsEvent evt) {
 			EntityLivingBase entity = evt.getEntityLiving();
 			Entity source = evt.getSource().getTrueSource();
-			if(entity instanceof AbstractSkeleton && source != null && !BLACKLIST.stream().anyMatch((clazz) -> clazz.isInstance(source)) && source instanceof EntityLivingBase) {
+			if(ModConfig.core.enableDiscDrop && entity instanceof AbstractSkeleton && source != null && !BLACKLIST.stream().anyMatch((clazz) -> clazz.isInstance(source)) && source instanceof EntityLivingBase) {
 				evt.getDrops().add(new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, new ItemStack(DDDItems.disc)));
 			}
 		}
