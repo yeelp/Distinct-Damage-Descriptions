@@ -23,7 +23,9 @@ public class TooltipHandler extends Handler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	@SideOnly(value = Side.CLIENT)
 	public void onTooltip(ItemTooltipEvent evt) {
-		evt.getToolTip().addAll(1, TooltipDistributor.getDistributor(evt.getItemStack()).getTooltip(evt.getItemStack()));
+		if(evt.getToolTip().size() > 0) {
+			evt.getToolTip().addAll(1, TooltipDistributor.getDistributor(evt.getItemStack()).getTooltip(evt.getItemStack()));			
+		}
 	}
 
 	@SuppressWarnings("static-method")
