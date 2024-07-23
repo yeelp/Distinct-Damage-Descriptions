@@ -20,7 +20,8 @@ public class DDDCreatureTypeJsonParser extends AbstractJsonParser<Tuple<Creature
 			throw new IllegalArgumentException("unknown is an invalid type name!");
 		}
 		boolean critImmunity = this.getBoolean("critical_hit_immunity");
+		boolean flammable = this.hasKey("flammable") ? this.getBoolean("flammable") : true;
 		Set<String> potionImmunities = this.extractStringsFromArray("potion_immunities");
-		return new Tuple<CreatureType, Iterable<String>>(new CreatureType(type, potionImmunities, critImmunity), this.extractStringsFromArray("mobs"));
+		return new Tuple<CreatureType, Iterable<String>>(new CreatureType(type, potionImmunities, critImmunity, flammable), this.extractStringsFromArray("mobs"));
 	}	
 }

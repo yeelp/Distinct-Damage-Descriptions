@@ -21,6 +21,13 @@ public interface IMobCreatureType extends DDDCapabilityBase<NBTTagCompound> {
 	 * @return true if immune, false if not.
 	 */
 	boolean isImmuneToPotionEffect(PotionEffect effect);
+	
+	/**
+	 * Can this creature type be set on fire?
+	 * 
+	 * @return true if flammable, false if not. A mob that is not flammable does not necessarily make them immune to fire damage. They just won't be set on fire.
+	 */
+	boolean isFlammable();
 
 	/**
 	 * Is this creature type immune to critical hits?

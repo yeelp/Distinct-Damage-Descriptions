@@ -22,7 +22,7 @@ public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 	public static ICTCreatureTypeDefinition getFromString(String type) {
 		CreatureType data = DDDRegistries.creatureTypes.get(type);
 		if(data == null || data == CreatureType.UNKNOWN) {
-			data = new CreatureType(type, Sets.newHashSet(), false, Source.CT);
+			data = new CreatureType(type, Sets.newHashSet(), false, true, Source.CT);
 			DDDRegistries.creatureTypes.register(data);
 		}
 		return getFromCreatureType(data);
@@ -39,6 +39,12 @@ public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 	@Override
 	public ICTCreatureTypeDefinition setCritImmunity(boolean status) {
 		this.data.criticalImmunity = status;
+		return this;
+	}
+
+	@Override
+	public ICTCreatureTypeDefinition setFlammable(boolean status) {
+		this.data.flammable = status;
 		return this;
 	}
 

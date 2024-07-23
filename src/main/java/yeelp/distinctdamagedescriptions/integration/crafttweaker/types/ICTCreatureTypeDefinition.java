@@ -20,6 +20,9 @@ public interface ICTCreatureTypeDefinition {
 	@ZenMethod("setCritImmunity")
 	ICTCreatureTypeDefinition setCritImmunity(boolean status);
 	
+	@ZenMethod("setFlammable")
+	ICTCreatureTypeDefinition setFlammable(boolean status);
+	
 	@ZenMethod("setPotionImmunity")
 	ICTCreatureTypeDefinition setPotionImmunity(IPotion potion, boolean status);
 	

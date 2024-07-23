@@ -24,6 +24,7 @@ public final class CreatureType implements IHasCreationSource {
 	private String type;
 	private Set<String> potionImmunities;
 	public boolean criticalImmunity;
+	public boolean flammable;
 
 	/**
 	 * Build a new CreatureType with a creation Source of {@link Source#JSON}.
@@ -33,8 +34,8 @@ public final class CreatureType implements IHasCreationSource {
 	 *                         immune to.
 	 * @param criticalImmunity if this creature type is immune to criticals.
 	 */
-	public CreatureType(String name, Set<String> potionImmunities, boolean criticalImmunity) {
-		this(name, potionImmunities, criticalImmunity, Source.JSON);
+	public CreatureType(String name, Set<String> potionImmunities, boolean criticalImmunity, boolean flammable) {
+		this(name, potionImmunities, criticalImmunity, flammable, Source.JSON);
 	}
 	
 	/**
@@ -44,15 +45,16 @@ public final class CreatureType implements IHasCreationSource {
 	 * @param criticalImmunity if this creature type is immune to criticals.
 	 * @param src the {@link Source} that created this CreatureTypeData
 	 */
-	public CreatureType(String name, Set<String> potionImmunities, boolean criticalImmunity, Source src) {
+	public CreatureType(String name, Set<String> potionImmunities, boolean criticalImmunity, boolean flammable, Source src) {
 		this.type = name;
 		this.potionImmunities = potionImmunities;
 		this.criticalImmunity = criticalImmunity;
+		this.flammable = flammable;
 		this.src = src;
 	}
 
 	private CreatureType() {
-		this("unknown", ImmutableSet.of(), false, Source.BUILTIN);
+		this("unknown", ImmutableSet.of(), false, false, Source.BUILTIN);
 	}
 
 	/**
@@ -86,12 +88,21 @@ public final class CreatureType implements IHasCreationSource {
 	}
 
 	/**
-	 * Is this CreatureTypeData providing crit immunity?
+	 * Is this CreatureType providing crit immunity?
 	 * 
 	 * @return true if immune, false if not
 	 */
 	public boolean isImmuneToCriticals() {
 		return this.criticalImmunity;
+	}
+	
+	/**
+	 * Is this CreatureType flammable?
+	 * 
+	 * @return true if flammable, false if not
+	 */
+	public boolean isFlammable() {
+		return this.flammable;
 	}
 
 	@Override
@@ -101,6 +112,6 @@ public final class CreatureType implements IHasCreationSource {
 
 	@Override
 	public String toString() {
-		return String.format("%s (%s) (Critical Hit Immunity: %s, Potion Immunities: %s)", this.type, this.src.toString(), this.criticalImmunity, this.potionImmunities);
+		return String.format("%s (%s) (Critical Hit Immunity: %s, Flammable: %s, Potion Immunities: %s)", this.type, this.src.toString(), this.criticalImmunity, this.flammable, this.potionImmunities);
 	}
 }
