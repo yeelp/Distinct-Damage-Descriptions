@@ -17,7 +17,17 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 	/**
 	 * Formats decimals as percents to two decimal places.
 	 */
-	PERCENT(new DecimalFormat("##.##%"));
+	PERCENT(new DecimalFormat("##.##%")),
+	
+	/**
+	 * Formats decimals as relative percents to 100%, to two decimal places.
+	 */
+	RELATIVE(new DecimalFormat("##.##%")) {
+		@Override
+		public String format(Float t) {
+			return super.format(t - 1.0f);
+		}
+	};
 
 	private DecimalFormat formatter;
 

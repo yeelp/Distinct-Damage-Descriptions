@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.util.lib;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 /**
@@ -44,5 +45,27 @@ public final class DebugLib {
 			strings[i++] = String.format("(%s, %s)", entry.getKey().toString(), entry.getValue().toString());
 		}
 		return "{" + YLib.joinNiceString(true, ",", strings) + "}";
+	}
+	
+	/**
+	 * Output formatted debug info.
+	 * @param format The format string.
+	 * @param objects the object arguments.
+	 * 
+	 * @implNote no status check needed. {@link DistinctDamageDescriptions::debug} does the check already.
+	 */
+	public static final void outputFormattedDebug(String format, Object...objects) {
+		DistinctDamageDescriptions.debug(String.format(format, objects));
+	}
+	
+	/**
+	 * Run some Runnable. Useful to isolate debug conde from running when debug mode is not enabled.
+	 * @param runnable
+	 */
+	public static final void doDebug(Runnable runnable) {
+		if(!status) {
+			return;
+		}
+		runnable.run();
 	}
 }

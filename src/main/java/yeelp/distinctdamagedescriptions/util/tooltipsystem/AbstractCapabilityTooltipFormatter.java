@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
@@ -25,8 +26,11 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	private Function<T, Optional<C>> capExtractor;
 	private ITextComponent typeText;
 	private static final Style GRAY_COLOUR = new Style().setColor(TextFormatting.GRAY);
-	private static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator("tooltips");
+	private static final Style WHITE_COLOUR = new Style().setColor(TextFormatting.WHITE);
+	private static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 
+	protected static final ITextComponent NONE_TEXT = getComponentWithStyle(TooltipConsts.NO_RESISTS, WHITE_COLOUR);
+	
 	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<T, Optional<C>> capExtractor, String typeTextKey) {
 		super(keyTooltip, numberFormatter, damageFormatter);
 		this.capExtractor = capExtractor;

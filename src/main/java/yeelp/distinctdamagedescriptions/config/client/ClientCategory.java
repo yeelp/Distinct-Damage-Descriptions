@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.config.client;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 
 public final class ClientCategory {
 	@Name("Show Damage Distribution Tooltip for all items")
@@ -30,4 +31,24 @@ public final class ClientCategory {
 			"If true, Distinct Damage Descriptions will try to show numerical values when possible instead of percent values.",
 			"This works for armor and items only. Projectiles and resistances don't have numerical values to use, so the config doesn't apply here."})
 	public boolean showNumberValuesWhenPossible = false;
+	
+	@Name("Armor Tooltip Colour Scheme")
+	@Comment({
+		"Set the colour scheme for armor tooltips.",
+		"    RED_GREEN: Use red when the armor effectiveness is less than 100% and green otherwise.",
+		"    GRAYSCALE: Use dark gray when the armor effectiveness is less than 100% and white otherwise.",
+		"    WHITE: Always use white."
+	})
+	public DDDTooltipColourScheme armorColourScheme = DDDTooltipColourScheme.RED_GREEN;
+	
+	@Name("Mob Resistances Colour Scheme")
+	@Comment({
+		"Set the colour scheme for mob resistance tooltips.",
+		"    RED_GREEN: Use red when a mob's resistance is less than 0% and green otherwise.",
+		"    GRAYSCALE: Use dark gray when a mob's resistance is less than 0% and white otherwise.",
+		"    WHITE: Always use white."
+	})
+	public DDDTooltipColourScheme mobResistColourScheme = DDDTooltipColourScheme.RED_GREEN;
+	
+	
 }

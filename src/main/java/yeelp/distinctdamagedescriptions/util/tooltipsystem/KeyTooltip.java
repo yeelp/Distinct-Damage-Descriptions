@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.lib.KeyHelper;
 
@@ -18,7 +19,7 @@ public enum KeyTooltip {
 	/**
 	 * The tooltip corresponding to holding down &lt;SHIFT&gt;
 	 */
-	SHIFT("shift") {
+	SHIFT(TooltipConsts.SHIFT) {
 		@Override
 		public boolean checkKeyIsHeld() {
 			return KeyHelper.isShiftHeld();
@@ -28,7 +29,7 @@ public enum KeyTooltip {
 	/**
 	 * The tooltip corresponding to holding down &lt;CTRL&gt;
 	 */
-	CTRL("ctrl") {
+	CTRL(TooltipConsts.CTRL) {
 		@Override
 		public boolean checkKeyIsHeld() {
 			return KeyHelper.isCtrlHeld();
@@ -38,7 +39,7 @@ public enum KeyTooltip {
 	private ITextComponent comp;
 
 	private KeyTooltip(String string) {
-		this.comp = Translations.INSTANCE.getTranslator("keys").getComponent(string, new Style().setColor(TextFormatting.YELLOW));
+		this.comp = Translations.INSTANCE.getTranslator(TooltipConsts.KEYS_ROOT).getComponent(string, new Style().setColor(TextFormatting.YELLOW));
 	}
 
 	/**

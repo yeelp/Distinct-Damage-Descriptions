@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
@@ -32,7 +33,7 @@ public abstract class TooltipTypeFormatter {
 	private static final String ADAPTABILITY_AMOUNT = "adaptiveamount";
 	private static final String IMMUNITIES = "immunities";
 
-	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator("tooltips");
+	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 	protected static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
 
 	/**

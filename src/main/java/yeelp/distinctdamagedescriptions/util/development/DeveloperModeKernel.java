@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.development;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -18,12 +19,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -48,12 +51,67 @@ import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEven
 import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.Translations;
+import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
-import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatTracker;
 
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
 public final class DeveloperModeKernel {
+	
+	private static enum DifficultyScaling {
+		PEACEFUL(EnumDifficulty.PEACEFUL) {
+			@Override
+			protected float scaleDamage(float dmg) {
+				return 0;
+			}
+		},
+		EASY(EnumDifficulty.EASY) {
+			@Override
+			protected float scaleDamage(float dmg) {
+				return Math.min(dmg / 2.0F + 1.0F, dmg);
+			}
+		},
+		NONE(EnumDifficulty.NORMAL) {
+			@Override
+			protected float scaleDamage(float dmg) {
+				return dmg;
+			}
+		},
+		HARD(EnumDifficulty.HARD) {
+			@Override
+			protected float scaleDamage(float dmg) {
+				return dmg * 3.0F / 2.0F;
+			}
+		};
+		
+		private final EnumDifficulty diff;
+		
+		private static final DifficultyScaling[] MAPPING = new DifficultyScaling[DifficultyScaling.values().length];
+		
+		protected abstract float scaleDamage(float dmg);
+		
+		final String getScaledDamage(float dmg) {
+			if(this != NONE) {
+				return String.format("(%.2f on %s)", this.scaleDamage(dmg), this.diff.toString());
+			}
+			return "";
+		}
+		
+		private DifficultyScaling(EnumDifficulty diff) {
+			this.diff = diff;
+		}
+		
+		static DifficultyScaling getVanillaDifficultyScaling(DamageSource src, EntityLivingBase defender) {
+			if(src.isDifficultyScaled() && defender instanceof EntityPlayer) {
+				return MAPPING[defender.world.getDifficulty().getId()];
+			}
+			return NONE;
+		}
+		
+		static {
+			Arrays.stream(DifficultyScaling.values()).forEach((diff) -> MAPPING[diff.diff.getId()] = diff);
+		}
+	}
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String NEW_LINE = System.lineSeparator();
@@ -133,7 +191,7 @@ public final class DeveloperModeKernel {
 			DamageSource src = e.getSource();
 			String direct = mapIfNonNullElseGetDefault(src.getImmediateSource(), DeveloperModeKernel::getEntityNameAndID, "None");
 			String indirect = mapIfNonNullElseGetDefault(src.getTrueSource(), DeveloperModeKernel::getEntityNameAndID, "None");
-			sb.append(String.format("ATTACK: Direct Attacker: %s | Attacker: %s | Defender: %s | Source: %s | Current Damage: %.2f", direct, indirect, e.getEntityLiving().getName(), src.damageType, e.getAmount()));
+			sb.append(String.format("ATTACK: Direct Attacker: %s | Attacker: %s | Defender: %s | Source: %s | Current Damage: %.2f %s", direct, indirect, e.getEntityLiving().getName(), src.damageType, e.getAmount(), DifficultyScaling.getVanillaDifficultyScaling(src, e.getEntityLiving()).getScaledDamage(e.getAmount())));
 			return sb;
 		}));
 	}
@@ -142,8 +200,8 @@ public final class DeveloperModeKernel {
 		doLivingEventCheckThen(evt, (le) -> doIfEnabled(evt, (e, sb) -> {
 			DDDAPI.accessor.getDDDCombatTracker(e.getEntityLiving()).ifPresent((tracker) -> {
 				AbstractAttributeMap attributes = tracker.getFighter().getAttributeMap();
-				float armor = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR).getModifier(DDDCombatTracker.ARMOR_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
-				float toughness = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getModifier(DDDCombatTracker.TOUGHNESS_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
+				float armor = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR).getModifier(DDDAttributeModifierCollections.ARMOR_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
+				float toughness = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getModifier(DDDAttributeModifierCollections.TOUGHNESS_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
 				if(armor != 0 || toughness != 0) {
 					sb.append(String.format("HURT: Defender %s got a %+.2f armor and %+.2f toughness modification from armor effectiveness.", tracker.getFighter().getName(), armor, toughness));
 					sb.append(NEW_LINE);
@@ -164,7 +222,8 @@ public final class DeveloperModeKernel {
 	public static final void onDetermineDamageCallback(DetermineDamageEvent evt) {
 		doDDDClassifyEventCheckThen(evt, (ce) -> doIfEnabled(evt, (e, sb) -> {
 			sb.append("DETERMINE DAMAGE: Damage Classification").append(NEW_LINE);
-			DDDRegistries.damageTypes.getAll().stream().filter((type) -> e.getDamage(type) > 0).map((type) -> String.format("%s: %.2f%n", type.getDisplayName(), e.getDamage(type))).forEach(sb::append);
+			DifficultyScaling diff = DifficultyScaling.getVanillaDifficultyScaling(e.getSource(), e.getDefender());
+			DDDRegistries.damageTypes.getAll().stream().filter((type) -> e.getDamage(type) > 0).map((type) -> String.format("%s: %.2f %s%n", type.getDisplayName(), e.getDamage(type), diff.getScaledDamage(e.getDamage(type)))).forEach(sb::append);
 			return sb;
 		}));
 	}

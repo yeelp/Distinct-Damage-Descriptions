@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
@@ -51,6 +53,9 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IArmorDistribution cap) {
+		if(cap.getCategories().isEmpty()) {
+			return Optional.of(ImmutableList.of(AbstractCapabilityTooltipFormatter.NONE_TEXT.getFormattedText()));
+		}
 		switch(this.getNumberFormatter()) {
 			case PLAIN:
 				ItemArmor armor = (ItemArmor) stack.getItem();

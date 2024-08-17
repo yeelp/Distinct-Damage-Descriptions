@@ -38,7 +38,7 @@ public class LycanitesIntegration implements IModIntegration {
 
 	@Override
 	public Iterable<Handler> getHandlers() {
-		return ImmutableList.of(new FontRendererHandler());
+		return ImmutableList.of();
 	}
 
 	@Override

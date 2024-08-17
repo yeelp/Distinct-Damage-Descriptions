@@ -11,7 +11,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySerializable<T> {
-
 	/**
 	 * A skeletal {@link IStorage} implementation.
 	 * 

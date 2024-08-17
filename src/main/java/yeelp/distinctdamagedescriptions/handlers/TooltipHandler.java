@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.util.DDDFontRenderer;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 
 public class TooltipHandler extends Handler {
@@ -26,13 +25,6 @@ public class TooltipHandler extends Handler {
 		if(evt.getToolTip().size() > 0) {
 			evt.getToolTip().addAll(1, TooltipDistributor.getDistributor(evt.getItemStack()).getTooltip(evt.getItemStack()));			
 		}
-	}
-
-	@SuppressWarnings("static-method")
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void onToolTipPre(RenderTooltipEvent.Pre evt) {
-		evt.setFontRenderer(DDDFontRenderer.getInstance(evt.getFontRenderer()));
 	}
 
 	@SuppressWarnings("static-method")

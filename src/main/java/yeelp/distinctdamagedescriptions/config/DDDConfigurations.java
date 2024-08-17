@@ -9,6 +9,7 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.config.readers.DDDArmorDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDBasicConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDamageDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDMobResistancesConfigReader;
@@ -72,7 +73,12 @@ public abstract class DDDConfigurations {
 		System.arraycopy(ModConfig.resist.mobBaseResist, 0, resistsConfig, 1, ModConfig.resist.mobBaseResist.length);
 		resistsConfig[0] = "player;" + ModConfig.resist.playerResists;
 		try {
-			DDDConfigLoader.getInstance().enqueueAll(new DDDDamageDistributionConfigReader("Item Distributions", ModConfig.dmg.itemBaseDamage, items), new DDDBasicConfigReader<IArmorDistribution>("Armor Distributions", ModConfig.resist.armorResist, armors, ArmorDistribution.class.getConstructor(Map.class), 0.0f), new DDDBasicConfigReader<ShieldDistribution>("Shield Distributions", ModConfig.resist.shieldResist, shields, ShieldDistribution.class.getConstructor(Map.class), 0.0f), new DDDDamageDistributionConfigReader("Mob Damage Distribtuions", ModConfig.dmg.mobBaseDmg, mobDamage), new DDDMobResistancesConfigReader(resistsConfig), new DDDProjectileConfigReader());
+			DDDConfigLoader.getInstance().enqueueAll(new DDDDamageDistributionConfigReader("Item Distributions", ModConfig.dmg.itemBaseDamage, items),
+					new DDDArmorDistributionConfigReader("Armor Distributions", ModConfig.resist.armorResist, armors),
+					new DDDBasicConfigReader<ShieldDistribution>("Shield Distributions", ModConfig.resist.shieldResist, shields, ShieldDistribution.class.getConstructor(Map.class), 0.0f),
+					new DDDDamageDistributionConfigReader("Mob Damage Distribtuions", ModConfig.dmg.mobBaseDmg, mobDamage),
+					new DDDMobResistancesConfigReader(resistsConfig),
+					new DDDProjectileConfigReader());
 		}
 		catch(NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();

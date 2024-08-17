@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -40,22 +42,25 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
+import yeelp.distinctdamagedescriptions.mixin.MixinASMEntityLivingBase;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.DDDEffects;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
-import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults.ResultsBuilder;
 
-@Mod.EventBusSubscriber(modid = ModConsts.MODID)
+//@Mod.EventBusSubscriber(modid = ModConsts.MODID)
+@Deprecated
 public class DDDCombatTracker extends CombatTracker {
 
 	private static Random rand = new Random();
@@ -113,7 +118,7 @@ public class DDDCombatTracker extends CombatTracker {
 	public void handleAttackStage(LivingAttackEvent evt) {
 		this.clear();
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
-		if(this.getIncomingDamage().isPresent() && this.ctx.getShield().isPresent() && (ModConfig.compat.definedItemsOnly || this.ctx.getShield().get().hasCapability(ShieldDistribution.cap, null))) {
+		if(ModConfig.resist.enableShieldCalcs && this.getIncomingDamage().isPresent() && this.ctx.getShield().isPresent() && (ModConfig.compat.definedItemsOnly || this.ctx.getShield().get().hasCapability(ShieldDistribution.cap, null))) {
 			DamageMap dmg = this.getIncomingDamage().get();
 			ItemStack shield = this.ctx.getShield().get();
 			ShieldBlockEvent blockEvt = DDDHooks.fireShieldBlock(this.ctx.getImmediateAttacker(), this.ctx.getTrueAttacker(), this.getFighter(), this.ctx.getSource(), dmg, shield);
@@ -124,7 +129,7 @@ public class DDDCombatTracker extends CombatTracker {
 				this.usedShieldDist = blockEvt.getShieldDistribution();
 				if(this.ctx.getImmediateAttacker() instanceof EntityLivingBase) {
 					EntityLivingBase attacker = (EntityLivingBase) this.ctx.getImmediateAttacker();
-					this.getFighter().blockUsingShield(attacker);
+					((MixinASMEntityLivingBase) this.getFighter()).useBlockUsingShield(attacker);
 				}
 			}
 			this.getFighter().resetActiveHand();
@@ -142,9 +147,13 @@ public class DDDCombatTracker extends CombatTracker {
 			if(!m.isEmpty()) {
 				this.type = m.keySet().stream().skip(rand.nextInt(m.size())).findFirst().get();
 			}
-			ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
-				this.armors = m.keySet().stream().filter((t) -> m.get(t) > 0).reduce(new ArmorValues(), (av, t) -> ArmorValues.merge(av, aMap.get(t)), ArmorValues::merge);
-			});
+			if(ModConfig.resist.enableArmorCalcs) {
+				ARMOR_CLASSIFIER.classify(this.ctx).ifPresent((aMap) -> {
+					Set<DDDDamageType> damagingTypes = m.keySet().stream().filter((t) -> m.get(t) > 0).collect(Collectors.toSet());
+					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach(aMap::remove);
+					this.armors = ModConfig.resist.armorCalcRule.merge(aMap.values().stream());
+				});				
+			}
 		});
 	}
 
@@ -245,9 +254,7 @@ public class DDDCombatTracker extends CombatTracker {
 	public static void onEntityJoinWorld(EntityJoinWorldEvent evt) {
 		if(evt.getEntity() instanceof EntityLivingBase && !evt.getEntity().world.isRemote) {
 			EntityLivingBase entity = (EntityLivingBase) evt.getEntity();
-			if(!(entity.combatTracker instanceof DDDCombatTracker)) {
-				entity.combatTracker = new DDDCombatTracker(entity);
-			}
+			//((MixinASMEntityLivingBase) entity).setCombatTracker(DDDAPI.accessor.getDDDCombatTracker(entity).orElseGet(() -> new DDDCombatTracker(entity)));
 		}
 	}
 
@@ -272,6 +279,9 @@ public class DDDCombatTracker extends CombatTracker {
 				evt.setAmount(f);
 				tracker.setDamageReference(f);
 			});
+			if(!ModConfig.resist.enableArmorCalcs) {
+				return;
+			}
 			tracker.getNewArmorValues().ifPresent((vals) -> {
 				Arrays.stream(ARMOR_SLOTS).map((slot) -> {
 					ItemStack stack = tracker.getFighter().getItemStackFromSlot(slot);
@@ -313,12 +323,12 @@ public class DDDCombatTracker extends CombatTracker {
 		});
 		DeveloperModeKernel.onDamageCallback(evt);
 	}
-
+	
 	@SubscribeEvent
 	public static final void onEntityKnockback(LivingKnockBackEvent evt) {
 		if(evt.getEntityLiving().world.isRemote) {
 			return;
 		}
-		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).map(DDDCombatTracker::getRecentResults).map(Predicates.or(Predicates.and(CombatResults::wasImmunityTriggered, (results) -> results.getAmount().orElse(Double.NaN) == 0), CombatResults::wasShieldEffective)::test).ifPresent(evt::setCanceled);
+		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).map(IDDDCombatTracker::getRecentResults).map(Predicates.or(Predicates.and(CombatResults::wasImmunityTriggered, (results) -> results.getAmount().orElse(Double.NaN) == 0), CombatResults::wasShieldEffective)::test).ifPresent(evt::setCanceled);
 	}
 }

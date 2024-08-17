@@ -8,7 +8,7 @@ import yeelp.distinctdamagedescriptions.config.DefaultValues;
 public final class ConarmCategory {
 	@Name("Armor Material Distribution")
 	@Comment({
-			"Determine the armor distribution for materials' plates pieces.",
+			"Determine the armor distribution for materials' plates pieces. Note this is affected by the armor parsing rule defined in the resists category.",
 			"Each entry is the same as a regular armor distribution entry, that is, of the form material;[(t,a)] where:",
 			"   material is the registration name of the Tinker's material. Pretty much always lowercase",
 			"   [(t,a}] is a comma sepatated list of tuples, (t,a), where:",

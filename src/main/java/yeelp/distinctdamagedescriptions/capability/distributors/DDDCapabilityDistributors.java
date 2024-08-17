@@ -34,7 +34,7 @@ public final class DDDCapabilityDistributors {
 	private static final List<AbstractCapabilityDistributorGeneratable<EntityLivingBase, ?, ? extends DDDCapabilityBase<? extends NBTBase>>> BASE_MOB_CAPS = ImmutableList.of(ForEntity.getInstance(), MobResistancesCapabilityDistributor.getInstance());
 	private static final List<AbstractCapabilityDistributor<ItemStack, ?, ? extends IDistribution>> itemCaps = Lists.newArrayList();
 	private static final List<AbstractCapabilityDistributor<IProjectile, ?, ? extends IDistribution>> projCaps = Lists.newArrayList();
-	private static final List<AbstractCapabilityDistributor<EntityLivingBase, ?, ? extends DDDCapabilityBase<? extends NBTBase>>> mobCaps = Lists.newArrayList();
+	private static final List<AbstractCapabilityDistributor<EntityLivingBase, ?, ? extends DDDCapabilityBase<? extends NBTBase>>> mobCaps = Lists.newArrayList(CombatTrackerDistributor.getInstance());
 
 	public static void addItemCap(AbstractCapabilityDistributor<ItemStack, ?, ? extends IDistribution> distributor) {
 		itemCaps.add(distributor);

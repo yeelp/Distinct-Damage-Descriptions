@@ -2,9 +2,7 @@ package yeelp.distinctdamagedescriptions;
 
 import java.io.File;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.Logger;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -15,6 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
@@ -79,6 +78,7 @@ public class DistinctDamageDescriptions {
 		IArmorDistribution.register();
 		IDamageDistribution.register();
 		IMobCreatureType.register();
+		IDDDCombatTracker.register();
 		ShieldDistribution.register();
 		PacketHandler.init();
 		DDDSounds.init();

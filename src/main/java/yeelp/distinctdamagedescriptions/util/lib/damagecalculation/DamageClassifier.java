@@ -1,6 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -10,6 +12,7 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
@@ -36,6 +39,11 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 		}).map((dist) -> {
 			DamageMap map = dist.distributeDamage(context.getAmount());
 			DDDHooks.fireDetermineDamage(source, trueSource, context.getDefender(), context.getSource(), map);
+			if(map.containsValue(0.0f)) {
+				Stream.Builder<DDDDamageType> builder = Stream.builder();
+				map.entrySet().stream().filter((e) -> e.getValue() <= 0.0f).map(Entry::getKey).forEach(builder::add);
+				builder.build().forEach(map::remove);				
+			}
 			return map;
 		});
 	}

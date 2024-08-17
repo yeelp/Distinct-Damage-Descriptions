@@ -17,7 +17,6 @@ public class LycanitesSpawnItemResistancesFormatter extends MobResistancesFormat
 
 	protected LycanitesSpawnItemResistancesFormatter() {
 		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, LycanitesFormatterUtilities::getCreatureResourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

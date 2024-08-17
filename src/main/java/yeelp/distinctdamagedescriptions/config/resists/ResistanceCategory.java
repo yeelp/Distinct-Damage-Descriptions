@@ -2,10 +2,13 @@ package yeelp.distinctdamagedescriptions.config.resists;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultArmorDistributionBehaviour;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultShieldDistributionBehaviour;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorCalculationType;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
 
 public final class ResistanceCategory {
 	@Name("Mob Base Resistance/Weakness")
@@ -79,4 +82,33 @@ public final class ResistanceCategory {
 			"    EFFECTIVE_TO_REGULAR_TYPES: Shields not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.",
 			"    ALLOW_BYPASS_DAMAGE_TYPE: Shields not defined will have 100% effectiveness to almost all types, except for one internal built-in type; the unknown type. This unknown type will bypass the shield entirely."})
 	public DefaultShieldDistributionBehaviour defaultShieldResists = DefaultShieldDistributionBehaviour.NO_EFFECTIVENESS;
+
+	@Name("Armor Calculation Rule")
+	@Comment({
+			"Define the rule DDD will use when calculating how armor effectiveness translates to actual armor values.",
+			"    ADD: For all armor values that are applicable, DDD will add them together. This typically means that damage that gets split into multiple types will be resisted more easily as the effectiveness of armor will be added together.",
+			"    MAX: DDD will take the maximum armor values that are applicable. So DDD will never give a higher armor value than the highest armor effectiveness rating that is applicable.",
+			"    AVG: DDD will average together all applicable armor values."})
+	public ArmorCalculationType armorCalcRule = ArmorCalculationType.ADD;
+
+	@Name("Armor Parsing Rule")
+	@Comment({
+			"Define the rule DDD will use when parsing the armorResist config.",
+			"    LITERAL: DDD will parse the config exactly as it is written. Only the types written in an item's armor distribution will be used.",
+			"    IMPLIED: DDD will add in armor effectiveness for types not mentioned in an armor distribution. For example, an armor distribution of [(s, 0.8), (p, 0.5)] will have all the other registered DDD types added to its distribution. The effectiveness these types get is defined by impliedArmorEffectivess."})
+	public ArmorParsingType armorParseRule = ArmorParsingType.LITERAL;
+
+	@Name("Implied Armor Effectiveness")
+	@Comment({
+			"The armor effectiveness that non-specified types get when using the IMPLIED armor parsing rule."})
+	@RangeDouble(min = 0.0)
+	public double impliedArmorEffectiveness = 1.0;
+
+	@Name("Enable Shield Calculations")
+	@Comment("If enabled, DDD will use shields and shield distributions. If turned off, DDD will let shields behave as they would in vanilla. DDD won't even assign or detect Shield Distributions if disabled.")
+	public boolean enableShieldCalcs = true;
+
+	@Name("Enable Armor Calculations")
+	@Comment("If enabled, DDD will use armor and armor distributions. If turned off, DDD will not alter armor values in damage calculations, allowing armor to behave as it would in vanilla. Armor Distributions won't even be assigned or detected if disabled.")
+	public boolean enableArmorCalcs = true;
 }

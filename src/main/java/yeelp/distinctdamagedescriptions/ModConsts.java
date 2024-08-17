@@ -34,6 +34,20 @@ public interface ModConsts {
 		final String SPARTAN_WEAPONRY_TITLE = "Spartan Weaponry";
 		final String BETWEENLANDS_TITLE = "The Betweenlands";
 	}
+	
+	public interface TooltipConsts {
+		final String CTRL = "ctrl";
+		final String SHIFT = "shift";
+		final String KEYS_ROOT = "keys";
+		final String TOOLTIPS_ROOT = "tooltips";
+		final String NO_RESISTS = "noresists";
+	}
+	
+	public interface CommandConsts {
+		final String COMMANDS_ROOT = "commands";
+		final String NO_TARGETS = "notargets";
+		final String INVALID_TYPE = "invalidtype";
+	}
 
 	final EntityEquipmentSlot[] ARMOR_SLOTS = {
 			EntityEquipmentSlot.CHEST,

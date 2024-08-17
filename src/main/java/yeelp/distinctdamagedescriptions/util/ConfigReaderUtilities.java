@@ -32,7 +32,9 @@ public final class ConfigReaderUtilities {
 	public static final String ALLOW_NEGATIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + POTENTIALLY_NEGATIVE_DECIMAL_REGEX + "\\)";
 	public static final String COMMENT_REGEX = "^(\\/\\/.*)?$";
 	public static final String DIST_REGEX = buildListRegex(ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX);
-
+	public static final String DIST_REGEX_ALLOW_EMPTY = buildListRegex(ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX, true);
+	public static final String EMPTY_DIST = "\\[\\]";
+	
 	private ConfigReaderUtilities() {
 		throw new UnsupportedOperationException("Utilities can't be instatiated!");
 	}

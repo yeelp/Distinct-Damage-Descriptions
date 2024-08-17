@@ -18,6 +18,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.command.SelectorHandlerManager;
 import net.minecraftforge.server.command.CommandTreeBase;
 import yeelp.distinctdamagedescriptions.ModConsts;
+import yeelp.distinctdamagedescriptions.ModConsts.CommandConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
@@ -27,9 +28,9 @@ import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 public abstract class DDDCommand extends CommandTreeBase {
 
 	private static final Pattern NUM_REGEX = Pattern.compile("^-?\\d+(\\.\\d+)?$");
-	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator("commands");
-	protected static final String NO_TARGETS_ERROR_KEY = TRANSLATOR.getKey("notargets");
-	protected static final String INVALID_TYPE_ERROR_KEY = TRANSLATOR.getKey("invalidtype");
+	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(CommandConsts.COMMANDS_ROOT);
+	protected static final String NO_TARGETS_ERROR_KEY = TRANSLATOR.getKey(CommandConsts.NO_TARGETS);
+	protected static final String INVALID_TYPE_ERROR_KEY = TRANSLATOR.getKey(CommandConsts.INVALID_TYPE);
 
 	private final int damageTypeIndex;
 

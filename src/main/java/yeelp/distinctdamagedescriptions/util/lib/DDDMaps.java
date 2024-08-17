@@ -38,6 +38,14 @@ public final class DDDMaps {
 		public static Collector<DDDDamageType, ?, DamageMap> typesToDamageMap(Function<DDDDamageType, Float> valueMapper) {
 			return DDDMaps.typesToMap(valueMapper, DDDMaps::newDamageMap);
 		}
+		
+		public void distributeDamageToCurrentTypes(float dmg) {
+			float total = this.values().stream().reduce(0.0f, Float::sum);
+			if(Math.abs(total - dmg) >= 0.01 && total != 0) {
+				float ratio = dmg / total;
+				this.keySet().forEach((k) -> this.computeIfPresent(k, (key, val) -> val * ratio));
+			}
+		}
 	}
 	
 	public static final class ArmorMap extends DDDBaseMap<ArmorValues> {

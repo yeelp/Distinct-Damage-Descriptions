@@ -33,6 +33,7 @@ public final class CreatureType implements IHasCreationSource {
 	 * @param potionImmunities set of potion effect strings this creature type is
 	 *                         immune to.
 	 * @param criticalImmunity if this creature type is immune to criticals.
+	 * @param flammable if this creature type is flammable or not.
 	 */
 	public CreatureType(String name, Set<String> potionImmunities, boolean criticalImmunity, boolean flammable) {
 		this(name, potionImmunities, criticalImmunity, flammable, Source.JSON);
@@ -43,6 +44,7 @@ public final class CreatureType implements IHasCreationSource {
 	 * @param name
 	 * @param potionImmunities set of potion effect strings this creature type is immune to.
 	 * @param criticalImmunity if this creature type is immune to criticals.
+	 * @param flammable if this creature type is flammable or not.
 	 * @param src the {@link Source} that created this CreatureTypeData
 	 */
 	public CreatureType(String name, Set<String> potionImmunities, boolean criticalImmunity, boolean flammable, Source src) {
@@ -54,7 +56,7 @@ public final class CreatureType implements IHasCreationSource {
 	}
 
 	private CreatureType() {
-		this("unknown", ImmutableSet.of(), false, false, Source.BUILTIN);
+		this("unknown", ImmutableSet.of(), false, true, Source.BUILTIN);
 	}
 
 	/**

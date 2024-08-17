@@ -25,10 +25,12 @@ import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.DDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
@@ -80,6 +82,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	public Optional<IArmorDistribution> getArmorResistances(@Nullable ItemStack stack) {
+		if(!ModConfig.resist.enableArmorCalcs) {
+			return Optional.empty();
+		}
 		return Optional.of(this.findCaps(ITEM, stack, IArmorDistribution.class, ArmorDistribution.cap).map((c) -> ((IArmorDistribution) c).update(stack)).orElse(ModConfig.resist.defaultArmorResists));
 	}
 
@@ -95,7 +100,15 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	public Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack) {
+		if(!ModConfig.resist.enableShieldCalcs) {
+			return Optional.empty();
+		}
 		return Optional.of(this.findCaps(ITEM, stack, ShieldDistribution.class, ShieldDistribution.cap).map((c) -> ((ShieldDistribution) c).update(stack)).orElse(ModConfig.resist.defaultShieldResists.getShieldDistribution()));
+	}
+
+	@Override
+	public Optional<IDDDCombatTracker> getDDDCombatTracker(EntityLivingBase entity) {
+		return getDDDCap(DDDCombatTracker.cap, entity);
 	}
 
 	private Optional<? extends DDDCapabilityBase<? extends NBTBase>> findCaps(String type, ICapabilityProvider thing, Class<? extends DDDCapabilityBase<? extends NBTBase>> cap, Capability<? extends DDDCapabilityBase<? extends NBTBase>> fallback) {

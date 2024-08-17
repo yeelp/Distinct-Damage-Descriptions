@@ -8,7 +8,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
-class MobDefenses {
+public class MobDefenses {
 
 	public ResistMap resistances;
 	public Set<DDDDamageType> immunities;

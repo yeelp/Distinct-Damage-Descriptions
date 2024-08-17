@@ -9,6 +9,9 @@ import java.util.stream.Stream;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
@@ -34,7 +37,7 @@ public enum TooltipMaker {
 	ITEM(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance()) {
 		@Override
 		protected boolean isApplicable(ItemStack stack, String registryString) {
-			return DDDConfigurations.items.configured(registryString) || (!MOB_DAMAGE.isApplicable(stack, registryString) && ModConfig.client.alwaysShowDamageDistTooltip);
+			return (DDDConfigurations.items.configured(registryString) || stack.hasCapability(DamageDistribution.cap, null)) || (!MOB_DAMAGE.isApplicable(stack, registryString) && ModConfig.client.alwaysShowDamageDistTooltip);
 		}
 	},
 	MOB_DAMAGE(MobDamageDistributionFormatter.getInstance(), MobDamageDistributionIconAggregator.getInstance()) {
@@ -52,13 +55,13 @@ public enum TooltipMaker {
 	ARMOR(ArmorDistributionFormatter.getInstance(), ArmorDistributionIconAggregator.getInstance()) {
 		@Override
 		protected boolean isApplicable(ItemStack stack, String registryString) {
-			return DDDConfigurations.armors.configured(registryString);
+			return ModConfig.resist.enableArmorCalcs && (DDDConfigurations.armors.configured(registryString) || stack.hasCapability(ArmorDistribution.cap, null));
 		}
 	},
 	SHIELD(ShieldDistributionFormatter.getInstance(), ShieldDistributionIconAggregator.getInstance()) {
 		@Override
 		protected boolean isApplicable(ItemStack stack, String registryString) {
-			return DDDConfigurations.shields.configured(registryString);
+			return ModConfig.resist.enableShieldCalcs && (DDDConfigurations.shields.configured(registryString) || stack.hasCapability(ShieldDistribution.cap, null));
 		}
 	},
 	MOB_RESISTANCES(MobResistancesFormatter.getInstance(), MobResistanceIconAggregator.getInstance()) {

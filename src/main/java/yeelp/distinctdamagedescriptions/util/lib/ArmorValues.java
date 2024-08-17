@@ -36,7 +36,7 @@ public final class ArmorValues implements Comparable<ArmorValues> {
 		this.toughness = toughness;
 		return this;
 	}
-
+	
 	public static ArmorValues merge(@Nullable ArmorValues a1, @Nullable ArmorValues a2) {
 		if(a1 == null && a2 == null) {
 			return new ArmorValues();

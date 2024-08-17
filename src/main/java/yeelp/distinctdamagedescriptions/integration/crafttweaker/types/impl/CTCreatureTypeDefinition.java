@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.entity.IEntityDefinition;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.potions.IPotion;
@@ -65,17 +66,22 @@ public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public ICTCreatureTypeDefinition addEntityToType(IEntityDefinition def) {
+		if(def == null) {
+			CraftTweakerAPI.logError("addEntityToType encountered null IEntityDefinition! Check namespace and id! Will continue execution, but will throw a NullPointerException!");
+		}
 		DDDRegistries.creatureTypes.addTypeToEntity(def.getId(), this.data);
 		return this;
 	}
 
 	@Override
+	@SuppressWarnings("null")
 	public ICTCreatureTypeDefinition removeEntityFromType(IEntityDefinition def) {
+		if(def == null) {
+			CraftTweakerAPI.logError("removeEntityToType encountered null IEntityDefinition! Check namespace and id! Will continue execution, but will throw a NullPointerException!");
+		}
 		DDDRegistries.creatureTypes.removeTypeFromEntity(def.getId(), this.data);
 		return this;
 	}
-	
-	
-	
 }

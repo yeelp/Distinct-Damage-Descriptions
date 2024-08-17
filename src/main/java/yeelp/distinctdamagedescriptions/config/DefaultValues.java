@@ -18,7 +18,6 @@ public interface DefaultValues {
 	 * {@link ModConfig.DamageCategory#mobBaseDmg}
 	 */
 	final String[] MOB_BASE_DAMAGE = {
-			"minecraft:blaze;[(b, 0.5), (ddd_fire, 0.5)]",
 			"minecraft:cave_spider;[(p, 0.75), (ddd_poison, 0.25)]",
 			"minecraft:magma_cube;[(b, 0.8), (ddd_fire, 0.2)]",
 			"minecraft:ocelot;[(p, 0.3), (s, 0.7)]",

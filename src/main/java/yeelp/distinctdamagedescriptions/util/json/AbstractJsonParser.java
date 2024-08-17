@@ -35,7 +35,7 @@ public abstract class AbstractJsonParser<T> {
 	}
 	
 	public boolean hasKey(String key) {
-		return this.getOptionalElement(key).isPresent();
+		return this.root.has(key);
 	}
 	
 	private Optional<JsonElement> getOptionalElement(String key) {

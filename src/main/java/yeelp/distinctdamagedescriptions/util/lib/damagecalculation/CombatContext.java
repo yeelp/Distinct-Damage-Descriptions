@@ -3,6 +3,8 @@ package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -13,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 
-final class CombatContext {
+public final class CombatContext {
 
 	private static final Set<DamageSource> HELMET_ONLY = ImmutableSet.of(DamageSource.ANVIL, DamageSource.FALLING_BLOCK);
 	private static final Set<DamageSource> BOOTS_ONLY = ImmutableSet.of();
@@ -31,7 +33,7 @@ final class CombatContext {
 	private Optional<ItemStack> shield;
 	private Iterable<EntityEquipmentSlot> validArmorSlots;
 
-	CombatContext(DamageSource src, float amount, Entity attacker, EntityLivingBase defender) {
+	public CombatContext(DamageSource src, float amount, Entity attacker, EntityLivingBase defender) {
 		this.src = src;
 		this.amount = amount;
 		this.attacker = attacker;
@@ -44,29 +46,29 @@ final class CombatContext {
 	/**
 	 * @return the src
 	 */
-	DamageSource getSource() {
+	public DamageSource getSource() {
 		return this.src;
 	}
 
 	/**
 	 * @return the amount
 	 */
-	float getAmount() {
+	public float getAmount() {
 		return this.amount;
 	}
 
 	/**
 	 * @return the attacker
 	 */
-	Entity getImmediateAttacker() {
+	public Entity getImmediateAttacker() {
 		return this.attacker;
 	}
 
-	Entity getTrueAttacker() {
+	public Entity getTrueAttacker() {
 		return this.src.getTrueSource();
 	}
 
-	EntityLivingBase getDefender() {
+	public EntityLivingBase getDefender() {
 		return this.defender;
 	}
 	
@@ -84,7 +86,7 @@ final class CombatContext {
 	/**
 	 * @return the shield
 	 */
-	Optional<ItemStack> getShield() {
+	public Optional<ItemStack> getShield() {
 		return this.shield;
 	}
 
@@ -126,6 +128,13 @@ final class CombatContext {
 			return this.src.damageType.equals(otherCtx.src.damageType);			
 		}
 		return false;
+	}
+	
+	public boolean contextMatches(DamageSource src, @Nullable Entity attacker) {
+		Entity trueAttacker = src.getTrueSource();
+		return src.damageType.equals(this.src.damageType) 
+				&& (trueAttacker == null || trueAttacker.getUniqueID().equals(this.getTrueAttacker().getUniqueID()) 
+				&& (attacker == null || attacker.getUniqueID().equals(this.getImmediateAttacker().getUniqueID())));
 	}
 	
 }

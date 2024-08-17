@@ -72,7 +72,7 @@ public final class CoTDDDDamageTypeBuilder {
 		this.wasBuilt = builder.wasBuilt;
 	}
 	
-	@ZenMethod
+	@stanhebben.zenscript.annotations.ZenMethod
 	public void register() {
 		if(this.wasBuilt) {
 			return;

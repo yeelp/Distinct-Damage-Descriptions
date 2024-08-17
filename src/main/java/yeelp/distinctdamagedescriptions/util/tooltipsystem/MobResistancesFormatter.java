@@ -28,10 +28,7 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 
 	private static MobResistancesFormatter instance;
 
-	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE);
-
-	private final ITextComponent notGenerated = super.getComponentWithStyle("notgenerated", new Style().setColor(TextFormatting.GOLD).setBold(true)),
-			noResists = super.getComponentWithStyle("noresists", WHITE);
+	private final ITextComponent notGenerated = super.getComponentWithStyle("notgenerated", new Style().setColor(TextFormatting.GOLD).setBold(true));
 
 	private MobResistancesFormatter() {
 		this(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED);
@@ -76,13 +73,13 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 		else if(cap != null) {
 			List<String> lst = cap.getResistanceMap().entrySet().stream().filter((e) -> e.getValue() != 0).sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.MOB_RESISTS.format(e.getKey(), e.getValue(), this)), LinkedList<String>::addAll);
 			if(lst.isEmpty()) {
-				lst.add(this.noResists.getFormattedText());
+				lst.add(AbstractCapabilityTooltipFormatter.NONE_TEXT.getFormattedText());
 			}
 			TooltipTypeFormatter.MOB_RESISTS.formatImmunities(cap.getImmunities()).ifPresent(lst::add);
 			lst.addAll(TooltipTypeFormatter.MOB_RESISTS.formatAdaptability(cap.adaptiveChance(), cap.getAdaptiveAmount()));
 			return Optional.of(lst);
 		}
-		return Optional.of(ImmutableList.of(this.noResists.getFormattedText()));
+		return Optional.of(ImmutableList.of(AbstractCapabilityTooltipFormatter.NONE_TEXT.getFormattedText()));
 	}
 
 	@Override

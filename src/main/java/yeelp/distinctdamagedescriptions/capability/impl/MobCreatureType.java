@@ -34,7 +34,8 @@ public class MobCreatureType implements IMobCreatureType {
 			this.types.add(data.getTypeName());
 			this.potionImmunities.addAll(data.getPotionImmunities());
 			this.critImmunity = this.critImmunity || data.isImmuneToCriticals();
-			this.isFlammable = this.isFlammable || data.isFlammable();
+			//AND op here because the default is true and false means not flammable.
+			this.isFlammable = this.isFlammable && data.isFlammable();
 		}
 	}
 
@@ -79,7 +80,7 @@ public class MobCreatureType implements IMobCreatureType {
 		this.types = new HashSet<String>();
 		this.potionImmunities = new HashSet<String>();
 		this.critImmunity = nbt.getBoolean("critImmunity");
-		this.isFlammable = nbt.getBoolean("flammable");
+		this.isFlammable = nbt.hasKey("flammable") ? nbt.getBoolean("flammable") : true;
 		for(NBTBase s : nbt.getTagList("types", new NBTTagString().getId())) {
 			this.types.add(((NBTTagString) s).getString());
 		}

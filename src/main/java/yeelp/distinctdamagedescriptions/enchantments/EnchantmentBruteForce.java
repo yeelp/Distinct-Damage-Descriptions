@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.enchantments;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.util.math.MathHelper;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
@@ -44,5 +45,9 @@ public class EnchantmentBruteForce extends Enchantment {
 	@Override
 	public boolean canApplyTogether(Enchantment ench) {
 		return super.canApplyTogether(ench) && ench != DDDEnchantments.slyStrike;
+	}
+	
+	public static float getBypassPerLevel(int level) {
+		return MathHelper.clamp(0.1f * level, 0, 1.0f);
 	}
 }

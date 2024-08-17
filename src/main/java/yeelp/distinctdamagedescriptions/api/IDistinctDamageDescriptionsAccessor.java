@@ -10,12 +10,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatTracker;
 
 public abstract interface IDistinctDamageDescriptionsAccessor {
 	/**
@@ -115,17 +115,13 @@ public abstract interface IDistinctDamageDescriptionsAccessor {
 	Optional<ShieldDistribution> getShieldDistribution(@Nullable ItemStack stack);
 
 	/**
-	 * Get this entity's DDDCombatTracker, if present. If not present, then this
-	 * entity hasn't finised construction yet, or replaced their combat tracker
+	 * Get this entity's DDDCombatTracker. Wrapped in an {@link Optional} if it
+	 * doesn't exist. It will almost always exist, it only won't exist if the
+	 * capability is removed or the entity hasn't had capabilities added yet.
 	 * 
 	 * @param entity
-	 * @return The entity's DDDCombatTracker, if they have it.
+	 * @return The entity's DDDCombatTracker.
 	 */
-	default Optional<DDDCombatTracker> getDDDCombatTracker(EntityLivingBase entity) {
-		if(entity.combatTracker instanceof DDDCombatTracker) {
-			return Optional.of((DDDCombatTracker) entity.combatTracker);
-		}
-		return Optional.empty();
-	}
+	Optional<IDDDCombatTracker> getDDDCombatTracker(EntityLivingBase entity);
 
 }

@@ -1,0 +1,18 @@
+{
+    "required": true,
+    "minVersion": "0.7",
+    "package": "yeelp.distinctdamagedescriptions.mixin",
+    "refmap": "mixins.distinctdamagedescriptions.refmap.json",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [
+        "MixinEntity",
+        "MixinASMEntityLivingBase",
+        "MixinCombatTracker"
+    ],
+    "client": [
+        "MixinFontRenderer"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

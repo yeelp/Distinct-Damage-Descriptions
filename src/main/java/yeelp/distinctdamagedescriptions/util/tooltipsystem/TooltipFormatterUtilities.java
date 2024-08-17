@@ -15,7 +15,7 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 
 public final class TooltipFormatterUtilities {
-
+	
 	public static final Optional<ResourceLocation> getResourceLocationFromSpawnEgg(ItemStack stack) {
 		return Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(stack));
 	}

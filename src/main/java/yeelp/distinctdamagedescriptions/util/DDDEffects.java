@@ -94,7 +94,7 @@ public class DDDEffects {
 		if(attacker instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) attacker;
 			List<ParticleInfo> particles = new LinkedList<ParticleInfo>();
-			List<SoundInfo> sounds = Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, true).map((evt) -> new SoundInfo(player, evt, sound.getRecommendedVolume(), 1.0f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+			List<SoundInfo> sounds = Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, true).map((evt) -> new SoundInfo(player, evt, sound.getRecommendedVolume(), 0.8f + soundPitch.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 			if(results.wasResistanceHit()) {
 				addParticles(defender, DDDParticleType.RESISTANCE, particles);
 			}
