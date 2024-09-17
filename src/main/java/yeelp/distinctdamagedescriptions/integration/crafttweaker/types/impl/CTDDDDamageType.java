@@ -52,6 +52,16 @@ public final class CTDDDDamageType implements ICTDDDDamageType {
 	public ICTDamageDistribution getDistribution() {
 		return new CTDamageDistribution(this.type.getBaseDistribution());
 	}
+	
+	@Override
+	public void hideType() {
+		this.type.hideType();
+	}
+	
+	@Override
+	public void unhideType() {
+		this.type.unhideType();
+	}
 
 	@Override
 	public DDDDamageType asDDDDamageType() {

@@ -12,8 +12,8 @@ public abstract class AbstractKeyTooltipFormatter<T> extends AbstractTooltipForm
 
 	private KeyTooltip keyTooltip;
 
-	protected AbstractKeyTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter) {
-		super(numberFormatter, damageFormatter);
+	protected AbstractKeyTooltipFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter) {
+		super(damageFormatter);
 		this.keyTooltip = keyTooltip;
 	}
 

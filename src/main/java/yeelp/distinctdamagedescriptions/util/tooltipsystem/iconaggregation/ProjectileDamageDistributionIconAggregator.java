@@ -27,4 +27,9 @@ public class ProjectileDamageDistributionIconAggregator extends DistributionIcon
 	public static ProjectileDamageDistributionIconAggregator getInstance() {
 		return instance == null ? instance = new ProjectileDamageDistributionIconAggregator() : instance;
 	}
+	
+	@Override
+	protected boolean shouldKeepUnknown() {
+		return true;
+	}
 }

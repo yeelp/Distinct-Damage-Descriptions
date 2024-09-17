@@ -5,7 +5,6 @@ import com.lycanitesmobs.core.item.ItemCustomSpawnEgg;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.MobResistancesFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
@@ -16,7 +15,7 @@ public class LycanitesSpawnItemResistancesFormatter extends MobResistancesFormat
 	private static LycanitesSpawnItemResistancesFormatter instance;
 
 	protected LycanitesSpawnItemResistancesFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, LycanitesFormatterUtilities::getCreatureResourceLocation);
+		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, LycanitesFormatterUtilities::getCreatureResourceLocation);
 	}
 
 	@Override

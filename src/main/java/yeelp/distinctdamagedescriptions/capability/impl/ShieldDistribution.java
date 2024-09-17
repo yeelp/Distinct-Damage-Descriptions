@@ -68,4 +68,9 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	private static float blockDamage(float damage, float weight) {
 		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
 	}
+	
+	@Override
+	protected boolean allowZeroWeightedEntries() {
+		return false;
+	}
 }

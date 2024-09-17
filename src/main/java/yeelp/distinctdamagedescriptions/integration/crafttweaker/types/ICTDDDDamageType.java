@@ -28,6 +28,12 @@ public interface ICTDDDDamageType {
 	@ZenGetter("distribution")
 	ICTDamageDistribution getDistribution();
 	
+	@ZenMethod("hideType")
+	void hideType();
+	
+	@ZenMethod("unhideType")
+	void unhideType();
+	
 	@ZenMethod
 	static List<ICTDDDDamageType> getAllTypes() {
 		return DDDRegistries.damageTypes.getAll().stream().map(CTDDDDamageType::getFromDamageType).collect(Collectors.toList());

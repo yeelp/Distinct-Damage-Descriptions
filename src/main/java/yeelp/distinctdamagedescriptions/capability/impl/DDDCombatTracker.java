@@ -9,11 +9,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -35,6 +37,7 @@ import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.mixin.MixinASMEntityLivingBase;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorClassification;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
@@ -53,12 +56,13 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 	private final EntityLivingBase fighter;
 	private DDDDamageType type = null;
 	private ShieldDistribution shieldDist = null;
-	private ArmorValues armorVals = null;
+	private Map<EntityEquipmentSlot, ArmorValues> armorVals = null;
 	private DamageMap incomingDamage = null;
 	private float damage = 0.0f;
 	private ResultsBuilder results = new ResultsBuilder();
 	private CombatContext ctx = null;
 	private boolean damageClassified = false;
+	private ArmorClassification armorClassification;
 	
 	public DDDCombatTracker(EntityLivingBase fighter) {
 		this.fighter = fighter;
@@ -102,7 +106,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 	}
 
 	@Override
-	public Optional<ArmorValues> getNewArmorValues() {
+	public Optional<Map<EntityEquipmentSlot, ArmorValues>> getNewDeltaArmorValues() {
 		return Optional.ofNullable(this.armorVals);
 	}
 
@@ -116,6 +120,11 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 			return Optional.ofNullable(this.incomingDamage);
 		}
 		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<ArmorClassification> getArmorClassification() {
+		return Optional.ofNullable(this.armorClassification);
 	}
 
 	@Override
@@ -149,7 +158,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 	}
 
 	@Override
-	public void setNewArmorValues(ArmorValues vals) {
+	public void setNewDeltaArmorValues(Map<EntityEquipmentSlot, ArmorValues> vals) {
 		this.armorVals = vals;
 	}
 
@@ -205,16 +214,23 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 			this.getCurrentlyUsedShieldDistribution().ifPresent((shield) -> {
 				shield.block(m);
 				this.results.hasEffectiveShield(m);
-				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) (evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
+				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
 			if(!m.isEmpty()) {
 				this.type = DDDCombatCalculations.getWeightedRandomRepresentativeType(m);
 			}
 			if(ModConfig.resist.enableArmorCalcs) {
-				DDDCombatCalculations.classifyArmor(this.ctx).ifPresent((aMap) -> {
+				DDDCombatCalculations.classifyArmor(this.ctx).ifPresent((classified) -> {
+					this.armorClassification = classified;
 					Set<DDDDamageType> damagingTypes = m.keySet().stream().filter((t) -> m.get(t) > 0).collect(Collectors.toSet());
-					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach(aMap::remove);
-					this.armorVals = ModConfig.resist.armorCalcRule.merge(aMap.values().stream());
+					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach((type) -> {
+						classified.forEachArmorMap((slot, map) -> map.remove(type));
+					});
+					this.armorVals = Maps.newHashMap();
+					classified.forEachArmorMap((slot, map) -> {
+						this.armorVals.put(slot, ModConfig.resist.armorCalcRule.merge(map.values().stream().map((av) -> av.sub(ModConfig.resist.negativeRule.handlePotentialNegativeArmorValues(classified.getOriginalArmorValues(slot))))));
+						DebugLib.outputFormattedDebug("Armor Values for slot %s: %s", slot.getName(), this.armorVals.get(slot));
+					});
 				});
 			}
 		});
@@ -265,6 +281,11 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 			});
 			this.results.withAmount((float) YMath.sum(m.values()));
 		});
+	}
+	
+	@Override
+	public void clear() {
+		IDDDCombatTracker.super.clear();
 	}
 	
 	private void updateContextAndDamage(DamageSource src, float amount, @Nullable Entity attacker) {

@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumberFormat;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ArmorDistributionIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
@@ -29,14 +30,11 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IArmorDistribution cap) {
-		switch(this.getNumberFormatter()) {
-			case PLAIN:
-				int slot = ((TinkersArmor) stack.getItem()).armorType.getIndex();
-				return this.getArmorTooltip(cap, ArmorHelper.getArmor(stack, slot), ArmorHelper.getToughness(stack));
-			case PERCENT:
-			default:
-				return super.formatCapabilityFor(stack, cap);
+		if(this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.PLAIN) {
+			int slot = ((TinkersArmor) stack.getItem()).armorType.getIndex();
+			return this.getArmorTooltip(cap, ArmorHelper.getArmor(stack, slot), ArmorHelper.getToughness(stack));
 		}
+		return super.formatCapabilityFor(stack, cap);
 	}
 
 	@Override

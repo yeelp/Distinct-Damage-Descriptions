@@ -21,7 +21,7 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 	protected abstract Iterable<IModCompatTooltipFormatter<ItemStack>> getFormatters();
 
 	protected abstract void registerCapabilities();
-	
+
 	protected abstract boolean doSpecificPreInit(FMLPreInitializationEvent evt);
 
 	protected abstract boolean doSpecificInit(FMLInitializationEvent evt);
@@ -46,5 +46,4 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 	public boolean postInit(FMLPostInitializationEvent evt) {
 		return true;
 	}
-
 }

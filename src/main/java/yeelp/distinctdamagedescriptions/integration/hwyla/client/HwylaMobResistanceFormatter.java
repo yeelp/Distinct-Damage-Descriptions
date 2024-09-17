@@ -29,6 +29,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityToo
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
 
 public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResistances> {
@@ -45,7 +46,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			adaptabilityAmountPrefix = AbstractCapabilityTooltipFormatter.getComponentWithStyle("adaptiveamount", LIGHT_PURPLE);
 
 	private HwylaMobResistanceFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.STANDARD, DDDAPI.accessor::getMobResistances, "mobresistances");
+		super(KeyTooltip.CTRL, DDDDamageFormatter.STANDARD, DDDAPI.accessor::getMobResistances, "mobresistances");
 	}
 
 	/**
@@ -55,11 +56,6 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 	 */
 	public static HwylaMobResistanceFormatter getInstance() {
 		return instance == null ? instance = new HwylaMobResistanceFormatter() : instance;
-	}
-
-	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return f == DDDNumberFormatter.PERCENT;
 	}
 
 	@Override
@@ -86,7 +82,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			}
 			String s = TooltipTypeFormatter.MOB_RESISTS.format(type, rMap.get(type), this);
 			if(aMap.containsKey(type)) {
-				result.add(s.concat(TRANSLATOR.translate("witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormatter().format(1 - (1 - rMap.get(type)) * (1 - aMap.get(type).getArmor() / 100.0f))))));
+				result.add(s.concat(TRANSLATOR.translate("witharmor", new Style().setColor(TextFormatting.GRAY), String.valueOf(this.getNumberFormattingStrategy().format(1 - (1 - rMap.get(type)) * (1 - aMap.get(type).getArmor() / 100.0f))))));
 			}
 			else if(rMap.get(type) != 0) {
 				result.add(s);
@@ -97,7 +93,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		}
 		makeImmunityString(immunities).ifPresent(result::add);
 		if(cap.hasAdaptiveResistance()) {
-			result.add(String.format("   %s %s", this.adaptabilityAmountPrefix.getFormattedText(), this.getNumberFormatter().format(cap.getAdaptiveAmount())));
+			result.add(String.format("   %s %s", this.adaptabilityAmountPrefix.getFormattedText(), this.getNumberFormattingStrategy().format(cap.getAdaptiveAmount())));
 		}
 		return Optional.of(result);
 
@@ -116,5 +112,10 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 	@Override
 	public TooltipOrder getType() {
 		return TooltipOrder.MOB_RESISTANCES;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return DDDNumberFormatter.PERCENT;
 	}
 }

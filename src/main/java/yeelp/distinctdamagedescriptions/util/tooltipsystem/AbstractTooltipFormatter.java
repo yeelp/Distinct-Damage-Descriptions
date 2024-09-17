@@ -10,22 +10,10 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
  */
 public abstract class AbstractTooltipFormatter<T> implements TooltipFormatter<T> {
 
-	private DDDNumberFormatter numberFormatter;
 	private DDDDamageFormatter damageFormatter;
 
-	protected AbstractTooltipFormatter(DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter) {
-		this.setNumberFormatter(numberFormatter);
+	protected AbstractTooltipFormatter(DDDDamageFormatter damageFormatter) {
 		this.setDamageFormatter(damageFormatter);
-	}
-
-	@Override
-	public void setNumberFormatter(DDDNumberFormatter f) {
-		if(this.supportsNumberFormat(f)) {
-			this.numberFormatter = f;
-		}
-		else {
-			throw new IllegalArgumentException(f + " isn't supported by this formatter!");
-		}
 	}
 
 	@Override
@@ -36,15 +24,6 @@ public abstract class AbstractTooltipFormatter<T> implements TooltipFormatter<T>
 		else {
 			throw new IllegalArgumentException(f + " isn't supported by this formatter!");
 		}
-	}
-
-	/**
-	 * Get the current DDDNumberFormatter
-	 * 
-	 * @return the current DDDNumberFormatter
-	 */
-	protected DDDNumberFormatter getNumberFormatter() {
-		return this.numberFormatter;
 	}
 
 	/**

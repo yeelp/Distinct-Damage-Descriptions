@@ -6,7 +6,8 @@ public enum DDDTooltipColourScheme {
 
 	RED_GREEN(TextFormatting.RED, TextFormatting.GREEN),
 	GRAYSCALE(TextFormatting.DARK_GRAY, TextFormatting.WHITE),
-	WHITE(TextFormatting.WHITE);
+	WHITE(TextFormatting.WHITE),
+	GRAY(TextFormatting.GRAY);
 	
 	private final TextFormatting negative, positive;
 	private DDDTooltipColourScheme(TextFormatting negative, TextFormatting positive) {

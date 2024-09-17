@@ -4,8 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.base.Predicates;
+
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 
 /**
@@ -19,7 +22,7 @@ public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormat
 	private static ShieldDistributionFormatter instance;
 
 	protected ShieldDistributionFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, "shielddist");
+		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getShieldDistribution, "shielddist");
 	}
 
 	/**
@@ -33,11 +36,6 @@ public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormat
 	}
 
 	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return f != DDDNumberFormatter.PLAIN;
-	}
-
-	@Override
 	public boolean supportsDamageFormat(DDDDamageFormatter f) {
 		return true;
 	}
@@ -47,12 +45,17 @@ public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormat
 		if(cap == null) {
 			return Optional.empty();
 		}
-		return Optional.of(cap.getCategories().stream().sorted().collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.SHIELD.format(d, cap.getWeight(d), this)), LinkedList<String>::addAll));
+		return Optional.of(cap.getCategories().stream().filter(Predicates.not(DDDDamageType::isHidden)).sorted().collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.SHIELD.format(d, cap.getWeight(d), this)), LinkedList<String>::addAll));
 	}
 
 	@Override
 	public TooltipOrder getType() {
 		return TooltipOrder.SHIELD;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return DDDNumberFormatter.PERCENT;
 	}
 
 }

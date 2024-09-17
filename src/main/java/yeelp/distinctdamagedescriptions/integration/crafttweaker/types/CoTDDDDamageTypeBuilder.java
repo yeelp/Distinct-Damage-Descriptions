@@ -41,6 +41,9 @@ public final class CoTDDDDamageTypeBuilder {
 	@ZenProperty
 	public int color = 0xFFFFFF;
 	
+	@ZenProperty
+	public boolean hidden = false;
+	
 	private Type type = Type.SPECIAL;
 	
 	@ZenMethod
@@ -72,7 +75,7 @@ public final class CoTDDDDamageTypeBuilder {
 		this.wasBuilt = builder.wasBuilt;
 	}
 	
-	@stanhebben.zenscript.annotations.ZenMethod
+	@ZenMethod
 	public void register() {
 		if(this.wasBuilt) {
 			return;
@@ -93,7 +96,7 @@ public final class CoTDDDDamageTypeBuilder {
 	}
 	
 	private DDDDamageType createDamageType() {
-		return new DDDCustomDamageType(this.name, this.displayName, this.type == Type.PHYSICAL, this.deathMessageHasAttacker, this.deathMessageNoAttacker, this.color, Source.CoT);
+		return new DDDCustomDamageType(this.name, this.displayName, this.type == Type.PHYSICAL, this.deathMessageHasAttacker, this.deathMessageNoAttacker, this.color, this.hidden, Source.CoT);
 	}
 	
 	public static void registerTypes() {

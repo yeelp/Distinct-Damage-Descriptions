@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableList;
@@ -33,8 +32,7 @@ public abstract class AbstractIconAggregator implements IconAggregator {
 		if(this.shouldShowIcons()) {
 			final int xVal = this.getStartX(x, tooltips);
 			Iterator<Integer> ys = Stream.iterate(this.getStartY(y, tooltips), (i) -> i + ICON_HEIGHT).iterator();
-			Predicate<DDDDamageType> p = DDDDamageType::isCustomDamage;
-			return this.getOrderedTypes(stack).filter(p.negate()).collect(LinkedList<Icon>::new, (l, d) -> l.add(new Icon(xVal, ys.next(), getUFromType(d))), List<Icon>::addAll);
+			return this.getOrderedTypes(stack).collect(LinkedList<Icon>::new, (l, d) -> l.add(new Icon(xVal, ys.next(), getUFromType(d))), List<Icon>::addAll);
 		}
 		return ImmutableList.of();
 	}

@@ -54,6 +54,7 @@ public class DistinctDamageDescriptions {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
+		info(String.format("Distinct Damage Descriptions is version %s", ModConsts.VERSION));
 		ModIntegrationKernel.load();
 		configDirectory = event.getModConfigurationDirectory();
 		config = new Configuration(event.getSuggestedConfigurationFile());

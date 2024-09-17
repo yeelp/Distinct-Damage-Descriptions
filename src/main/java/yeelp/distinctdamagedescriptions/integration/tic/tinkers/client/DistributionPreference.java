@@ -10,6 +10,8 @@ import net.minecraft.util.Tuple;
 import slimeknights.tconstruct.library.tools.ToolCore;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 enum DistributionPreference implements IEnumTranslation {
 	ONLY {
@@ -53,7 +55,9 @@ enum DistributionPreference implements IEnumTranslation {
 	static Tuple<IBookString, Optional<IBookString>> determinePreferences(ToolCore tool, IDamageDistribution dist) {
 		// sort on distribution weight reversed, which will give the highest weighted
 		// type as the first element
-		List<DDDDamageType> topThreeTypes = dist.getCategories().stream().sequential().sorted(Comparator.comparingDouble(dist::getWeight).reversed()).limit(3).collect(Collectors.toList());
+		DamageMap map = dist.distributeDamage(1.0f);
+		DDDMaps.adjustHiddenWeightsToUnknown(map);
+		List<DDDDamageType> topThreeTypes = map.keySet().stream().sequential().sorted(Comparator.comparingDouble(map::get).reversed()).limit(3).collect(Collectors.toList());
 		DistributionPreference first, second = null;
 		String toolName = tool.getLocalizedToolName();
 		DDDDamageType firstType = getFromListIfInBounds(topThreeTypes, 0).get(); // this is safe, distribution must

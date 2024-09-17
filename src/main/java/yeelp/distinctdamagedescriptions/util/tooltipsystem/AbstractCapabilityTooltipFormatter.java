@@ -11,6 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
@@ -29,10 +30,10 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	private static final Style WHITE_COLOUR = new Style().setColor(TextFormatting.WHITE);
 	private static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 
-	protected static final ITextComponent NONE_TEXT = getComponentWithStyle(TooltipConsts.NO_RESISTS, WHITE_COLOUR);
+	protected static final ITextComponent NONE_TEXT = getComponentWithWhiteColour(TooltipConsts.NO_RESISTS);
 	
-	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<T, Optional<C>> capExtractor, String typeTextKey) {
-		super(keyTooltip, numberFormatter, damageFormatter);
+	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter, Function<T, Optional<C>> capExtractor, String typeTextKey) {
+		super(keyTooltip, damageFormatter);
 		this.capExtractor = capExtractor;
 		this.typeText = TRANSLATOR.getComponent(typeTextKey, GRAY_COLOUR);
 	}
@@ -54,7 +55,7 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 		if(this.shouldShow() && t != null) {
 			Optional<List<String>> formattedCap = this.capExtractor.apply(t).flatMap((c) -> this.formatCapabilityFor(t, c));
 			formattedCap.ifPresent((l) -> {
-				if(this.getDamageFormatter() == DDDDamageFormatter.ICON) {
+				if(ModConfig.client.useIcons) {
 					l.stream().map((s) -> new StringBuilder(" ").append(s.replaceAll("  ", " ")).toString()).forEach(result::add);
 				}
 				else {
@@ -71,6 +72,10 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 
 	protected static ITextComponent getComponentWithGrayColour(String key) {
 		return getComponentWithStyle(key, GRAY_COLOUR);
+	}
+	
+	protected static ITextComponent getComponentWithWhiteColour(String key) {
+		return getComponentWithStyle(key, WHITE_COLOUR);
 	}
 
 	protected static ITextComponent getComponentWithStyle(String key, Style style) {

@@ -17,6 +17,11 @@ import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 
 public final class ContentTinkersMaterialInfluence extends ContentMaterialInfluence {
 
@@ -53,7 +58,9 @@ public final class ContentTinkersMaterialInfluence extends ContentMaterialInflue
 
 	@Override
 	protected Map<DDDDamageType, Float> getWeights() {
-		return getBias(this.getMaterial()).getPreferredMapCopy();
+		DDDBaseMap<Float> map = getBias(this.getMaterial()).getPreferredMapCopy();
+		DDDMaps.adjustHiddenWeightsToUnknown(map);
+		return map;
 	}
 
 	private static final DistributionBias getBias(Material m) {
@@ -61,7 +68,17 @@ public final class ContentTinkersMaterialInfluence extends ContentMaterialInflue
 	}
 
 	private static final String getFormattedBias(Material m) {
-		return FORMATTER.format(getBias(m).getBias() / 100).replace('%', ' ').trim();
+		return DDDNumberFormatter.PERCENT.format(getBias(m).getBias() / 100).replace('%', ' ').trim();
+	}
+
+	@Override
+	protected ObjectFormatter<Float> getAppropriateFormatter() {
+		return DDDNumberFormatter.PERCENT;
+	}
+
+	@Override
+	protected DDDTooltipColourScheme getTooltipScheme() {
+		return DDDTooltipColourScheme.GRAY;
 	}
 
 }

@@ -63,7 +63,7 @@ public abstract class TooltipTypeFormatter {
 	}
 
 	protected final String standardFormat(TextFormatting colorStart, DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
-		return String.format("   %s%s %s %s", colorStart.toString(), formatter.getNumberFormatter().format(amount), formatter.getDamageFormatter().format(type), this.suffix.getFormattedText());
+		return String.format("   %s%s %s %s", colorStart.toString(), formatter.getNumberFormattingStrategy().format(amount), formatter.getDamageFormatter().format(type), this.suffix.getFormattedText());
 	}
 
 	protected final String defaultFormat(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
@@ -116,7 +116,7 @@ public abstract class TooltipTypeFormatter {
 
 		@Override
 		public String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
-			return super.defaultFormat(type, amount, formatter);
+			return super.standardFormat(formatter.getColourScheme().getFormattingBasedOnValue(amount, 1.0f), type, amount, formatter);
 		}
 
 		/**
@@ -132,7 +132,7 @@ public abstract class TooltipTypeFormatter {
 		@SuppressWarnings("static-method")
 		public final String formatArmorAndToughness(DDDDamageType type, float armor, float toughness, AbstractTooltipFormatter<?> formatter) {
 			TextFormatting gray = TextFormatting.GRAY;
-			return String.format("   %s%s: (%s %s%s, %s %s%s)%s", formatter.getDamageFormatter().format(type), gray.toString(), formatter.getNumberFormatter().format(armor), ARMOR.getFormattedText(), gray.toString(), formatter.getNumberFormatter().format(toughness), TOUGHNESS.getFormattedText(), gray.toString(), TextFormatting.RESET.toString());
+			return String.format("   %s%s: (%s %s%s, %s %s%s)%s", formatter.getDamageFormatter().format(type), gray.toString(), formatter.getNumberFormattingStrategy().format(armor), ARMOR.getFormattedText(), gray.toString(), formatter.getNumberFormattingStrategy().format(toughness), TOUGHNESS.getFormattedText(), gray.toString(), TextFormatting.RESET.toString());
 		}
 	}
 
@@ -157,16 +157,13 @@ public abstract class TooltipTypeFormatter {
 
 		@Override
 		public String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
-			TextFormatting color;
 			if(amount < 0) {
 				this.suffix = WEAKNESS_SUFFIX;
-				color = TextFormatting.DARK_RED;
 			}
 			else {
 				this.suffix = RESISTANCE_SUFFIX;
-				color = TextFormatting.GRAY;
 			}
-			return super.standardFormat(color, type, amount, formatter);
+			return super.standardFormat(formatter.getColourScheme().getFormattingBasedOnValue(amount, 0.0f), type, amount, formatter);
 		}
 
 		/**

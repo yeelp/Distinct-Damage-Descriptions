@@ -3,16 +3,10 @@ package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
-import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 
 public final class HwylaTooltipMaker {
 	private static final HwylaMobResistanceFormatter resistances = HwylaMobResistanceFormatter.getInstance();
 	private static final HwylaMobDamageFormatter damage = HwylaMobDamageFormatter.getInstance();
-
-	static {
-		updateFormatters();
-	}
 
 	/**
 	 * Make a tooltip addition for HWYLA.
@@ -27,10 +21,4 @@ public final class HwylaTooltipMaker {
 		return tip;
 	}
 
-	public static void updateFormatters() {
-		DDDNumberFormatter numFormat = ModConfig.client.showNumberValuesWhenPossible ? DDDNumberFormatter.PLAIN : DDDNumberFormatter.PERCENT;
-		if(damage.supportsNumberFormat(numFormat)) {
-			damage.setNumberFormatter(numFormat);
-		}
-	}
 }

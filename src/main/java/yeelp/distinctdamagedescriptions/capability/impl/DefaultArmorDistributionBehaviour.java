@@ -64,7 +64,6 @@ public enum DefaultArmorDistributionBehaviour implements IDefaultDistribution, I
 		public Set<DDDDamageType> getCategories() {
 			return this.types == null ? DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(DDDDamageType::isUnknownType)).collect(ImmutableSet.toImmutableSet()) : this.types;
 		}
-		
 	};
 
 	private final DDDBaseMap<Float> dist;

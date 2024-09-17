@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -7,8 +8,10 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Functions;
+import com.google.common.collect.Sets;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
 public final class DDDMaps {
 
@@ -26,6 +29,15 @@ public final class DDDMaps {
 	
 	public static ResistMap newResistMap() {
 		return new ResistMap();
+	}
+	
+	public static void adjustHiddenWeightsToUnknown(DDDBaseMap<Float> map) {
+		TypeWeightAccumulator hiddenTypes = map.entrySet().stream().filter((e) -> e.getKey().isHidden()).reduce(new TypeWeightAccumulator(), (twa, e) -> twa.addEntry(e.getKey(), e.getValue()), TypeWeightAccumulator::combine);
+		float unknownWeight = hiddenTypes.getWeight();
+		hiddenTypes.getTypes().forEach(map::remove);
+		if(unknownWeight > 0.0f) {
+			map.put(DDDBuiltInDamageType.UNKNOWN, unknownWeight);
+		}
 	}
 	
 	public static final class DamageMap extends DDDBaseMap<Float> {
@@ -76,5 +88,35 @@ public final class DDDMaps {
 		return Collectors.toMap(Functions.identity(), valueMapper, (BinaryOperator<U>) (u1, u2) -> {
 			throw new IllegalArgumentException("Can't collect on duplicate keys!");
 		}, mapSup);
+	}
+	
+	private static final class TypeWeightAccumulator {
+
+		private final Set<DDDDamageType> types = Sets.newHashSet();
+		private float weight = 0.0f;
+		
+		public TypeWeightAccumulator() {
+			//no-op
+		}
+
+		TypeWeightAccumulator addEntry(DDDDamageType type, float weight) {
+			this.types.add(type);
+			this.weight += weight;
+			return this;
+		}
+		
+		Set<DDDDamageType> getTypes() {
+			return this.types;
+		}
+		
+		float getWeight() {
+			return this.weight;
+		}
+		
+		TypeWeightAccumulator combine(TypeWeightAccumulator twa) {
+			this.types.addAll(twa.getTypes());
+			this.weight += twa.getWeight();
+			return this;
+		}
 	}
 }

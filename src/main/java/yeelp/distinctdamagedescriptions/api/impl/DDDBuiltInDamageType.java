@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
@@ -11,8 +12,8 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
  *
  */
 public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
-	public static final DDDDamageType UNKNOWN = new DDDBuiltInDamageType("unknown", false, null, null, 0);
-	public static final DDDDamageType NORMAL = new DDDBuiltInDamageType("normal", false, null, null, 0);
+	public static final DDDDamageType UNKNOWN = new DDDBuiltInDamageType("unknown", false, null, null, 0xaaaaaa, true);
+	public static final DDDDamageType NORMAL = new DDDBuiltInDamageType("normal", false, null, null, 0, true);
 	public static final DDDDamageType SLASHING = new DDDBuiltInDamageType("slashing", true, null, null, 0xffffff);
 	public static final DDDDamageType PIERCING = new DDDBuiltInDamageType("piercing", true, "#defender was stabbed by #attacker", null, 0xffffff);
 	public static final DDDDamageType BLUDGEONING = new DDDBuiltInDamageType("bludgeoning", true, "#defender was brutally crushed by #attacker", null, 0xffffff);
@@ -53,9 +54,17 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 		Arrays.sort(BUILT_IN_TYPES);
 		Arrays.sort(INTERNAL_TYPES);
 	}
+	
+	public static final Predicate<DDDDamageType> filterOutHidden(boolean keepUnknown) {
+		return (t) -> (keepUnknown && DDDDamageType.isUnknownType(t)) || !t.isHidden();
+	}
 
 	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
-		super(name, isPhysical, deathAttackerMessage, deathMessage, colour);
+		this(name, isPhysical, deathAttackerMessage, deathMessage, colour, false);
+	}
+	
+	private DDDBuiltInDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour, boolean hidden) {
+		super(name, isPhysical, deathAttackerMessage, deathMessage, colour, hidden);
 		this.displayName = this.getTypeName().substring(DDDDamageType.DDD_PREFIX.length());
 	}
 

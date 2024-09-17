@@ -9,6 +9,7 @@ import yeelp.distinctdamagedescriptions.capability.impl.DefaultShieldDistributio
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorCalculationType;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
+import yeelp.distinctdamagedescriptions.util.lib.NegativeArmorHandling;
 
 public final class ResistanceCategory {
 	@Name("Mob Base Resistance/Weakness")
@@ -97,6 +98,13 @@ public final class ResistanceCategory {
 			"    LITERAL: DDD will parse the config exactly as it is written. Only the types written in an item's armor distribution will be used.",
 			"    IMPLIED: DDD will add in armor effectiveness for types not mentioned in an armor distribution. For example, an armor distribution of [(s, 0.8), (p, 0.5)] will have all the other registered DDD types added to its distribution. The effectiveness these types get is defined by impliedArmorEffectivess."})
 	public ArmorParsingType armorParseRule = ArmorParsingType.LITERAL;
+
+	@Name("Negative Armor Handling")
+	@Comment({
+			"Change how DDD handles negative armor and toughness.",
+			"    DEFAULT: DDD's default behaviour, which is to do nothing different. When DDD computes armor modifications, it computes it relative to the original negative armor/toughness value, which results in a positive armor modification value if the effectiveness is less than 100% and a negative armor modification value if the effectivenss if over 100%.",
+			"    ABS: DDD will convert negative armor/toughness to their absolute value when computing armor modifications relative to their original armor/toughness values. This results in larger negative armor/toughness values for armor with effectivness below 100%, and smaller negative armor/toughness values for armor with effectiveness above 100%."})
+	public NegativeArmorHandling negativeRule = NegativeArmorHandling.DEFAULT;
 
 	@Name("Implied Armor Effectiveness")
 	@Comment({

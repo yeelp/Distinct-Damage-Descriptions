@@ -104,5 +104,10 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	public void setWeight(DDDDamageType type, float amount) {
 		throw new InvariantViolationException("Can't set individual damage types weight as weights would no longer add to 1! Use setNewWeights() instead!");
 	}
+	
+	@Override
+	protected boolean allowZeroWeightedEntries() {
+		return false;
+	}
 
 }

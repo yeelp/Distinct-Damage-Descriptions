@@ -14,6 +14,7 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 /**
  * A formatter for mob damage distributions
@@ -32,7 +33,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	}
 
 	protected MobDamageDistributionFormatter(Function<ItemStack, Optional<ResourceLocation>> f) {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobDamageIfConfigured), "mobdistribution");
+		super(KeyTooltip.SHIFT, DDDDamageFormatter.COLOURED, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobDamageIfConfigured), "mobdistribution");
 		this.resourceLocationGetter = f;
 		this.cache = new HashMap<ResourceLocation, Float>();
 	}
@@ -47,42 +48,39 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	}
 
 	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return true;
-	}
-
-	@Override
 	protected boolean shouldShowDist(ItemStack stack) {
 		return stack.getItem() instanceof ItemMonsterPlacer;
 	}
 
 	@Override
 	protected float getDamageToDistribute(ItemStack stack) {
-		switch(this.getNumberFormatter()) {
-			case PERCENT:
-				return 1.0f;
-			case PLAIN:
-			default:
-				Optional<ResourceLocation> oLoc = this.resourceLocationGetter.apply(stack);
-				if(oLoc.isPresent()) {
-					ResourceLocation loc = oLoc.get();
-					if(this.cache.containsKey(loc)) {
-						return this.cache.get(loc);
-					}
-					Optional<Entity> oEntity = Optional.ofNullable(ForgeRegistries.ENTITIES.getValue(loc)).map((entry) -> entry.newInstance(Minecraft.getMinecraft().world));
-					Optional<IAttributeInstance> oAttribute = oEntity.filter((e) -> e instanceof EntityLivingBase).<EntityLivingBase>map((e) -> (EntityLivingBase) e).map((e) -> e.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE));
-					if(oAttribute.isPresent()) {
-						float dmg = (float) oAttribute.get().getAttributeValue();
-						this.cache.put(loc, dmg);
-						return dmg;
-					}
-				}
-				return 1.0f;
+		if(this.getNumberFormattingStrategy() == DamageDistributionNumberFormat.PERCENT) {
+			return 1.0f;
 		}
+		Optional<ResourceLocation> oLoc = this.resourceLocationGetter.apply(stack);
+		if(oLoc.isPresent()) {
+			ResourceLocation loc = oLoc.get();
+			if(this.cache.containsKey(loc)) {
+				return this.cache.get(loc);
+			}
+			Optional<Entity> oEntity = Optional.ofNullable(ForgeRegistries.ENTITIES.getValue(loc)).map((entry) -> entry.newInstance(Minecraft.getMinecraft().world));
+			Optional<IAttributeInstance> oAttribute = oEntity.filter((e) -> e instanceof EntityLivingBase).<EntityLivingBase>map((e) -> (EntityLivingBase) e).map((e) -> e.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE));
+			if(oAttribute.isPresent()) {
+				float dmg = (float) oAttribute.get().getAttributeValue();
+				this.cache.put(loc, dmg);
+				return dmg;
+			}
+		}
+		return 1.0f;
 	}
 
 	@Override
 	public TooltipOrder getType() {
 		return TooltipOrder.MOB_DAMAGE;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return ModConfig.client.mobDamageFormat;
 	}
 }

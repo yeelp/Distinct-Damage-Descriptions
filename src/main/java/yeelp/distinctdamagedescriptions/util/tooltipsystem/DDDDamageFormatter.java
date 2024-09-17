@@ -10,20 +10,6 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
  */
 public enum DDDDamageFormatter implements ObjectFormatter<DDDDamageType> {
 	/**
-	 * "Formats" DDDDamageTypes as icons. In other words, this always returns an
-	 * empty String. If this {@link ObjectFormatter} is being used, client code
-	 * should make sure that icons are supported for the type and drawn elsewhere,
-	 * or client code should call another {@code DDDDamageFormatter} and use its
-	 * {@code format} method as backup.
-	 */
-	ICON {
-		@Override
-		public String format(DDDDamageType t) {
-			return "";
-		}
-	},
-
-	/**
 	 * Formats DDDDamageTypes with additional colour information prepended at the
 	 * start of the damage name.
 	 */

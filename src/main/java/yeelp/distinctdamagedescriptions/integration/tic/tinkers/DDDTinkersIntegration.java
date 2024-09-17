@@ -47,7 +47,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 	private static final Field TINKER_STENCIL_REGISTRY;
 	private static final Class<?> TINKER_REGISTRY;
 	public static final Modifier slyStrike = new ModifierSlyStrike(), bruteForce = new ModifierBruteForce();
-
+	
 	protected static final class MeltingListener extends Handler {
 
 		private static MeltingListener instance;

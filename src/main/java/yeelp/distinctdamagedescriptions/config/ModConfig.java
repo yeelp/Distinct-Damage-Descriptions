@@ -20,11 +20,9 @@ import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory;
 import yeelp.distinctdamagedescriptions.config.enchant.EnchantCategory;
 import yeelp.distinctdamagedescriptions.config.resists.ResistanceCategory;
 import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
-import yeelp.distinctdamagedescriptions.integration.hwyla.client.HwylaTooltipMaker;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipMaker;
 
 @Config(modid = ModConsts.MODID)
 public class ModConfig {
@@ -75,8 +73,6 @@ public class ModConfig {
 				DebugLib.updateStatus();
 				DDDExplosionDist.update();
 				DaylightTracker.update();
-				TooltipMaker.updateFormatters();
-				HwylaTooltipMaker.updateFormatters();
 			}
 		}
 

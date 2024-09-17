@@ -73,10 +73,6 @@ public enum TooltipMaker {
 		}
 	};
 
-	static {
-		updateFormatters();
-	}
-
 	private TooltipFormatter<ItemStack> formatter;
 	private IconAggregator aggregator;
 
@@ -87,22 +83,6 @@ public enum TooltipMaker {
 	private TooltipMaker(TooltipFormatter<ItemStack> formatter, IconAggregator aggregator) {
 		this.formatter = formatter;
 		this.aggregator = aggregator;
-	}
-
-	/**
-	 * Update formatters
-	 */
-	public static void updateFormatters() {
-		DDDNumberFormatter numFormat = ModConfig.client.showNumberValuesWhenPossible ? DDDNumberFormatter.PLAIN : DDDNumberFormatter.PERCENT;
-		DDDDamageFormatter damageFormat = ModConfig.client.useIcons ? DDDDamageFormatter.ICON : DDDDamageFormatter.COLOURED;
-		for(TooltipMaker maker : TooltipMaker.values()) {
-			if(maker.formatter.supportsNumberFormat(numFormat)) {
-				maker.formatter.setNumberFormatter(numFormat);
-			}
-			if(maker.formatter.supportsDamageFormat(damageFormat)) {
-				maker.formatter.setDamageFormatter(damageFormat);
-			}
-		}
 	}
 
 	/**

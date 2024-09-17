@@ -1,7 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -24,19 +24,72 @@ import slimeknights.mantle.client.gui.book.element.ElementItem;
 import slimeknights.mantle.client.gui.book.element.ElementText;
 import slimeknights.tconstruct.library.book.content.ContentMaterial;
 import slimeknights.tconstruct.library.book.elements.ElementTinkerItem;
+import slimeknights.tconstruct.library.client.CustomFontColor;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tools.IToolPart;
 import slimeknights.tconstruct.smeltery.TinkerSmeltery;
 import slimeknights.tconstruct.smeltery.block.BlockCasting;
 import slimeknights.tconstruct.tools.TinkerTools;
 import slimeknights.tconstruct.tools.common.block.BlockToolTable;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 
 public abstract class ContentMaterialInfluence extends ContentMaterial {
+	
+	protected enum ColourScheme {
+		RED_GREEN(DDDTooltipColourScheme.RED_GREEN) {
+			@Override
+			String formatNumberColoured(float value, ObjectFormatter<Float> formatter) {
+				StringBuilder sb = new StringBuilder();
+				switch(DDDTooltipColourScheme.RED_GREEN.getFormattingBasedOnValue(value, 1.0f)) {
+					case RED:
+						sb.append(CustomFontColor.encodeColor(0xff5555));
+						break;
+					case GREEN:
+						sb.append(CustomFontColor.encodeColor(0x55ff55));
+						break;
+					default:
+						break; 
+				}
+				return sb.append(formatter.format(value)).toString();
+			}
+			
+		},
+		NORMAL(DDDTooltipColourScheme.GRAYSCALE, DDDTooltipColourScheme.GRAY, DDDTooltipColourScheme.WHITE) {
+			@Override
+			String formatNumberColoured(float value, ObjectFormatter<Float> formatter) {
+				return formatter.format(value);
+			}
+		};
+		
+		private final byte matchedSchemes;
+		
+		private ColourScheme(DDDTooltipColourScheme... schemes) {
+			this.matchedSchemes = encodeMatchedSchemes(schemes);
+		}
+		
+		private static byte encodeMatchedSchemes(DDDTooltipColourScheme... schemes) {
+			return (byte) Arrays.stream(schemes).mapToInt(DDDTooltipColourScheme::ordinal).map((i) -> 1 << i).reduce((i1, i2) -> i1 | i2).getAsInt();
+		}
+		
+		static ColourScheme getScheme(DDDTooltipColourScheme scheme) {
+			for(ColourScheme cs : ColourScheme.values()) {
+				if((cs.matchedSchemes & (1 << scheme.ordinal())) > 0) {
+					return cs;
+				}
+			}
+			DistinctDamageDescriptions.err("Could not get Book Colour Scheme from Tooltip Scheme "+scheme.toString()+" falling back to Normal...");
+			return NORMAL;
+		}
+		
+		abstract String formatNumberColoured(float value, ObjectFormatter<Float> formatter);
+	}
+	
 	public static final String ID = "materialInfluence";
 
-	protected static final transient DecimalFormat FORMATTER = new DecimalFormat("##.##%");
 	private transient Material material;
 
 	public ContentMaterialInfluence() {
@@ -65,7 +118,9 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 		header.underlined = true;
 		data.add(header);
 		data.add(TextData.LINEBREAK);
-		this.getWeights().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).map((e) -> new TextData(this.getTranslator().translate("materialInfluenceEntry", TiCUtil.getDDDDamageTypeNameColoured(e.getKey()), FORMATTER.format(e.getValue())))).forEach((td) -> {
+		ObjectFormatter<Float> formatter = this.getAppropriateFormatter();
+		ColourScheme cs = ColourScheme.getScheme(this.getTooltipScheme());
+		this.getWeights().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).map((e) -> new TextData(this.getTranslator().translate("materialInfluenceEntry", TiCUtil.getDDDDamageTypeNameColoured(e.getKey()), cs.formatNumberColoured(e.getValue(), formatter)))).forEach((td) -> {
 			data.add(new TextData("\u25CF "));
 			data.add(td);
 			data.add(TextData.LINEBREAK);
@@ -116,4 +171,8 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 	protected abstract Iterable<TextData> getAdditionalTextData();
 
 	protected abstract Map<DDDDamageType, Float> getWeights();
+	
+	protected abstract ObjectFormatter<Float> getAppropriateFormatter();
+	
+	protected abstract DDDTooltipColourScheme getTooltipScheme();
 }

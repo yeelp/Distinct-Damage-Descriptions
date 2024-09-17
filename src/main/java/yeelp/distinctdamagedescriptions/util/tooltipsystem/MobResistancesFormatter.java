@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
@@ -21,7 +22,7 @@ import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 /**
  * The singleton instance for formatting mob resistances
  * 
- * @author yeelp
+ * @author Yeelp
  *
  */
 public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<MobResistanceCategories, ItemStack> {
@@ -31,15 +32,15 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 	private final ITextComponent notGenerated = super.getComponentWithStyle("notgenerated", new Style().setColor(TextFormatting.GOLD).setBold(true));
 
 	private MobResistancesFormatter() {
-		this(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED);
+		this(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED);
 	}
 
-	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<ResourceLocation>> f) {
-		super(keyTooltip, numberFormatter, damageFormatter, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobResistancesIfConfigured), "mobresistances");
+	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<ResourceLocation>> f) {
+		super(keyTooltip, damageFormatter, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobResistancesIfConfigured), "mobresistances");
 	}
 
-	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter) {
-		this(keyTooltip, numberFormatter, damageFormatter, TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
+	protected MobResistancesFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter) {
+		this(keyTooltip, damageFormatter, TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
 	}
 
 	/**
@@ -50,11 +51,6 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 	 */
 	public static MobResistancesFormatter getInstance() {
 		return instance == null ? instance = new MobResistancesFormatter() : instance;
-	}
-
-	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return f == DDDNumberFormatter.PERCENT;
 	}
 
 	@Override
@@ -71,11 +67,13 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 			return Optional.of(ImmutableList.of(this.notGenerated.getFormattedText()));
 		}
 		else if(cap != null) {
-			List<String> lst = cap.getResistanceMap().entrySet().stream().filter((e) -> e.getValue() != 0).sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.MOB_RESISTS.format(e.getKey(), e.getValue(), this)), LinkedList<String>::addAll);
+			List<String> lst = cap.getResistanceMap().entrySet().stream().filter((e) -> !e.getKey().isHidden() && e.getValue() != 0).sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).collect(LinkedList<String>::new, (l, e) -> l.add(TooltipTypeFormatter.MOB_RESISTS.format(e.getKey(), e.getValue(), this)), LinkedList<String>::addAll);
 			if(lst.isEmpty()) {
 				lst.add(AbstractCapabilityTooltipFormatter.NONE_TEXT.getFormattedText());
 			}
-			TooltipTypeFormatter.MOB_RESISTS.formatImmunities(cap.getImmunities()).ifPresent(lst::add);
+			Set<DDDDamageType> immunities = cap.getImmunities();
+			immunities.removeIf(DDDDamageType::isHidden);
+			TooltipTypeFormatter.MOB_RESISTS.formatImmunities(immunities).ifPresent(lst::add);
 			lst.addAll(TooltipTypeFormatter.MOB_RESISTS.formatAdaptability(cap.adaptiveChance(), cap.getAdaptiveAmount()));
 			return Optional.of(lst);
 		}
@@ -85,6 +83,16 @@ public class MobResistancesFormatter extends AbstractCapabilityTooltipFormatter<
 	@Override
 	public TooltipOrder getType() {
 		return TooltipOrder.MOB_RESISTANCES;
+	}
+
+	@Override
+	public DDDTooltipColourScheme getColourScheme() {
+		return ModConfig.client.mobResistColourScheme;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return DDDNumberFormatter.PERCENT;
 	}
 
 }

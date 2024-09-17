@@ -3,7 +3,7 @@
   "modid": "distinctdamagedescriptions",
   "name": "Distinct Damage Descriptions",
   "description": "${mod_description}",
-  "version": "${version}",
+  "version": "${mod_version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",

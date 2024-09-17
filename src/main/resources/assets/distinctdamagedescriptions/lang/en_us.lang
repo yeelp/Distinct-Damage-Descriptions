@@ -37,6 +37,7 @@ tooltips.distinctdamagedescriptions.adaptiveamount=Adaptability Amount:
 tooltips.distinctdamagedescriptions.effectiveness=Effectiveness
 tooltips.distinctdamagedescriptions.weakness=Weakness
 tooltips.distinctdamagedescriptions.noresists=None
+tooltips.distinctdamagedescriptions.unchanged=Unchanged
 tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
 tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distribution:
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:

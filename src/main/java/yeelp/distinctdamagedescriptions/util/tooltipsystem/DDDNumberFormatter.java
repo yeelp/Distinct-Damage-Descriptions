@@ -12,12 +12,22 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 	/**
 	 * Formats regular numbers to two decimal places.
 	 */
-	PLAIN(new DecimalFormat("##.##")),
+	PLAIN(new DecimalFormat("##.##")) {
+		@Override
+		public String format(Float t) {
+			return this.formatSignless(t).toString();
+		}
+	},
 
 	/**
 	 * Formats decimals as percents to two decimal places.
 	 */
-	PERCENT(new DecimalFormat("##.##%")),
+	PERCENT(new DecimalFormat("##.##%")) {
+		@Override
+		public String format(Float t) {
+			return this.formatSignless(t).toString();
+		}
+	},
 	
 	/**
 	 * Formats decimals as relative percents to 100%, to two decimal places.
@@ -25,18 +35,22 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 	RELATIVE(new DecimalFormat("##.##%")) {
 		@Override
 		public String format(Float t) {
-			return super.format(t - 1.0f);
+			return new StringBuilder(t < 1 ? "-" : "+").append(this.formatSignless(t - 1.0f)).toString();
 		}
 	};
 
-	private DecimalFormat formatter;
+	private final DecimalFormat formatter;
 
 	private DDDNumberFormatter(DecimalFormat decimalFormat) {
 		this.formatter = decimalFormat;
 	}
-
-	@Override
-	public String format(Float t) {
-		return String.format("%s%s", t < 0 ? "" : "+", this.formatter.format(t)).substring(1);
+	
+	protected final StringBuilder formatSignless(Float t) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.formatter.format(t));
+		if(t < 0) {
+			builder.deleteCharAt(0);			
+		}
+		return builder;
 	}
 }

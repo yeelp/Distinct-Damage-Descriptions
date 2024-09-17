@@ -26,10 +26,20 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	@SafeVarargs
 	public ArmorDistribution(Tuple<DDDDamageType, Float>... weights) {
 		super(weights);
+		for(Tuple<DDDDamageType, Float> t : weights) {
+			if(t.getSecond() == 0.0f) {
+				this.distMap.put(t.getFirst(), t.getSecond());
+			}
+		}
 	}
 
 	public ArmorDistribution(Map<DDDDamageType, Float> resistMap) {
 		super(resistMap);
+		resistMap.forEach((type, weight) -> {
+			if(weight == 0.0f) {
+				this.distMap.put(type, weight);
+			}
+		});
 	}
 
 	@Override
@@ -55,5 +65,10 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	@Override
 	public IArmorDistribution update(ItemStack owner) {
 		return this;
+	}
+	
+	@Override
+	protected boolean allowZeroWeightedEntries() {
+		return true;
 	}
 }

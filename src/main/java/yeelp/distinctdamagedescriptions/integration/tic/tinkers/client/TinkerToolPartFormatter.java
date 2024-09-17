@@ -14,15 +14,19 @@ import net.minecraft.util.text.TextFormatting;
 import slimeknights.tconstruct.library.materials.MaterialTypes;
 import slimeknights.tconstruct.library.tools.ToolPart;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.AbstractCapabilityIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
@@ -36,12 +40,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 	private final BiasIconAggregator biasAggregator = new BiasIconAggregator(this.biasFormatter.getStart());
 
 	private TinkerToolPartFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, TinkerToolPartFormatter::getDistributionBias, "tic.distributionbias");
-	}
-
-	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return f == DDDNumberFormatter.PERCENT;
+		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, TinkerToolPartFormatter::getDistributionBias, "tic.distributionbias");
 	}
 
 	@Override
@@ -59,7 +58,9 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 		if(t == null || cap == null) {
 			return Optional.empty();
 		}
-		List<String> lst = cap.getPreferredMapCopy().entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).map((e) -> TooltipTypeFormatter.DEFAULT_DAMAGE.format(e.getKey(), e.getValue(), this)).collect(Collectors.toList());
+		DDDBaseMap<Float> preferred = cap.getPreferredMapCopy();
+		DDDMaps.adjustHiddenWeightsToUnknown(preferred);
+		List<String> lst = preferred.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).map((e) -> TooltipTypeFormatter.DEFAULT_DAMAGE.format(e.getKey(), e.getValue(), this)).collect(Collectors.toList());
 		lst.add(0, this.biasFormatter.format(null, cap.getBias(), this));
 		return Optional.of(lst);
 	}
@@ -89,10 +90,9 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 			this.suffix.setStyle(new Style().setColor(TextFormatting.WHITE).setBold(true));
 		}
 
-		@SuppressWarnings("synthetic-access")
 		@Override
 		public String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
-			return this.getStart().concat(" " + TinkerToolPartFormatter.super.getNumberFormatter().format(amount));
+			return this.getStart().concat(" " + TinkerToolPartFormatter.this.getNumberFormattingStrategy().format(amount));
 		}
 
 		public String getStart() {
@@ -103,12 +103,12 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 	private final class BiasIconAggregator extends AbstractCapabilityIconAggregator implements IconAggregator {
 
 		BiasIconAggregator(String regex) {
-			super(TextFormatting.GRAY.toString() + regex, () -> TinkerToolPartFormatter.getInstance().shouldShow());
+			super(TextFormatting.GRAY.toString() + " " + regex, () -> TinkerToolPartFormatter.getInstance().shouldShow());
 		}
 
 		@Override
 		protected Stream<DDDDamageType> getOrderedTypes(ItemStack stack) {
-			return TinkerToolPartFormatter.getDistributionBias(stack).map((bias) -> bias.getPreferredMapCopy().keySet().stream().sorted()).orElse(Stream.empty());
+			return TinkerToolPartFormatter.getDistributionBias(stack).map((bias) -> bias.getPreferredMapCopy().keySet().stream().filter(DDDBuiltInDamageType.filterOutHidden(true)).sorted()).orElse(Stream.empty());
 		}
 
 		@Override
@@ -128,5 +128,10 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 	@Override
 	public IconAggregator getIconAggregator() {
 		return this.biasAggregator;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return DDDNumberFormatter.PERCENT;
 	}
 }

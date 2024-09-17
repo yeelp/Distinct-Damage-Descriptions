@@ -23,6 +23,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	private final IDamageDistribution dist;
 	private final Type type;
 	private final int colour;
+	private boolean hidden;
 
 	/**
 	 * Build a new damage type
@@ -35,14 +36,17 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	 * @param deathMessage         The death message to display when there is no
 	 *                             attacker
 	 * @param colour               the display colour to use in tooltips.
+	 * 
+	 * @param hidden               If this type should show in tooltips.
 	 */
-	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
+	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour, boolean hidden) {
 		this.name = DDDDamageType.addDDDPrefixIfNeeded(name);
 		this.attackerDeathMessage = deathAttackerMessage;
 		this.noAttackerDeathMessage = deathMessage;
 		this.dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(this, 1.0f));
 		this.type = isPhysical ? Type.PHYSICAL : Type.SPECIAL;
 		this.colour = colour;
+		this.hidden = hidden;
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	@SuppressWarnings("deprecation")
 	@Override
 	public final String getDisplayName() {
-		if(net.minecraft.util.text.translation.I18n.canTranslate("damagetypes.distinctdamagedescriptions." + this.displayName)){
+		if(net.minecraft.util.text.translation.I18n.canTranslate("damagetypes.distinctdamagedescriptions." + this.displayName)) {
 			return net.minecraft.util.text.translation.I18n.translateToLocal("damagetypes.distinctdamagedescriptions." + this.displayName);
 		}
 		return YLib.capitalize(this.displayName);
@@ -77,6 +81,21 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	@Override
 	public final int getColour() {
 		return this.colour;
+	}
+	
+	@Override
+	public boolean isHidden() {
+		return this.hidden;
+	}
+	
+	@Override
+	public void hideType() {
+		this.hidden = true;
+	}
+	
+	@Override
+	public void unhideType() {
+		this.hidden = false;
 	}
 
 	@Override

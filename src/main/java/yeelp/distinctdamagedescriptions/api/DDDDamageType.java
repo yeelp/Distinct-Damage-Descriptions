@@ -39,7 +39,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	}
 
 	/**
-	 * A prefix that DDd uses to recognize types it adds.
+	 * A prefix that DDD uses to recognize types it adds.
 	 */
 	static String DDD_PREFIX = "ddd_";
 
@@ -113,6 +113,22 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	default boolean isUsable() {
 		return true;
 	}
+	
+	/**
+	 * Is this damage type hidden? Hidden types don't show up in tooltips. Missing distributions for damage distributions get listed under @link {@link DDDBuiltInDamageType#UNKNOWN}.
+	 * @return if this type should be hidden in tooltips or not.
+	 */
+	boolean isHidden();
+	
+	/**
+	 * Hide this type from appearing on tooltips. Missing distributions for damage distributions get listed under @link {@link DDDBuiltInDamageType#UNKNOWN} and will show up, even if the Unknown type is itself a hidden type.
+	 */
+	void hideType();
+	
+	/**
+	 * Unhide this type so it shows up in tooltips.
+	 */
+	void unhideType();
 
 	/**
 	 * Add the DDD prefix to a damage type, or really to any string, but only if the prefix doesn't exist.

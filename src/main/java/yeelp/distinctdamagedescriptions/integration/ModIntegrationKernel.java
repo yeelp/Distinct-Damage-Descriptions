@@ -29,8 +29,10 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.DDDCoTIntegration;
+import yeelp.distinctdamagedescriptions.integration.firstaid.FirstAidIntegration;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesIntegration;
+import yeelp.distinctdamagedescriptions.integration.qualitytools.QualityToolsIntegration;
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.SpartanWeaponryCompat;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraIntegration;
 import yeelp.distinctdamagedescriptions.integration.thebewteenlands.TheBetweenlandsCompat;
@@ -58,6 +60,8 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.IntegrationIds.TETRA_ID, () -> new TetraIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.SPARTAN_WEAPONRY_ID, () -> new SpartanWeaponryCompat());
 		integratableMods.put(ModConsts.IntegrationIds.BETWEENLANDS_ID, () -> new TheBetweenlandsCompat());
+		integratableMods.put(ModConsts.IntegrationIds.QUALITY_TOOLS_ID, () -> new QualityToolsIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.FIRST_AID_ID, () -> new FirstAidIntegration());
 		
 		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));

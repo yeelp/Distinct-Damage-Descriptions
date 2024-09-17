@@ -1,6 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -12,6 +16,19 @@ public interface DDDAttributeModifierCollections {
 
 	ModifierRecord ARMOR = new ModifierRecord("DDD Armor Calculations Modifier", ARMOR_CALC_UUID, SharedMonsterAttributes.ARMOR);
 	ModifierRecord TOUGHNESS = new ModifierRecord("DDD Toughness Calculations Modifier", TOUGHNESS_CALC_UUID, SharedMonsterAttributes.ARMOR_TOUGHNESS);
+	
+	IAttribute[] ARMOR_ATTRIBUTES = {ARMOR.getAttributeModified(), TOUGHNESS.getAttributeModified()};
+	
+	Collection<ModifierRecord> ARMOR_MODIFIERS = Lists.newArrayList(ARMOR, TOUGHNESS);
+	
+	static Optional<ModifierRecord> getModifierRecordFromName(String name) {
+		for(ModifierRecord modifierRecord : ARMOR_MODIFIERS) {
+			if(modifierRecord.getName().equals(name)) {
+				return Optional.of(modifierRecord);
+			}
+		}
+		return Optional.empty();
+	}
 	
 	static final class ModifierRecord {
 		private final String name;

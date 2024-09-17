@@ -46,20 +46,45 @@ public final class DebugLib {
 		}
 		return "{" + YLib.joinNiceString(true, ",", strings) + "}";
 	}
-	
+
 	/**
 	 * Output formatted debug info.
-	 * @param format The format string.
+	 * 
+	 * @param format  The format string.
 	 * @param objects the object arguments.
 	 * 
-	 * @implNote no status check needed. {@link DistinctDamageDescriptions::debug} does the check already.
+	 * @implNote status check needed as {@link String#format} doesn't need to run if not enabled.
 	 */
-	public static final void outputFormattedDebug(String format, Object...objects) {
+	public static final void outputFormattedDebug(String format, Object... objects) {
+		if(!status) {
+			return;
+		}
 		DistinctDamageDescriptions.debug(String.format(format, objects));
 	}
-	
+
 	/**
-	 * Run some Runnable. Useful to isolate debug conde from running when debug mode is not enabled.
+	 * Converts an Iterable of generic elements to a list of String of the form
+	 * {@code [entries]} where {@code entries} is a comma separated list of the
+	 * elements in the Iterable.
+	 * 
+	 * @param <T> The type of elements in the Iterable.
+	 * @param it the Iterable.
+	 * @return A String representing the elements of the Iterable.
+	 */
+	public static final <T> String iterableToString(Iterable<T> it) {
+		if(!status) {
+			return "";
+		}
+		StringBuilder builder = new StringBuilder();
+		it.forEach((s) -> builder.append(s.toString() + ";"));
+		String[] strings = builder.toString().split(";");
+		return "[" + YLib.joinNiceString(true, ",", strings) + "]";
+	}
+
+	/**
+	 * Run some Runnable. Useful to isolate debug code from running when debug mode
+	 * is not enabled.
+	 * 
 	 * @param runnable
 	 */
 	public static final void doDebug(Runnable runnable) {

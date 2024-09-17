@@ -2,7 +2,9 @@ package yeelp.distinctdamagedescriptions.config.client;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumberFormat;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DamageDistributionNumberFormat;
 
 public final class ClientCategory {
 	@Name("Show Damage Distribution Tooltip for all items")
@@ -25,12 +27,31 @@ public final class ClientCategory {
 			"Regular item damage distribution information will not be shown so long as the spawn eggs are not configured to have a particular distribution.",
 			"It is recommended to not set a distribution for spawn eggs if this is set to true, as this will make the tooltip cleaner."})
 	public boolean showMobDamage = false;
-
-	@Name("Use Numerical Values When Possible")
+	
+	@Name("Armor Tooltip Format")
 	@Comment({
-			"If true, Distinct Damage Descriptions will try to show numerical values when possible instead of percent values.",
-			"This works for armor and items only. Projectiles and resistances don't have numerical values to use, so the config doesn't apply here."})
-	public boolean showNumberValuesWhenPossible = false;
+		"Set the format of tooltips for Armor Distributions.",
+		"    PLAIN: Formats the Armor Distribution as the approximate armor and toughness that the armor would provide per type. Using this option always uses gray colour for text (outside of the damage type). Types not listed in the tooltip have zero effectiveness.",
+		"    PERCENT: Formats the Armor Distribution as the percent of effectiveness it has. Types not listed on the tooltip have zero effectiveness.",
+		"    RELATIVE: Formats the Armor Distribution as its relative effectiveness to 100%. Types not listed on the tooltip have 100% effectiveness."
+	})
+	public ArmorDistributionNumberFormat armorFormat = ArmorDistributionNumberFormat.PERCENT;
+	
+	@Name("Damage Distribution Format")
+	@Comment({
+		"Set the format of tooltips for item Damage Distributions.",
+		"    PLAIN: Formats the Damage Distribution as the approximate amount of damage that would be inflicted per type.",
+		"    PERCENT: Formats the Damage Distribution as the percent of damage that would be inflicted of that type."
+	})
+	public DamageDistributionNumberFormat itemDamageFormat = DamageDistributionNumberFormat.PERCENT;
+	
+	@Name("Mob Damage Distribution Format")
+	@Comment({
+		"Set the format of tooltips for mob Damage Distributions that appear on spawn eggs if showMobDamage is true.",
+		"    PLAIN: Formats the Damage Distribution as the approximate amount of damage that would be inflicted per type.",
+		"    PERCENT: Formats the Damage Distribution as the percent of damage that would be inflicted of that type."
+	})
+	public DamageDistributionNumberFormat mobDamageFormat = DamageDistributionNumberFormat.PERCENT;
 	
 	@Name("Armor Tooltip Colour Scheme")
 	@Comment({

@@ -35,4 +35,9 @@ public class MobDamageDistributionIconAggregator extends DistributionIconAggrega
 	public static MobDamageDistributionIconAggregator getInstance() {
 		return instance == null ? instance = new MobDamageDistributionIconAggregator() : instance;
 	}
+	
+	@Override
+	protected boolean shouldKeepUnknown() {
+		return true;
+	}
 }

@@ -12,8 +12,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import c4.conarm.common.ConstructsRegistry;
+import c4.conarm.common.armor.utils.ArmorHelper;
 import c4.conarm.lib.materials.ArmorMaterialType;
 import c4.conarm.lib.materials.ArmorMaterials;
+import c4.conarm.lib.tinkering.TinkersArmor;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -43,6 +46,9 @@ import yeelp.distinctdamagedescriptions.integration.tic.conarm.traits.DDDImmunit
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.traits.DDDImmunityTrait.DamageHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorValuesInjector;
 
 public final class DDDConarmIntegration extends DDDTiCIntegration {
 
@@ -117,6 +123,16 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 		immunities.forEach((record) -> {
 			Material mat = TinkerRegistry.getMaterial(record.getMat());
 			Arrays.stream(record.getTypes().split(",")).map(Functions.compose(traits::get, String::trim)).forEach((t) -> ArmorMaterials.addArmorTrait(mat, t, location));
+		});
+		//Must register an armor values injector to correct the way conarm deals with armor properties.
+		DDDCombatCalculations.registerArmorValuesInjector(new IArmorValuesInjector() {	
+			@Override
+			public ArmorValues apply(ItemStack t, EntityEquipmentSlot u) {
+				if(t.getItem() instanceof TinkersArmor) {
+					return new ArmorValues(ArmorHelper.getArmor(t, u.getIndex()), ArmorHelper.getToughness(t));
+				}	
+				return new ArmorValues();
+			}
 		});
 		return true;
 	}

@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import com.google.common.base.Predicates;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -32,6 +34,12 @@ public abstract class DistributionIconAggregator<T extends IDistribution> extend
 
 	@Override
 	protected Stream<DDDDamageType> getOrderedTypes(ItemStack stack) {
-		return this.capExtractor.apply(stack).map((c) -> c.getCategories().stream().sorted()).orElse(Stream.empty());
+		return this.capExtractor.apply(stack).map((c) -> c.getCategories().stream().filter(Predicates.or((t) -> this.shouldKeepUnknown() && DDDDamageType.isUnknownType(t), Predicates.not(DDDDamageType::isHidden))).sorted()).orElse(Stream.empty());
 	}
+	
+	protected final Optional<T> getCap(ItemStack stack) {
+		return this.capExtractor.apply(stack);
+	}
+	
+	protected abstract boolean shouldKeepUnknown();
 }

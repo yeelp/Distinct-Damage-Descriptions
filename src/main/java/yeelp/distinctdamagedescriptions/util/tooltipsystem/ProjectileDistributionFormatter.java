@@ -15,7 +15,7 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	private static ProjectileDistributionFormatter instance;
 
 	protected ProjectileDistributionFormatter() {
-		super(KeyTooltip.CTRL, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, (s) -> YResources.getRegistryString(s.getItem()).filter(DDDConfigurations.projectiles::isProjectilePairRegistered).map(DDDConfigurations.projectiles::getFromItemID), "projectiledistribution");
+		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, (s) -> YResources.getRegistryString(s.getItem()).filter(DDDConfigurations.projectiles::isProjectilePairRegistered).map(DDDConfigurations.projectiles::getFromItemID), "projectiledistribution");
 	}
 
 	/**
@@ -27,11 +27,6 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	 */
 	public static ProjectileDistributionFormatter getInstance() {
 		return instance == null ? instance = new ProjectileDistributionFormatter() : instance;
-	}
-
-	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return f != DDDNumberFormatter.PLAIN;
 	}
 
 	@Override
@@ -47,5 +42,10 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	@Override
 	public TooltipOrder getType() {
 		return TooltipOrder.PROJECTILE;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return DDDNumberFormatter.PERCENT;
 	}
 }

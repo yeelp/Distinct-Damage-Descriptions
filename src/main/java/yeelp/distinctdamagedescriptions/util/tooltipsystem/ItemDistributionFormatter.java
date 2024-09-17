@@ -26,7 +26,7 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	private static ItemDistributionFormatter instance;
 
 	private ItemDistributionFormatter() {
-		super(KeyTooltip.SHIFT, DDDNumberFormatter.PERCENT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, "damagedistribution");
+		super(KeyTooltip.SHIFT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, "damagedistribution");
 	}
 
 	/**
@@ -40,11 +40,6 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	}
 
 	@Override
-	public boolean supportsNumberFormat(DDDNumberFormatter f) {
-		return true;
-	}
-
-	@Override
 	protected boolean shouldShowDist(ItemStack stack) {
 		return YResources.getRegistryString(stack).filter(DDDConfigurations.items::configured).isPresent() || ModConfig.client.alwaysShowDamageDistTooltip;
 	}
@@ -52,24 +47,22 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	@Override
 	protected float getDamageToDistribute(ItemStack stack) {
 		double dmg;
-		switch(this.getNumberFormatter()) {
-			case PLAIN:
-				EntityPlayerSP player = Minecraft.getMinecraft().player;
-				if(player == null) {
-					dmg = 1.0;
-					break;
-				}
+		if(this.getNumberFormattingStrategy() == DamageDistributionNumberFormat.PLAIN) {
+			EntityPlayerSP player = Minecraft.getMinecraft().player;
+			if(player == null) {
+				dmg = 1.0;
+			}
+			else {
 				dmg = Minecraft.getMinecraft().player.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
 				Collection<AttributeModifier> mods = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND).get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
 				dmg += mods.stream().filter((m) -> m.getOperation() == 0).mapToDouble((m) -> m.getAmount()).sum();
 				dmg *= mods.stream().filter((m) -> m.getOperation() == 1).mapToDouble((m) -> m.getAmount()).reduce(Double::sum).orElse(1);
 				dmg *= mods.stream().filter((m) -> m.getOperation() == 2).mapToDouble((m) -> m.getAmount()).reduce((d1, d2) -> d1 * d2).orElse(1);
 				dmg += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
-				break;
-			case PERCENT:
-			default:
-				dmg = 1.0;
-				break;
+			}
+		}
+		else {
+			dmg = 1.0;
 		}
 		return (float) dmg;
 	}
@@ -77,5 +70,10 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	@Override
 	public TooltipOrder getType() {
 		return TooltipOrder.DAMAGE;
+	}
+
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return ModConfig.client.itemDamageFormat;
 	}
 }

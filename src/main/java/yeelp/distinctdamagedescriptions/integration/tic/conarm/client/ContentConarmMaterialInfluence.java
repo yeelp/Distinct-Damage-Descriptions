@@ -2,7 +2,9 @@ package yeelp.distinctdamagedescriptions.integration.tic.conarm.client;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 
 import c4.conarm.lib.ArmoryRegistry;
@@ -14,11 +16,15 @@ import slimeknights.tconstruct.library.tools.IToolPart;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.integration.tic.ContentMaterialInfluence;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumberFormat;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 
 public final class ContentConarmMaterialInfluence extends ContentMaterialInfluence {
 
@@ -53,7 +59,21 @@ public final class ContentConarmMaterialInfluence extends ContentMaterialInfluen
 	@Override
 	protected Map<DDDDamageType, Float> getWeights() {
 		IArmorDistribution dist = TiCConfigurations.armorMaterialDist.getOrFallbackToDefault(this.getMaterial().identifier);
-		return dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> dist.getWeight(DDDBuiltInDamageType.UNKNOWN), dist::getWeight));
+		return dist.getCategories().stream().filter(Predicates.and(Predicates.not(DDDDamageType::isHidden), (type) -> getPredicate().test(dist.getWeight(type)))).collect(DDDBaseMap.typesToDDDBaseMap(() -> dist.getWeight(DDDBuiltInDamageType.UNKNOWN), dist::getWeight));
+	}
+
+	@Override
+	protected ObjectFormatter<Float> getAppropriateFormatter() {
+		return ModConfig.client.armorFormat == ArmorDistributionNumberFormat.PLAIN ? ArmorDistributionNumberFormat.PERCENT : ModConfig.client.armorFormat;
+	}
+	
+	private static Predicate<Float> getPredicate() {
+		return ModConfig.client.armorFormat;
+	}
+
+	@Override
+	protected DDDTooltipColourScheme getTooltipScheme() {
+		return ModConfig.client.armorColourScheme;
 	}
 
 }

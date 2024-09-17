@@ -51,4 +51,10 @@ public final class DDDHooks {
 		MinecraftForge.EVENT_BUS.post(evt);
 		return evt;
 	}
+	
+	public static ShouldDrawIconsEvent fireShouldDrawIcons() {
+		ShouldDrawIconsEvent evt = new ShouldDrawIconsEvent();
+		MinecraftForge.EVENT_BUS.post(evt);
+		return evt;
+	}
 }

@@ -26,4 +26,9 @@ public class ShieldDistributionIconAggregator extends DistributionIconAggregator
 	public static ShieldDistributionIconAggregator getInstance() {
 		return instance == null ? instance = new ShieldDistributionIconAggregator() : instance;
 	}
+	
+	@Override
+	protected boolean shouldKeepUnknown() {
+		return false;
+	}
 }

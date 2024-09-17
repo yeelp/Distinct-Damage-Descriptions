@@ -63,6 +63,7 @@ dependencies {
     implementation fg.deobf("curse.maven:tetra-289712:2815271")
     implementation fg.deobf("curse.maven:conarm-287683:3174535")
     implementation fg.deobf("curse.maven:spartanweaponry-278141:3634012")
+    implementation fg.deobf("curse.maven:first-aid-276837:4414252")
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.3'
@@ -82,16 +83,15 @@ mixin {
     add sourceSets.main, "mixins.${mod_id}.refmap.json"
 }
 
+import org.apache.tools.ant.filters.ReplaceTokens
+
 processResources {
-    filesMatching("ModConsts.java") {
-        expand "version" : project.version
-    }
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", minecraft_version
     
     filesMatching('mcmod.info') {
-        expand 'mod_id': mod_id, 'mod_name': mod_name, 'version': project.version,
+        expand 'mod_id': mod_id, 'mod_name': mod_name, 'mod_version': project.version,
                 'mcversion': minecraft_version, 'mod_description': mod_description,
                 'mod_author': mod_author
     }
@@ -101,9 +101,20 @@ processResources {
     }
 }
 
-//java {
-//    withSourcesJar()
-//}
+task processSources(type: Sync) {
+	from sourceSets.main.java
+	inputs.property 'version', project.version
+	filter(ReplaceTokens, tokens:[version: version.toString()])
+	into 'build/src'
+}
+
+compileJava {
+	source = processSources.outputs
+}
+
+java {
+    withSourcesJar()
+}
 
 shadowJar {
     configurations = [project.configurations.shadow]

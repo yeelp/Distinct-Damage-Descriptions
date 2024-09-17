@@ -1,6 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
@@ -39,12 +38,12 @@ public enum TooltipDistributor {
 
 		@Override
 		public List<String> getTooltip(ItemStack stack) {
-			return this.getApplicableFormatters(stack).map((f) -> f.format(stack)).reduce(this.listReduction()).orElse(Collections.emptyList());
+			return this.getApplicableFormatters(stack).map((f) -> f.format(stack)).reduce(Lists.newArrayList(), this.listReduction());
 		}
 
 		@Override
 		public List<Icon> getIcons(ItemStack stack, int x, int y, List<String> lines) {
-			return this.getApplicableFormatters(stack).map((f) -> f.getIconAggregator().getIconsToDraw(stack, x, y, lines)).reduce(this.listReduction()).orElse(Collections.emptyList());
+			return this.getApplicableFormatters(stack).map((f) -> f.getIconAggregator().getIconsToDraw(stack, x, y, lines)).reduce(Lists.newArrayList(), this.listReduction());
 		}
 
 		@Override

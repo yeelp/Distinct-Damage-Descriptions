@@ -6,7 +6,6 @@ import java.util.function.Function;
 import net.minecraft.entity.EntityLivingBase;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 
 /**
@@ -20,8 +19,8 @@ public abstract class HwylaTooltipFormatter<C> extends AbstractCapabilityTooltip
 
 	private final KeyTooltip key;
 
-	protected HwylaTooltipFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<EntityLivingBase, Optional<C>> capExtractor, String typeTextKey) {
-		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
+	protected HwylaTooltipFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter, Function<EntityLivingBase, Optional<C>> capExtractor, String typeTextKey) {
+		super(keyTooltip, damageFormatter, capExtractor, typeTextKey);
 		this.key = keyTooltip;
 	}
 

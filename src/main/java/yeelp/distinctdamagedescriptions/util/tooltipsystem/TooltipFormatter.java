@@ -15,29 +15,12 @@ import javax.annotation.Nullable;
 public interface TooltipFormatter<T> {
 
 	/**
-	 * Does this TooltipFormatter support this DDDNumberFormatter?
-	 * 
-	 * @param f formatter to check
-	 * @return true is supported, false if not.
-	 */
-	boolean supportsNumberFormat(DDDNumberFormatter f);
-
-	/**
 	 * Does this TooltipFormatter support this DDDDamageFormatter
 	 * 
 	 * @param f formatter to check
 	 * @return true if supported, false if not.
 	 */
 	boolean supportsDamageFormat(DDDDamageFormatter f);
-
-	/**
-	 * Set this TooltipFormatter's DDDNumberFormatter
-	 * 
-	 * @param f formatter to set
-	 * @throws IllegalArgumentException if this formatter doesn't support this
-	 *                                  DDDNumberFormatter
-	 */
-	void setNumberFormatter(DDDNumberFormatter f);
 
 	/**
 	 * Set this TooltipFormatter's DDDDamageFormatter
@@ -47,6 +30,20 @@ public interface TooltipFormatter<T> {
 	 *                                  DDDDamageFormatter
 	 */
 	void setDamageFormatter(DDDDamageFormatter f);
+	
+	/**
+	 * Get the way this TooltipFormatter is handling formatting numbers.
+	 * @return The ObjectFormatter that formats numbers.
+	 */
+	ObjectFormatter<Float> getNumberFormattingStrategy();
+	
+	/**
+	 * Get the colour scheme DDD uses for tooltip text.
+	 * @return The colour scheme.
+	 */
+	default DDDTooltipColourScheme getColourScheme() {
+		return DDDTooltipColourScheme.WHITE;
+	}
 
 	/**
 	 * Format information for an ItemStack

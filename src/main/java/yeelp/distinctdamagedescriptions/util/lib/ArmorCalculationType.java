@@ -10,7 +10,13 @@ public enum ArmorCalculationType {
 	ADD {
 		@Override
 		public ArmorValues mergeAfterFilter(Stream<ArmorValues> aVals) {
-			return aVals.reduce(new ArmorValues(), (av1, av2) -> av1.setValues(av1.getArmor() + av2.getArmor(), av1.getToughness() + av2.getToughness()));
+			DoubleStream.Builder armors = DoubleStream.builder();
+			DoubleStream.Builder toughness = DoubleStream.builder();
+			aVals.forEach((av) -> {
+				armors.add(av.getArmor());
+				toughness.add(av.getToughness());
+			});
+			return new ArmorValues((float) armors.build().sum(), (float) toughness.build().sum());
 		}
 	},
 	MAX {

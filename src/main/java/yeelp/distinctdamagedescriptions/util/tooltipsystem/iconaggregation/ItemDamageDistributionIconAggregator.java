@@ -27,4 +27,9 @@ public class ItemDamageDistributionIconAggregator extends DistributionIconAggreg
 	public static ItemDamageDistributionIconAggregator getInstance() {
 		return instance == null ? instance = new ItemDamageDistributionIconAggregator() : instance;
 	}
+	
+	@Override
+	protected boolean shouldKeepUnknown() {
+		return true;
+	}
 }

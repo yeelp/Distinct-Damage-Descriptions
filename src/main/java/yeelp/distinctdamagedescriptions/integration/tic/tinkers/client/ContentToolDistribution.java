@@ -22,6 +22,8 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 @SideOnly(Side.CLIENT)
@@ -44,7 +46,9 @@ public class ContentToolDistribution extends ContentTool {
 		this.dist = DDDConfigurations.items.getOrFallbackToDefault(key).copy();
 		this.variability = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(key);
 		this.text = generateTextData(tool);
-		this.properties = this.dist.getCategories().stream().sorted().map((t) -> TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.entry", (int) (this.dist.getWeight(t) * 100), TiCUtil.getDDDDamageTypeNameColoured(t)).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);
+		DamageMap map = this.dist.distributeDamage(1.0f);
+		DDDMaps.adjustHiddenWeightsToUnknown(map);
+		this.properties = map.keySet().stream().sorted().map((t) -> TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.entry", (int) (map.get(t) * 100), TiCUtil.getDDDDamageTypeNameColoured(t)).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);
 		super.load();
 	}
 

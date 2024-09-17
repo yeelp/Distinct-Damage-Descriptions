@@ -10,6 +10,7 @@ import java.util.function.Function;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 /**
@@ -20,8 +21,8 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
  */
 public abstract class AbstractDamageDistributionFormatter extends AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> {
 
-	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDNumberFormatter numberFormatter, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
-		super(keyTooltip, numberFormatter, damageFormatter, capExtractor, typeTextKey);
+	protected AbstractDamageDistributionFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
+		super(keyTooltip, damageFormatter, capExtractor, typeTextKey);
 	}
 
 	@Override
@@ -35,6 +36,7 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 			return Optional.empty();
 		}
 		final DamageMap vals = this.getVals(stack, cap);
+		DDDMaps.adjustHiddenWeightsToUnknown(vals);
 		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.DEFAULT_DAMAGE.format(d.getKey(), vals.get(d.getKey()), this)), LinkedList<String>::addAll);
 		return Optional.of(lst);
 	}
