@@ -18,7 +18,7 @@ import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 
 	public DDDExplosionDist() {
-		super("sxplosion", Source.BUILTIN);
+		super("explosion", Source.BUILTIN);
 	}
 
 	private static final class ConfigReader extends DDDSingleStringConfigReader {

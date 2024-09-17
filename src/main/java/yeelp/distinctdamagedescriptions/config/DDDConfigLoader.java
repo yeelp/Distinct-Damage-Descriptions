@@ -24,6 +24,10 @@ public final class DDDConfigLoader {
 			this.readers.add(reader);
 		}
 	}
+	
+	public void enqueueAll(Iterable<DDDConfigReader> readers) {
+		readers.forEach(this.readers::add);
+	}
 
 	public static DDDConfigLoader getInstance() {
 		return instance == null ? instance = new DDDConfigLoader() : instance;

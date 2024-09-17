@@ -16,6 +16,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 final class DamageClassifier implements IClassifier<DamageMap> {
@@ -37,6 +38,7 @@ final class DamageClassifier implements IClassifier<DamageMap> {
 			}
 			return getDistForLivingEntity(entityAttacker);
 		}).map((dist) -> {
+			DebugLib.doDebug(() -> DebugLib.outputFormattedDebug("Classified Damage Distribution: %s", dist.toString()));
 			DamageMap map = dist.distributeDamage(context.getAmount());
 			DDDHooks.fireDetermineDamage(source, trueSource, context.getDefender(), context.getSource(), map);
 			if(map.containsValue(0.0f)) {

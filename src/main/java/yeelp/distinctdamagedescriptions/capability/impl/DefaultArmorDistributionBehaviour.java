@@ -28,7 +28,7 @@ public enum DefaultArmorDistributionBehaviour implements IDefaultDistribution, I
 			return DDDMaps.newArmorMap();
 		}
 	},
-	ALL_EFFECTIVENSSS(() -> 1.0f) {
+	ALL_EFFECTIVENESS(() -> 1.0f) {
 		private Set<DDDDamageType> types;
 		@Override
 		public Set<DDDDamageType> getCategories() {

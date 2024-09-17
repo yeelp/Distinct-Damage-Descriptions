@@ -1,15 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.dists;
 
-import static yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType.COLD;
-import static yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType.FIRE;
-import static yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType.FORCE;
-import static yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType.NECROTIC;
-import static yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType.PSYCHIC;
-import static yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType.RADIANT;
-
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import com.lycanitesmobs.ObjectManager;
@@ -18,76 +8,68 @@ import com.lycanitesmobs.core.block.BlockFireBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesConsts;
+import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
-public final class LycanitesFireDistribution extends DDDAbstractPredefinedDistribution {
-	public static final LycanitesFireDistribution SCORCHFIRE = new LycanitesFireDistribution("scorchfire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableScorchFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.5f), new Tuple<DDDDamageType, Float>(FORCE, 0.5f));
-	public static final LycanitesFireDistribution DOOMFIRE = new LycanitesFireDistribution("doomfire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableDoomFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.5f), new Tuple<DDDDamageType, Float>(NECROTIC, 0.5f));
-	public static final LycanitesFireDistribution HELLFIRE = new LycanitesFireDistribution("hellfire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableHellFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.3f), new Tuple<DDDDamageType, Float>(NECROTIC, 0.7f));
-	public static final LycanitesFireDistribution FROSTFIRE = new LycanitesFireDistribution("frostfire", DamageSource.MAGIC, () -> ModConfig.compat.lycanites.enableFrostFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.3f), new Tuple<DDDDamageType, Float>(COLD, 0.7f));
-	public static final LycanitesFireDistribution ICEFIRE = new LycanitesFireDistribution("icefire", DamageSource.MAGIC, () -> ModConfig.compat.lycanites.enableIceFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.5f), new Tuple<DDDDamageType, Float>(COLD, 0.5f));
-	public static final LycanitesFireDistribution SHADOWFIRE = new LycanitesFireDistribution("shadowfire", DamageSource.WITHER, () -> ModConfig.compat.lycanites.enableShadowFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.2f), new Tuple<DDDDamageType, Float>(PSYCHIC, 0.4f), new Tuple<DDDDamageType, Float>(NECROTIC, 0.4f));
-	public static final LycanitesFireDistribution SMITEFIRE = new LycanitesFireDistribution("smitefire", DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableSmiteFireDistribution, new Tuple<DDDDamageType, Float>(FIRE, 0.3f), new Tuple<DDDDamageType, Float>(RADIANT, 0.7f));
-	public static final LycanitesFireDistribution PRIMEFIRE = new LycanitesFireDistribution("primefire", DamageSource.IN_FIRE, () -> ModConfig.dmg.extraDamage.enableFireDamage, new Tuple<DDDDamageType, Float>(FIRE, 1.0f));
+public class LycanitesFireDistribution extends LycanitesPredefinedDistribution {
 
-	private final BlockFireBase fire;
-	private final Supplier<Boolean> config;
-	private final IDamageDistribution dist;
-	private final DamageSource src;
+	public static final LycanitesFireDistribution SCORCHFIRE = new LycanitesFireDistribution(LycanitesConsts.SCORCHFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableScorchFireDistribution, () -> ModConfig.compat.lycanites.scorchFireDistribution, () -> DefaultValues.SCORCHFIRE_DIST);
+	public static final LycanitesFireDistribution DOOMFIRE = new LycanitesFireDistribution(LycanitesConsts.DOOMFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableDoomFireDistribution, () -> ModConfig.compat.lycanites.doomFireDistribution, () -> DefaultValues.DOOMFIRE_DIST);
+	public static final LycanitesFireDistribution HELLFIRE = new LycanitesFireDistribution(LycanitesConsts.HELLFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableHellFireDistribution, () -> ModConfig.compat.lycanites.hellFireDistribution, () -> DefaultValues.HELLFIRE_DIST);
+	public static final LycanitesFireDistribution FROSTFIRE = new LycanitesColdFireDistribution(LycanitesConsts.FROSTFIRE, () -> ModConfig.compat.lycanites.enableFrostFireDistribution, () -> ModConfig.compat.lycanites.frostFireDistribution, () -> DefaultValues.FROSTFIRE_DIST);
+	public static final LycanitesFireDistribution ICEFIRE = new LycanitesColdFireDistribution(LycanitesConsts.ICEFIRE, () -> ModConfig.compat.lycanites.enableIceFireDistribution, () -> ModConfig.compat.lycanites.iceFireDistribution, () -> DefaultValues.ICEFIRE_DIST);
+	public static final LycanitesFireDistribution SHADOWFIRE = new LycanitesFireDistribution(LycanitesConsts.SHADOWFIRE, DamageSource.WITHER, () -> ModConfig.compat.lycanites.enableShadowFireDistribution, () -> ModConfig.compat.lycanites.shadowFireDistribution, () -> DefaultValues.SHADOWFIRE_DIST);
+	public static final LycanitesFireDistribution SMITEFIRE = new LycanitesFireDistribution(LycanitesConsts.SMITEFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableSmiteFireDistribution, () -> ModConfig.compat.lycanites.smiteFireDistribution, () -> DefaultValues.SMITEFIRE_DIST);
+	public static final LycanitesFireDistribution PRIMEFIRE = new LycanitesFireDistribution(LycanitesConsts.PRIMEFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enablePrimeFireDistribution, () -> ModConfig.compat.lycanites.primeFireDistribution, () -> DefaultValues.PRIMEFIRE_DIST);
 
-	@SafeVarargs
-	private LycanitesFireDistribution(String key, DamageSource src, Supplier<Boolean> config, Tuple<DDDDamageType, Float>... weights) {
-		super(key, Source.BUILTIN);
-		this.config = config;
+	private static final class LycanitesColdFireDistribution extends LycanitesFireDistribution {
+		LycanitesColdFireDistribution(String key, Supplier<Boolean> config, Supplier<String> configEntry, Supplier<String> fallback) {
+			super(key, config, configEntry, fallback);
+		}
+
+		@Override
+		protected boolean doesDamageSourceMatch(DamageSource src) {
+			// Cold fire damage source isn't registered in ObjectManager, so we compare
+			// directly in case an old version of lycanites is being used where the damage
+			// source doesn't exist (where the DamageSource field would not exist)
+			return src.damageType.equals(LycanitesConsts.COLD_FIRE) || src == DamageSource.MAGIC;
+		}
+	}
+
+	private BlockFireBase fire;
+
+	protected LycanitesFireDistribution(String key, Supplier<Boolean> config, Supplier<String> configEntry, Supplier<String> fallback) {
+		super(key, config, configEntry, fallback);
+	}
+
+	private LycanitesFireDistribution(String key, DamageSource src, Supplier<Boolean> config, Supplier<String> configEntry, Supplier<String> fallback) {
+		this(key, config, configEntry, fallback);
 		this.src = src;
-		this.dist = new DamageDistribution(weights);
-		Block block = ObjectManager.getBlock(key);
-		if(block instanceof BlockFireBase) {
-			this.fire = (BlockFireBase) block;
-		}
-		else {
-			this.fire = null;
-		}
 	}
 
 	@Override
-	public boolean enabled() {
-		return this.config.get() && this.fire != null;
+	public final boolean enabled() {
+		return super.enabled() && this.fire != null;
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
-		return this.isApplicable(src, target) ? this.getTypes() : Collections.emptySet();
-	}
-
-	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return this.isApplicable(src, target) ? Optional.of(this.getDamageDistribution()) : Optional.empty();
-	}
-
-	@Override
-	public int priority() {
+	public final int priority() {
 		return 2;
 	}
 
-	private Set<DDDDamageType> getTypes() {
-		return this.getDamageDistribution().getCategories();
+	@Override
+	protected boolean isApplicable(DamageSource src, EntityLivingBase target) {
+		return this.enabled() && this.doesDamageSourceMatch(src) && this.isInsideFire(target);
 	}
 
-	private IDamageDistribution getDamageDistribution() {
-		return this.dist;
-	}
-
-	private boolean isApplicable(DamageSource src, EntityLivingBase target) {
-		return this.enabled() && src == this.src && this.isInsideFire(target);
+	protected boolean doesDamageSourceMatch(DamageSource src) {
+		return this.src == src;
 	}
 
 	private boolean isInsideFire(EntityLivingBase target) {
@@ -116,6 +98,23 @@ public final class LycanitesFireDistribution extends DDDAbstractPredefinedDistri
 			pos.release();
 		}
 		return false;
+	}
+
+	@Override
+	public void loadModSpecificData() {
+		Block block = ObjectManager.getBlock(this.getName());
+		if(block instanceof BlockFireBase) {
+			this.fire = (BlockFireBase) block;
+		}
+		else {
+			if(this == SMITEFIRE || this == PRIMEFIRE) {
+				DistinctDamageDescriptions.warn(String.format("Could not find BlockFireBase for %s. However, if this version of Lycanite's Mobs doesn't have %s, this can be ignored.", this.getName(), YLib.capitalize(this.getName())));
+			}
+			else {
+				DistinctDamageDescriptions.err(String.format("Could not find BlockFireBase for %s! DDD doesn't expect this fire block to not exist!"));
+			}
+			this.fire = null;
+		}
 	}
 
 }

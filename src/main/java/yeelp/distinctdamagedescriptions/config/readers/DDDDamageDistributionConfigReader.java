@@ -10,6 +10,7 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidE
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException.LogLevel;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public final class DDDDamageDistributionConfigReader extends DDDBasicConfigReader<IDamageDistribution> {
 
@@ -24,6 +25,7 @@ public final class DDDDamageDistributionConfigReader extends DDDBasicConfigReade
 			if(Math.abs(distMap.values().stream().mapToDouble(Double::valueOf).filter((d) -> d > 0).sum() - 1) <= 0.01) {
 				return this.constructInstance(distMap);
 			}
+			throw new ConfigInvalidException(new InvariantViolationException(String.format("The weights for %s: %s do not add up to 1!", entry, distMap.toString())));
 		}
 		throw new ConfigInvalidException(entry, LogLevel.ERROR);
 	}

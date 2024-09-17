@@ -527,7 +527,7 @@ public interface DefaultValues {
 	 ***********************/
 
 	/**
-	 * 
+	 * {@link ModConfig.CompatCategory.TinkersCategory#matBias}
 	 */
 	final String[] MATERIAL_BIAS = {
 			"wood;[(b, 1)];0.6",
@@ -585,7 +585,7 @@ public interface DefaultValues {
 			"shuriken;0"};
 
 	/**
-	 * 
+	 * {@link ModConfig.CompatCategory.ConarmCategory#armorMatDist}
 	 */
 	final String[] ARMOR_MATERIAL_DISTRIBUTION = {
 			"wood;[(s, 0.5), (p, 0.3), (b, 1)]",
@@ -669,6 +669,26 @@ public interface DefaultValues {
 			"waterjet;ioray",
 			"whirlwind;djinn",
 			"acidglob;grell"};
+	
+	final String SCORCHFIRE_DIST = "[(ddd_fire, 0.5), (ddd_force, 0.5)]";
+	
+	final String DOOMFIRE_DIST = "[(ddd_fire, 0.5), (ddd_necrotic, 0.5)]";
+	
+	final String HELLFIRE_DIST = "[(ddd_fire, 0.3), (ddd_necrotic, 0.7)]";
+	
+	final String ICEFIRE_DIST = "[(ddd_fire, 0.5), (ddd_cold, 0.5)]";
+	
+	final String FROSTFIRE_DIST = "[(ddd_fire, 0.3), (ddd_cold, 0.7)]";
+	
+	final String SHADOWFIRE_DIST = "[(ddd_fire, 0.2), (ddd_psychic, 0.4), (ddd_necrotic, 0.4)]";
+	
+	final String SMITEFIRE_DIST = "[(ddd_fire, 0.3), (ddd_radiant, 0.7)]";
+	
+	final String PRIMEFIRE_DIST = "[(ddd_fire, 1)]";
+	
+	final String ACID_DIST = "[(ddd_acid, 1)]";
+	
+	final String OOZE_DIST = "[(ddd_cold, 1)]";
 
 	/*********
 	 * TETRA *

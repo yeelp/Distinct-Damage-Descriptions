@@ -59,7 +59,7 @@ dependencies {
     implementation fg.deobf("slimeknights:TConstruct:1.12.2-2.13.0.183")
     //deobfProvided "mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2:api"
     implementation fg.deobf("curse.maven:hwyla-253449:2568751")
-    implementation fg.deobf("curse.maven:lycanitesmobs-224770:3649418")
+    implementation fg.deobf("curse.maven:lycanitesmobs-224770:4486512")
     implementation fg.deobf("curse.maven:tetra-289712:2815271")
     implementation fg.deobf("curse.maven:conarm-287683:3174535")
     implementation fg.deobf("curse.maven:spartanweaponry-278141:3634012")

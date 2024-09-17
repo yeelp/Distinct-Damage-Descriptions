@@ -14,5 +14,9 @@ public final class ConfigInvalidException extends DDDConfigReaderException {
 	public ConfigInvalidException(String entry, LogLevel level) {
 		super(String.format("%s isn't a valid entry! Ignoring...", entry), level);
 	}
+	
+	public ConfigInvalidException(Exception cause) {
+		super(cause, LogLevel.FATAL);
+	}
 
 }

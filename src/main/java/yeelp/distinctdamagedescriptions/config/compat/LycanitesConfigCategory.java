@@ -11,33 +11,37 @@ public class LycanitesConfigCategory {
 	public boolean enableSmitedDist = true;
 
 	@Name("Enable Scorchfire Distribution")
-	@Comment("Enable/disable the Scorchfire Distribution. Burning in Scorchfire will inflict 50% fire and 50% force damage. Otherwise, will deal fire damage if the fire distribution is enabled.")
+	@Comment("Enable/disable the Scorchfire Distribution. Burning in Scorchfire will use the Scorchfire distribution. Otherwise, will deal fire damage if the fire distribution is enabled.")
 	public boolean enableScorchFireDistribution = true;
 
 	@Name("Enable Doomfire Distribution")
-	@Comment("Enable/disable the Doomfire Distribution. Burning in Doomfire will inflict 50% fire and 50% necrotic damage. Otherwise, will deal fire damage if the fire distribution is enabled.")
+	@Comment("Enable/disable the Doomfire Distribution. Burning in Doomfire will use the Doomfire distribution. Otherwise, will deal fire damage if the fire distribution is enabled.")
 	public boolean enableDoomFireDistribution = true;
 
 	@Name("Enable Hellfire Distribution")
-	@Comment("Enable/disable the Hellfire Distribution. Burning in Hellfire will inflict 30% fire and 70% necrotic damage. Otherwise, will deal fire damage if the fire distribution is enabled.")
+	@Comment("Enable/disable the Hellfire Distribution. Burning in Hellfire will use the Hellfire distribution. Otherwise, will deal fire damage if the fire distribution is enabled.")
 	public boolean enableHellFireDistribution = true;
 
 	@Name("Enable Icefire Distribution")
-	@Comment("Enable/disable the Icefire Distribution. Burning in Icefire will inflict 50% fire and 50% cold damage.")
+	@Comment("Enable/disable the Icefire Distribution. Burning in Icefire will use the Icefire distribution.")
 	public boolean enableIceFireDistribution = true;
 
 	@Name("Enable Shadowfire Distribution")
-	@Comment("Enable/disable the Shadowfire Distribution. Burning in Shadowfire will inflict 20% fire, 40% psychic damage and 40% necrotic damage. Otherwise, will inflict necrotic damage if the wither distribution is enabled.")
+	@Comment("Enable/disable the Shadowfire Distribution. Burning in Shadowfire will use the Shadowfire distribution. Otherwise, will inflict necrotic damage if the wither distribution is enabled.")
 	public boolean enableShadowFireDistribution = true;
 
 	@Name("Enable Frostfire Distribution")
-	@Comment("Enable/disable the Frostfire Distribution. Burning in Frostfire will inflict 30% fire and 70% cold damage.")
+	@Comment("Enable/disable the Frostfire Distribution. Burning in Frostfire will use the Frostfire distribution.")
 	public boolean enableFrostFireDistribution = true;
 
 	@Name("Enable Smitefire Distribution")
-	@Comment("Enable/disable the Smitefire Distribution. Burning in Smitefire will inflict 30% fire and 70% radiant damage. Otherwise, will inflict fire damage if the fire distribution is enabled.")
+	@Comment("Enable/disable the Smitefire Distribution. Burning in Smitefire will use the Smitefire distribution. Otherwise, will inflict fire damage if the fire distribution is enabled.")
 	public boolean enableSmiteFireDistribution = true;
-
+	
+	@Name("Enable Primefire Distribution")
+	@Comment("Enable/disable the Primefire Distribution. Burning in Primefire will use the Primefire distribution. Otherwise, will inflict fire damage if the fire distribution is enabled.")
+	public boolean enablePrimeFireDistribution = true;
+	
 	@Name("Enable Ooze Distribution")
 	@Comment("Enable/disable the Ooze Distribution. Ooze and Rabbitooze will inflict cold damage.")
 	public boolean enableOozeDistribution = true;
@@ -57,4 +61,44 @@ public class LycanitesConfigCategory {
 			"    mobs is a comma separated list of mob ids (without their modid) that shoot that projectile."})
 	@RequiresMcRestart
 	public String[] creatureProjectiles = DefaultValues.ENEMY_PROJECTILE_MAP;
+	
+	@Name("Scorchfire Distribution")
+	@Comment("The distribution that Scorchfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String scorchFireDistribution = DefaultValues.SCORCHFIRE_DIST;
+	
+	@Name("Doomfire Distribution")
+	@Comment("The distribution that Doomfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String doomFireDistribution = DefaultValues.DOOMFIRE_DIST;
+	
+	@Name("Hellfire Distribution")
+	@Comment("The distirbution that Hellfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String hellFireDistribution = DefaultValues.HELLFIRE_DIST;
+	
+	@Name("Shadowfire Distribution")
+	@Comment("The distribution that Shadowfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String shadowFireDistribution = DefaultValues.SHADOWFIRE_DIST;
+	
+	@Name("Icefire Distribution")
+	@Comment("The distribution that Icefire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String iceFireDistribution = DefaultValues.ICEFIRE_DIST;
+	
+	@Name("Frostfire Distribution")
+	@Comment("The distribution that Frostfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String frostFireDistribution = DefaultValues.FROSTFIRE_DIST;
+	
+	@Name("Smitefire Distribution")
+	@Comment("The distribution that Smitefire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String smiteFireDistribution = DefaultValues.SMITEFIRE_DIST;
+	
+	@Name("Primefire Distribution")
+	@Comment("The distribution that Primefire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String primeFireDistribution = DefaultValues.PRIMEFIRE_DIST;
+	
+	@Name("Ooze Distribution")
+	@Comment("The distribution that Ooze and Rabbitooze use if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String oozeDistirbution = DefaultValues.OOZE_DIST;
+	
+	@Name("Acid Distribution")
+	@Comment("The distribution that Acid and Sharacid use if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String acidDistribution = DefaultValues.ACID_DIST;
 }

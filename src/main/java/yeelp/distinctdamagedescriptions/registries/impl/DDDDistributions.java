@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInFire;
@@ -22,7 +23,9 @@ import yeelp.distinctdamagedescriptions.api.impl.dists.DDDInstantEffectsDist;
 import yeelp.distinctdamagedescriptions.api.impl.dists.ParrotPoisonDist;
 import yeelp.distinctdamagedescriptions.api.impl.dists.SimpleBuiltInDist;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.IDDDDistributionRegistry;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDistribution> implements IDDDDistributionRegistry {
 	public DDDDistributions() {
@@ -47,8 +50,17 @@ public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDist
 
 	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
 		T result;
+		DDDPredefinedDistribution dist = null;
 		Iterator<DDDPredefinedDistribution> it = this.map.values().stream().sorted(Comparator.reverseOrder()).iterator();
-		for(result = start; p.test(result) && it.hasNext(); result = next.apply(it.next()));
+		for(result = start; p.test(result) && it.hasNext(); result = next.apply(dist = it.next()));
+		if(ModConfig.showDotsOn) {
+			if(dist != null) {
+				DebugLib.outputFormattedDebug("Selected Predefined Distribution is: %s", dist.getName());				
+			}
+			else {
+				DistinctDamageDescriptions.debug("No Predefined Distribution Applicable for this context.");
+			}
+		}
 		return result;
 	}
 }

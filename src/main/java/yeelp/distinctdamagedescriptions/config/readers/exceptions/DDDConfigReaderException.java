@@ -33,6 +33,11 @@ public abstract class DDDConfigReaderException extends Exception {
 		super(msg);
 		this.level = level;
 	}
+	
+	protected DDDConfigReaderException(Exception cause, LogLevel level) {
+		super(cause.getLocalizedMessage(), cause);
+		this.level = level;
+	}
 
 	public void log() {
 		this.level.logError(this.getLocalizedMessage());
