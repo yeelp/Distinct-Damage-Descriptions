@@ -3,7 +3,6 @@ package yeelp.distinctdamagedescriptions.capability;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
@@ -47,6 +46,6 @@ public interface IDamageDistribution extends IDistribution {
 	IDamageDistribution update(IProjectile owner);
 
 	static void register() {
-		DDDCapabilityBase.register(IDamageDistribution.class, NBTTagList.class, DamageDistribution::new);
+		DDDUpdatableCapabilityBase.register(IDamageDistribution.class, DamageDistribution::new);
 	}
 }

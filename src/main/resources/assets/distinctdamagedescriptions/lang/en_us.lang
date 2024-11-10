@@ -1,5 +1,19 @@
 item.distinctdamagedescriptions.recorddistinction.name=Distinct Disc
 
+fingerprint.distinctdamagedescriptions.ignore=Ignore this, I know what I'm doing!
+fingerprint.distinctdamagedescriptions.curseforge=Open mod page on CurseForge
+fingerprint.distinctdamagedescriptions.modrinth=Open mod page on Modrinth
+fingerprint.distinctdamagedescriptions.close=Close game
+fingerprint.distinctdamagedescriptions.info0=Distinct Damage Descriptions had a fingerprint mismatch!
+fingerprint.distinctdamagedescriptions.info1=This likely means that this mod's code has been altered in a way the original author,
+fingerprint.distinctdamagedescriptions.info2=, is not aware of.
+fingerprint.distinctdamagedescriptions.info3=This could mean the mod has been hastily tampered with by a third party.
+fingerprint.distinctdamagedescriptions.info4=If you have altered Distinct Damage Descriptions' code, then you should be expecting this message.
+fingerprint.distinctdamagedescriptions.info5=In which case, you can ignore this message.
+fingerprint.distinctdamagedescriptions.info6=If you opt to ignore this message, it will not be shown again for this version.
+fingerprint.distinctdamagedescriptions.info7=You can go to the official mod pages for this mod to download it if you got it from somewhere else.
+fingerprint.distinctdamagedescriptions.info8=The official sites this mod is hosted on are CurseForge, Modrinth, and the mod's own GitHub repository.
+
 damagetypes.distinctdamagedescriptions.slashing=Slashing
 damagetypes.distinctdamagedescriptions.piercing=Piercing
 damagetypes.distinctdamagedescriptions.bludgeoning=Bludgeoning
@@ -20,7 +34,8 @@ keys.distinctdamagedescriptions.ctrl=<CTRL>
 commands.distinctdamagedescriptions.notargets=%s found nothing...
 commands.distinctdamagedescriptions.invalidtype=%s is not a registered DDD type!
 commands.distinctdamagedescriptions.numerr=Could not parse numerical argument: %s
-commands.distinctdamagedescriptions.stat.usage=/ddd <resistance|immunity> ...
+commands.distinctdamagedescriptions.success=Success!
+commands.distinctdamagedescriptions.usage=/ddd <resistance|immunity|adaptability> ...
 commands.distinctdamagedescriptions.resistance.usage=/ddd resistance <set|add> <target> <dddtype> <amount>
 commands.distinctdamagedescriptions.resistance.set.usage=/ddd resistance set <target> <dddtype> <amount>
 commands.distinctdamagedescriptions.resistance.add.usage=/ddd resistance add <target> <dddtype> <amount>
@@ -28,6 +43,14 @@ commands.distinctdamagedescriptions.immunity.usage=/ddd immunity <give|take|togg
 commands.distinctdamagedescriptions.immunity.give.usage=/ddd immunity give <target> <dddtype>
 commands.distinctdamagedescriptions.immunity.take.usage=/ddd immunity take <target> <dddtype>
 commands.distinctdamagedescriptions.immunity.toggle.usage=/ddd immunity toggle <target> <dddtype>
+commands.distinctdamagedescriptions.adaptability.usage=/ddd adaptability <status|amount> ...
+commands.distinctdamagedescriptions.adaptability.status.usage=/ddd adaptability status <give|take|toggle> <target>
+commands.distinctdamagedescriptions.adaptability.status.give.usage=/ddd adaptability status give <target>
+commands.distinctdamagedescriptions.adaptability.status.take.usage=/ddd adaptability status take <target>
+commands.distinctdamagedescriptions.adaptability.status.toggle.usage=/ddd adaptability status toggle <target>
+commands.distinctdamagedescriptions.adaptability.amount.usage=/ddd adaptability amount <set|add> <target> <amount>
+commands.distinctdamagedescriptions.adaptability.amount.set.usage=/ddd adaptability amount set <target> <amount>
+commands.distinctdamagedescriptions.adaptability.amount.add.usage=/ddd adaptability amount add <target> <amount>
 
 tooltips.distinctdamagedescriptions.damage=Damage
 tooltips.distinctdamagedescriptions.resistance=Resistance
@@ -51,6 +74,11 @@ tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:
 tooltips.distinctdamagedescriptions.hwyla.witharmor=Max: %s with armor
 tooltips.distinctdamagedescriptions.tic.distributionbias=Distribution Bias:
 tooltips.distinctdamagedescriptions.tic.influence=Influence:
+tooltips.distinctdamagedescriptions.baubles.modifiers=While Equipped:
+tooltips.distinctdamagedescriptions.baubles.bruteforce=Bypass up to
+tooltips.distinctdamagedescriptions.baubles.immunitychance=(%s chance)
+tooltips.distinctdamagedescriptions.baubles.immunity=Immunity
+tooltips.distinctdamagedescriptions.baubles.slystrike=Bypass immunity to
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force

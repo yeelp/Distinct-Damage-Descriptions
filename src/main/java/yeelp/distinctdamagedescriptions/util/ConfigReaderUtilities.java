@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.IDDDRegistry;
@@ -25,7 +26,8 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 public final class ConfigReaderUtilities {
 
 	private static final String LIST_SPLIT_REGEX = "\\),(?:\\s?)\\(";
-	public static final String DAMAGE_TYPE_SUBREGEX = "([spb]|(ddd_[a-zA-Z]+))";
+	public static final String DDD_TYPE_REGEX = "ddd_[a-zA-Z]+";
+	public static final String DAMAGE_TYPE_SUBREGEX = "([spb]|(" + DDD_TYPE_REGEX + "))";
 	public static final String DECIMAL_REGEX = "\\d+(\\.\\d+)?";
 	public static final String POTENTIALLY_NEGATIVE_DECIMAL_REGEX = "-?\\d+(\\.\\d+)?";
 	public static final String ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + DECIMAL_REGEX + "\\)";
@@ -70,9 +72,10 @@ public final class ConfigReaderUtilities {
 
 	/**
 	 * Parse a string as a map
-	 * 
+	 *
 	 * @param <K>          The keys of the map
-	 * @param <V>          The values of the map/
+	 * @param <V>          The values of the map
+	 * @param reader       The reader this config entry came from
 	 * @param s            The map to parse, which should match a regex returned by
 	 *                     {@link #buildListRegex(String)}.
 	 * @param kParser      The function that parses keys of the map. Should always
@@ -84,8 +87,8 @@ public final class ConfigReaderUtilities {
 	 *                                {@code kParser} returns {@code null} for any
 	 *                                parsed key
 	 */
-	public static <K, V> NonNullMap<K, V> parseMap(String s, Function<String, K> kParser, Function<String, V> vParser, Supplier<V> defaultValue) throws ConfigParsingException {
-		return buildMap(defaultValue, parseStringAsListOfEntries(s, kParser, vParser));
+	public static <K, V> NonNullMap<K, V> parseMap(DDDConfigReader reader, String s, Function<String, K> kParser, Function<String, V> vParser, Supplier<V> defaultValue) throws ConfigParsingException {
+		return buildMap(defaultValue, parseStringAsListOfEntries(reader, s, kParser, vParser));
 	}
 
 	/**
@@ -150,7 +153,7 @@ public final class ConfigReaderUtilities {
 		return map;
 	}
 
-	private static <K, V> Iterable<Entry<K, V>> parseStringAsListOfEntries(String s, Function<String, K> kParser, Function<String, V> vParser) throws ConfigParsingException {
+	private static <K, V> Iterable<Entry<K, V>> parseStringAsListOfEntries(DDDConfigReader reader, String s, Function<String, K> kParser, Function<String, V> vParser) throws ConfigParsingException {
 		// s is of the form [(t, a), (t, a), ... , (t, a)]
 		if(s.equals("[]")) {
 			return Collections.emptyList();
@@ -160,7 +163,7 @@ public final class ConfigReaderUtilities {
 		Set<Entry<K, V>> result = new HashSet<Entry<K, V>>();
 		for(String str : s.substring(2, s.length() - 2).split(LIST_SPLIT_REGEX)) {
 			String[] arr = str.split(",");
-			result.add(new SimpleEntry<K, V>(validateNonNull(kParser.apply(arr[0].trim()), () -> new ConfigParsingException(s)), vParser.apply(arr[1].trim())));
+			result.add(new SimpleEntry<K, V>(validateNonNull(kParser.apply(arr[0].trim()), () -> new ConfigParsingException(reader.getName(), s)), vParser.apply(arr[1].trim())));
 		}
 		return result;
 	}

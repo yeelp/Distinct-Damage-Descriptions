@@ -28,13 +28,13 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerDamageDistribution;
+import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkersLinkedProjectileDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.distributors.TinkerProjectileCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.distributors.TinkerToolCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.client.DDDTinkersBookTransformer;
@@ -118,7 +118,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 			for(Item i : ImmutableList.of(TinkerRangedWeapons.arrow, TinkerRangedWeapons.bolt, TinkerRangedWeapons.shuriken)) {
 				String s = ForgeRegistries.ITEMS.getKey(i).toString();
 				DDDConfigurations.projectiles.registerItemProjectilePair(s, s);
-				DDDConfigurations.projectiles.put(s, new DamageDistribution());
+				DDDConfigurations.projectiles.put(s, new TinkersLinkedProjectileDistribution());
 			}
 		}
 

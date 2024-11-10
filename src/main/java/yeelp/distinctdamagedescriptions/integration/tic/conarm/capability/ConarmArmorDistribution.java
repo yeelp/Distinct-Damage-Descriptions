@@ -5,13 +5,12 @@ import java.util.Map;
 
 import c4.conarm.lib.materials.ArmorMaterialType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
@@ -46,13 +45,14 @@ public class ConarmArmorDistribution extends ArmorDistribution {
 			});
 			TiCUtil.getBaseDist(owner).forEach((t, f) -> map.merge(t, f, Float::sum));
 			this.setNewWeights(map);
+			this.updateOriginalWeightsToCurrentWeights();
 			this.cachedMats = mats;
 		}
 		return super.update(owner);
 	}
 
 	public static void register() {
-		DDDCapabilityBase.register(ConarmArmorDistribution.class, NBTTagList.class, ConarmArmorDistribution::new);
+		DDDUpdatableCapabilityBase.register(ConarmArmorDistribution.class, ConarmArmorDistribution::new);
 	}
 
 	@CapabilityInject(ConarmArmorDistribution.class)

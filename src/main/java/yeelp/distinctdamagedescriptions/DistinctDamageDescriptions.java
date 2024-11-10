@@ -2,12 +2,15 @@ package yeelp.distinctdamagedescriptions;
 
 import java.io.File;
 import java.util.function.Consumer;
+
 import org.apache.logging.log4j.Logger;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -18,7 +21,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
-import yeelp.distinctdamagedescriptions.command.DDDStatCommand;
+import yeelp.distinctdamagedescriptions.command.DDDCommand;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
@@ -34,7 +37,7 @@ import yeelp.distinctdamagedescriptions.proxy.Proxy;
 import yeelp.distinctdamagedescriptions.util.json.DDDJsonIO;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
-@Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION)
+@Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION, certificateFingerprint = "176200587b5c58adc4f846bdcc0065ae8f1a3835")
 public class DistinctDamageDescriptions {
 	public static Logger logger;
 	private static File configDirectory;
@@ -49,6 +52,8 @@ public class DistinctDamageDescriptions {
 	
 	private static final String LOGGER_REGULAR_PREFIX = String.format("[%s]", ModConsts.NAME.toUpperCase());
 	private static final String LOGGER_DEBUG_PREFIX = String.format("[%s (DEBUG)]", ModConsts.NAME.toUpperCase());
+	
+	private static boolean fingerprintViolation = false;
 
 	@SuppressWarnings("static-method")
 	@EventHandler
@@ -59,6 +64,9 @@ public class DistinctDamageDescriptions {
 		configDirectory = event.getModConfigurationDirectory();
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		srcFile = event.getSourceFile();
+		if(fingerprintViolation) {
+			proxy.handleFingerprintViolation();
+		}
 		DDDJsonIO.init();
 		DDDInitialization.runLoaders(event);
 		DebugLib.updateStatus();
@@ -96,7 +104,18 @@ public class DistinctDamageDescriptions {
 	@SuppressWarnings("static-method")
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
-		event.registerServerCommand(new DDDStatCommand());
+		event.registerServerCommand(new DDDCommand());
+	}
+	
+	@SuppressWarnings("static-method")
+	@EventHandler
+	public void fingerprintViolation(FMLFingerprintViolationEvent event) {
+		if(event.isDirectory()) {
+			debug("Fingerprint doesn't matter in dev environment.");
+		}
+		else {
+			fingerprintViolation = true;
+		}
 	}
 
 	public static void info(String msg) {

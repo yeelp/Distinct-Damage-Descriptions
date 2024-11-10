@@ -4,8 +4,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.DDDMultiEntryConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
 public final class DDDConfigLoader {
 	private final Queue<DDDConfigReader> readers;
@@ -44,6 +45,16 @@ public final class DDDConfigLoader {
 				e.printStackTrace();
 			}
 		}
-		DDDMultiEntryConfigReader.displayErrors();
+		getInstance().readers.stream().filter(DDDConfigReader::doesSelfReportErrors).map(DDDConfigReader::getSelfReportedErrors).reduce((c1, c2) -> {
+			c1.addAll(c2);
+			return c1;
+		}).filter((c) -> !c.isEmpty()).ifPresent((errors) -> {
+			DistinctDamageDescriptions.fatal("There were some problems reading from the config! Check the following:");
+			errors.forEach(DDDConfigReaderException::log);
+		});
+	}
+	
+	public static Iterable<String> getErrorMessages() {
+		return getInstance().readers.stream().filter(DDDConfigReader::doesSelfReportErrors).flatMap((r) -> r.getSelfReportedErrors().stream().map(DDDConfigReaderException::getLocalizedMessage)).collect(Collectors.toList());
 	}
 }

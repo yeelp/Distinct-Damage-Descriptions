@@ -24,7 +24,7 @@ public final class DDDProjectileConfigReader extends DDDBasicConfigReader<IDamag
 			projectiles = Arrays.stream(additionalInfo[0].split(",")).map(String::trim);
 		}
 		else if(additionalInfo.length > 1) {
-			throw new ConfigInvalidException(entry);
+			throw new ConfigInvalidException(this.getName(), entry);
 		}
 		IDamageDistribution dist = super.parseMapping(entry, key, map, additionalInfo);
 		projectiles.forEach((s) -> DDDConfigurations.projectiles.registerItemProjectilePair(s, key));

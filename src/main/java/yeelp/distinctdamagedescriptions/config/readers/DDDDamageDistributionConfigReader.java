@@ -21,12 +21,12 @@ public final class DDDDamageDistributionConfigReader extends DDDBasicConfigReade
 	@Override
 	protected IDamageDistribution parseMapping(String entry, String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
 		if(map.matches(ConfigReaderUtilities.DIST_REGEX)) {
-			Map<DDDDamageType, Float> distMap = ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> this.defaultVal);
+			Map<DDDDamageType, Float> distMap = ConfigReaderUtilities.parseMap(this, map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> this.defaultVal);
 			if(Math.abs(distMap.values().stream().mapToDouble(Double::valueOf).filter((d) -> d > 0).sum() - 1) <= 0.01) {
 				return this.constructInstance(distMap);
 			}
-			throw new ConfigInvalidException(new InvariantViolationException(String.format("The weights for %s: %s do not add up to 1!", entry, distMap.toString())));
+			throw new ConfigInvalidException(new InvariantViolationException(String.format("%s: The weights for %s: %s do not add up to 1!", this.getName(), entry, distMap.toString())));
 		}
-		throw new ConfigInvalidException(entry, LogLevel.ERROR);
+		throw new ConfigInvalidException(this.getName(), entry, LogLevel.ERROR);
 	}
 }

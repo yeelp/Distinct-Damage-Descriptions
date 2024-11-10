@@ -228,6 +228,7 @@ public interface DefaultValues {
 			"lycanitesmobs:geonachspear;[(p, 1)]",
 			"lycanitesmobs:remobrawing;[(s, 0.5), (ddd_poison, 0.5)]",
 			"lycanitesmobs:zephyrblade;[(s, 0.2), (ddd_lightning, 0.8)]",
+			"lycanitesmobs:raidrablade;[(s, 0.2), (ddd_lightning, 0.8)]",
 			"lycanitesmobs:clinkscythe;[(s, 0.7), (p, 0.3)]",
 			"lycanitesmobs:geonachfist;[(b, 1)]",
 			"lycanitesmobs:cinderblade;[(ddd_fire, 1)]",
@@ -281,7 +282,12 @@ public interface DefaultValues {
 			"lycanitesmobs:devilstar;[(ddd_necrotic, 0.5), (ddd_force, 0.5)];lycanitesmobs:devilstarcharge",
 			"lycanitesmobs:acidglob;[(ddd_acid, 0.5), (b, 0.5)];lycanitesmobs:acidglobcharge",
 			"lycanitesmobs:primeember;[(ddd_fire, 1)];lycanitesmobs:primeembercharge",
-			"lycanitesmobs:smitefireball;[(ddd_radiant, 0.8), (ddd_fire, 0.2)];lycanitesmobs:smitefireballcharge"};
+			"lycanitesmobs:smitefireball;[(ddd_radiant, 0.8), (ddd_fire, 0.2)];lycanitesmobs:smitefireballcharge",
+			"spartanweaponry:arrow_wood;[(p,1)];spartanweaponry:arrow_wood,spartanweaponry:arrow_wood_tipped",
+			"spartanweaponry:arrow_iron;[(p,1)];spartanweaponry:arrow_iron,spartanweaponry:arrow_iron_tipped",
+			"spartanweaponry:arrow_diamond;[(p,1)];spartanweaponry:arrow_diamond,spartanweaponry:arrow_diamond_tipped",
+			"spartanweaponry:bolt;[(p,1)];spartanweaponry:bolt,spartanweaponry:bolt_tipped,spartanweaponry:bolt_spectral",
+			"spartanweaponry:arrow_explosive;[(b,1)];spartanweaponry:arrow_explosive"};
 
 	/***************
 	 * RESISTANCES *
@@ -495,8 +501,22 @@ public interface DefaultValues {
 	 * {@link ModConfig.ResistanceCategory#shieldResist}
 	 */
 	final String[] SHIELD_BASE_RESISTS = {
-			"minecraft:shield;[(s, 0.8), (p, 0.5), (b, 0.2)]"};
+			"minecraft:shield;[(s, 0.8), (p, 0.5), (b, 0.2)]",
+			"thebetweeenlands:weedwood_shield;[(s, 0.7), (p, 0.5), (b, 0.4)]",
+			"thebetweenlands:living_weedwood_shield;[(s, 1), (p, 1), (b, 0.4), (ddd_psychic, 0.4)]",
+			"thebetweenlands:lurker_skin_shield;[(s, 0.4), (p, 0.4), (b, 0.9), (ddd_cold, 0.3)]",
+			"thebetweenlands:dentrothyst_shield_green;[(s, 0.3), (p, 0.3), (b, 0.3), (ddd_force, 0.7), (ddd_necrotic, 0.7), (ddd_radiant, 0.7), (ddd_poison, 0.7)]",
+			"thebetweenlands:dentrothyst_shield_green_polished;[(s, 0.3), (p, 0.3), (b, 0.3), (ddd_force, 0.7), (ddd_necrotic, 0.7), (ddd_radiant, 0.7), (ddd_poison, 0.7)]",
+			"thebetweenlands:dentrothyst_shield_orange;[(s, 0.3), (p, 0.3), (b, 0.3), (ddd_force, 0.7), (ddd_necrotic, 0.7), (ddd_radiant, 0.7), (ddd_poison, 0.7)]",
+			"thebetweenlands:dentrothyst_shield_orange_polished;[(s, 0.3), (p, 0.3), (b, 0.3), (ddd_force, 0.7), (ddd_necrotic, 0.7), (ddd_radiant, 0.7), (ddd_poison, 0.7)]",
+			"thebetweenlands:bone_shield;[(s, 1), (p, 0.6), (b, 0.6)]",
+			"thebetweenlands:syrmorite_shield;[(s, 0.5), (p, 0.5), (b, 0.5)]",
+			"thebetweenlands:valonite_shield;[(s, 0.6), (p, 0.6), (b, 0.7)]",
+			"thebetweenlands:octine_shield;[(s, 0.8), (p, 0.8), (b, 0.6), (ddd_fire, 0.8)]"};
 
+	/**
+	 * {@link ModConfig.DamageCategory.ExtraDamageDistsCategory#daylightWhitelist}
+	 */
 	final String[] ENTITIES_BURN_IN_DAYLIGHT = {
 			"minecraft:zombie",
 			"minecraft:zombie_villager",
@@ -507,6 +527,13 @@ public interface DefaultValues {
 			"lycanitesmobs:ghoul",
 			"lycanitesmobs:geist",
 			"lycanitesmobs:necrovore"};
+	
+	/**
+	 * {@link Modconfig.CompatCategory#shieldClasses}
+	 */
+	final String[] SHIELD_CLASSES = {
+			"ItemShieldCore"
+	};
 
 	/******************
 	 * SINGLE STRINGS *
@@ -634,6 +661,9 @@ public interface DefaultValues {
 	 * LYCANITES *
 	 *************/
 
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#creatureProjectiles}
+	 */
 	final String[] ENEMY_PROJECTILE_MAP = {
 			"acidsplash;xaphan",
 			"aetherwave;slyph",
@@ -670,30 +700,63 @@ public interface DefaultValues {
 			"whirlwind;djinn",
 			"acidglob;grell"};
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#scorchfireDistribution}
+	 */
 	final String SCORCHFIRE_DIST = "[(ddd_fire, 0.5), (ddd_force, 0.5)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#doomfireDistribution}
+	 */
 	final String DOOMFIRE_DIST = "[(ddd_fire, 0.5), (ddd_necrotic, 0.5)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#hellfireDistribution}
+	 */
 	final String HELLFIRE_DIST = "[(ddd_fire, 0.3), (ddd_necrotic, 0.7)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#icefireDistribution}
+	 */
 	final String ICEFIRE_DIST = "[(ddd_fire, 0.5), (ddd_cold, 0.5)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#frostfireDistribution}
+	 */
 	final String FROSTFIRE_DIST = "[(ddd_fire, 0.3), (ddd_cold, 0.7)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#shadowfireDistribution}
+	 */
 	final String SHADOWFIRE_DIST = "[(ddd_fire, 0.2), (ddd_psychic, 0.4), (ddd_necrotic, 0.4)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#smitefireDistribution}
+	 */
 	final String SMITEFIRE_DIST = "[(ddd_fire, 0.3), (ddd_radiant, 0.7)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#primefireDistribution}
+	 */
 	final String PRIMEFIRE_DIST = "[(ddd_fire, 1)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#acidDistribution}
+	 */
 	final String ACID_DIST = "[(ddd_acid, 1)]";
 	
+	/**
+	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#oozeDistribution}
+	 */
 	final String OOZE_DIST = "[(ddd_cold, 1)]";
 
 	/*********
 	 * TETRA *
 	 *********/
 
+	/**
+	 * {@link ModConfig.CompatCategory.TetraConfigCategory#toolPartDists}
+	 */
 	final String[] TETRA_PART_BIAS = {
 			"sword/heavy_blade;[(s, 0.5), (b, 0.5)];0.5",
 			"sword/machete;[(s, 1)];1",
@@ -707,6 +770,9 @@ public interface DefaultValues {
 			"duplex/hoe;[(p, 1)];0.3",
 			"duplex/sickle;[(s, 1)];0.4"};
 
+	/**
+	 * {@link ModConfig.CompatCategory.TetraConfigCategory#toolMatDists}
+	 */
 	final String[] TETRA_MAT_BIAS = {
 			"log;[(b, 1)];0.5",
 			"acacia;[(b, 1)];0.5",
@@ -725,4 +791,15 @@ public interface DefaultValues {
 			"gold;[(b, 0.5), (p, 0.5)];0.4",
 			"diamond;[(s, 1)];0.5",
 			"obsidian;[(s, 0.8), (b, 0.2)];0.6"};
+	
+	/**
+	 * {@link ModConfig.CompatCategory.BaublesCategory#baubleMods}
+	 */
+	final String[] BAUBLE_MODS = {
+			"baubles:ring;0;[(p,0.2),(ddd_force,0.1)]",
+			"baubles:ring;1;[(ddd_necrotic,0.5)]",
+			"baubles:ring;2;[(b,0.5)]",
+			"baubles:ring;3;[(ddd_fire,0.5)]",
+			"baubles:ring;4;[(ddd_poison,0.8)]"
+	};
 }

@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
@@ -22,11 +21,27 @@ public interface IMobResistances extends IDamageResistances {
 	boolean hasAdaptiveResistance();
 
 	/**
+	 * Was this mob originally adaptive? Just because a mob was originally adaptive
+	 * does not mean that is is now.
+	 * 
+	 * @return true if this mob was originally adaptive, false if not.
+	 */
+	boolean isOriginallyAdaptive();
+
+	/**
 	 * Get the amount of bonus resistance applied when adaptability triggers.
 	 * 
 	 * @return the bonus resistance for adaptability.
 	 */
 	float getAdaptiveAmount();
+
+	/**
+	 * Get the amount of bonus resistance applied when adaptability triggers before
+	 * any modifiers.
+	 * 
+	 * @return the base adaptive amount
+	 */
+	float getBaseAdaptiveAmount();
 
 	/**
 	 * Get the adaptive amount when modified by adpative weakness
@@ -52,11 +67,23 @@ public interface IMobResistances extends IDamageResistances {
 	void setAdaptiveAmount(float amount);
 
 	/**
+	 * Sets the base adaptive resistance amount. The mobs resistances aren't changed
+	 * until the next call to {@link #update(EntityLivingBase)}. To update now, also
+	 * {@link #setAdaptiveAmount(float)}
+	 * 
+	 * @param amount
+	 */
+	void setBaseAdaptiveAmount(float amount);
+
+	/**
 	 * Set the adaptive resistance status.
 	 * 
-	 * @param status true if this mob should be adaptive resistant, false if not.
+	 * @param status    true if this mob should be adaptive resistant, false if not.
+	 * @param permanent true if this mob should keep this change across calls to
+	 *                  {@link #update(EntityLivingBase)}, false if it should be
+	 *                  reset.
 	 */
-	void setAdaptiveResistance(boolean status);
+	void setAdaptiveResistance(boolean status, boolean permanent);
 
 	/**
 	 * Update adaptive resistance. Doesn't check if this mob is adaptive.
@@ -73,6 +100,6 @@ public interface IMobResistances extends IDamageResistances {
 	IMobResistances update(EntityLivingBase owner);
 
 	static void register() {
-		DDDCapabilityBase.register(IMobResistances.class, NBTTagCompound.class, MobResistances::new);
+		DDDUpdatableCapabilityBase.register(IMobResistances.class, MobResistances::new);
 	}
 }

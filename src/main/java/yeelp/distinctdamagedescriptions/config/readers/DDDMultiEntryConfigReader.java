@@ -28,19 +28,21 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	private final String[] configList;
 	private final String name;
 	private final IDDDConfiguration<T> config;
-
+	private final Collection<DDDConfigReaderException> errors;
 	// We have a choice, do we want a Constructor, which will need reflection, but
 	// the actual code is being reused, or do we want to specify how to build our
 	// entry from scratch?
 	private Constructor<? extends T> constructor;
 	private Function<Object[], ? extends T> generator;
 
+	@Deprecated
 	private static final Collection<DDDConfigReaderException> ERRORS = Collections.synchronizedCollection(new LinkedList<DDDConfigReaderException>());
 
 	private DDDMultiEntryConfigReader(String name, String[] configList, IDDDConfiguration<T> config) {
 		this.configList = configList;
 		this.config = config;
 		this.name = name;
+		this.errors = Lists.newArrayList();
 	}
 
 	protected <U extends T> DDDMultiEntryConfigReader(String name, String[] configList, IDDDConfiguration<T> config, Constructor<U> constructor) {
@@ -69,7 +71,6 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 	 */
 	@Override
 	public final void read() {
-		Collection<DDDConfigReaderException> errors = Lists.newLinkedList();
 		for(String string : this.configList) {
 			if(ConfigReaderUtilities.isCommentEntry(string)) {
 				DistinctDamageDescriptions.debug("Encountered Config Comment...");
@@ -80,30 +81,41 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 				t = this.readEntry(string);
 			}
 			catch(DDDConfigReaderException e) {
-				errors.add(e);
+				this.errors.add(e);
 				continue;
 			}
 			this.config.put(t.getFirst(), t.getSecond());
 		}
-		if(errors.size() > 0) {
-			synchronized(ERRORS) {
-				errors.forEach(ERRORS::add);
-			}
-		}
+	}
+	
+	@Override
+	public boolean doesSelfReportErrors() {
+		return true;
+	}
+	
+	@Override
+	public Collection<DDDConfigReaderException> getSelfReportedErrors() {
+		return this.errors;
 	}
 
 	/**
 	 * Display all errors accumulated from all config readers thus far.
 	 */
+	@Deprecated
 	public static final void displayErrors() {
 		synchronized(ERRORS) {
-			if(ERRORS.size() > 0) {
-				DistinctDamageDescriptions.fatal("There were some problems reading from the config! Check the following:");
-				ERRORS.forEach(DDDConfigReaderException::log);
-			}			
+			ERRORS.forEach(DDDConfigReaderException::log);
+		}
+	}
+	
+	@Deprecated
+	public static boolean hasErrors() {
+		synchronized(ERRORS) {
+			return ERRORS.size() > 0;
 		}
 	}
 
+	@Deprecated
 	public static final Collection<String> getErrorMessages() {
 		synchronized(ERRORS) {
 			return ERRORS.stream().map(DDDConfigReaderException::getLocalizedMessage).collect(Collectors.toList());			

@@ -52,10 +52,13 @@ public final class DDDMaps {
 		}
 		
 		public void distributeDamageToCurrentTypes(float dmg) {
-			float total = this.values().stream().reduce(0.0f, Float::sum);
+			float total = (float) YMath.sum(this.values());
 			if(Math.abs(total - dmg) >= 0.01 && total != 0) {
 				float ratio = dmg / total;
 				this.keySet().forEach((k) -> this.computeIfPresent(k, (key, val) -> val * ratio));
+			}
+			else if(total == 0) {
+				this.keySet().forEach(this::setDefault);
 			}
 		}
 	}

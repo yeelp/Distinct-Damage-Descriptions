@@ -2,7 +2,6 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 
@@ -11,9 +10,8 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
  * 
  * @author Yeelp
  *
- * @param <NBT> NBT types this capability stores.
  */
-public interface ISyncableCapability<NBT extends NBTBase> extends DDDCapabilityBase<NBT> {
+public interface ISyncableCapability {
 
 	/**
 	 * Get the message to sync with

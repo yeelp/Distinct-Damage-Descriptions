@@ -110,7 +110,7 @@ public final class CombatContext {
 	}
 
 	private static Optional<ItemStack> getBlockingShield(EntityLivingBase defender, DamageSource src) {
-		if(defender.isActiveItemStackBlocking()) {
+		if(defender.isActiveItemStackBlocking() && !src.isUnblockable()) {
 			Vec3d srcVec = src.getDamageLocation();
 			if(srcVec != null) {
 				Vec3d look = defender.getLook(1.0f),

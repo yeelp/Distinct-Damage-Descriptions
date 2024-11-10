@@ -8,18 +8,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import yeelp.distinctdamagedescriptions.util.IPriority;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 
-public interface IDDDCalculationInjector extends Comparable<IDDDCalculationInjector> {
-	
-	default int priority() {
-		return 0;
-	}
-	
-	@Override
-	default int compareTo(IDDDCalculationInjector o) {
-		return o.priority() - this.priority();
-	}
+public interface IDDDCalculationInjector extends IPriority {
 	
 	@FunctionalInterface
 	public interface IArmorValuesInjector extends IDDDCalculationInjector, BiFunction<ItemStack, EntityEquipmentSlot, ArmorValues> {

@@ -10,16 +10,15 @@ import java.util.stream.Collectors;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import slimeknights.tconstruct.library.entity.EntityProjectileBase;
 import slimeknights.tconstruct.library.materials.MaterialTypes;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.capability.AbstractBiasedDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
@@ -51,16 +50,15 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return this.hasCapability(capability, facing) ? cap.cast(this) : null;
 	}
-
+	
 	@Override
-	public IDamageDistribution update(IProjectile owner) {
-		if(owner instanceof EntityProjectileBase) {
-			EntityProjectileBase epb = ((EntityProjectileBase) owner);
-			if(epb.tinkerProjectile != null) {
-				DDDAPI.accessor.getDamageDistribution(epb.tinkerProjectile.getItemStack()).ifPresent((dist) -> this.setNewWeights(dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, dist::getWeight))));
-			}
-		}
-		return super.update(owner);
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(IProjectile owner) {
+		return TiCUtil.getProjectileHandler(owner).flatMap((handler) -> DDDAPI.accessor.getDamageDistribution(handler.getItemStack()).map((dist) -> dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, dist::getWeight))));
+	}
+	
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(EntityLivingBase owner) {
+		return Optional.empty();
 	}
 
 	@Override
@@ -79,7 +77,7 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	}
 
 	public static void register() {
-		DDDCapabilityBase.register(TinkerDamageDistribution.class, NBTTagList.class, TinkerDamageDistribution::new);
+		DDDUpdatableCapabilityBase.register(TinkerDamageDistribution.class, TinkerDamageDistribution::new);
 	}
 
 	@CapabilityInject(TinkerDamageDistribution.class)

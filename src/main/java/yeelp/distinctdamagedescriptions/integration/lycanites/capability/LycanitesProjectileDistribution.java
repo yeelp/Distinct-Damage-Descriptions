@@ -1,20 +1,25 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.capability;
 
+import java.util.Optional;
+
 import com.lycanitesmobs.core.entity.BaseProjectileEntity;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.integration.capability.ModUpdatingDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
-public final class LycanitesProjectileDistribution extends DamageDistribution {
+public final class LycanitesProjectileDistribution extends ModUpdatingDamageDistribution {
 
 	@CapabilityInject(LycanitesProjectileDistribution.class)
 	public static Capability<LycanitesProjectileDistribution> cap;
@@ -32,17 +37,27 @@ public final class LycanitesProjectileDistribution extends DamageDistribution {
 	}
 
 	@Override
-	public IDamageDistribution update(IProjectile owner) {
+	public Optional<DDDBaseMap<Float>> getUpdatedWeights(IProjectile owner) {
 		BaseProjectileEntity projectile = (BaseProjectileEntity) owner;
 		if(projectile.entityName != null && !projectile.entityName.equals(this.proj)) {
-			this.setNewWeights(copyMap((DamageDistribution) DDDConfigurations.projectiles.getOrFallbackToDefault(ModConsts.IntegrationIds.LYCANITES_ID.concat(":").concat(projectile.entityName))));
 			this.proj = projectile.entityName;
+			return Optional.of(copyMap((DamageDistribution) DDDConfigurations.projectiles.getOrFallbackToDefault(ModConsts.IntegrationIds.LYCANITES_ID.concat(":").concat(projectile.entityName))));
 		}
-		return super.update(owner);
+		return Optional.empty();
+	}
+	
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(EntityLivingBase owner) {
+		return Optional.empty();
+	}
+	
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(ItemStack owner) {
+		return Optional.empty();
 	}
 
 	public static void register() {
-		DDDCapabilityBase.register(LycanitesProjectileDistribution.class, NBTTagList.class, LycanitesProjectileDistribution::new);
+		DDDUpdatableCapabilityBase.register(LycanitesProjectileDistribution.class, LycanitesProjectileDistribution::new);
 	}
 
 	@CapabilityInject(LycanitesProjectileDistribution.class)

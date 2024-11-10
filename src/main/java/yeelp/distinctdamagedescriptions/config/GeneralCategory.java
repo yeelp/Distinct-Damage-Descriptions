@@ -21,7 +21,7 @@ public final class GeneralCategory {
 	public boolean suppressRegistrationInfo = false;
 
 	@Name("Generate Configs")
-	@Comment("If set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles. This isn't super accurate and is rather primitive.")
+	@Comment("If set to true, and Distinct Damage Description will try to generate appropriate config values for weapons, mobs, armor and projectiles on the fly during gameplay. This isn't super accurate and is rather primitive.")
 	public boolean generateStats = false;
 
 	@Name("Generate JSON")

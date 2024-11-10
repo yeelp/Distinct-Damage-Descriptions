@@ -58,7 +58,7 @@ public final class DDDSounds {
 		RESIST_NULLIFY(HIGH_RESIST_HIT) {
 			@Override
 			protected boolean isApplicable(CombatResults results, boolean forAttacker) {
-				return (forAttacker && !results.wasImmunityTriggered() && results.wasResistanceHit() && results.getAmount().orElse(Double.NaN) == 0) || (!forAttacker && results.wasShieldEffective() && isRatioWithinBounds(0, 1, results.getShieldRatio()));
+				return (forAttacker && !results.wasImmunityTriggered() && results.wasResistanceHit() && results.getAmount().orElse(Double.NaN) == 0) || (!forAttacker && results.wasShieldEffective() && isRatioWithinBounds(0, Double.MAX_VALUE, results.getShieldRatio()));
 			}
 
 			@Override

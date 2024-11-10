@@ -1,9 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -14,13 +12,11 @@ import com.google.common.collect.MultimapBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
@@ -37,8 +33,6 @@ import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator {
 	INSTANCE;
@@ -124,34 +118,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	/***********
 	 * MUTATOR *
-	 ***********/
-	@Override
-	public void setPlayerResistances(EntityPlayer player, ResistMap newResists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount) {
-		IMobResistances mobResists = getMobResistances(player).get();
-		for(Entry<DDDDamageType, Float> entry : newResists.entrySet()) {
-			mobResists.setResistance(entry.getKey(), entry.getValue());
-		}
-		mobResists.clearImmunities();
-		for(DDDDamageType type : newImmunities) {
-			mobResists.setImmunity(type, true);
-		}
-		mobResists.setAdaptiveResistance(adaptive);
-		mobResists.setAdaptiveAmount(adaptiveAmount);
-		mobResists.sync(player);
-	}
-
-	@Override
-	public boolean updateAdaptiveResistances(EntityLivingBase entity, DamageMap dmgMap) {
-		IMobResistances resists = getMobResistances(entity).get();
-		if(resists.hasAdaptiveResistance()) {
-			boolean sync = resists.updateAdaptiveResistance(dmgMap);
-			if(entity instanceof EntityPlayer) {
-				resists.sync((EntityPlayer) entity);
-			}
-			return sync;
-		}
-		return false;
-	}
+	 ***********/	
 
 	@Override
 	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerItemCap(Class<T> clazz, Capability<? extends T> cap) {

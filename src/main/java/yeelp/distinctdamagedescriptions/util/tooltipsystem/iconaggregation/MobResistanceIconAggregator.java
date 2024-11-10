@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import com.google.common.base.Predicates;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -45,6 +47,6 @@ public class MobResistanceIconAggregator extends AbstractCapabilityIconAggregato
 
 	@Override
 	protected Stream<DDDDamageType> getOrderedTypes(ItemStack stack) {
-		return this.resourceLocationGetter.apply(stack).flatMap(TooltipFormatterUtilities::getMobResistancesIfConfigured).map((r) -> r.getResistanceMap().entrySet().stream().sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).map(Entry::getKey)).orElse(Stream.empty());
+		return this.resourceLocationGetter.apply(stack).flatMap(TooltipFormatterUtilities::getMobResistancesIfConfigured).map((r) -> r.getResistanceMap().entrySet().stream().filter(Predicates.compose(Predicates.not(DDDDamageType::isHidden), Entry::getKey)).sorted(Comparator.<Entry<DDDDamageType, Float>>comparingDouble(Entry::getValue).thenComparing(Entry::getKey)).map(Entry::getKey)).orElse(Stream.empty());
 	}
 }

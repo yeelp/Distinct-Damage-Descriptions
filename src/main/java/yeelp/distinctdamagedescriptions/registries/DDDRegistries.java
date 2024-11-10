@@ -7,6 +7,7 @@ import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributions;
+import yeelp.distinctdamagedescriptions.registries.impl.DDDModifierRegistries;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDPotionsRegistry;
 import yeelp.distinctdamagedescriptions.registries.impl.DDDTrackers;
 import yeelp.distinctdamagedescriptions.util.json.DDDJsonIO;
@@ -45,6 +46,11 @@ public abstract class DDDRegistries {
 	 * Registry for potions.
 	 */
 	public static IDDDPotionsRegistry potions;
+	
+	/**
+	 * Registries for all capability modifiers.
+	 */
+	public static IDDDModifierRegistries modifiers;
 
 	/**
 	 * Initialize the registries, update the explosion distribution, and read from
@@ -58,6 +64,7 @@ public abstract class DDDRegistries {
 		trackers = new DDDTrackers();
 		DDDExplosionDist.update();
 		potions = new DDDPotionsRegistry();
+		modifiers = DDDModifierRegistries.INSTANCE;
 		if(ModConfig.core.useCustomDamageTypesFromJSON) {
 			distributions.register(DDDJsonIO.loadDamageTypes());
 		}

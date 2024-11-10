@@ -1,19 +1,22 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public class ShieldDistribution extends Distribution implements IDistribution {
 
@@ -42,7 +45,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 
 	public static void register() {
-		DDDCapabilityBase.register(ShieldDistribution.class, NBTTagList.class, ShieldDistribution::new);
+		DDDUpdatableCapabilityBase.register(ShieldDistribution.class, ShieldDistribution::new);
 	}
 
 	@Override
@@ -62,15 +65,32 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 
 	@Override
 	public ShieldDistribution update(ItemStack owner) {
+		Set<String> mods = DDDRegistries.modifiers.getItemStackShieldDistributionRegistry().getNamesOfApplicableModifiers(owner);
+		if(!YMath.setEquals(mods, this.getModifiers())) {
+			this.distMap.clear();
+			this.distMap.putAll(this.originalMap);
+			DDDRegistries.modifiers.getItemStackShieldDistributionRegistry().applyModifiers(owner, this);
+			this.updateModifiers(mods);
+		}
 		return this;
 	}
 
-	private static float blockDamage(float damage, float weight) {
-		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
-	}
-	
 	@Override
 	protected boolean allowZeroWeightedEntries() {
 		return false;
+	}
+	
+	@Override
+	protected boolean canHaveEmptyDistribution() {
+		return true;
+	}
+	
+	@Override
+	public Class<NBTTagCompound> getSpecificNBTClass() {
+		return NBTTagCompound.class;
+	}
+	
+	private static float blockDamage(float damage, float weight) {
+		return MathHelper.clamp(damage * (1 - weight), 0, Float.MAX_VALUE);
 	}
 }

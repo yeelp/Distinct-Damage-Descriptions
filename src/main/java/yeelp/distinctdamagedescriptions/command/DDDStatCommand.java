@@ -4,23 +4,22 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.command.CommandTreeBase;
+import yeelp.distinctdamagedescriptions.ModConsts.CommandConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
 import yeelp.distinctdamagedescriptions.util.Translations;
 
-public final class DDDStatCommand extends DDDCommand {
+public abstract class DDDStatCommand extends AbstractDDDCommand {
 
-	private static final String USAGE = Translations.INSTANCE.getLayeredTranslator("commands", "stat").getKey("usage");
-	public DDDStatCommand() {
-		super(3);
+	private static final String USAGE = Translations.INSTANCE.getLayeredTranslator(CommandConsts.COMMANDS_ROOT, "stat").getKey(CommandConsts.USAGE);
+	private DDDStatCommand() {
 		this.addSubcommand(new DDDResistanceSubCommand());
 		this.addSubcommand(new DDDImmunitySubCommand());
 	}
@@ -29,70 +28,48 @@ public final class DDDStatCommand extends DDDCommand {
 	public String getUsage(ICommandSender sender) {
 		return USAGE;
 	}
-
-	public static abstract class DDDStatCommandSubTreeBase extends CommandTreeBase {
+	
+	public static abstract class DDDStatSubCommand extends DDDDamageTypeCommand {
 
 		@FunctionalInterface
 		interface CommandConstructor<T, U, V, R> {
 			R apply(T t, U u, V v);
 		}
 		
-		private final String name;
-		private final String usage;
-
-		protected DDDStatCommandSubTreeBase(String name) {
-			this.name = name;
-			this.usage = Translations.INSTANCE.getLayeredTranslator("commands", this.name).getKey("usage");
-		}
-
-		@Override
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public String getUsage(ICommandSender sender) {
-			return this.usage;
+		protected DDDStatSubCommand(String name) {
+			super(3, name);
 		}
 		
-		public <T> void addSubcommand(String name, T t, CommandConstructor<String, String, T, DDDStatCommandBase> command) {
-			super.addSubcommand(command.apply(name, this.name, t));
+		public <T> void addSubcommand(Operation name, T t, CommandConstructor<String, String, T, DDDCommandBase> command) {
+			super.addSubcommand(command.apply(name.toString(), this.getName(), t));
 		}
-
-
-
-		public static abstract class DDDStatCommandBase extends CommandBase {
-			
-			private final String name, parent, usage;
-			
-			protected DDDStatCommandBase(String name, String parent) {
-				this.name = name;
-				this.parent = parent;
-				this.usage = Translations.INSTANCE.getLayeredTranslator("commands", this.parent, this.name).getKey("usage");
-			}
-
-			@Override
-			public String getName() {
-				return this.name;
-			}
-
-			@Override
-			public String getUsage(ICommandSender sender) {
-				return this.usage;
-			}
+		
+		@Override
+		protected int getSubCommandDepth(int index) {
+			return index == this.getDamageTypeIndex() - 2 ? 0 : -1;
 		}
-
+		
+		@Override
+		protected boolean isTargetsIndex(int index) {
+			return index == this.getDamageTypeIndex() - 1;
+		}
+		
+		@Override
+		protected boolean hasCompletionsAvailable(int index) {
+			return index <= this.getDamageTypeIndex();
+		}
+		
 	}
 
-	public static final class DDDResistanceSubCommand extends DDDStatCommandSubTreeBase {
+	public static final class DDDResistanceSubCommand extends DDDStatSubCommand {
 
 		public DDDResistanceSubCommand() {
 			super("resistance");
-			this.addSubcommand("set", (f1, f2) -> f2, DDDResistanceSubSubCommand::new);
-			this.addSubcommand("add", Float::sum, DDDResistanceSubSubCommand::new);
+			this.addSubcommand(Operation.SET, (f1, f2) -> f2, DDDResistanceSubSubCommand::new);
+			this.addSubcommand(Operation.ADD, Float::sum, DDDResistanceSubSubCommand::new);
 		}
 
-		public static final class DDDResistanceSubSubCommand extends DDDStatCommandBase {
+		public static final class DDDResistanceSubSubCommand extends DDDCommandBase {
 
 			private final BinaryOperator<Float> op;
 
@@ -106,37 +83,42 @@ public final class DDDStatCommand extends DDDCommand {
 				if(args.length != 3) {
 					throw new WrongUsageException(this.getUsage(sender));
 				}
-				if(!DDDCommand.isNumerical(args[2])) {
-					DDDCommand.sendErrorMessage(sender, DDDCommand.TRANSLATOR.getKey("numerr"), args[2]);
+				if(!AbstractDDDCommand.isNumerical(args[2])) {
+					AbstractDDDCommand.sendErrorMessage(sender, AbstractDDDCommand.TRANSLATOR.getKey("numerr"), args[2]);
 					return;
 				}
 				float amount = Float.parseFloat(args[2]);
-				Optional<DDDDamageType> oType = DDDCommand.parseDamageTypeArgument(sender, args[1]);
+				Optional<DDDDamageType> oType = AbstractDDDCommand.parseDamageTypeArgument(sender, args[1]);
 				if(oType.isPresent()) {
 					DDDDamageType type = oType.get();
-					for(EntityLivingBase entity : DDDCommand.getTargetSelection(server, sender, args[0])) {
+					for(EntityLivingBase entity : AbstractDDDCommand.getTargetSelection(server, sender, args[0])) {
 						DDDAPI.accessor.getMobResistances(entity).ifPresent((resists) -> {
-							resists.setResistance(type, this.op.apply(resists.getResistance(type), amount));
+							if(resists instanceof DefaultResistances) {
+								return;
+							}
+							resists.setBaseResistance(type, this.op.apply(resists.getResistance(type), amount));
+							resists.setResistance(type, resists.getBaseResistance(type));
 							if(entity instanceof EntityPlayer) {
 								resists.sync((EntityPlayer) entity);
 							}
 						});
 					}
+					sendSuccess(sender);
 				}
 			}
 		}
 	}
 
-	public static final class DDDImmunitySubCommand extends DDDStatCommandSubTreeBase {
+	public static final class DDDImmunitySubCommand extends DDDStatSubCommand {
 
 		public DDDImmunitySubCommand() {
 			super("immunity");
-			this.addSubcommand("give", (b) -> true, DDDImmunitySubSubCommand::new);
-			this.addSubcommand("take", (b) -> false, DDDImmunitySubSubCommand::new);
-			this.addSubcommand("toggle", (b) -> !b, DDDImmunitySubSubCommand::new);
+			this.addSubcommand(Operation.GIVE, (b) -> true, DDDImmunitySubSubCommand::new);
+			this.addSubcommand(Operation.TAKE, (b) -> false, DDDImmunitySubSubCommand::new);
+			this.addSubcommand(Operation.TOGGLE, (b) -> !b, DDDImmunitySubSubCommand::new);
 		}
 
-		public static final class DDDImmunitySubSubCommand extends DDDStatCommandBase {
+		public static final class DDDImmunitySubSubCommand extends DDDCommandBase {
 
 			private final UnaryOperator<Boolean> op;
 			protected DDDImmunitySubSubCommand(String name, String parent, UnaryOperator<Boolean> op) {
@@ -150,17 +132,22 @@ public final class DDDStatCommand extends DDDCommand {
 				if(args.length != 2) {
 					throw new WrongUsageException(this.getUsage(sender));
 				}
-				Optional<DDDDamageType> oType = DDDCommand.parseDamageTypeArgument(sender, args[1]);
+				Optional<DDDDamageType> oType = AbstractDDDCommand.parseDamageTypeArgument(sender, args[1]);
 				if(oType.isPresent()) {
 					DDDDamageType type = oType.get();
-					for(EntityLivingBase entity : DDDCommand.getTargetSelection(server, sender, args[0])) {
+					for(EntityLivingBase entity : AbstractDDDCommand.getTargetSelection(server, sender, args[0])) {
 						DDDAPI.accessor.getMobResistances(entity).ifPresent((resists) -> {
-							resists.setImmunity(type, this.op.apply(resists.hasImmunity(type)));
+							if(resists instanceof DefaultResistances) {
+								return;
+							}
+							resists.setBaseImmunity(type, this.op.apply(resists.hasImmunity(type)));
+							resists.setImmunity(type, resists.hasBaseImmunity(type));
 							if(entity instanceof EntityPlayer) {
 								resists.sync((EntityPlayer) entity);
 							}
 						});
 					}
+					sendSuccess(sender);
 				}
 			}
 

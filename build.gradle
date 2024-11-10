@@ -64,6 +64,7 @@ dependencies {
     implementation fg.deobf("curse.maven:conarm-287683:3174535")
     implementation fg.deobf("curse.maven:spartanweaponry-278141:3634012")
     implementation fg.deobf("curse.maven:first-aid-276837:4414252")
+    implementation fg.deobf("curse.maven:baubles-227083:2518667")
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.3'
@@ -132,7 +133,23 @@ shadowJar {
 reobf {
     shadowJar {}
 }
-  
+
+task signJars(dependsOn: reobfShadowJar) {
+	doLast {
+    	signJar(jar.archivePath)
+    	signJar(shadowJar.archivePath)
+    }
+}
+
+def signJar(path) {
+	def alias = project.property("$alias")
+	def keyStore = project.property("$keyStore")
+	def storePass = project.property("$storePass")
+	def exec_line = "jarsigner -keystore " + "$keyStore" + " -storepass " + "$storePass" + " " + path + " " + "$alias"
+    //print exec_line
+    exec_line.execute()
+}
+
 jar {
     manifest.attributes(
         "Specification-Title"     : mod_name,
@@ -151,3 +168,6 @@ jar {
 }
 build.dependsOn(shadowJar)
 jar.finalizedBy('reobfJar')
+reobfShadowJar.doLast {
+	signJar(shadowJar.archivePath)
+}

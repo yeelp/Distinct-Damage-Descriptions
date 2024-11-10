@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,6 +34,8 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
@@ -54,7 +57,7 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 
 	private static final class ImmunityTraitRecord {
 		private final String mat, types;
-		
+
 		ImmunityTraitRecord(String mat, String types) {
 			this.mat = mat;
 			this.types = types;
@@ -74,15 +77,22 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 			return this.types;
 		}
 	}
-	
+
 	public static final class ConfigReader implements DDDConfigReader {
+
+		private static final String REGEX = "\\w+;" + ConfigReaderUtilities.DDD_TYPE_REGEX + "(,(\\s)?" + ConfigReaderUtilities.DDD_TYPE_REGEX + ")*";
+		private static Collection<DDDConfigReaderException> errors = Lists.newArrayList();
 
 		@Override
 		public void read() {
 			immunities = Arrays.stream(ModConfig.compat.conarm.armorImmunities).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).map((s) -> {
-				String[] arr = s.split(";");
-				return new ImmunityTraitRecord(arr[0], arr[1]);
-			}).collect(Collectors.toList());
+				if(s.matches(REGEX)) {
+					String[] arr = s.split(";");
+					return new ImmunityTraitRecord(arr[0], arr[1]);
+				}
+				errors.add(new ConfigInvalidException(this.getName(), s));
+				return null;
+			}).filter(Predicates.notNull()).collect(Collectors.toList());
 		}
 
 		@Override
@@ -94,12 +104,21 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 		public boolean shouldTime() {
 			return false;
 		}
-		
+
+		@Override
+		public boolean doesSelfReportErrors() {
+			return true;
+		}
+
+		@Override
+		public Collection<DDDConfigReaderException> getSelfReportedErrors() {
+			return errors;
+		}
 	}
-	
+
 	public static final ConfigReader READER = new ConfigReader();
 	static Iterable<ImmunityTraitRecord> immunities = Lists.newArrayList();
-	
+
 	@Override
 	protected boolean doSpecificPreInit(FMLPreInitializationEvent evt) {
 		DDDConfigLoader.getInstance().enqueue(READER);
@@ -122,15 +141,23 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 		Map<String, DDDImmunityTrait> traits = builder.build().map(DDDImmunityTrait::new).collect(Collectors.toMap(Functions.compose(DDDDamageType::getTypeName, DDDImmunityTrait::getType), Function.identity()));
 		immunities.forEach((record) -> {
 			Material mat = TinkerRegistry.getMaterial(record.getMat());
-			Arrays.stream(record.getTypes().split(",")).map(Functions.compose(traits::get, String::trim)).forEach((t) -> ArmorMaterials.addArmorTrait(mat, t, location));
+			Arrays.stream(record.getTypes().split(",")).map(Functions.compose(traits::get, String::trim)).forEach((t) -> {
+				if(t != null) {
+					ArmorMaterials.addArmorTrait(mat, t, location);
+				}
+				else {
+					throw new RuntimeException("One of the Conarm immunity trait config entries refers to a damage type that doesn't exist!");
+				}
+			});
 		});
-		//Must register an armor values injector to correct the way conarm deals with armor properties.
-		DDDCombatCalculations.registerArmorValuesInjector(new IArmorValuesInjector() {	
+		// Must register an armor values injector to correct the way conarm deals with
+		// armor properties.
+		DDDCombatCalculations.registerArmorValuesInjector(new IArmorValuesInjector() {
 			@Override
 			public ArmorValues apply(ItemStack t, EntityEquipmentSlot u) {
 				if(t.getItem() instanceof TinkersArmor) {
 					return new ArmorValues(ArmorHelper.getArmor(t, u.getIndex()), ArmorHelper.getToughness(t));
-				}	
+				}
 				return new ArmorValues();
 			}
 		});

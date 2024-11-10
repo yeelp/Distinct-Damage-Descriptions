@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -19,7 +20,7 @@ import se.mickelus.tetra.items.duplex_tool.ItemDuplexToolModular;
 import se.mickelus.tetra.items.sword.ItemSwordModular;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.capability.AbstractBiasedDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraConfigurations;
@@ -62,7 +63,7 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 			return ImmutableSet.of("left", "right").stream().map((s) -> {
 				String suffix = "_".concat(s);
 				String type = tag.getString(TetraNBT.DUPLEX_ROOT + suffix);
-				if(type.equals("duplex/butt" + suffix)) {
+				if(type.equals(TetraNBT.DUPLEX_BUTT_ROOT + suffix)) {
 					return null;
 				}
 				DistributionBias base = TetraConfigurations.toolBiasResistance.getOrFallbackToDefault(type.replace(suffix, "").trim());
@@ -78,11 +79,21 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 	}
 
 	public static void register() {
-		DDDCapabilityBase.register(TetraToolDistribution.class, NBTTagList.class, TetraToolDistribution::new);
+		DDDUpdatableCapabilityBase.register(TetraToolDistribution.class, TetraToolDistribution::new);
 	}
 
 	@CapabilityInject(TetraToolDistribution.class)
 	public static void onRegister(Capability<TetraToolDistribution> cap) {
 		DDDAPI.mutator.registerItemCap(IDamageDistribution.class, cap);
+	}
+
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(IProjectile owner) {
+		return Optional.empty();
+	}
+
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(EntityLivingBase owner) {
+		return Optional.empty();
 	}
 }

@@ -25,13 +25,13 @@ import yeelp.distinctdamagedescriptions.util.lib.YLib;
  */
 public abstract class TooltipTypeFormatter {
 
-	private static final String DAMAGE = "damage";
-	private static final String RESISTANCE = "resistance";
-	private static final String WEAKNESS = "weakness";
-	private static final String EFFECTIVENESS = "effectiveness";
-	private static final String ADAPTABILITY_CHANCE = "adaptivechance";
-	private static final String ADAPTABILITY_AMOUNT = "adaptiveamount";
-	private static final String IMMUNITIES = "immunities";
+	public static final String DAMAGE = "damage";
+	public static final String RESISTANCE = "resistance";
+	public static final String WEAKNESS = "weakness";
+	public static final String EFFECTIVENESS = "effectiveness";
+	public static final String ADAPTABILITY_CHANCE = "adaptivechance";
+	public static final String ADAPTABILITY_AMOUNT = "adaptiveamount";
+	public static final String IMMUNITIES = "immunities";
 
 	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 	protected static final Style GRAY = new Style().setColor(TextFormatting.GRAY);

@@ -71,5 +71,13 @@ public final class ClientCategory {
 	})
 	public DDDTooltipColourScheme mobResistColourScheme = DDDTooltipColourScheme.RED_GREEN;
 	
+	@Name("Enable Particles")
+	@Comment("Enable/disable resistance/weakness/immunity particles.")
+	public boolean enableParticles = true;
+	
+	@Name("Enable SFX")
+	@Comment("Enable/disable DDD's sound effects for resistance/weakness/immunity.")
+	public boolean enableSfx = true;
+	
 	
 }

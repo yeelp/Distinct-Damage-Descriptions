@@ -30,7 +30,7 @@ public interface IDDDConfiguration<T> {
 	T getDefaultValue();
 
 	/**
-	 * Get a configuration entry
+	 * Add a configuration entry
 	 * 
 	 * @param key
 	 * @param val

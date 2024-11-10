@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
+import yeelp.distinctdamagedescriptions.integration.baubles.BaublesIntegration;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.DDDCoTIntegration;
 import yeelp.distinctdamagedescriptions.integration.firstaid.FirstAidIntegration;
@@ -62,6 +63,7 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.IntegrationIds.BETWEENLANDS_ID, () -> new TheBetweenlandsCompat());
 		integratableMods.put(ModConsts.IntegrationIds.QUALITY_TOOLS_ID, () -> new QualityToolsIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.FIRST_AID_ID, () -> new FirstAidIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.BAUBLES_ID, () -> new BaublesIntegration());
 		
 		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));

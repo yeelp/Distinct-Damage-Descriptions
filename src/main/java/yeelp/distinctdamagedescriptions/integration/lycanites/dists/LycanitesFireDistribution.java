@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.dists;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.lycanitesmobs.ObjectManager;
@@ -29,16 +30,36 @@ public class LycanitesFireDistribution extends LycanitesPredefinedDistribution {
 	public static final LycanitesFireDistribution PRIMEFIRE = new LycanitesFireDistribution(LycanitesConsts.PRIMEFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enablePrimeFireDistribution, () -> ModConfig.compat.lycanites.primeFireDistribution, () -> DefaultValues.PRIMEFIRE_DIST);
 
 	private static final class LycanitesColdFireDistribution extends LycanitesFireDistribution {
+		private static final boolean FOUND_COLD_FIRE;
+		private static final Predicate<DamageSource> IS_COLD_FIRE = (src) -> src.damageType.equals(LycanitesConsts.COLD_FIRE);
+		private static final Predicate<DamageSource> IS_MAGIC = (src) -> src == DamageSource.MAGIC;
+		private final Predicate<DamageSource> dmgSourceMatchPredicate;
+		static {
+			boolean b;
+			try {
+				BlockFireBase.class.getDeclaredField(LycanitesConsts.COLD_FIRE.toUpperCase());
+				b = true;
+			}
+			catch (NoSuchFieldException | SecurityException e) {
+				DistinctDamageDescriptions.warn("Could not find cold_fire DamageSource! Using magic for DamageSource for Icefire and Frostfire distributions!");
+				b = false;
+			}
+			FOUND_COLD_FIRE = b;
+		}
+		
 		LycanitesColdFireDistribution(String key, Supplier<Boolean> config, Supplier<String> configEntry, Supplier<String> fallback) {
 			super(key, config, configEntry, fallback);
+			if(FOUND_COLD_FIRE) {
+				this.dmgSourceMatchPredicate = IS_COLD_FIRE;
+			}
+			else {
+				this.dmgSourceMatchPredicate = IS_MAGIC;
+			}
 		}
 
 		@Override
 		protected boolean doesDamageSourceMatch(DamageSource src) {
-			// Cold fire damage source isn't registered in ObjectManager, so we compare
-			// directly in case an old version of lycanites is being used where the damage
-			// source doesn't exist (where the DamageSource field would not exist)
-			return src.damageType.equals(LycanitesConsts.COLD_FIRE) || src == DamageSource.MAGIC;
+			return this.dmgSourceMatchPredicate.test(src);
 		}
 	}
 

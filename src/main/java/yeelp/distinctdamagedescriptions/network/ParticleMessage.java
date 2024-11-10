@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DDDEffects.ParticleInfo;
 
 public final class ParticleMessage implements IMessage {
@@ -59,6 +60,9 @@ public final class ParticleMessage implements IMessage {
 
 		@SideOnly(Side.CLIENT)
 		public static void handle(ParticleMessage msg, MessageContext ctx) {
+			if(!ModConfig.client.enableParticles) {
+				return;
+			}
 			EntityPlayer receivingPlayer = NetworkHelper.getSidedPlayer(ctx);
 			if(receivingPlayer.world.isRemote) {
 				for(ParticleInfo info : msg.getInfos()) {

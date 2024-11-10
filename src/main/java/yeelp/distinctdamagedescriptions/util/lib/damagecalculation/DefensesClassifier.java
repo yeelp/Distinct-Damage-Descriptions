@@ -16,7 +16,7 @@ final class DefensesClassifier implements IClassifier<MobDefenses> {
 	public Optional<MobDefenses> classify(CombatContext context) {
 		return DDDAPI.accessor.getMobResistances(context.getDefender()).map((resists) -> {
 			Set<DDDDamageType> immunities = DDDRegistries.damageTypes.getAll().stream().filter(resists::hasImmunity).collect(Collectors.toSet());
-			ResistMap map = resists.getAllResistances();
+			ResistMap map = resists.getAllResistancesCopy();
 			DDDHooks.fireGatherDefenses(context.getImmediateAttacker(), context.getTrueAttacker(), context.getDefender(), context.getSource(), map, immunities);
 			return new MobDefenses(map, immunities);
 		});

@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +12,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.GenericConfigReaderException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
@@ -19,11 +22,11 @@ public final class DaylightTracker extends AbstractTracker {
 	protected static final Set<ResourceLocation> WHITELIST = new HashSet<ResourceLocation>();
 
 	private static final class ConfigReader implements DDDConfigReader {
-		private static final Set<String> ERRORS = new HashSet<String>();
+		private static final Set<DDDConfigReaderException> ERRORS = new HashSet<DDDConfigReaderException>();
 
 		@Override
 		public void read() {
-			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).forEach((c) -> ConfigReader.parse(c).ifPresent(WHITELIST::add));
+			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).forEach((c) -> this.parse(c).ifPresent(WHITELIST::add));
 		}
 
 		@Override
@@ -36,14 +39,24 @@ public final class DaylightTracker extends AbstractTracker {
 			return false;
 		}
 
-		private static final Optional<ResourceLocation> parse(String s) {
+		private final Optional<ResourceLocation> parse(String s) {
 			return Optional.ofNullable(s).filter((str) -> {
 				if(str.contains(":")) {
 					return true;
 				}
-				ERRORS.add(str + "isn't a valid entity ID!");
+				ERRORS.add(new GenericConfigReaderException(this.getName(), str + " isn't a valid entity ID!"));
 				return false;
 			}).map(ResourceLocation::new);
+		}
+		
+		@Override
+		public boolean doesSelfReportErrors() {
+			return true;
+		}
+		
+		@Override
+		public Collection<DDDConfigReaderException> getSelfReportedErrors() {
+			return ERRORS;
 		}
 
 	}

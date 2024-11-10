@@ -28,9 +28,9 @@ import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
@@ -498,7 +498,7 @@ public final class ConfigGenerator {
 	 * @param stack
 	 * @return A ShieldDistribution
 	 */
-	public static final ShieldDistribution getOrGenerateShieldDistribution(ItemShield shield, ItemStack stack) {
+	public static final ShieldDistribution getOrGenerateShieldDistribution(Item shield, ItemStack stack) {
 		if(SHIELD_CACHE.containsKey(shield.getRegistryName())) {
 			return SHIELD_CACHE.get(shield.getRegistryName());
 		}

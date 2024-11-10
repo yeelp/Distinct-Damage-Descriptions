@@ -14,6 +14,7 @@ import yeelp.distinctdamagedescriptions.config.readers.DDDBasicConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDamageDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDMobResistancesConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDProjectileConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.DDDShieldClassesConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
@@ -78,7 +79,8 @@ public abstract class DDDConfigurations {
 					new DDDBasicConfigReader<ShieldDistribution>("Shield Distributions", ModConfig.resist.shieldResist, shields, ShieldDistribution.class.getConstructor(Map.class), 0.0f),
 					new DDDDamageDistributionConfigReader("Mob Damage Distribtuions", ModConfig.dmg.mobBaseDmg, mobDamage),
 					new DDDMobResistancesConfigReader(resistsConfig),
-					new DDDProjectileConfigReader());
+					new DDDProjectileConfigReader(),
+					new DDDShieldClassesConfigReader());
 		}
 		catch(NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();

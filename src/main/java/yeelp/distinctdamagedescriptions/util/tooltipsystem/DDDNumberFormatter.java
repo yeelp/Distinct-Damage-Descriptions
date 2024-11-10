@@ -37,6 +37,13 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 		public String format(Float t) {
 			return new StringBuilder(t < 1 ? "-" : "+").append(this.formatSignless(t - 1.0f)).toString();
 		}
+	},
+	
+	RELATIVE_TO_ZERO(new DecimalFormat("##.##%")) {
+		@Override
+		public String format(Float t) {
+			return new StringBuilder(t < 0 ? "-" : "+").append(this.formatSignless(t)).toString();
+		}
 	};
 
 	private final DecimalFormat formatter;

@@ -20,7 +20,6 @@ public class LycanitesMinionDistribution extends DDDAbstractPredefinedDistributi
 
 	public LycanitesMinionDistribution() {
 		super("minionProjectile", Source.BUILTIN);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

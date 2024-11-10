@@ -32,23 +32,23 @@ public final class DDDMobResistancesConfigReader extends DDDBasicConfigReader<Mo
 		}
 		if(map.matches(RESIST_REGEX) && additionalInfo.length == 3) {
 			if(!additionalInfo[0].matches(IMMUNITY_REGEX)) {
-				throw new ConfigParsingException(entry);
+				throw new ConfigParsingException(this.getName(), entry);
 			}
 			if(!additionalInfo[1].matches(ConfigReaderUtilities.DECIMAL_REGEX) || !additionalInfo[2].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {
-				throw new ConfigInvalidException(entry);
+				throw new ConfigInvalidException(this.getName(), entry);
 			}
-			return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f), parseImmunities(entry, additionalInfo[0]), Float.parseFloat(additionalInfo[1]), Float.parseFloat(additionalInfo[2]));
+			return this.constructInstance(ConfigReaderUtilities.parseMap(this, map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f), this.parseImmunities(entry, additionalInfo[0]), Float.parseFloat(additionalInfo[1]), Float.parseFloat(additionalInfo[2]));
 		}
-		throw new ConfigInvalidException(entry);
+		throw new ConfigInvalidException(this.getName(), entry);
 	}
 
-	private static Collection<DDDDamageType> parseImmunities(final String entry, String immunities) throws ConfigParsingException {
+	private Collection<DDDDamageType> parseImmunities(final String entry, String immunities) throws ConfigParsingException {
 		Set<DDDDamageType> result = new HashSet<DDDDamageType>();
 		if(immunities.equals("[]")) {
 			return result;
 		}
 		for(String s : immunities.substring(1, immunities.length() - 1).split(",")) {
-			result.add(ConfigReaderUtilities.validateNonNull(ConfigReaderUtilities.parseDamageType(s.trim()), () -> new ConfigParsingException(entry)));
+			result.add(ConfigReaderUtilities.validateNonNull(ConfigReaderUtilities.parseDamageType(s.trim()), () -> new ConfigParsingException(this.getName(), entry)));
 		}
 		return result;
 	}

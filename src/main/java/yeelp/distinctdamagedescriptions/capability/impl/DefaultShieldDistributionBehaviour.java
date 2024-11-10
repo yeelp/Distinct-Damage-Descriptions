@@ -7,7 +7,7 @@ import java.util.stream.Collector;
 import com.google.common.base.Predicates;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -84,12 +84,12 @@ public enum DefaultShieldDistributionBehaviour {
 		}
 
 		@Override
-		public NBTTagList serializeNBT() {
+		public NBTTagCompound serializeSpecificNBT() {
 			throw new UnsupportedOperationException("Default Shield distributions have no NBT!");
 		}
 
 		@Override
-		public void deserializeNBT(NBTTagList lst) {
+		public void deserializeSpecificNBT(NBTTagCompound lst) {
 			throw new UnsupportedOperationException("Default Shield distributions have no NBT!");
 		}
 

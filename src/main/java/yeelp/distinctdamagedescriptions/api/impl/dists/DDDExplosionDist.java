@@ -36,7 +36,7 @@ public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 		@Override
 		protected void parseEntry(String entry) {
 			try {
-				dist = new DamageDistribution(ConfigReaderUtilities.parseMap(entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
+				dist = new DamageDistribution(ConfigReaderUtilities.parseMap(this, entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
 			}
 			catch(ConfigParsingException e) {
 				// If we get here, something went really badly. The default fallback should

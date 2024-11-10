@@ -212,9 +212,10 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
 		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
 			this.getCurrentlyUsedShieldDistribution().ifPresent((shield) -> {
+				double startingDamage = YMath.sum(m.values());
 				shield.block(m);
 				this.results.hasEffectiveShield(m);
-				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(evt.getAmount() * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
+				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
 			if(!m.isEmpty()) {
 				this.type = DDDCombatCalculations.getWeightedRandomRepresentativeType(m);

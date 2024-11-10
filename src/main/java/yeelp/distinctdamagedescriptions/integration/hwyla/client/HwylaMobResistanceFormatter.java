@@ -74,7 +74,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 				});
 			}
 		});
-		ResistMap rMap = cap.getAllResistances();
+		ResistMap rMap = cap.getAllResistancesCopy();
 		for(Iterator<DDDDamageType> it = DDDRegistries.damageTypes.getAll().stream().sorted(Comparator.<DDDDamageType>comparingDouble((d) -> rMap.get(d)).thenComparing(Comparator.naturalOrder())).iterator(); it.hasNext();) {
 			DDDDamageType type = it.next();
 			if(cap.hasImmunity(type)) {

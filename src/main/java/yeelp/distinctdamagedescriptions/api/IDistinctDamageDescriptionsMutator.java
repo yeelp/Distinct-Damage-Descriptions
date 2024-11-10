@@ -1,40 +1,14 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Set;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 @ParametersAreNonnullByDefault
 public interface IDistinctDamageDescriptionsMutator {
-	/**
-	 * Set player resistances
-	 * 
-	 * @param player
-	 * @param newReists      map of new resistances
-	 * @param newImmunities  set of new immunities, will overwrite old ones.
-	 * @param adaptive       adaptability status
-	 * @param adaptiveAmount amount for adaptability
-	 */
-	public void setPlayerResistances(EntityPlayer player, ResistMap newReists, Set<DDDDamageType> newImmunities, boolean adaptive, float adaptiveAmount);
-
-	/**
-	 * Updates an entity's adaptive resistance. Syncs capability if the entity is a
-	 * player.
-	 * 
-	 * @param entity
-	 * @param dmgMap the distribution of damage this mob took
-	 * @return true if resistances were updated
-	 */
-	public boolean updateAdaptiveResistances(EntityLivingBase entity, DamageMap dmgMap);
-
+	
 	/**
 	 * Register an item capability
 	 * 

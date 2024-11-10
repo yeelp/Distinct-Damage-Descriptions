@@ -15,9 +15,10 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType.Type;
 import yeelp.distinctdamagedescriptions.api.IHasCreationSource.Source;
 import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
-@ZenClass("mods.ddd.DamageTypeBuilder")
+@ZenClass(CTConsts.CTClasses.COTDAMAGETYPEBUILDER)
 @ZenRegister
 public final class CoTDDDDamageTypeBuilder {
 

@@ -10,6 +10,7 @@ import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorCalculationType;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
 import yeelp.distinctdamagedescriptions.util.lib.NegativeArmorHandling;
+import yeelp.distinctdamagedescriptions.util.lib.ShieldFireRule;
 
 public final class ResistanceCategory {
 	@Name("Mob Base Resistance/Weakness")
@@ -105,6 +106,16 @@ public final class ResistanceCategory {
 			"    DEFAULT: DDD's default behaviour, which is to do nothing different. When DDD computes armor modifications, it computes it relative to the original negative armor/toughness value, which results in a positive armor modification value if the effectiveness is less than 100% and a negative armor modification value if the effectivenss if over 100%.",
 			"    ABS: DDD will convert negative armor/toughness to their absolute value when computing armor modifications relative to their original armor/toughness values. This results in larger negative armor/toughness values for armor with effectivness below 100%, and smaller negative armor/toughness values for armor with effectiveness above 100%."})
 	public NegativeArmorHandling negativeRule = NegativeArmorHandling.DEFAULT;
+	
+	@Name("Shield Fire Rule")
+	@Comment({
+		"Change how DDD behaves when blocking an attack that would normally set the player on fire, such as a burning zombie hitting a player. Only works if shield calculations are enabled.",
+		"    ALWAYS: DDD does nothing. This means blocking an attack that would set the player on fire WILL set the player on fire, due to how DDD handles shields.",
+		"    VANILLA: DDD emulates vanilla behaviour. The player will not be set on fire when blocking a blockable attack that would set them on fire.",
+		"    BLOCKED_THRESHOLD: DDD will reduce the duration a player is set on fire by a blocked attack by the percentage of damage blocked by the shield.",
+		"    FIRE_THRESHOLD: DDD will reduce the duration a player is set on fire by a blocked attack by the fire effectiveness the shield has."
+	})
+	public ShieldFireRule shieldFireRule = ShieldFireRule.ALWAYS;
 
 	@Name("Implied Armor Effectiveness")
 	@Comment({

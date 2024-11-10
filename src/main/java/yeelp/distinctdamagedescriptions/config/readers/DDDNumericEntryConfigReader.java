@@ -18,7 +18,7 @@ public class DDDNumericEntryConfigReader<T extends Number> extends DDDMultiEntry
 	protected Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
 		String[] args = s.split(";");
 		if(args.length != 2 || !args[1].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {
-			throw new ConfigInvalidException(s);
+			throw new ConfigInvalidException(this.getName(), s);
 		}
 		return new Tuple<String, T>(args[0], this.generateInstance(args[1]));
 	}

@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 
 public interface ModConsts {
 	
@@ -25,6 +27,7 @@ public interface ModConsts {
 		final String BETWEENLANDS_ID = "thebetweenlands";
 		final String FIRST_AID_ID = "firstaid";
 		final String QUALITY_TOOLS_ID = "qualitytools";
+		final String BAUBLES_ID	= "baubles";
 	}
 	
 	public interface IntegrationTitles {
@@ -39,6 +42,7 @@ public interface ModConsts {
 		final String BETWEENLANDS_TITLE = "The Betweenlands";
 		final String FIRST_AID_TITLE = "First Aid";
 		final String QUALITY_TOOLS_TITLE = "Quality Tools";
+		final String BAUBLES_TITLE = "Baubles";
 	}
 	
 	public interface TooltipConsts {
@@ -55,11 +59,15 @@ public interface ModConsts {
 		final String COMMANDS_ROOT = "commands";
 		final String NO_TARGETS = "notargets";
 		final String INVALID_TYPE = "invalidtype";
+		final String USAGE = "usage";
+		final String SUCCESS = "success";
 	}
 	
 	public interface NBT {
 		final byte COMPOUND_TAG_ID = (new NBTTagCompound()).getId();
 		final byte LIST_TAG_ID = (new NBTTagList()).getId();
+		final byte STRING_TAG_ID = (new NBTTagString()).getId();
+		final byte FLOAT_TAG_ID = (new NBTTagFloat(0)).getId();
 		final String ATTRIBUTE_MODIFIERS_KEY = "AttributeModifiers";
 		final String NAME_KEY = "Name";
 		final String ATTRIBUTE_NAME_KEY = "AttributeName";

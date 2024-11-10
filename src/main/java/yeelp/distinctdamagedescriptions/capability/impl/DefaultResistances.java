@@ -1,8 +1,12 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
 import java.util.Collections;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -42,9 +46,19 @@ public final class DefaultResistances extends DamageResistances implements IMobR
 	public boolean hasAdaptiveResistance() {
 		return false;
 	}
+	
+	@Override
+	public boolean isOriginallyAdaptive() {
+		return false;
+	}
 
 	@Override
 	public float getAdaptiveAmount() {
+		return 0;
+	}
+	
+	@Override
+	public float getBaseAdaptiveAmount() {
 		return 0;
 	}
 
@@ -62,9 +76,15 @@ public final class DefaultResistances extends DamageResistances implements IMobR
 	public void setAdaptiveAmount(float amount) {
 		throw new UnsupportedOperationException("Default Resistances can't be changed!");
 	}
+	
+	@Override
+	public void setBaseAdaptiveAmount(float amount) {
+		throw new UnsupportedOperationException("Default Resistances can't be changed!");
+		
+	}
 
 	@Override
-	public void setAdaptiveResistance(boolean status) {
+	public void setAdaptiveResistance(boolean status, boolean permanent) {
 		throw new UnsupportedOperationException("Default Resistances can't be changed!");
 
 	}
@@ -84,4 +104,23 @@ public final class DefaultResistances extends DamageResistances implements IMobR
 		return this;
 	}
 
+	@Override
+	public Set<String> getModifiers() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public void addModifier(String s) {
+		throw new UnsupportedOperationException("Default Resistances can't be changed!");
+	}
+
+	@Override
+	public void removeModifier(String s) {
+		throw new UnsupportedOperationException("Default Resistances can't be changed!");
+	}
+
+	@Override
+	public Class<NBTTagCompound> getSpecificNBTClass() {
+		return NBTTagCompound.class;
+	}
 }

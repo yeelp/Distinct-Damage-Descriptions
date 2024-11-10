@@ -14,19 +14,16 @@ public final class DDDCoTIntegration implements IModIntegration {
 		return Collections.emptyList();
 	}
 	
-	
-
 	@Override
 	public boolean initStart(FMLInitializationEvent evt) {
 		CoTDDDDamageTypeBuilder.registerTypes();
 		return IModIntegration.super.initStart(evt);
 	}
 
-
-
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
 		CoTDDDDistributionBuilder.registerDists();
+		CoTDDDModifierBuilder.registerMods();
 		return IModIntegration.super.init(evt);
 	}
 

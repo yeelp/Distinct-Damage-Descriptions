@@ -5,10 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
-import com.google.common.base.Functions;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -20,12 +17,13 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import stanhebben.zenscript.annotations.ZenProperty;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDCustomDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
-@ZenClass("mods.ddd.distributions.DistributionBuilder")
+@ZenClass(CTConsts.CTClasses.COTDISTBUILDER)
 @ZenRegister
 public final class CoTDDDDistributionBuilder {
 	
@@ -111,15 +109,14 @@ public final class CoTDDDDistributionBuilder {
 	}
 	
 	public static void registerDists() {
-		Predicate<String> isNotRegistered = Predicates.compose(Predicates.isNull(), Functions.compose(DDDRegistries.damageTypes::get, DDDDamageType::addDDDPrefixIfNeeded));
 		BUILDERS.forEach((b) -> {
 			if(DDDRegistries.distributions.get(b.name) != null) {
 				throw new ZenRuntimeException(String.format("%s is a distribution name already registered! Original registration source: %s", b.name, DDDRegistries.distributions.get(b.name).getCreationSourceString()));
 			}
 			//@formatter:off
 			Optional<RuntimeException> e = b.stringWeights.keySet().stream()
-					.filter(isNotRegistered)
-					.reduce((s1, s2) -> s1.concat("\n").concat(s2))
+					.filter(CTConsts.IS_NOT_REGISTERED)
+					.reduce(CTConsts.CONCAT_WITH_LINEBREAK)
 					.map((s) -> new RuntimeException(String.format("Unregistered damage type(s) used for %s: %s", b.name, s)));
 			//@formatter:on
 			if(e.isPresent()) {

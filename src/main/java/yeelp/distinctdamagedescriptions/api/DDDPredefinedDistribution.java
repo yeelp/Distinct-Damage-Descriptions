@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.IPriority;
 
 /**
  * Interface for implementing custom damage distributions.
@@ -15,7 +16,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
  * @author Yeelp
  *
  */
-public interface DDDPredefinedDistribution extends Comparable<DDDPredefinedDistribution>, IHasCreationSource {
+public interface DDDPredefinedDistribution extends IPriority, IHasCreationSource {
 	/**
 	 * Is this distribution enabled?
 	 * 
@@ -52,21 +53,5 @@ public interface DDDPredefinedDistribution extends Comparable<DDDPredefinedDistr
 	 *         empty Optional
 	 */
 	Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target);
-
-	/**
-	 * Get the priority of this distribution. The distributions are checked in the
-	 * order of highest priority to lowest. The first predefined distribution to
-	 * give a valid distribution is used.
-	 * 
-	 * @return the priority
-	 */
-	default int priority() {
-		return 0;
-	}
-
-	@Override
-	default int compareTo(DDDPredefinedDistribution o) {
-		return Integer.compare(this.priority(), o.priority());
-	}
 
 }

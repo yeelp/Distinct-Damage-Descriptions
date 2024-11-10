@@ -9,11 +9,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
@@ -44,12 +42,6 @@ public final class DDDHooks {
 
 	public static UpdateAdaptiveResistanceEvent fireUpdateAdaptiveResistances(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ResistMap resists, @Nonnull Set<DDDDamageType> immunities) {
 		return fire(new UpdateAdaptiveResistanceEvent(directAttacker, indirectAttacker, defender, src, map, resists, immunities), DeveloperModeKernel::onUpdateAdaptabilityCallback);
-	}
-	
-	public static AssignMobResistancesEvent fireAssignMobResistances(EntityLivingBase entity, World world, IMobResistances resistances) {
-		AssignMobResistancesEvent evt = new AssignMobResistancesEvent(entity, world, resistances);
-		MinecraftForge.EVENT_BUS.post(evt);
-		return evt;
 	}
 	
 	public static ShouldDrawIconsEvent fireShouldDrawIcons() {

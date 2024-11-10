@@ -1,8 +1,12 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
+import java.util.Collection;
+
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.ImmutableList;
 
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
 /**
  * A basic config reader
@@ -35,5 +39,13 @@ public interface DDDConfigReader extends Runnable {
 			msg = String.format("%s finished loading", this.getName());
 		}
 		DistinctDamageDescriptions.info(msg);
+	}
+	
+	default boolean doesSelfReportErrors() {
+		return false;
+	}
+	
+	default Collection<DDDConfigReaderException> getSelfReportedErrors() {
+		return ImmutableList.of();
 	}
 }

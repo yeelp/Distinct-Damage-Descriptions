@@ -38,7 +38,7 @@ public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefi
 		@Override
 		protected void parseEntry(String entry) {
 			try {
-				LycanitesPredefinedDistribution.this.dist = new DamageDistribution(ConfigReaderUtilities.parseMap(entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
+				LycanitesPredefinedDistribution.this.dist = new DamageDistribution(ConfigReaderUtilities.parseMap(this, entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
 				DebugLib.outputFormattedDebug("%s Distribution is: %s", this.getName(), LycanitesPredefinedDistribution.this.dist.toString());
 			}
 			catch (ConfigParsingException e) {

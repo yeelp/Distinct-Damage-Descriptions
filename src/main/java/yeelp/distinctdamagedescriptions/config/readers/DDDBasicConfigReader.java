@@ -19,8 +19,8 @@ public class DDDBasicConfigReader<T> extends DDDMapParsingConfigReader<T> {
 	@Override
 	protected T parseMapping(final String entry, final String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
 		if(map.matches(ConfigReaderUtilities.DIST_REGEX)) {
-			return this.constructInstance(ConfigReaderUtilities.parseMap(map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> this.defaultVal));
+			return this.constructInstance(ConfigReaderUtilities.parseMap(this, map, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> this.defaultVal));
 		}
-		throw new ConfigInvalidException(entry);
+		throw new ConfigInvalidException(this.getName(), entry);
 	}
 }

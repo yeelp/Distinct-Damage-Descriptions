@@ -17,6 +17,7 @@ out
 build
 .gradle
 $buildDir
+keystore
 
 # other
 eclipse

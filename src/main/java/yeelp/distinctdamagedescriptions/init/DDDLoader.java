@@ -12,8 +12,9 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 
 /**
  * Marks a class as being part of DDD's key loading cycle. There should also be
- * at least one method annotated with the {@link Initializer} annotation, which
- * will be invoked. Multiple methods will have them invoked in the order
+ * at least one method that is static with no arguments that is also annotated
+ * with the {@link Initializer} annotation, which will be invoked. Multiple
+ * methods will have them invoked in the order
  * {@link Class#getDeclaredMethods()} provides them.
  * 
  * @author Yeelp

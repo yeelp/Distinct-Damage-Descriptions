@@ -1,29 +1,42 @@
 package yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability;
 
+import java.util.Optional;
+
 import com.oblivioussp.spartanweaponry.entity.projectile.EntityThrownWeapon;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
+import yeelp.distinctdamagedescriptions.integration.capability.ModUpdatingDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
-public final class SpartanThrownWeaponDistribution extends DamageDistribution {
+public final class SpartanThrownWeaponDistribution extends ModUpdatingDamageDistribution {
 
 	@CapabilityInject(SpartanThrownWeaponDistribution.class)
 	public static Capability<SpartanThrownWeaponDistribution> cap;
 
 	@Override
-	public IDamageDistribution update(IProjectile owner) {
+	public Optional<DDDBaseMap<Float>> getUpdatedWeights(IProjectile owner) {
 		if(owner instanceof EntityThrownWeapon) {
-			DDDAPI.accessor.getDamageDistribution(((EntityThrownWeapon) owner).getWeaponStack()).ifPresent((dist) -> this.setNewWeights(dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, dist::getWeight))));
+			return DDDAPI.accessor.getDamageDistribution(((EntityThrownWeapon) owner).getWeaponStack()).map((dist) -> dist.getCategories().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, dist::getWeight)));
 		}
-		return super.update(owner);
+		return Optional.empty();
+	}
+	
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(EntityLivingBase owner) {
+		return Optional.empty();
+	}
+	
+	@Override
+	protected Optional<DDDBaseMap<Float>> getUpdatedWeights(ItemStack owner) {
+		return Optional.empty();
 	}
 
 	@Override
@@ -37,7 +50,7 @@ public final class SpartanThrownWeaponDistribution extends DamageDistribution {
 	}
 
 	public static void register() {
-		DDDCapabilityBase.register(SpartanThrownWeaponDistribution.class, NBTTagList.class, SpartanThrownWeaponDistribution::new);
+		DDDUpdatableCapabilityBase.register(SpartanThrownWeaponDistribution.class, SpartanThrownWeaponDistribution::new);
 	}
 
 	@CapabilityInject(SpartanThrownWeaponDistribution.class)

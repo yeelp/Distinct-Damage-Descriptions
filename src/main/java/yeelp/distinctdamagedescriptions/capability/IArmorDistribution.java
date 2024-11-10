@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;;
 
@@ -28,6 +27,6 @@ public interface IArmorDistribution extends IDistribution {
 	IArmorDistribution update(ItemStack owner);
 
 	static void register() {
-		DDDCapabilityBase.register(IArmorDistribution.class, NBTTagList.class, ArmorDistribution::new);
+		DDDUpdatableCapabilityBase.register(IArmorDistribution.class, ArmorDistribution::new);
 	}
 }

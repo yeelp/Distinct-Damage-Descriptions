@@ -70,7 +70,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	/**
 	 * Get the base damage distribution for this type
 	 * 
-	 * @return and IDistribution that distributes the damage to the type returned by
+	 * @return an IDistribution that distributes the damage to the type returned by
 	 *         {@link #getTypeName()}
 	 */
 	IDamageDistribution getBaseDistribution();

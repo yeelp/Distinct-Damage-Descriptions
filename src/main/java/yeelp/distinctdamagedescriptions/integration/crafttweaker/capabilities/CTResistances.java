@@ -4,12 +4,10 @@ import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntityLivingBase;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
-import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.IterableMap;
+import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
-import stanhebben.zenscript.annotations.ZenSetter;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
@@ -25,36 +23,17 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 public class CTResistances extends NonNullMap<ICTDDDDamageType, Float> {
 	private final IMobResistances resists;
 
-	private final EntityPlayerMP player;
-
-	private final boolean isPlayer;
 
 	public CTResistances(IEntityLivingBase entityLiving) {
 		super(() -> 0.0f);
 		EntityLivingBase base = CraftTweakerMC.getEntityLivingBase(entityLiving);
 		this.resists = DDDAPI.accessor.getMobResistances(base).orElseGet(MobResistances::new);
-		this.resists.getAllResistances().forEach((t, f) -> super.put(CTDDDDamageType.getFromDamageType(t), f));
-		this.player = base instanceof EntityPlayerMP ? (EntityPlayerMP) base : null;
-		this.isPlayer = this.player != null ? true : false;
+		this.resists.getAllResistancesCopy().forEach((t, f) -> super.put(CTDDDDamageType.getFromDamageType(t), f));
 	}
 
 	@ZenMethod("getResistance")
 	public float getResistance(ICTDDDDamageType type) {
 		return this.resists.getResistance(type.asDDDDamageType());
-	}
-
-	@ZenMethod("setResistance")
-	public void setResistance(ICTDDDDamageType type, float amount) {
-		this.resists.setResistance(type.asDDDDamageType(), amount);
-		this.put(type, amount);
-		this.update();
-	}
-	
-	@ZenMethod("removeResistance")
-	public void removeResistance(ICTDDDDamageType type) {
-		this.resists.removeResistance(type.asDDDDamageType());
-		this.remove(type);
-		this.update();
 	}
 
 	@ZenGetter("adaptability")
@@ -71,33 +50,9 @@ public class CTResistances extends NonNullMap<ICTDDDDamageType, Float> {
 	public boolean hasImmunity(ICTDDDDamageType type) {
 		return this.resists.hasImmunity(type.asDDDDamageType());
 	}
-
-	@ZenSetter("adaptability")
-	public void setAdaptability(boolean status) {
-		this.resists.setAdaptiveResistance(status);
-		this.update();
-	}
-
-	@ZenSetter("adaptabilityAmount")
-	public void setAdaptabilityAmount(float amount) {
-		this.resists.setAdaptiveAmount(amount);
-		this.update();
-	}
-
-	@ZenMethod("setImmunity")
-	public void setImmunity(ICTDDDDamageType type, boolean status) {
-		this.resists.setImmunity(type.asDDDDamageType(), status);
-		this.update();
-	}
 	
 	@ZenMethod
 	public boolean isDefault() {
 		return this.resists == DefaultResistances.getInstance();
-	}
-
-	private void update() {
-		if(this.isPlayer) {
-			this.resists.sync(this.player);
-		}
 	}
 }

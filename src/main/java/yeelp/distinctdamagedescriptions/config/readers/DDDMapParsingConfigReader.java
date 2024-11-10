@@ -16,11 +16,11 @@ public abstract class DDDMapParsingConfigReader<T> extends DDDMultiEntryConfigRe
 	@Override
 	protected final Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
 		if(s.endsWith(";")) {
-			throw new ConfigMalformedException(s);
+			throw new ConfigMalformedException(this.getName(), s);
 		}
 		String[] args = s.split(";");
 		if(args.length < 2) {
-			throw new ConfigMalformedException(s);
+			throw new ConfigMalformedException(this.getName(), s);
 		}
 		String[] additionalInfo = new String[args.length - 2];
 		System.arraycopy(args, 2, additionalInfo, 0, additionalInfo.length);

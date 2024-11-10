@@ -3,20 +3,28 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.IDDDCapModifier;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.registries.IDDDModifierRegistries.IDDDModifierRegistry;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public class DamageDistribution extends Distribution implements IDamageDistribution {
 
@@ -87,16 +95,30 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@Override
 	public IDamageDistribution update(ItemStack owner) {
-		return this;
+		return this.update(owner, DDDRegistries.modifiers.getItemStackDamageDistributionRegistry());
 	}
 
 	@Override
 	public IDamageDistribution update(EntityLivingBase owner) {
-		return this;
+		return this.update(owner, DDDRegistries.modifiers.getEntityDamageDistributionRegistry());
 	}
 
 	@Override
 	public IDamageDistribution update(IProjectile owner) {
+		if(owner instanceof Entity) {
+			return this.update((Entity) owner, DDDRegistries.modifiers.getEntityDamageDistributionRegistry());
+		}
+		return this;
+	}
+	
+	private <T extends ICapabilityProvider> IDamageDistribution update(T provider, IDDDModifierRegistry<T, IDamageDistribution, IDDDCapModifier<T>> reg) {
+		Set<String> mods = reg.getNamesOfApplicableModifiers(provider);
+		if(!YMath.setEquals(mods, this.getModifiers())) {
+			this.distMap.clear();
+			this.distMap.putAll(this.originalMap);
+			reg.applyModifiers(provider, this);
+			this.updateModifiers(mods);
+		}
 		return this;
 	}
 
@@ -106,8 +128,32 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 	
 	@Override
+	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+		if(invariantViolated(map.values())) {
+			throw new InvariantViolationException("Weights are either non positive or do not add to 1!");
+		}
+		super.setNewWeights(map);
+	}
+	
+	@Override
 	protected boolean allowZeroWeightedEntries() {
 		return false;
+	}
+	
+	@Override
+	protected boolean canHaveEmptyDistribution() {
+		return false;
+	}
+	
+	@Override
+	protected boolean areWeightsValid() {
+		//use DamageDistribution invariantViolated check specifically.
+		return !invariantViolated(this.distMap.values()) && !invariantViolated(this.originalMap.values());
+	}
+	
+	@Override
+	public Class<NBTTagCompound> getSpecificNBTClass() {
+		return NBTTagCompound.class;
 	}
 
 }

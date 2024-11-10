@@ -11,6 +11,15 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySerializable<T> {
+	
+	/**
+	 * Attempt to deserialize old NBT data.
+	 * @param nbt old nbt data
+	 */
+	default void deserializeOldNBT(NBTBase nbt) {
+		return;
+	}
+	
 	/**
 	 * A skeletal {@link IStorage} implementation.
 	 * 
@@ -41,6 +50,7 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 			if(this.nbtClass.isInstance(nbt)) {
 				instance.deserializeNBT(this.nbtClass.cast(nbt));
 			}
+			instance.deserializeOldNBT(nbt);
 		}
 	}
 
@@ -73,5 +83,4 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 	static <NBT extends NBTBase, C extends DDDCapabilityBase<NBT>> void register(Class<C> capClass, Class<NBT> nbtClass, Supplier<C> factorySup) {
 		CapabilityManager.INSTANCE.register(capClass, new DDDCapStorage<NBT, C>(nbtClass), new DDDCapFactory<NBT, C>(factorySup));
 	}
-	
 }

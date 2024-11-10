@@ -9,5 +9,5 @@ import yeelp.distinctdamagedescriptions.potion.AbstractDDDPotion;
  *
  */
 public interface IDDDPotionsRegistry extends IDDDRegistry<AbstractDDDPotion> {
-	//
+	//empty
 }

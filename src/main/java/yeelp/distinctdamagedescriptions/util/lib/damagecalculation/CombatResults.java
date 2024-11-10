@@ -65,7 +65,7 @@ public final class CombatResults {
 
 		public ResultsBuilder hasEffectiveShield(DamageMap newDmg) {
 			this.shield = true;
-			this.shieldBlockDmg = newDmg.values().stream().reduce(Float::sum).orElse(0.0f);
+			this.shieldBlockDmg = this.startingAmount - newDmg.values().stream().reduce(Float::sum).orElse(0.0f);
 			return this;
 		}
 

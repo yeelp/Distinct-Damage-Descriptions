@@ -12,10 +12,10 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
+import yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability.SpartanLinkedThrownWeaponDistribution;
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability.SpartanThrownWeaponDistribution;
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability.distributor.SpartanThrownWeaponDistributionDistributor;
 
@@ -51,7 +51,7 @@ public final class SpartanWeaponryCompat implements IModIntegration {
 				String s = ForgeRegistries.ITEMS.getKey((Item) props).toString();
 				DistinctDamageDescriptions.debug("Registered projectile pair: " + s);
 				DDDConfigurations.projectiles.registerItemProjectilePair(s, s);
-				DDDConfigurations.projectiles.put(s, new DamageDistribution());
+				DDDConfigurations.projectiles.put(s, new SpartanLinkedThrownWeaponDistribution(s));
 			}
 		});
 		return IModIntegration.super.postInit(evt);

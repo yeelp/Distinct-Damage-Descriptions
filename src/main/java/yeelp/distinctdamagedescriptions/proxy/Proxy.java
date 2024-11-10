@@ -7,4 +7,9 @@ public class Proxy {
 	public void preInit() {
 		DDDItems.init();
 	}
+	
+	@SuppressWarnings("static-method")
+	public void handleFingerprintViolation() {
+		return;
+	}
 }

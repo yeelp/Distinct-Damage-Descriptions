@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 
 public final class SoundMessage implements IMessage {
@@ -67,6 +68,9 @@ public final class SoundMessage implements IMessage {
 
 		@SideOnly(Side.CLIENT)
 		public static void handle(SoundMessage msg, MessageContext ctx) {
+			if(!ModConfig.client.enableSfx) {
+				return;
+			}
 			EntityPlayer player = NetworkHelper.getSidedPlayer(ctx);
 			if(player != null) {
 				SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(DDDSounds.decodeSoundID(msg.getSoundID())));

@@ -24,7 +24,7 @@ public class TooltipHandler extends Handler {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	@SideOnly(value = Side.CLIENT)
 	public void onTooltip(ItemTooltipEvent evt) {
-		if(evt.getToolTip().size() > 0) {
+		if(evt.getToolTip().size() > 0 && !evt.getItemStack().isEmpty()) {
 			evt.getToolTip().addAll(1, TooltipDistributor.getDistributor(evt.getItemStack()).getTooltip(evt.getItemStack()));			
 		}
 	}
@@ -33,7 +33,7 @@ public class TooltipHandler extends Handler {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onTooltipPost(RenderTooltipEvent.PostText evt) {
-		if(ModConfig.client.useIcons) {
+		if(ModConfig.client.useIcons && !evt.getStack().isEmpty()) {
 			if(DDDHooks.fireShouldDrawIcons().getResult() == Result.DENY) {
 				return;
 			}
@@ -41,7 +41,8 @@ public class TooltipHandler extends Handler {
 			GL11.glPushMatrix();
 			GL11.glColor3f(1.0f, 1.0f, 1.0f);
 			mc.getTextureManager().bindTexture(ICONS);
-			TooltipDistributor.getDistributor(evt.getStack()).getIcons(evt.getStack(), evt.getX(), evt.getY(), evt.getLines()).forEach((i) -> {
+			TooltipDistributor distributor = TooltipDistributor.getDistributor(evt.getStack());
+			distributor.getIcons(evt.getStack(), evt.getX(), evt.getY(), evt.getLines()).forEach((i) -> {
 				if(i.getU() >= 0) {
 					Gui.drawModalRectWithCustomSizedTexture(i.getX(), i.getY(), i.getU(), 0, 10, 10, 256, 256);					
 				}
