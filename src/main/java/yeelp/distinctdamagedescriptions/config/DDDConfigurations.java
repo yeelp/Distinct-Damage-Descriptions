@@ -77,7 +77,7 @@ public abstract class DDDConfigurations {
 			DDDConfigLoader.getInstance().enqueueAll(new DDDDamageDistributionConfigReader("Item Distributions", ModConfig.dmg.itemBaseDamage, items),
 					new DDDArmorDistributionConfigReader("Armor Distributions", ModConfig.resist.armorResist, armors),
 					new DDDBasicConfigReader<ShieldDistribution>("Shield Distributions", ModConfig.resist.shieldResist, shields, ShieldDistribution.class.getConstructor(Map.class), 0.0f),
-					new DDDDamageDistributionConfigReader("Mob Damage Distribtuions", ModConfig.dmg.mobBaseDmg, mobDamage),
+					new DDDDamageDistributionConfigReader("Mob Damage Distributions", ModConfig.dmg.mobBaseDmg, mobDamage),
 					new DDDMobResistancesConfigReader(resistsConfig),
 					new DDDProjectileConfigReader(),
 					new DDDShieldClassesConfigReader());
