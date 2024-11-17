@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -30,8 +31,6 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 
 	@CapabilityInject(TinkerDamageDistribution.class)
 	public static Capability<TinkerDamageDistribution> cap = null;
-
-	private Collection<String> cachedKeys;
 
 	public TinkerDamageDistribution() {
 		super();
@@ -64,16 +63,16 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	@Override
 	protected Set<DDDBaseMap<Float>> computeBiasedMaps(ItemStack owner) {
 		Collection<String> mats = TiCUtil.getKeyMaterialIdentifiers(owner, MaterialTypes.HEAD);
-		if(this.cachedKeys == null || !this.cachedKeys.containsAll(mats)) {
-			float biasResist = YResources.getRegistryString(owner).map(TiCConfigurations.toolBiasResistance::getOrFallbackToDefault).orElse(TiCConfigurations.toolBiasResistance.getDefaultValue());
-			DDDBaseMap<Float> base = TiCUtil.getBaseDist(owner);
-			Set<DDDBaseMap<Float>> dists = mats.stream().map(Functions.compose((b) -> b.getBiasedDistributionMap(base, biasResist), TiCConfigurations.toolMaterialBias::getOrFallbackToDefault)).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
-			if(dists.size() > 0) {
-				this.cachedKeys = mats;
-				return dists;
-			}
+		if(mats.size() == 0) {
+			return Collections.emptySet();
 		}
-		return Collections.emptySet();
+		float biasResist = YResources.getRegistryString(owner).map(TiCConfigurations.toolBiasResistance::getOrFallbackToDefault).orElse(TiCConfigurations.toolBiasResistance.getDefaultValue());
+		DDDBaseMap<Float> base = TiCUtil.getBaseDist(owner);
+		Set<DDDBaseMap<Float>> dists = mats.stream().map(Functions.compose((b) -> b.getBiasedDistributionMap(base, biasResist), TiCConfigurations.toolMaterialBias::getOrFallbackToDefault)).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
+		if(dists.size() > 0) {
+			return dists;
+		}
+		return ImmutableSet.of(base);
 	}
 
 	public static void register() {
