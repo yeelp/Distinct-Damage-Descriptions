@@ -14,6 +14,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation;
 
 public class FirstAidEventHandler extends Handler {
 
@@ -25,7 +26,7 @@ public class FirstAidEventHandler extends Handler {
 			return;
 		}
 		DistinctDamageDescriptions.debug("Running First Aid Damage Event to remove modifiers...");
-		DDDAPI.accessor.getDDDCombatTracker(player).get().getNewDeltaArmorValues().ifPresent((vals) -> vals.forEach((slot, armorValues) -> {
+		DDDAPI.accessor.getDDDCombatTracker(player).get().getCurrentCalculation().flatMap(DamageCalculation::getDeltaArmor).ifPresent((vals) -> vals.forEach((slot, armorValues) -> {
 			ItemStack stack = player.getItemStackFromSlot(slot);
 			if(stack.isEmpty()) {
 				return;
@@ -35,7 +36,7 @@ public class FirstAidEventHandler extends Handler {
 				for(int i = 0; i < lst.tagCount(); i++) {
 					NBTTagCompound compound = lst.getCompoundTagAt(i);
 					String name = compound.getString(NBT.NAME_KEY);
-					if(DDDAttributeModifierCollections.getModifierRecordFromName(name).isPresent()) {
+					if(DDDAttributeModifierCollections.getModifierFromName(name).isPresent()) {
 						lst.removeTag(i--);
 					}
 				}

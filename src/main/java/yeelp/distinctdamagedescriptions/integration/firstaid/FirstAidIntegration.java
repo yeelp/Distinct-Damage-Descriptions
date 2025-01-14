@@ -46,6 +46,7 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorModifierInjector;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IValidArmorSlotInjector;
 
@@ -155,7 +156,7 @@ public final class FirstAidIntegration implements IModIntegration {
 				
 				EntityPlayer player = (EntityPlayer) defender;
 				IDDDCombatTracker ct = DDDAPI.accessor.getDDDCombatTracker(player).get();
-				Optional<ArmorClassification> classification = ct.getArmorClassification();
+				Optional<ArmorClassification> classification = ct.getCurrentCalculation().map(DamageCalculation::getArmorClassification);
 				deltaArmor.forEach((slot, armorValues) -> {
 					ItemStack stack = player.getItemStackFromSlot(slot);
 					if(stack.isEmpty()) {
@@ -165,9 +166,9 @@ public final class FirstAidIntegration implements IModIntegration {
 					DebugLib.outputFormattedDebug("Attribute Modifiers Before First Aid Compat: %s", DebugLib.entriesToString(stack.getAttributeModifiers(slot).asMap()));
 					Iterator<Float> armorValuesIt = armorValues.iterator();
 					Iterator<Float> originalMod = (hasAttributeMods ? ArmorValues.ZERO : classification.map((cls) -> cls.getOriginalArmorValues(slot)).orElse(ArmorValues.ZERO)).iterator();
-					DDDAttributeModifierCollections.ARMOR_MODIFIERS.forEach((rec) -> {
-						AttributeModifier mod = new AttributeModifier(rec.getUUID(), rec.getName(), armorValuesIt.next() + originalMod.next(), 0);
-						stack.addAttributeModifier(rec.getAttributeModified().getName(), mod, slot);
+					Arrays.asList(DDDAttributeModifierCollections.ArmorModifiers.values()).forEach((modifier) -> {
+						AttributeModifier mod = new AttributeModifier(modifier.getUUID(), modifier.getName(), armorValuesIt.next() + originalMod.next(), 0);
+						stack.addAttributeModifier(modifier.getAttribute().getName(), mod, slot);
 						DebugLib.outputFormattedDebug("Added Attribute Modifier to %s slot: %s", slot.toString(), mod.toString());
 					});
 				});

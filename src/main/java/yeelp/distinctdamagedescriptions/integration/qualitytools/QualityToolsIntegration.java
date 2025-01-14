@@ -60,10 +60,10 @@ public final class QualityToolsIntegration implements IModIntegration {
 									NBTTagCompound tag = (NBTTagCompound) nbt;
 									String name = tag.getString(QualityToolsConsts.ATTRIBUTE_NAME_TAG);
 									double val = tag.getDouble(QualityToolsConsts.AMOUNT_TAG);
-									if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ARMOR.getAttributeModified().getName())) {
+									if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getAttribute().getName())) {
 										armorVal += val;
 									}
-									else if(name.equalsIgnoreCase(DDDAttributeModifierCollections.TOUGHNESS.getAttributeModified().getName())) {
+									else if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ArmorModifiers.TOUGHNESS.getAttribute().getName())) {
 										toughnessVal += val;
 									}
 								}

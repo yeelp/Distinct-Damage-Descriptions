@@ -200,8 +200,8 @@ public final class DeveloperModeKernel {
 		doLivingEventCheckThen(evt, (le) -> doIfEnabled(evt, (e, sb) -> {
 			DDDAPI.accessor.getDDDCombatTracker(e.getEntityLiving()).ifPresent((tracker) -> {
 				AbstractAttributeMap attributes = tracker.getFighter().getAttributeMap();
-				float armor = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR).getModifier(DDDAttributeModifierCollections.ARMOR_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
-				float toughness = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getModifier(DDDAttributeModifierCollections.TOUGHNESS_CALC_UUID), AttributeModifier::getAmount, 0).floatValue();
+				float armor = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR).getModifier(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getUUID()), AttributeModifier::getAmount, 0).floatValue();
+				float toughness = mapIfNonNullElseGetDefault(attributes.getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getModifier(DDDAttributeModifierCollections.ArmorModifiers.TOUGHNESS.getUUID()), AttributeModifier::getAmount, 0).floatValue();
 				if(armor != 0 || toughness != 0) {
 					sb.append(String.format("HURT: Defender %s got a %+.2f armor and %+.2f toughness modification from armor effectiveness.", tracker.getFighter().getName(), armor, toughness));
 					sb.append(NEW_LINE);

@@ -54,7 +54,7 @@ class ArmorClassifier implements IClassifier<ArmorClassification> {
 	
 	private static ArmorValues getStackOnlyArmorValues(ItemStack stack, EntityEquipmentSlot slot) {
 		Multimap<String, AttributeModifier> map = stack.getItem().getAttributeModifiers(slot, stack);
-		OfDouble it = Arrays.stream(DDDAttributeModifierCollections.ARMOR_ATTRIBUTES).mapToDouble((attribute) -> map.get(attribute.getName()).stream().mapToDouble(AttributeModifier::getAmount).sum()).iterator();
+		OfDouble it = Arrays.stream(DDDAttributeModifierCollections.ArmorModifiers.values()).mapToDouble((attribute) -> map.get(attribute.getName()).stream().mapToDouble(AttributeModifier::getAmount).sum()).iterator();
 		return new ArmorValues((float) it.nextDouble(), (float) it.nextDouble());
 	}
 	

@@ -1,57 +1,89 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.google.common.collect.Lists;
-
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 
 public interface DDDAttributeModifierCollections {
 	
-	UUID ARMOR_CALC_UUID = UUID.fromString("72e5859a-02d8-4170-9632-f9786547d697");
-	UUID TOUGHNESS_CALC_UUID = UUID.fromString("c19d6077-8772-460e-8250-d7780cbb85ca");
-
-	ModifierRecord ARMOR = new ModifierRecord("DDD Armor Calculations Modifier", ARMOR_CALC_UUID, SharedMonsterAttributes.ARMOR);
-	ModifierRecord TOUGHNESS = new ModifierRecord("DDD Toughness Calculations Modifier", TOUGHNESS_CALC_UUID, SharedMonsterAttributes.ARMOR_TOUGHNESS);
-	
-	IAttribute[] ARMOR_ATTRIBUTES = {ARMOR.getAttributeModified(), TOUGHNESS.getAttributeModified()};
-	
-	Collection<ModifierRecord> ARMOR_MODIFIERS = Lists.newArrayList(ARMOR, TOUGHNESS);
-	
-	static Optional<ModifierRecord> getModifierRecordFromName(String name) {
-		for(ModifierRecord modifierRecord : ARMOR_MODIFIERS) {
-			if(modifierRecord.getName().equals(name)) {
-				return Optional.of(modifierRecord);
-			}
+	interface DDDAttributeModifier {
+		
+		UUID getUUID();
+		
+		String getName();
+		
+		IAttribute getAttribute();
+		
+		default void applyModifier(EntityLivingBase target, float amount, int op) {
+			target.getEntityAttribute(this.getAttribute()).applyModifier(new AttributeModifier(this.getName(), amount, op));
 		}
-		return Optional.empty();
+		
+		default void applyModifier(EntityLivingBase target, float amount) {
+			this.applyModifier(target, amount, 0);
+		}
+		
+		default void removeModifier(EntityLivingBase target) {
+			target.getEntityAttribute(this.getAttribute()).removeModifier(this.getUUID());
+		}
 	}
 	
-	static final class ModifierRecord {
-		private final String name;
+	enum ArmorModifiers implements DDDAttributeModifier {
+		ARMOR(UUID.fromString("72e5859a-02d8-4170-9632-f9786547d697"), "DDD Armor Calculations Modifier", SharedMonsterAttributes.ARMOR) {
+			@Override
+			protected float extractValue(ArmorValues aVals) {
+				return aVals.getArmor();
+			}
+		},
+		TOUGHNESS(UUID.fromString("c19d6077-8772-460e-8250-d7780cbb85ca"), "DDD Toughness Calculations Modifier", SharedMonsterAttributes.ARMOR_TOUGHNESS) {
+			@Override
+			protected float extractValue(ArmorValues aVals) {
+				return aVals.getToughness();
+			}
+		};
+		
 		private final UUID uuid;
+		private final String name;
 		private final IAttribute attribute;
 		
-		ModifierRecord(String name, UUID uuid, IAttribute attributeModified) {
-			this.name = name;
+		private ArmorModifiers(UUID uuid, String name, IAttribute attribute) {
 			this.uuid = uuid;
-			this.attribute = attributeModified;
+			this.name = name;
+			this.attribute = attribute;
 		}
 		
+		@Override
+		public IAttribute getAttribute() {
+			return this.attribute;
+		}
+		
+		@Override
 		public String getName() {
 			return this.name;
 		}
 		
+		@Override
 		public UUID getUUID() {
 			return this.uuid;
 		}
 		
-		public IAttribute getAttributeModified() {
-			return this.attribute;
+		protected abstract float extractValue(ArmorValues aVals);
+		
+		public void applyModifier(EntityLivingBase target, ArmorValues values) {
+			this.applyModifier(target, this.extractValue(values));
 		}
-				
+	}
+	
+
+	static Optional<DDDAttributeModifier> getModifierFromName(String name) {
+		for(ArmorModifiers mod : ArmorModifiers.values()) {
+			if(mod.getName().equals(name)) {
+				return Optional.of(mod);
+			}
+		}
+		return Optional.empty();
 	}
 }
