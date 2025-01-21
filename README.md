@@ -2,8 +2,9 @@
 
 # [Distinct Damage Descriptions](https://www.curseforge.com/minecraft/mc-mods/distinct-damage-descriptions)
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X8X5G4LPG)
+[![Patreon](https://i.imgur.com/JkRflNx.png)](https://www.patreon.com/join/Yeelp)
 
-(Supporting me on Kofi helps me develop mods full time!)
+(Supporting me on Kofi or Patreon helps me develop mods full time!)
 
 [![](https://img.shields.io/modrinth/dt/jU1Kqlqz?style=flat&logo=modrinth&label=Modrinth%20Downloads&color=00af5c)](https://modrinth.com/mod/distinct-damage-descriptions) 
 [![](https://img.shields.io/curseforge/dt/403617?style=flat&logo=curseforge&label=CurseForge%20Downloads&color=f16436)](https://www.curseforge.com/minecraft/mc-mods/distinct-damage-descriptions) 
@@ -46,11 +47,11 @@ from inside that directory. If successful, this will output `.jar` files to `./b
 If you'd rather not use the Gradle wrapper for whatever reasons, then you also probably already know what you're doing. 😉
 
 ## Adding Distinct Damage Descriptions as a dependency
-If you want DDD as a dependency for a mod you're developing, you can use the Curse Maven plugin to add it as a dependency. In your `build.gradle`, under `dependencies`, you can add the following
+If you want DDD as a dependency for a mod you're developing, you can use the Curse Maven plugin to add it as a dependency. In your `build.gradle`, under `dependencies`, use the following in your Gradle instruction:
 ```gradle
-deobfProvided curse.maven:distinct-damage-descriptions-403617:<versionslug>
+curse.maven:distinct-damage-descriptions-403617:<versionslug>
 ```
-where `<versionslug>` is the slug for the version you want as a dependency. Typically, you'd always want the latest version. This will add that version of DDD as an *optional* dependency. For a required dependency, you use `deobfCompile` instead, and make sure that in your mod's `@Mod` annotation, you add the DDD version in the `dependencies` field. To have DDD v1.5.1 be a *required* dependency, you add `"required-after:distinctdamagedescriptions[1.5.1,)"` to the `dependencies` field. (This actually adds DDD as a required dependency that requires version v1.5.1 *or greater*.)
+The exact Gradle instruction depends on the version of Gradle and ForgeGradle you are using and `<versionslug>` is the slug for the version you want as a dependency. Typically, you'd always want the latest version. This will add that version of DDD as dependency (the kind of dependency. For a required dependency, make sure that in your mod's `@Mod` annotation, you add the DDD version in the `dependencies` field. To have DDD v1.5.1 be a *required* dependency, you add `"required-after:distinctdamagedescriptions[1.5.1,)"` to the `dependencies` field. (This actually adds DDD as a required dependency that requires version v1.5.1 *or greater*.)
 
 ### Finding the version slug
 To find the version slug, open up the CurseForge page for DDD and go to the Files tab. By default, the files should be sorted with the newest (and therefore latest version) at the top. Click the file corresponding to the version you want as a dependency. Then, if you check the URL of the page, you'll see the version slug at the end. For example, for DDD v1.5.1, navigating to its page on CurseForge will show the following URL in the address bar:
@@ -59,9 +60,10 @@ https://www.curseforge.com/minecraft/mc-mods/distinct-damage-descriptions/files/
 ```
 The numbers at the end is the version slug. So, `5027467` is the version slug for v1.5.1.
 
-Bringing it all together, the dependency entry in your `build.gradle` script's `dependencies` section to add DDD v1.5.1 as an *optional* dependency would look like
+Bringing it all together, the dependency in your `build.gradle` script's `dependencies` section for DDD v1.5.1 would look like
 ```gradle
-deobfProvided curse.maven:distinct-damage-descriptions-403617:5027467
+curse.maven:distinct-damage-descriptions-403617:5027467
 ```
+Depending on your version of Gradle and ForgeGradle, the dependency instruction this is contained within will look different.
 
 Check DDD's [contributing guidelines](https://github.com/yeelp/Distinct-Damage-Descriptions/blob/master/CONTRIBUTING.md) for specific contributing information.
