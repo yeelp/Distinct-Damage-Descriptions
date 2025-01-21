@@ -96,6 +96,11 @@ public interface IDDDCombatTracker extends DDDCapabilityBase<NBTTagCompound> {
 	 * @param evt The LivingDamageEvent.
 	 */
 	void handleDamageStage(LivingDamageEvent evt);
+	
+	/**
+	 * Clear the tracker
+	 */
+	void clear();
 
 	static void register() {
 		DDDCapabilityBase.register(IDDDCombatTracker.class, NBTTagCompound.class, () -> new DDDCombatTracker(null));

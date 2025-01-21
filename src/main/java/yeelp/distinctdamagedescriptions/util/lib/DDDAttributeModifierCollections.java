@@ -19,7 +19,7 @@ public interface DDDAttributeModifierCollections {
 		IAttribute getAttribute();
 		
 		default void applyModifier(EntityLivingBase target, float amount, int op) {
-			target.getEntityAttribute(this.getAttribute()).applyModifier(new AttributeModifier(this.getName(), amount, op));
+			target.getEntityAttribute(this.getAttribute()).applyModifier(new AttributeModifier(this.getUUID(), this.getName(), amount, op));
 		}
 		
 		default void applyModifier(EntityLivingBase target, float amount) {

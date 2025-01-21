@@ -100,13 +100,13 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@Override
 	public IDamageDistribution update(EntityLivingBase owner) {
-		return this.update(owner, DDDRegistries.modifiers.getEntityDamageDistributionRegistry());
+		return this.update(owner, DDDRegistries.modifiers.getMobDamageDistributionRegistry());
 	}
 
 	@Override
 	public IDamageDistribution update(IProjectile owner) {
 		if(owner instanceof Entity) {
-			return this.update((Entity) owner, DDDRegistries.modifiers.getEntityDamageDistributionRegistry());
+			return this.update((Entity) owner, DDDRegistries.modifiers.getProjectileDistributionRegistry());
 		}
 		return this;
 	}

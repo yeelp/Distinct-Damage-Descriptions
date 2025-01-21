@@ -22,7 +22,9 @@ public interface IDDDModifierRegistries {
 
 	IDDDModifierRegistry<ItemStack, ShieldDistribution, IDDDCapModifier<ItemStack>> getItemStackShieldDistributionRegistry();
 
-	IDDDModifierRegistry<Entity, IDamageDistribution, IDDDCapModifier<Entity>> getEntityDamageDistributionRegistry();
+	IDDDModifierRegistry<EntityLivingBase, IDamageDistribution, IDDDCapModifier<EntityLivingBase>> getMobDamageDistributionRegistry();
+	
+	IDDDModifierRegistry<Entity, IDamageDistribution, IDDDCapModifier<Entity>> getProjectileDistributionRegistry();
 
 	IDDDModifierRegistry<EntityLivingBase, IMobResistances, IDDDResistanceModifier> getEntityResistancesRegistry();
 
@@ -39,8 +41,10 @@ public interface IDDDModifierRegistries {
 				this.getItemStackDamageDistributionRegistry().register((IDDDCapModifier<ItemStack>) modifier);
 				break;
 			case MOB_DAMAGE:
+				this.getMobDamageDistributionRegistry().register((IDDDCapModifier<EntityLivingBase>) modifier);
+				break;
 			case PROJECTILE:
-				this.getEntityDamageDistributionRegistry().register((IDDDCapModifier<Entity>) modifier);
+				this.getProjectileDistributionRegistry().register((IDDDCapModifier<Entity>) modifier);
 				break;
 			case MOB_RESISTANCES:
 				this.getEntityResistancesRegistry().register((IDDDResistanceModifier) modifier);

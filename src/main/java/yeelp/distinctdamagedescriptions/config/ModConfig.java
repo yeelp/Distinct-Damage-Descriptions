@@ -45,6 +45,10 @@ public class ModConfig {
 	@Name("Debug Mode")
 	@Comment("Enable debug mode. Console will be filled with debug messages. The frequency/content of the messages may vary across versions. Only enable if troubleshooting or developing.")
 	public static boolean showDotsOn = false;
+	
+	@Name("Salvage Errors")
+	@Comment("When enabled, DDD will attempt to fix errors that occur, if it can. Otherwise, it will throw an exception and crash. Only enable this if you know what you're doing!")
+	public static boolean salvageThis = false;
 
 	@Name("Client")
 	@Comment("Alter client side settings")

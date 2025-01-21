@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -53,13 +52,13 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 		ENTITY(AppliesTo.PROJECTILE) {					
 			@Override
 			IDDDModifierRegistry<?, ?, ? extends IDDDCapModifier<?>> getRegistry() {
-				return DDDRegistries.modifiers.getEntityDamageDistributionRegistry();
+				return DDDRegistries.modifiers.getProjectileDistributionRegistry();
 			}
 		},
 		ENTITY_LIVING_BASE_DAMAGE(AppliesTo.MOB_DAMAGE) {		
 			@Override
 			IDDDModifierRegistry<?, ?, ? extends IDDDCapModifier<?>> getRegistry() {
-				return DDDRegistries.modifiers.getEntityDamageDistributionRegistry();
+				return DDDRegistries.modifiers.getMobDamageDistributionRegistry();
 			}
 		},
 		ENTITY_LIVING_BASE_RESISTANCE(AppliesTo.MOB_RESISTANCES) {
@@ -70,12 +69,6 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 		};
 		
 		private final AppliesTo appliesTo;
-		private static final Map<ModifierType, ModifierType> sharedMap = new EnumMap<ModifierType, ModifierType>(ModifierType.class);
-		
-		protected static void init() {
-			sharedMap.put(ENTITY_LIVING_BASE_DAMAGE, ENTITY);
-			sharedMap.put(ENTITY, ENTITY_LIVING_BASE_DAMAGE);
-		}
 		
 		ModifierType(AppliesTo appliesTo) {
 			this.appliesTo = appliesTo;
@@ -83,10 +76,6 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 		
 		AppliesTo appliesTo() {
 			return this.appliesTo;
-		}
-		
-		static Optional<ModifierType> getOtherTypeRegistryShares(ModifierType type) {
-			return Optional.ofNullable(sharedMap.get(type));
 		}
 		
 		abstract IDDDModifierRegistries.IDDDModifierRegistry<?, ?, ? extends IDDDCapModifier<?>> getRegistry();
@@ -97,11 +86,10 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 	protected static final Predicate<String> IS_NOT_REGISTERED = (s) -> DDDRegistries.damageTypes.get(DDDDamageType.addDDDPrefixIfNeeded(s)) == null;
 	
 	static {
-		ModifierType.init();
 		for(ModifierType type : ModifierType.values()) {
 			USED_NAMES.put(type, Lists.newArrayList());
 			BUILDERS.put(type, Lists.newArrayList());
-		}
+		}	
 	}
 	private final DDDBaseMap<Float> map = new DDDBaseMap<Float>(() -> 0.0f);
 	private final Map<String, Float> stringMap = Maps.newHashMap();
@@ -175,9 +163,6 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 		}
 		else if (USED_NAMES.get(this.type).contains(this.name)) {
 			throw new ZenRuntimeException(String.format("%s is already used by a modifier in another script!",  this.name));
-		}
-		else if (ModifierType.getOtherTypeRegistryShares(this.type).filter((type) -> USED_NAMES.get(type).contains(this.name)).isPresent()) {
-			throw new ZenRuntimeException(String.format("Mob Damage and Projectile Damage modifiers share the same registry! %s is already used by one of them in another script!", this.name));
 		}
 		if(this.getPredicate() == null) {
 			throw new ZenRuntimeException(String.format("No isModifierApplicable function defined for %s!", this.name));

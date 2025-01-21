@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -157,6 +158,7 @@ public final class FirstAidIntegration implements IModIntegration {
 				EntityPlayer player = (EntityPlayer) defender;
 				IDDDCombatTracker ct = DDDAPI.accessor.getDDDCombatTracker(player).get();
 				Optional<ArmorClassification> classification = ct.getCurrentCalculation().map(DamageCalculation::getArmorClassification);
+				AtomicBoolean appliedMods = new AtomicBoolean(false);
 				deltaArmor.forEach((slot, armorValues) -> {
 					ItemStack stack = player.getItemStackFromSlot(slot);
 					if(stack.isEmpty()) {
@@ -171,7 +173,11 @@ public final class FirstAidIntegration implements IModIntegration {
 						stack.addAttributeModifier(modifier.getAttribute().getName(), mod, slot);
 						DebugLib.outputFormattedDebug("Added Attribute Modifier to %s slot: %s", slot.toString(), mod.toString());
 					});
+					appliedMods.set(true);
 				});
+				if(appliedMods.get()) {
+					FirstAidEventHandler.markPlayerHasMods(player);
+				}
 				return false;
 			}
 			

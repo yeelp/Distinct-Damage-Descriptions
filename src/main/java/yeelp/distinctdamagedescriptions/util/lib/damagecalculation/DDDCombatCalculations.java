@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -47,6 +48,7 @@ public final class DDDCombatCalculations {
 	private static final IClassifier<MobDefenses> DEFENSES_CLASSIFIER = new DefensesClassifier();
 	
 	private static final Set<IArmorModifierInjector> ARMOR_MOD_INJECTORS = Sets.newTreeSet();
+	private static final int CLEAR_INTERVAL_TICKS = 20;
 	
 	public static final void registerArmorValuesInjector(IArmorValuesInjector injector) {
 		ArmorClassifier.registerInjector(injector);
@@ -161,6 +163,15 @@ public final class DDDCombatCalculations {
 			return;
 		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).map(IDDDCombatTracker::getRecentResults).map(Predicates.or(Predicates.and(CombatResults::wasImmunityTriggered, (results) -> results.getAmount().orElse(Double.NaN) == 0), CombatResults::wasShieldEffective)::test).ifPresent(evt::setCanceled);
+	}
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
+	public static final void onEntityTick(LivingUpdateEvent evt) {
+		EntityLivingBase entity = evt.getEntityLiving();
+		if(entity.world.isRemote || evt.getEntityLiving().ticksExisted % CLEAR_INTERVAL_TICKS != 0) {
+			return;
+		}
+		DDDAPI.accessor.getDDDCombatTracker(entity).ifPresent((ct) -> ct.getCurrentCalculation().ifPresent((calc) -> ct.clear()));
 	}
 
 	public static final class DDDEnchantmentInfo {

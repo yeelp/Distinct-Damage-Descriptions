@@ -29,6 +29,8 @@ public final class DamageCalculation {
 	private Map<EntityEquipmentSlot, ArmorValues> armor = null;
 	private DamageMap incomingDamage = null;
 	private boolean wasDamageClassified = false;
+	private boolean wasArmorModified = false;
+	private boolean completed = false;
 
 	/**
 	 * Create a new DamageCalculation based off the supplied {@link CombatContext}.
@@ -149,6 +151,22 @@ public final class DamageCalculation {
 	 */
 	public void setNewArmorValuesMap() {
 		this.armor = Maps.newHashMap();
+	}
+	
+	public void markCompleted() {
+		this.completed = true;
+	}
+	
+	public boolean wasCompleted() {
+		return this.completed;
+	}
+	
+	public void markArmorModified() {
+		this.wasArmorModified = true;
+	}
+	
+	public boolean wasArmorModified() {
+		return this.wasArmorModified;
 	}
 
 	public DamageMap getClassifiedDamage() {
