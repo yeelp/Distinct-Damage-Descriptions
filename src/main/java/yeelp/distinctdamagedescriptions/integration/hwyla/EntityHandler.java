@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.HwylaConsts;
 import yeelp.distinctdamagedescriptions.integration.hwyla.client.HwylaTooltipMaker;
 
 public class EntityHandler implements IWailaEntityProvider {
@@ -50,7 +51,7 @@ public class EntityHandler implements IWailaEntityProvider {
 	@Override
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
 		if(entity instanceof EntityLivingBase) {
-			currenttip.addAll(HwylaTooltipMaker.makeHwylaTooltipStrings((EntityLivingBase) accessor.getEntity()));
+			currenttip.addAll(HwylaTooltipMaker.makeHwylaTooltipStrings((EntityLivingBase) accessor.getEntity(), accessor.getNBTData()));
 		}
 		return currenttip;
 	}
@@ -59,7 +60,7 @@ public class EntityHandler implements IWailaEntityProvider {
 	public NBTTagCompound getNBTData(EntityPlayerMP player, Entity ent, NBTTagCompound tag, World world) {
 		if(ent instanceof EntityLivingBase) {
 			DDDAPI.accessor.getMobResistances((EntityLivingBase) ent).ifPresent((resists) -> {
-				tag.setTag("ddd.resists", resists.serializeNBT());
+				tag.setTag(HwylaConsts.HWYLA_RESISTS, resists.serializeNBT());
 			});
 		}
 		return tag;

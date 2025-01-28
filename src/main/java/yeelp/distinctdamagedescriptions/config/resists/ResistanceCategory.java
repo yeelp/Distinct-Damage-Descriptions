@@ -98,6 +98,7 @@ public final class ResistanceCategory {
 			"Define the rule DDD will use when parsing the armorResist config.",
 			"    LITERAL: DDD will parse the config exactly as it is written. Only the types written in an item's armor distribution will be used.",
 			"    IMPLIED: DDD will add in armor effectiveness for types not mentioned in an armor distribution. For example, an armor distribution of [(s, 0.8), (p, 0.5)] will have all the other registered DDD types added to its distribution. The effectiveness these types get is defined by impliedArmorEffectivess."})
+	@RequiresMcRestart
 	public ArmorParsingType armorParseRule = ArmorParsingType.LITERAL;
 
 	@Name("Negative Armor Handling")
@@ -121,6 +122,7 @@ public final class ResistanceCategory {
 	@Comment({
 			"The armor effectiveness that non-specified types get when using the IMPLIED armor parsing rule."})
 	@RangeDouble(min = 0.0)
+	@RequiresMcRestart
 	public double impliedArmorEffectiveness = 1.0;
 
 	@Name("Enable Shield Calculations")

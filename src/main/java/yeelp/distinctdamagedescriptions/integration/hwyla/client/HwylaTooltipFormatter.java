@@ -31,12 +31,11 @@ public abstract class HwylaTooltipFormatter<C> extends AbstractCapabilityTooltip
 
 	@Override
 	public boolean supportsDamageFormat(DDDDamageFormatter f) {
-		return f == DDDDamageFormatter.STANDARD;
+		return true;
 	}
 
 	@Override
 	public String getKeyText() {
 		return this.key.getKeyText();
 	}
-
 }

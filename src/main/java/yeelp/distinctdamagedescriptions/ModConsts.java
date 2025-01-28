@@ -53,6 +53,14 @@ public interface ModConsts {
 		final String NO_RESISTS = "noresists";
 		final String UNCHANGED = "unchanged";
 		final String NO_ICONS = "dddnoicons";
+		
+		final String DAMAGE = "damage";
+		final String RESISTANCE = "resistance";
+		final String WEAKNESS = "weakness";
+		final String EFFECTIVENESS = "effectiveness";
+		final String ADAPTABILITY_CHANCE = "adaptivechance";
+		final String ADAPTABILITY_AMOUNT = "adaptiveamount";
+		final String IMMUNITIES = "immunities";
 	}
 	
 	public interface CommandConsts {

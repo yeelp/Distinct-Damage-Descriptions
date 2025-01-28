@@ -25,21 +25,13 @@ import yeelp.distinctdamagedescriptions.util.lib.YLib;
  */
 public abstract class TooltipTypeFormatter {
 
-	public static final String DAMAGE = "damage";
-	public static final String RESISTANCE = "resistance";
-	public static final String WEAKNESS = "weakness";
-	public static final String EFFECTIVENESS = "effectiveness";
-	public static final String ADAPTABILITY_CHANCE = "adaptivechance";
-	public static final String ADAPTABILITY_AMOUNT = "adaptiveamount";
-	public static final String IMMUNITIES = "immunities";
-
 	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 	protected static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
 
 	/**
 	 * Default formatter for damage
 	 */
-	public static final TooltipTypeFormatter DEFAULT_DAMAGE = new Default(DAMAGE);
+	public static final TooltipTypeFormatter DEFAULT_DAMAGE = new Default(TooltipConsts.DAMAGE);
 
 	/**
 	 * Formatter for armor.
@@ -49,7 +41,7 @@ public abstract class TooltipTypeFormatter {
 	/**
 	 * Formatter for shields' effectiveness
 	 */
-	public static final TooltipTypeFormatter SHIELD = new Default(EFFECTIVENESS);
+	public static final TooltipTypeFormatter SHIELD = new Default(TooltipConsts.EFFECTIVENESS);
 
 	/**
 	 * Formatter for mob resistances
@@ -111,7 +103,7 @@ public abstract class TooltipTypeFormatter {
 		private static final ITextComponent TOUGHNESS = TRANSLATOR.getComponent("effectiveToughness", GRAY);
 
 		Armor() {
-			super(EFFECTIVENESS);
+			super(TooltipConsts.EFFECTIVENESS);
 		}
 
 		@Override
@@ -145,14 +137,14 @@ public abstract class TooltipTypeFormatter {
 	public static final class MobResistances extends TooltipTypeFormatter {
 
 		private static final Style LIGHT_PURPLE = new Style().setColor(TextFormatting.LIGHT_PURPLE);
-		private static final ITextComponent RESISTANCE_SUFFIX = TRANSLATOR.getComponent(RESISTANCE, GRAY);
-		private static final ITextComponent WEAKNESS_SUFFIX = TRANSLATOR.getComponent(WEAKNESS, new Style().setColor(TextFormatting.DARK_RED));
-		private static final ITextComponent ADAPTABILITY_CHANCE_PREFIX = TRANSLATOR.getComponent(ADAPTABILITY_CHANCE, LIGHT_PURPLE);
-		private static final ITextComponent ADAPTABILITY_AMOUNT_PREFIX = TRANSLATOR.getComponent(ADAPTABILITY_AMOUNT, LIGHT_PURPLE);
-		private static final ITextComponent STARTING_IMMUNITIES = TRANSLATOR.getComponent(IMMUNITIES, new Style().setColor(TextFormatting.AQUA));
+		private static final ITextComponent RESISTANCE_SUFFIX = TRANSLATOR.getComponent(TooltipConsts.RESISTANCE, GRAY);
+		private static final ITextComponent WEAKNESS_SUFFIX = TRANSLATOR.getComponent(TooltipConsts.WEAKNESS, new Style().setColor(TextFormatting.DARK_RED));
+		private static final ITextComponent ADAPTABILITY_CHANCE_PREFIX = TRANSLATOR.getComponent(TooltipConsts.ADAPTABILITY_CHANCE, LIGHT_PURPLE);
+		private static final ITextComponent ADAPTABILITY_AMOUNT_PREFIX = TRANSLATOR.getComponent(TooltipConsts.ADAPTABILITY_AMOUNT, LIGHT_PURPLE);
+		private static final ITextComponent STARTING_IMMUNITIES = TRANSLATOR.getComponent(TooltipConsts.IMMUNITIES, new Style().setColor(TextFormatting.AQUA));
 
 		MobResistances() {
-			super(RESISTANCE);
+			super(TooltipConsts.RESISTANCE);
 		}
 
 		@Override

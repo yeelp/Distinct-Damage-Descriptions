@@ -71,7 +71,12 @@ tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is o
 tooltips.distinctdamagedescriptions.effectiveArmor=Armor
 tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
 tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:
-tooltips.distinctdamagedescriptions.hwyla.witharmor=Max: %s with armor
+tooltips.distinctdamagedescriptions.hwyla.immunities=Immunities:
+tooltips.distinctdamagedescriptions.hwyla.max=Max:
+tooltips.distinctdamagedescriptions.hwyla.witharmor=with armor
+tooltips.distinctdamagedescriptions.hwyla.alltypes=All types:
+tooltips.distinctdamagedescriptions.hwyla.allothertypes=All other types:
+tooltips.distinctdamagedescriptions.hwyla.adaptedto=Adapted To:
 tooltips.distinctdamagedescriptions.tic.distributionbias=Distribution Bias:
 tooltips.distinctdamagedescriptions.tic.influence=Influence:
 tooltips.distinctdamagedescriptions.baubles.modifiers=While Equipped:
@@ -84,7 +89,7 @@ enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force
 
 enchantment.distinctdamagedescriptions.slystrike.desc=A tool or weapon enchanted with this enchantment bypasses immunities!
-enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses up to 10% (per level) of mob resistances!
+enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses up to 10%% (per level) of mob resistances!
 
 distinctdamagedescriptions.subtitle.resist_ding=Attack reduced by resistance
 distinctdamagedescriptions.subtitle.weakness_hit=Attack increased by weakness
