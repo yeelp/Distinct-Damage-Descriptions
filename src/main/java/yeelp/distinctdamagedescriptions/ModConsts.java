@@ -28,6 +28,7 @@ public interface ModConsts {
 		final String FIRST_AID_ID = "firstaid";
 		final String QUALITY_TOOLS_ID = "qualitytools";
 		final String BAUBLES_ID	= "baubles";
+		final String TECHGUNS_ID = "techguns";
 	}
 	
 	public interface IntegrationTitles {
@@ -43,6 +44,7 @@ public interface ModConsts {
 		final String FIRST_AID_TITLE = "First Aid";
 		final String QUALITY_TOOLS_TITLE = "Quality Tools";
 		final String BAUBLES_TITLE = "Baubles";
+		final String TECHGUNS_TITLE = "Techguns";
 	}
 	
 	public interface TooltipConsts {

@@ -12,11 +12,12 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -37,6 +38,7 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorModifierInjector;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorValuesInjector;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.ICancelCalculationInjector;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IValidArmorSlotInjector;
 
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
@@ -47,6 +49,7 @@ public final class DDDCombatCalculations {
 	private static final IClassifier<ArmorClassification> ARMOR_CLASSIFIER = new ArmorClassifier();
 	private static final IClassifier<MobDefenses> DEFENSES_CLASSIFIER = new DefensesClassifier();
 	
+	private static final Set<ICancelCalculationInjector> CANCEL_CALCULATION_INJECTORS = Sets.newTreeSet();
 	private static final Set<IArmorModifierInjector> ARMOR_MOD_INJECTORS = Sets.newTreeSet();
 	private static final int CLEAR_INTERVAL_TICKS = 20;
 	
@@ -60,6 +63,10 @@ public final class DDDCombatCalculations {
 	
 	public static final void registerArmorModifierInjector(IArmorModifierInjector injector) {
 		ARMOR_MOD_INJECTORS.add(injector);
+	}
+	
+	public static final void registerCancelCalculationInjector(ICancelCalculationInjector injector) {
+		CANCEL_CALCULATION_INJECTORS.add(injector);
 	}
 	
 	public static Optional<DamageMap> classifyDamage(CombatContext ctx) {
@@ -100,7 +107,7 @@ public final class DDDCombatCalculations {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static final void onAttack(LivingAttackEvent evt) {
-		if(evt.getEntityLiving().world.isRemote) {
+		if(evt.getEntityLiving().world.isRemote || shouldCancel(ICancelCalculationInjector.determinePhase(evt), evt.getEntityLiving(), evt.getSource(), evt.getAmount())) {
 			return;
 		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((ct) -> ct.handleAttackStage(evt));
@@ -109,7 +116,7 @@ public final class DDDCombatCalculations {
 
 	@SubscribeEvent(priority = EventPriority.LOW)
 	public static final void onHurt(LivingHurtEvent evt) {
-		if(evt.getEntityLiving().world.isRemote) {
+		if(evt.getEntityLiving().world.isRemote || shouldCancel(ICancelCalculationInjector.determinePhase(evt), evt.getEntityLiving(), evt.getSource(), evt.getAmount())) {
 			return;
 		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((ct) -> {
@@ -143,7 +150,7 @@ public final class DDDCombatCalculations {
 	// Highest priority to remove temporary attribute modifiers.
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static final void onDamage(LivingDamageEvent evt) {
-		if(evt.getEntityLiving().world.isRemote) {
+		if(evt.getEntityLiving().world.isRemote || shouldCancel(ICancelCalculationInjector.determinePhase(evt), evt.getEntityLiving(), evt.getSource(), evt.getAmount())) {
 			return;
 		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((ct) -> {
@@ -172,6 +179,13 @@ public final class DDDCombatCalculations {
 			return;
 		}
 		DDDAPI.accessor.getDDDCombatTracker(entity).ifPresent((ct) -> ct.getCurrentCalculation().ifPresent((calc) -> ct.clear()));
+	}
+	
+	private static boolean shouldCancel(ICancelCalculationInjector.Phase phase, EntityLivingBase defender, DamageSource src, float amount) {
+		boolean b;
+		Iterator<ICancelCalculationInjector> it = CANCEL_CALCULATION_INJECTORS.iterator();
+		for(b = false; it.hasNext(); b = it.next().shouldCancel(b, phase, defender, src, amount));
+		return b;
 	}
 
 	public static final class DDDEnchantmentInfo {

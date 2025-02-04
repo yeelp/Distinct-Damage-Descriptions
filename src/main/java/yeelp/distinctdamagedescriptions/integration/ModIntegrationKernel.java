@@ -35,6 +35,7 @@ import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesIntegration;
 import yeelp.distinctdamagedescriptions.integration.qualitytools.QualityToolsIntegration;
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.SpartanWeaponryCompat;
+import yeelp.distinctdamagedescriptions.integration.techguns.TechgunsCompat;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraIntegration;
 import yeelp.distinctdamagedescriptions.integration.thebewteenlands.TheBetweenlandsCompat;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.DDDConarmIntegration;
@@ -64,6 +65,7 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.IntegrationIds.QUALITY_TOOLS_ID, () -> new QualityToolsIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.FIRST_AID_ID, () -> new FirstAidIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.BAUBLES_ID, () -> new BaublesIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.TECHGUNS_ID, () -> new TechgunsCompat());
 		
 		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));
