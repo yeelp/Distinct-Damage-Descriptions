@@ -19,6 +19,7 @@ import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInPoison;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDDaylightDist;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDInstantEffectsDist;
+import yeelp.distinctdamagedescriptions.api.impl.dists.EnderPearlDist;
 import yeelp.distinctdamagedescriptions.api.impl.dists.ParrotPoisonDist;
 import yeelp.distinctdamagedescriptions.api.impl.dists.SimpleBuiltInDist;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -33,7 +34,27 @@ public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDist
 
 	@Override
 	public void init() {
-		this.registerAll(SimpleBuiltInDist.ANVIL, SimpleBuiltInDist.CACTUS, SimpleBuiltInDist.FALL, SimpleBuiltInDist.FALLING_BLOCK, SimpleBuiltInDist.FLY_INTO_WALL, SimpleBuiltInDist.LIGHTNING, SimpleBuiltInDist.WITHER, DDDBuiltInForce.EVOKER_FANGS_DIST, DDDBuiltInForce.GUARDIAN_DIST, new DDDBuiltInForce.ThornsDist(), new DDDDaylightDist(), new DDDBuiltInFire(), new DDDBuiltInPiercing(), new DDDBuiltInPoison(), new DDDInstantEffectsDist(), new ParrotPoisonDist(), new DDDExplosionDist());
+		//@formatter:off
+		this.registerAll(SimpleBuiltInDist.ANVIL, 
+				SimpleBuiltInDist.CACTUS, 
+				SimpleBuiltInDist.FALL, 
+				SimpleBuiltInDist.FALLING_BLOCK, 
+				SimpleBuiltInDist.FLY_INTO_WALL, 
+				SimpleBuiltInDist.LIGHTNING, 
+				SimpleBuiltInDist.WITHER, 
+				SimpleBuiltInDist.SUFFOCATION, 
+				DDDBuiltInForce.EVOKER_FANGS_DIST, 
+				DDDBuiltInForce.GUARDIAN_DIST, 
+				new DDDBuiltInForce.ThornsDist(), 
+				new DDDDaylightDist(), 
+				new DDDBuiltInFire(), 
+				new DDDBuiltInPiercing(), 
+				new DDDBuiltInPoison(), 
+				new DDDInstantEffectsDist(), 
+				new ParrotPoisonDist(), 
+				new DDDExplosionDist(), 
+				new EnderPearlDist());
+		//@formatter:on
 	}
 
 	@Override
@@ -54,7 +75,7 @@ public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDist
 		for(result = start; p.test(result) && it.hasNext(); result = next.apply(dist = it.next()));
 		if(ModConfig.showDotsOn) {
 			if(dist != null) {
-				DebugLib.outputFormattedDebug("Selected Predefined Distribution is: %s", dist.getName());				
+				DebugLib.outputFormattedDebug("Selected Predefined Distribution is: %s", dist.getName());
 			}
 			else {
 				DistinctDamageDescriptions.debug("No Predefined Distribution Applicable for this context.");

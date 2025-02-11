@@ -10,6 +10,7 @@ import com.google.common.base.Predicates;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
@@ -66,7 +67,7 @@ public final class DaylightTracker extends AbstractTracker {
 
 	@Override
 	public boolean shouldStartTracking(EntityLivingBase entity) {
-		return entity.world.isDaytime() && YResources.getEntityID(entity).filter(WHITELIST::contains).isPresent() && entity.isBurning() && entity.world.canBlockSeeSky(entity.getPosition());
+		return entity.world.isDaytime() && entity.getBrightness() > 0.5f && YResources.getEntityID(entity).filter(WHITELIST::contains).isPresent() && entity.isBurning() && entity.world.canBlockSeeSky(new BlockPos(entity.posX, entity.posY +entity.getEyeHeight(), entity.posZ));
 	}
 
 	@Override
