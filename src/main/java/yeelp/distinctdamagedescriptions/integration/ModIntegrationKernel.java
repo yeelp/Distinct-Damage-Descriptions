@@ -30,6 +30,7 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.baubles.BaublesIntegration;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.DDDCoTIntegration;
+import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.ElectroblobsWizardryIntegration;
 import yeelp.distinctdamagedescriptions.integration.firstaid.FirstAidIntegration;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesIntegration;
@@ -66,6 +67,7 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.IntegrationIds.FIRST_AID_ID, () -> new FirstAidIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.BAUBLES_ID, () -> new BaublesIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.TECHGUNS_ID, () -> new TechgunsCompat());
+		integratableMods.put(ModConsts.IntegrationIds.WIZARDRY_ID, () -> new ElectroblobsWizardryIntegration());
 		
 		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));

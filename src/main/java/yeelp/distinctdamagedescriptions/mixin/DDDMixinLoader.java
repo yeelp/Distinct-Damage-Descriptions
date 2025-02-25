@@ -5,6 +5,8 @@ import java.util.Map;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
 
+import com.llamalad7.mixinextras.MixinExtrasBootstrap;
+
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
@@ -14,6 +16,7 @@ public final class DDDMixinLoader implements IFMLLoadingPlugin {
 
 	public DDDMixinLoader() {
 		MixinBootstrap.init();
+		MixinExtrasBootstrap.init();
 		Mixins.addConfigurations("mixin.ddd.json");
 	}
 

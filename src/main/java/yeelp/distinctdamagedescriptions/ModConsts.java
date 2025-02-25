@@ -29,6 +29,7 @@ public interface ModConsts {
 		final String QUALITY_TOOLS_ID = "qualitytools";
 		final String BAUBLES_ID	= "baubles";
 		final String TECHGUNS_ID = "techguns";
+		final String WIZARDRY_ID = "ebwizardry";
 	}
 	
 	public interface IntegrationTitles {
@@ -45,6 +46,7 @@ public interface ModConsts {
 		final String QUALITY_TOOLS_TITLE = "Quality Tools";
 		final String BAUBLES_TITLE = "Baubles";
 		final String TECHGUNS_TITLE = "Techguns";
+		final String WIZARDRY_NAME = "Electroblob's Wizardry";
 	}
 	
 	public interface TooltipConsts {

@@ -802,4 +802,12 @@ public interface DefaultValues {
 			"baubles:ring;3;[(ddd_fire,0.5)]",
 			"baubles:ring;4;[(ddd_poison,0.8)]"
 	};
+	
+	final String[] SPELL_DISTS = {
+		"magic_missile;[(ddd_force,1)]"	
+	};
+	
+	final String[] MINON_RESISTANCES = {
+			"zombie_minion;minecraft:zombie"
+	};
 }

@@ -5,6 +5,9 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.config.IDDDConfiguration.ConfigEntry;
+
 /**
  * Stores values from config on startup for easy access.
  * 
@@ -12,7 +15,7 @@ import javax.annotation.Nullable;
  *
  * @param <T> The type of capability this configuration stores
  */
-public interface IDDDConfiguration<T> {
+public interface IDDDConfiguration<T> extends Iterable<ConfigEntry<T>> {
 	/**
 	 * Get a configuration entry
 	 * 
@@ -78,5 +81,34 @@ public interface IDDDConfiguration<T> {
 	 */
 	default Optional<T> getSafe(String key) {
 		return Optional.ofNullable(this.get(key));
+	}
+	
+	/**
+	 * A config entry
+	 * @author Yeelp
+	 *
+	 * @param <T> The value this config entry stores
+	 */
+	final class ConfigEntry<T> extends Tuple<String, T> {
+		
+		ConfigEntry(String key, T value) {
+			super(key, value);
+		}
+
+		/**
+		 * Syntactic sugar for {@link Tuple#getFirst()}
+		 * @return The config key
+		 */
+		public String getKey() {
+			return this.getFirst();
+		}
+
+		/**
+		 * Syntactic sugar for {@link Tuple#getSecond()}
+		 * @return The config value
+		 */
+		public T getValue() {
+			return this.getSecond();
+		}
 	}
 }

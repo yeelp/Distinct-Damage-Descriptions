@@ -31,6 +31,10 @@ public final class CompatCategory {
 	@Comment("Configure Baubles integration")
 	public BaublesCategory baubles = new BaublesCategory();
 	
+	@Name("Electroblob's Wizardry Integration")
+	@Comment("Configure Electroblob's Wizardry Integration")
+	public ElectroblobsWizardryCategory ebwizardry = new ElectroblobsWizardryCategory();
+	
 	@Name("Only Use Defined Item Distributions")
 	@Comment({"With this enabled, DDD will not assign distributions to items not given an explicit distribution in the config or through mod integration. It is recommended to leave this option untouched if you don't know what this does!",
 		"These items will use a default damage distribution (defined in the damage category) if one isn't defined, a default armor distribution if applicable (defined in the resistance category) if one isn't defined and a default shield distribution if applicable (defined in the resistance category) if one isn't defined, which can not be altered during gameplay.",

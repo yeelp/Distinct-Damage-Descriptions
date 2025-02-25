@@ -22,11 +22,11 @@ import net.minecraftforge.common.ISpecialArmor.ArmorProperties;
  * @author Yeelp
  *
  */
-public final class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
+public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	private static final Comparator<ArmorValues> ARMOR_VALUES_COMPARATOR = Comparator.comparingDouble(ArmorValues::getArmor).thenComparingDouble(ArmorValues::getToughness);
 	private float armor, toughness;
 
-	public static final ArmorValues ZERO = new ArmorValues();
+	public static final ArmorValues ZERO = new ArmorValuesZero();
 
 	public ArmorValues() {
 		this(0.0f, 0.0f);
@@ -172,5 +172,22 @@ public final class ArmorValues implements Iterable<Float>, Comparable<ArmorValue
 	@Override
 	public String toString() {
 		return String.format("Armor Values: {Armor: %f, Toughness %f}", this.armor, this.toughness);
+	}
+	
+	private static final class ArmorValuesZero extends ArmorValues {
+		
+		private boolean immutable = false;
+		ArmorValuesZero() {
+			super();
+			this.immutable = true;
+		}
+		
+		@Override
+		public ArmorValues setValues(float armor, float toughness) {
+			if(this.immutable) {
+				throw new UnsupportedOperationException("Altering ArmorValues.ZERO not allowed!");				
+			}
+			return super.setValues(armor, toughness);
+		}
 	}
 }

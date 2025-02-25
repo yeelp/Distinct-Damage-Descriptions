@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.config;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -32,5 +33,31 @@ public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 	@Override
 	public boolean configured(String key) {
 		return this.map.containsKey(key);
+	}
+	
+	@Override
+	public Iterator<ConfigEntry<T>> iterator() {
+		return this.new ConfigurationIterator();
+	}
+	
+	private final class ConfigurationIterator implements Iterator<ConfigEntry<T>> {
+
+		private final Iterator<String> keys;
+		@SuppressWarnings("synthetic-access")
+		ConfigurationIterator() {
+			this.keys = DDDBaseConfiguration.this.map.keySet().iterator();
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return this.keys.hasNext();
+		}
+
+		@Override
+		public ConfigEntry<T> next() {
+			String key = this.keys.next();
+			return new ConfigEntry<T>(key, DDDBaseConfiguration.this.get(key));
+		}
+		
 	}
 }

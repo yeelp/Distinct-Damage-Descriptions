@@ -18,6 +18,9 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorValuesInjector;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter.Armor;
 
 public final class QualityToolsIntegration implements IModIntegration {
 
@@ -45,31 +48,34 @@ public final class QualityToolsIntegration implements IModIntegration {
 
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
+		TooltipDistributor.registerArmorTooltipInjector(new IArmorTooltipInjector() {
+			
+			@Override
+			public boolean shouldUseFormatter(ItemStack stack) {
+				return false;
+			}
+			
+			@Override
+			public Armor getFormatterToUse() {
+				return null;
+			}
+			
+			@Override
+			public boolean applies(ItemStack stack) {
+				return stack.hasTagCompound() && stack.getTagCompound().hasKey(QualityToolsConsts.QUALITY_TAG);
+			}
+			
+			@Override
+			public ArmorValues alterArmorValues(ItemStack stack, float armor, float toughness) {
+				return getArmorValuesFromQuality(stack).add(armor, toughness);
+			}
+		});
+		
 		DDDCombatCalculations.registerArmorValuesInjector(new IArmorValuesInjector() {
 			
 			@Override
 			public ArmorValues apply(ItemStack t, EntityEquipmentSlot u) {
-				return Optional.ofNullable(t.getTagCompound())
-						.map((tag) -> tag.getCompoundTag(QualityToolsConsts.QUALITY_TAG))
-						.map((tag) -> tag.getTagList(QualityToolsConsts.ATTRIBUTE_MODIFIERS_TAG, NBT.COMPOUND_TAG_ID))
-						.map((list) -> {
-							double armorVal = 0.0;
-							double toughnessVal = 0.0;
-							for(NBTBase nbt : list) {
-								if(nbt instanceof NBTTagCompound) {
-									NBTTagCompound tag = (NBTTagCompound) nbt;
-									String name = tag.getString(QualityToolsConsts.ATTRIBUTE_NAME_TAG);
-									double val = tag.getDouble(QualityToolsConsts.AMOUNT_TAG);
-									if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getAttribute().getName())) {
-										armorVal += val;
-									}
-									else if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ArmorModifiers.TOUGHNESS.getAttribute().getName())) {
-										toughnessVal += val;
-									}
-								}
-							}
-							return new ArmorValues((float) armorVal, (float) toughnessVal);
-						}).orElse(new ArmorValues());
+				return getArmorValuesFromQuality(t);
 			}
 
 			@Override
@@ -78,5 +84,31 @@ public final class QualityToolsIntegration implements IModIntegration {
 			}
 		});
 		return IModIntegration.super.init(evt);
+	}
+	
+	static ArmorValues getArmorValuesFromQuality(ItemStack stack) {
+		//@formatter:off
+		return Optional.ofNullable(stack.getTagCompound())
+				.map((tag) -> tag.getCompoundTag(QualityToolsConsts.QUALITY_TAG))
+				.map((tag) -> tag.getTagList(QualityToolsConsts.ATTRIBUTE_MODIFIERS_TAG, NBT.COMPOUND_TAG_ID))
+				.map((list) -> {
+					double armorVal = 0.0;
+					double toughnessVal = 0.0;
+					for(NBTBase nbt : list) {
+						if(nbt instanceof NBTTagCompound) {
+							NBTTagCompound tag = (NBTTagCompound) nbt;
+							String name = tag.getString(QualityToolsConsts.ATTRIBUTE_NAME_TAG);
+							double val = tag.getDouble(QualityToolsConsts.AMOUNT_TAG);
+							if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getAttribute().getName())) {
+								armorVal += val;
+							}
+							else if(name.equalsIgnoreCase(DDDAttributeModifierCollections.ArmorModifiers.TOUGHNESS.getAttribute().getName())) {
+								toughnessVal += val;
+							}
+						}
+					}
+					return new ArmorValues((float) armorVal, (float) toughnessVal);
+				}).orElse(new ArmorValues());
+		//@formatter:on
 	}
 }

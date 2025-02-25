@@ -36,7 +36,7 @@ public abstract class TooltipTypeFormatter {
 	/**
 	 * Formatter for armor.
 	 */
-	public static final Armor ARMOR = new Armor();
+	public static final Armor ARMOR = new Armor.Vanilla();
 
 	/**
 	 * Formatter for shields' effectiveness
@@ -97,34 +97,67 @@ public abstract class TooltipTypeFormatter {
 	 * @author Yeelp
 	 *
 	 */
-	public static final class Armor extends TooltipTypeFormatter {
+	public static abstract class Armor extends TooltipTypeFormatter {
 
-		private static final ITextComponent ARMOR = TRANSLATOR.getComponent("effectiveArmor", GRAY);
-		private static final ITextComponent TOUGHNESS = TRANSLATOR.getComponent("effectiveToughness", GRAY);
-
-		Armor() {
+		protected Armor() {
 			super(TooltipConsts.EFFECTIVENESS);
 		}
 
 		@Override
-		public String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
+		public final String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
 			return super.standardFormat(formatter.getColourScheme().getFormattingBasedOnValue(amount, 1.0f), type, amount, formatter);
 		}
 
+		protected abstract ITextComponent getArmorText();
+
+		protected abstract ITextComponent getToughnessText();
+
 		/**
-		 * Format armor values as a damage type, armor, toughness triplet
+		 * Format armor values as a damage type, armor tuple, or as a triple if there is
+		 * toughness
 		 * 
-		 * @param type      the damage type
-		 * @param armor     the armor value
-		 * @param toughness the toughness value
-		 * @param formatter the formatter whose number and damage formatters are to be
-		 *                  used
-		 * @return the formatted String.
+		 * @param type              The damage type.
+		 * @param armor             The armor values.
+		 * @param toughness         The toughness value.
+		 * @param originalArmor     The original armor value this armor piece provided.
+		 *                          Used as a reference for colour coding.
+		 * @param originalToughness The original toughess value this armor piece
+		 *                          provided. If non-zero, toughness will be included in
+		 *                          the tooltip, also used as a reference for colour
+		 *                          coding.
+		 * @param formatter         The formatter whose number and damage formatters are
+		 *                          to be used.
+		 * @return The formatted String.
 		 */
-		@SuppressWarnings("static-method")
-		public final String formatArmorAndToughness(DDDDamageType type, float armor, float toughness, AbstractTooltipFormatter<?> formatter) {
+		public final String formatArmorAndToughness(DDDDamageType type, float armor, float toughness, float originalArmor, float originalToughness, AbstractTooltipFormatter<?> formatter) {
 			TextFormatting gray = TextFormatting.GRAY;
-			return String.format("   %s%s: (%s %s%s, %s %s%s)%s", formatter.getDamageFormatter().format(type), gray.toString(), formatter.getNumberFormattingStrategy().format(armor), ARMOR.getFormattedText(), gray.toString(), formatter.getNumberFormattingStrategy().format(toughness), TOUGHNESS.getFormattedText(), gray.toString(), TextFormatting.RESET.toString());
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("   %s%s: (%s", formatter.getDamageFormatter().format(type), gray.toString(), formatValue(armor, originalArmor, formatter, this.getArmorText().getFormattedText())));
+			if(originalToughness != 0) {
+				sb.append(String.format(", %s", formatValue(toughness, originalToughness, formatter, this.getToughnessText().getFormattedText())));
+			}
+			return sb.append(String.format("%s)", gray.toString())).toString();
+		}
+
+		private static String formatValue(float val, float threshold, AbstractTooltipFormatter<?> formatter, String suffix) {
+			return String.format("%s%s%s %s", formatter.getColourScheme().getFormattingBasedOnValue(val, threshold), formatter.getNumberFormattingStrategy().format(val), TextFormatting.GRAY.toString(), suffix);
+		}
+		
+		public static final class Vanilla extends Armor {
+			
+			private static final ITextComponent ARMOR = TRANSLATOR.getComponent("effectiveArmor", GRAY);
+			private static final ITextComponent TOUGHNESS = TRANSLATOR.getComponent("effectiveToughness", GRAY);
+
+			@Override
+			protected ITextComponent getArmorText() {
+				return ARMOR;
+			}
+
+			@Override
+			protected ITextComponent getToughnessText() {
+				return TOUGHNESS;
+			}
+			
 		}
 	}
 

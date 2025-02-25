@@ -32,7 +32,7 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IArmorDistribution cap) {
 		if(this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.PLAIN) {
 			int slot = ((TinkersArmor) stack.getItem()).armorType.getIndex();
-			return this.getArmorTooltip(cap, ArmorHelper.getArmor(stack, slot), ArmorHelper.getToughness(stack));
+			return this.getArmorTooltip(stack, cap, ArmorHelper.getArmor(stack, slot), ArmorHelper.getToughness(stack));
 		}
 		return super.formatCapabilityFor(stack, cap);
 	}

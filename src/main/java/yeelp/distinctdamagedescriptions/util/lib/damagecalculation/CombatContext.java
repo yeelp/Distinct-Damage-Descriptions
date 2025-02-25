@@ -139,8 +139,20 @@ public final class CombatContext {
 	public boolean contextMatches(DamageSource src, @Nullable Entity attacker) {
 		Entity trueAttacker = src.getTrueSource();
 		return src.damageType.equals(this.src.damageType) 
-				&& (trueAttacker == null || trueAttacker.getUniqueID().equals(this.getTrueAttacker().getUniqueID()) 
-				&& (attacker == null || attacker.getUniqueID().equals(this.getImmediateAttacker().getUniqueID())));
+				&& entitiesMatchOrAreBothNull(trueAttacker, this.getTrueAttacker()) 
+				&& entitiesMatchOrAreBothNull(attacker, this.getImmediateAttacker());
+	}
+	
+	@SuppressWarnings("null")
+	private static final boolean entitiesMatchOrAreBothNull(Entity a, Entity b) {
+		boolean aNull = a == null, bNull = b == null;
+		if(aNull ^ bNull) {
+			return false;
+		}
+		if(aNull && bNull) {
+			return true;
+		}
+		return a.getUniqueID().equals(b.getUniqueID());
 	}
 	
 	private static final class DDDValidArmorInjector implements IValidArmorSlotInjector {

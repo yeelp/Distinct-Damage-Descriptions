@@ -1,25 +1,25 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.util.function.Function;
-
 import net.minecraft.util.Tuple;
-import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
-public final class DDDModIDPrependingConfigReader<T extends Number> extends DDDNumericEntryConfigReader<T> {
+public final class DDDModIDPrependingConfigReader<T> extends DDDMultiEntryConfigReader<T> {
 
+	private final DDDMultiEntryConfigReader<T> delegate;
 	private final String modid;
 
-	public DDDModIDPrependingConfigReader(String modID, String name, String[] configList, IDDDConfiguration<T> config, Function<String, T> factory) {
-		super(name, configList, config, factory);
-		this.modid = modID;
+	public DDDModIDPrependingConfigReader(String modid, DDDMultiEntryConfigReader<T> internal) {
+		super(internal);
+		this.modid = modid;
+		this.delegate = internal;
 	}
 
 	@Override
 	protected Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
-		if(!s.contains(":")) {
-			return super.readEntry(this.modid + ":" + s);
+		if(!s.split(";")[0].contains(":")) {
+			return this.delegate.readEntry(this.modid + ":" + s);
 		}
-		return super.readEntry(s);
+		return this.delegate.readEntry(s);
 	}
+
 }

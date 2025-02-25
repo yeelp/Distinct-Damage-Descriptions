@@ -72,7 +72,7 @@ public final class ResistanceCategory {
 			"Change the default behaviour of armor pieces with no distribution defined in the Armor Resistance config. Note that setting this to anything but NO_EFFECTIVENESS will make undefined armor pieces very strong, as their armor values will basically be multiplied by the number of types being inflicted (that they are effective against)",
 			"    NO_EFFECTIVENESS: Armor not defined will have no effectiveness. DDD calculated damage will effectively go right through the armor.",
 			"    ALL_EFFECTIVENESS: Armor not defined will have 100% effectiveness against all types. This sort of reverts the armor to \"vanilla\" behaviour, though again, the strength of the armor will be multiplied by the amount of damage types inflicted.",
-			"    EFFECTIVE_TO_REGULAR_TYPES: Armor not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.",
+			"    EFFECTIVE_TO_REGULAR_TYPES: Armor not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.)",
 			"    ALLOW_BYPASS_DAMAGE_TYPE: Armor not defined will have 100% effectiveness to almost all types, except for one internal built-in type; the unknown type. This unknown type will bypass the armor entirely."})
 	public DefaultArmorDistributionBehaviour defaultArmorResists = DefaultArmorDistributionBehaviour.NO_EFFECTIVENESS;
 

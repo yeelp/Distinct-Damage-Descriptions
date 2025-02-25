@@ -84,6 +84,8 @@ tooltips.distinctdamagedescriptions.baubles.bruteforce=Bypass up to
 tooltips.distinctdamagedescriptions.baubles.immunitychance=(%s chance)
 tooltips.distinctdamagedescriptions.baubles.immunity=Immunity
 tooltips.distinctdamagedescriptions.baubles.slystrike=Bypass immunity to
+tooltips.distinctdamagedescriptions.firstaid.armor=Locational Armor
+tooltips.distinctdamagedescriptions.firstaid.toughness=Locational Armor Toughness
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force

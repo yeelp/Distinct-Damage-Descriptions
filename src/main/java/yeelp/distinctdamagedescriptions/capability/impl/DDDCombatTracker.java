@@ -195,9 +195,18 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach((type) -> {
 						classified.forEachArmorMap((slot, map) -> map.remove(type));
 					});
+					//add missing types to the armor map as zero so values.stream() recognizes missing types as no effectiveness.
+					damagingTypes.forEach((t) -> {
+						classified.forEachArmorMap((slot, map) -> {
+							if(!map.containsKey(t)) {
+								map.put(t, new ArmorValues());
+							}
+						});
+					});
 					calc.setNewArmorValuesMap();
 					Map<EntityEquipmentSlot, ArmorValues> armorVals = calc.getDeltaArmor().get();
 					classified.forEachArmorMap((slot, map) -> {
+						DebugLib.outputFormattedDebug("Armor Map for slot %s: %s", slot.toString(), DebugLib.entriesToString(map));
 						armorVals.put(slot, ModConfig.resist.armorCalcRule.merge(map.values().stream().map((av) -> av.sub(ModConfig.resist.negativeRule.handlePotentialNegativeArmorValues(classified.getOriginalArmorValues(slot))))));
 						DebugLib.outputFormattedDebug("Armor Values for slot %s: %s", slot.getName(), armorVals.get(slot));
 					});

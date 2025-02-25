@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,7 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumberFormat;
@@ -45,11 +47,11 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 			}
 
 			@Override
-			Collection<DDDDamageType> getStartingTypesToAggregate(IArmorDistribution dist) {
+			Collection<DDDDamageType> getStartingTypesToAggregate(ItemStack stack, IArmorDistribution dist) {
 				return DDDRegistries.damageTypes.getAll();
 			}
 		},
-		OTHER(RELATIVE) {
+		PERCENT(ArmorDistributionNumberFormat.PERCENT) {
 			@Override
 			public boolean test(Float t) {
 				return ArmorDistributionNumberFormat.PERCENT.test(t);
@@ -66,8 +68,30 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 			}
 
 			@Override
-			Collection<DDDDamageType> getStartingTypesToAggregate(IArmorDistribution dist) {
+			Collection<DDDDamageType> getStartingTypesToAggregate(ItemStack stack, IArmorDistribution dist) {
 				return dist.getCategories();
+			}
+		},
+		PLAIN(ArmorDistributionNumberFormat.PLAIN) {
+			@Override
+			public boolean test(Float t) {
+				return true;
+			}
+			
+			@Override
+			boolean hasEdgeCases() {
+				return false;
+			}
+			
+			@Override
+			Optional<Stream<DDDDamageType>> handleEdgeCase(IArmorDistribution dist) {
+				return Optional.empty();
+			}
+			
+			@Override
+			Collection<DDDDamageType> getStartingTypesToAggregate(ItemStack stack, IArmorDistribution dist) {
+				double baseline = ModConfig.resist.armorParseRule == ArmorParsingType.IMPLIED ? ModConfig.resist.impliedArmorEffectiveness : 0.0;
+				return dist.getCategories().stream().filter((type) -> dist.getWeight(type) != baseline).collect(Collectors.toList());
 			}
 		},
 		DEFAULT {
@@ -87,7 +111,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 			}
 
 			@Override
-			Collection<DDDDamageType> getStartingTypesToAggregate(IArmorDistribution dist) {
+			Collection<DDDDamageType> getStartingTypesToAggregate(ItemStack stack, IArmorDistribution dist) {
 				return dist.getCategories();
 			}
 		};
@@ -118,7 +142,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 		
 		abstract Optional<Stream<DDDDamageType>> handleEdgeCase(IArmorDistribution dist);
 		
-		abstract Collection<DDDDamageType> getStartingTypesToAggregate(IArmorDistribution dist);
+		abstract Collection<DDDDamageType> getStartingTypesToAggregate(ItemStack stack, IArmorDistribution dist);
 	}
 
 	protected ArmorDistributionIconAggregator() {
@@ -148,7 +172,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 				return result.get();
 			}
 		}
-		return cap.map((a) -> type.getStartingTypesToAggregate(a).stream().filter((t) -> !t.isHidden() && type.test(a.getWeight(t))).sorted()).orElse(Stream.empty());
+		return cap.map((a) -> type.getStartingTypesToAggregate(stack, a).stream().filter((t) -> !t.isHidden() && type.test(a.getWeight(t))).sorted()).orElse(Stream.empty());
 	}
 	
 	@Override

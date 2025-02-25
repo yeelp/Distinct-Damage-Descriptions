@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -19,15 +18,18 @@ import ichttt.mods.firstaid.common.EventHandler;
 import ichttt.mods.firstaid.common.apiimpl.FirstAidRegistryImpl;
 import ichttt.mods.firstaid.common.damagesystem.distribution.DamageDistribution;
 import ichttt.mods.firstaid.common.damagesystem.distribution.RandomDamageDistribution;
+import ichttt.mods.firstaid.common.util.ArmorUtils;
 import ichttt.mods.firstaid.common.util.PlayerSizeHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -37,22 +39,25 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;
-import yeelp.distinctdamagedescriptions.ModConsts.NBT;
-import yeelp.distinctdamagedescriptions.api.DDDAPI;
-import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
+import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
-import yeelp.distinctdamagedescriptions.util.lib.ArmorClassification;
+import yeelp.distinctdamagedescriptions.util.Translations;
+import yeelp.distinctdamagedescriptions.util.Translations.LayeredTranslator;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
-import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorModifierInjector;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IValidArmorSlotInjector;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter.Armor;
 
-public final class FirstAidIntegration implements IModIntegration {
+public final class FirstAidIntegration implements IModIntegration { 
 
+	final Armor formatter = this.new FirstAidTooltipTypeFormatter();
+	
 	@Override
 	public String getModTitle() {
 		return IntegrationTitles.FIRST_AID_TITLE;
@@ -96,6 +101,37 @@ public final class FirstAidIntegration implements IModIntegration {
 	
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
+		TooltipDistributor.registerArmorTooltipInjector(new IArmorTooltipInjector() {
+			
+			@Override
+			public boolean shouldUseFormatter(ItemStack stack) {
+				return true;
+			}
+			
+			@Override
+			public Armor getFormatterToUse() {
+				return FirstAidIntegration.this.formatter;
+			}
+			
+			@Override
+			public boolean applies(ItemStack stack) {
+				return true;
+			}
+			
+			@Override
+			public ArmorValues alterArmorValues(ItemStack stack, float armor, float toughness) {
+				EntityEquipmentSlot slot = ((ItemArmor) stack.getItem()).armorType;
+				return new ArmorValues((float) ArmorUtils.applyArmorModifier(slot, armor), (float) ArmorUtils.applyToughnessModifier(slot, toughness));
+			}
+			
+			@Override
+			public int priority() {
+				return -1;
+			}
+		});
+		
+		//debatable if this is needed. FirstAid grabs only what it needs,
+		//so if we work with every armor slot, FirstAid will only grab what it uses and ignore the rest.
 		DDDCombatCalculations.registerValidArmorSlotInjector(new IValidArmorSlotInjector() {
 			
 			@Override
@@ -156,20 +192,17 @@ public final class FirstAidIntegration implements IModIntegration {
 				}
 				
 				EntityPlayer player = (EntityPlayer) defender;
-				IDDDCombatTracker ct = DDDAPI.accessor.getDDDCombatTracker(player).get();
-				Optional<ArmorClassification> classification = ct.getCurrentCalculation().map(DamageCalculation::getArmorClassification);
 				AtomicBoolean appliedMods = new AtomicBoolean(false);
 				deltaArmor.forEach((slot, armorValues) -> {
 					ItemStack stack = player.getItemStackFromSlot(slot);
 					if(stack.isEmpty()) {
 						return;
 					}
-					boolean hasAttributeMods = stack.hasTagCompound() && stack.getTagCompound().hasKey(NBT.ATTRIBUTE_MODIFIERS_KEY);
 					DebugLib.outputFormattedDebug("Attribute Modifiers Before First Aid Compat: %s", DebugLib.entriesToString(stack.getAttributeModifiers(slot).asMap()));
 					Iterator<Float> armorValuesIt = armorValues.iterator();
-					Iterator<Float> originalMod = (hasAttributeMods ? ArmorValues.ZERO : classification.map((cls) -> cls.getOriginalArmorValues(slot)).orElse(ArmorValues.ZERO)).iterator();
 					Arrays.asList(DDDAttributeModifierCollections.ArmorModifiers.values()).forEach((modifier) -> {
-						AttributeModifier mod = new AttributeModifier(modifier.getUUID(), modifier.getName(), armorValuesIt.next() + originalMod.next(), 0);
+						//Only apply the delta armor, FirstAid applies the rest
+						AttributeModifier mod = new AttributeModifier(modifier.getUUID(), modifier.getName(), armorValuesIt.next(), 0);
 						stack.addAttributeModifier(modifier.getAttribute().getName(), mod, slot);
 						DebugLib.outputFormattedDebug("Added Attribute Modifier to %s slot: %s", slot.toString(), mod.toString());
 					});
@@ -194,4 +227,26 @@ public final class FirstAidIntegration implements IModIntegration {
 		return IModIntegration.super.init(evt);
 	}
 
+	class FirstAidTooltipTypeFormatter extends Armor {
+
+		private final LayeredTranslator translator = Translations.INSTANCE.getLayeredTranslator(TooltipConsts.TOOLTIPS_ROOT, FirstAidIntegration.this.getModID()); 
+		
+		private final ITextComponent armor, toughness;
+		FirstAidTooltipTypeFormatter() {
+			super();
+			this.armor = this.translator.getComponent("armor");
+			this.toughness = this.translator.getComponent("toughness");
+		}
+
+		@Override
+		protected ITextComponent getArmorText() {
+			return this.armor;
+		}
+
+		@Override
+		protected ITextComponent getToughnessText() {
+			return this.toughness;
+		}
+		
+	}
 }

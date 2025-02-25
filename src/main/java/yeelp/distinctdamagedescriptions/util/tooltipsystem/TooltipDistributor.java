@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
 
 public enum TooltipDistributor {
@@ -83,4 +84,8 @@ public enum TooltipDistributor {
 	protected abstract boolean applicable(ItemStack stack);
 
 	protected abstract void registerModCompatFormatter(IModCompatTooltipFormatter<ItemStack> formatter);
+	
+	public static void registerArmorTooltipInjector(IArmorTooltipInjector injector) {
+		ArmorDistributionFormatter.registerTooltipInjector(injector);
+	}
 }
