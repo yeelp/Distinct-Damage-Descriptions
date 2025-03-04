@@ -29,8 +29,8 @@ public final class BaublesCategory {
 	@Name("Bauble Tooltip Colour Scheme")
 	@Comment({
 		"Set the colour scheme for DDD Bauble modifiers in tooltips. Only applies to damage and resistance modifiers (ops 0 and 1)",
-		"    RED_GREEN: Use red when the armor effectiveness is less than 100% and green otherwise.",
-		"    GRAYSCALE: Use dark gray when the armor effectiveness is less than 100% and white otherwise.",
+		"    RED_GREEN: Use red when the modifier is less than 100% and green otherwise.",
+		"    GRAYSCALE: Use dark gray when the modifier is less than 100% and white otherwise.",
 		"    WHITE: Always use white."
 	})
 	public DDDTooltipColourScheme colourScheme = DDDTooltipColourScheme.RED_GREEN;
