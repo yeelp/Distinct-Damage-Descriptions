@@ -1,17 +1,13 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
-import java.util.PrimitiveIterator.OfDouble;
 import java.util.Set;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -21,9 +17,9 @@ import net.minecraftforge.common.ISpecialArmor;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorClassification;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
-import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+import yeelp.distinctdamagedescriptions.util.lib.YArmor;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorValuesInjector;
 
 class ArmorClassifier implements IClassifier<ArmorClassification> {
@@ -51,14 +47,8 @@ class ArmorClassifier implements IClassifier<ArmorClassification> {
 		STACK_ARMOR_VALUES_INJECTORS.add(injector);
 	}
 	
-	private static ArmorValues getStackOnlyArmorValues(ItemStack stack, EntityEquipmentSlot slot) {
-		Multimap<String, AttributeModifier> map = stack.getAttributeModifiers(slot);
-		OfDouble it = Arrays.stream(DDDAttributeModifierCollections.ArmorModifiers.values()).mapToDouble((armorModEnum) -> map.get(armorModEnum.getAttribute().getName()).stream().mapToDouble(AttributeModifier::getAmount).sum()).iterator();
-		return new ArmorValues((float) it.nextDouble(), (float) it.nextDouble());
-	}
-	
 	private static ArmorValues getArmorValuesFromStack(ItemStack stack, EntityEquipmentSlot slot, EntityLivingBase entity, DamageSource src, double amount) {
-		ArmorValues av = ArmorValues.merge(getStackOnlyArmorValues(stack, slot), STACK_ARMOR_VALUES_INJECTORS.stream().map((f) -> f.apply(stack, slot)).reduce(ArmorValues::merge).orElse(new ArmorValues()));
+		ArmorValues av = ArmorValues.merge(YArmor.getArmorFromStack(stack, slot), STACK_ARMOR_VALUES_INJECTORS.stream().map((f) -> f.apply(stack, slot)).reduce(ArmorValues::merge).orElse(new ArmorValues()));
 		if(stack.getItem() instanceof ISpecialArmor) {
 			av = ArmorValues.merge(av, getISpecialArmorValues(stack, (ISpecialArmor) stack.getItem(), slot, entity, src, amount));
 		}

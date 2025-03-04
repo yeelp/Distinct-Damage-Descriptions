@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.HwylaConsts;
+import yeelp.distinctdamagedescriptions.integration.hwyla.IHwylaTooltipInjectors.IHwylaArmorTooltipInjector;
 
 public final class HwylaTooltipMaker {
 	private static final HwylaMobResistanceFormatter resistances = HwylaMobResistanceFormatter.getInstance();
@@ -22,6 +23,10 @@ public final class HwylaTooltipMaker {
 		List<String> tip = damage.format(entity);
 		tip.addAll(resistances.format(entity, nbt.getCompoundTag(HwylaConsts.HWYLA_RESISTS)));
 		return tip;
+	}
+	
+	public static void registerHwylaArmorTooltipInjector(IHwylaArmorTooltipInjector injector) {
+		HwylaMobResistanceFormatter.registerArmorTooltipInjector(injector);
 	}
 
 }

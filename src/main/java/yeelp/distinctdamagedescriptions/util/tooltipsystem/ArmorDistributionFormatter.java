@@ -12,10 +12,8 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -26,8 +24,8 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
-import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
+import yeelp.distinctdamagedescriptions.util.lib.YArmor;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
 
 /**
@@ -74,10 +72,8 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 		}
 		if(this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.PLAIN) {
 			ItemArmor armor = (ItemArmor) stack.getItem();
-			Multimap<String, AttributeModifier> mods = stack.getAttributeModifiers(armor.armorType);
-			float armorAmount = getAttributeValue(DDDAttributeModifierCollections.ArmorModifiers.ARMOR, mods);
-			float toughnessAmount = getAttributeValue(DDDAttributeModifierCollections.ArmorModifiers.TOUGHNESS, mods);
-			return this.getArmorTooltip(stack, cap, armorAmount, toughnessAmount);
+			ArmorValues av = YArmor.getArmorFromStack(stack, armor);
+			return this.getArmorTooltip(stack, cap, av.getArmor(), av.getToughness());
 		}
 		boolean relativeStrat = this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.RELATIVE;
 		return Optional.of((relativeStrat ? DDDRegistries.damageTypes.getAll() : cap.getCategories()).stream().filter(Predicates.not(DDDDamageType::isHidden)).sorted().<List<String>>collect(LinkedList<String>::new, (l, d) -> {
@@ -129,10 +125,6 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 	
 	private static Predicate<Float> getFilterPredicate() {
 		return ModConfig.client.armorFormat;
-	}
-	
-	private static float getAttributeValue(DDDAttributeModifierCollections.ArmorModifiers armorMod, Multimap<String, AttributeModifier> mods) {
-		return (float) mods.get(armorMod.getAttribute().getName()).stream().mapToDouble(AttributeModifier::getAmount).sum();
 	}
 	
 	static void registerTooltipInjector(IArmorTooltipInjector injector) {

@@ -1,6 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.util.IPriority;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;

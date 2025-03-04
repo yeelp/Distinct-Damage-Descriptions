@@ -14,6 +14,9 @@ import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;
 import yeelp.distinctdamagedescriptions.ModConsts.NBT;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
+import yeelp.distinctdamagedescriptions.integration.ModIntegrationKernel;
+import yeelp.distinctdamagedescriptions.integration.hwyla.IHwylaTooltipInjectors.IHwylaArmorTooltipInjector;
+import yeelp.distinctdamagedescriptions.integration.hwyla.client.HwylaTooltipMaker;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
@@ -62,7 +65,7 @@ public final class QualityToolsIntegration implements IModIntegration {
 			
 			@Override
 			public boolean applies(ItemStack stack) {
-				return stack.hasTagCompound() && stack.getTagCompound().hasKey(QualityToolsConsts.QUALITY_TAG);
+				return hasQuality(stack);
 			}
 			
 			@Override
@@ -84,6 +87,24 @@ public final class QualityToolsIntegration implements IModIntegration {
 			}
 		});
 		return IModIntegration.super.init(evt);
+	}
+	
+	@Override
+	public void registerCrossModCompat() {
+		if(ModIntegrationKernel.wasIntegrationLoaded(IntegrationIds.HWYLA_ID)) {
+			HwylaTooltipMaker.registerHwylaArmorTooltipInjector(new IHwylaArmorTooltipInjector() {
+				
+				@Override
+				public boolean applies(ItemStack stack) {
+					return hasQuality(stack);
+				}
+				
+				@Override
+				public ArmorValues alterArmorValues(ItemStack stack, float armor, float toughness) {
+					return getArmorValuesFromQuality(stack);
+				}
+			});
+		}
 	}
 	
 	static ArmorValues getArmorValuesFromQuality(ItemStack stack) {
@@ -110,5 +131,9 @@ public final class QualityToolsIntegration implements IModIntegration {
 					return new ArmorValues((float) armorVal, (float) toughnessVal);
 				}).orElse(new ArmorValues());
 		//@formatter:on
+	}
+	
+	static boolean hasQuality(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey(QualityToolsConsts.QUALITY_TAG);
 	}
 }

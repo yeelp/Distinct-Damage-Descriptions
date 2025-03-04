@@ -19,8 +19,8 @@ public interface IModIntegration {
 	 * Pre init stage. Do what needs to be done during preinit
 	 * 
 	 * @param evt The preinitialization event
-	 * @return true if preinit successful, will have integration continued in
-	 *         the start of initialization phase.
+	 * @return true if preinit successful, will have integration continued in the
+	 *         start of initialization phase.
 	 */
 	default boolean preInit(FMLPreInitializationEvent evt) {
 		return true;
@@ -31,7 +31,8 @@ public interface IModIntegration {
 	 * during pre init but needs to be handled before config is read.
 	 * 
 	 * @param evt Initialization event.
-	 * @return true if initialization before config was successful, will move on to init.
+	 * @return true if initialization before config was successful, will move on to
+	 *         init.
 	 */
 	default boolean initStart(FMLInitializationEvent evt) {
 		return true;
@@ -62,7 +63,7 @@ public interface IModIntegration {
 	/**
 	 * Get the proper name for this mod.
 	 * 
-	 * @return The porper name of the mod.
+	 * @return The proper name of the mod.
 	 */
 	String getModTitle();
 
@@ -80,6 +81,16 @@ public interface IModIntegration {
 	 * @return all the handlers that should be registered for this integration.
 	 */
 	Iterable<Handler> getHandlers();
+
+	/**
+	 * The integration can register cross mod compat here if needed. This is called
+	 * after integration completes so calls to
+	 * {@link ModIntegrationKernel#wasIntegrationLoaded(String)} will return true if
+	 * integration was successful.
+	 */
+	default void registerCrossModCompat() {
+		return;
+	}
 
 	/**
 	 * Mod Integration Metadata. Every Mod Integration needs one of these.

@@ -13,11 +13,12 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -30,14 +31,17 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.LayeredTranslator;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
+import yeelp.distinctdamagedescriptions.util.lib.YArmor;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
@@ -47,6 +51,7 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 	private static HwylaMobResistanceFormatter instance;
 	private static final LayeredTranslator TRANSLATOR = Translations.INSTANCE.getLayeredTranslator(TooltipConsts.TOOLTIPS_ROOT, HwylaConsts.HWYLA);
 	private static final Predicate<DDDDamageType> SHOULD_TYPE_APPEAR = Predicates.not(Predicates.or(DDDDamageType::isHidden, DDDDamageType::isInternalType));
+	private static final Set<IArmorTooltipInjector> ARMOR_TOOLTIP_INJECTORS = Sets.newTreeSet();
 	
 	private static final Style WHITE = new Style().setColor(TextFormatting.WHITE),
 			AQUA = new Style().setColor(TextFormatting.AQUA),
@@ -91,18 +96,27 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		Set<DDDDamageType> immunities = Sets.newHashSet();
 		Set<DDDDamageType> armorTypesToFormat = Sets.newHashSet();
 		ArmorMap aMap = DDDMaps.newArmorMap();
-		t.getArmorInventoryList().forEach((stack) -> {
-			if(stack.getItem() instanceof ItemArmor) {
-				ItemArmor armor = (ItemArmor) stack.getItem();
-				DDDAPI.accessor.getArmorResistances(stack).ifPresent((armorDist) -> {
-					determineArmorToFormat(armorTypesToFormat, armorDist);
-					armorDist.distributeArmor(armor.damageReduceAmount, armor.toughness).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
-				});
+		ArmorValues runningTotal = new ArmorValues();
+		ModConsts.ARMOR_SLOTS_ITERABLE.forEach((slot) -> {
+			ItemStack stack = t.getItemStackFromSlot(slot);
+			if(stack.isEmpty()) {
+				return;
 			}
+			DDDAPI.accessor.getArmorResistances(stack).ifPresent((armorDist) -> {
+				ArmorValues av = YArmor.getArmorFromStack(stack, slot);
+				Iterator<IArmorTooltipInjector> it = ARMOR_TOOLTIP_INJECTORS.stream().filter((injector) -> injector.applies(stack)).iterator();
+				while(it.hasNext()) {
+					av = it.next().alterArmorValues(stack, av.getArmor(), av.getToughness());
+				}
+				runningTotal.add(av);
+				determineArmorToFormat(armorTypesToFormat, armorDist);
+				armorDist.distributeArmor(av.getArmor(), av.getToughness()).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
+			});
 		});
 		ResistMap rMap = updatedCap.getAllResistancesCopy();
 		boolean shouldAddAllOtherTypesLine = false;
 		ArmorValues armorValue = ArmorValues.ZERO;
+		float naturalArmor = Math.max((float) t.getAttributeMap().getAttributeInstance(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getAttribute()).getAttributeValue() - runningTotal.getArmor(), 0);
 		for(Iterator<DDDDamageType> it = DDDRegistries.damageTypes.getAll().stream().sorted(Comparator.<DDDDamageType>comparingDouble((d) -> rMap.get(d)).thenComparing(Comparator.naturalOrder())).filter(SHOULD_TYPE_APPEAR).iterator(); it.hasNext();) {
 			DDDDamageType type = it.next();
 			if(updatedCap.hasImmunity(type)) {
@@ -110,13 +124,14 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			}
 			if(shouldFormatResistance(type, rMap, armorTypesToFormat)) {
 				String s = TooltipTypeFormatter.MOB_RESISTS.format(type, rMap.get(type), this);				
-				if(aMap.get(type).compareTo(ArmorValues.ZERO) != 0) {
-					result.add(s.concat(", ").concat(this.formatWithArmor(rMap.get(type), aMap.get(type).getArmor())));
+				if(aMap.get(type).compareTo(ArmorValues.ZERO) != 0 || naturalArmor != 0) {
+					result.add(s.concat(", ").concat(this.formatWithArmor(rMap.get(type), aMap.get(type).getArmor() + naturalArmor)));
 				}
 				else {
 					result.add(s);
 				}
 			}
+			//this is for implied armor effectiveness
 			else if(!shouldAddAllOtherTypesLine && aMap.get(type).compareTo(ArmorValues.ZERO) != 0) {
 				shouldAddAllOtherTypesLine = true;
 				armorValue = aMap.get(type);
@@ -197,5 +212,9 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 		IMobResistances r = new MobResistances();
 		r.deserializeNBT(this.nbtFromServer);
 		return r;
+	}
+	
+	static void registerArmorTooltipInjector(IArmorTooltipInjector injector) {
+		ARMOR_TOOLTIP_INJECTORS.add(injector);
 	}
 }
