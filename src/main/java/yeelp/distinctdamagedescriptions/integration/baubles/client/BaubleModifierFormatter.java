@@ -75,9 +75,11 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 		.ifPresent((m) -> {
 			for(BaubleModifierType type : BaubleModifierType.values()) {
 				Comparator<Entry<DDDDamageType, Float>> comparator = getComparator(type);
-				m.get(type).getModifications().entrySet().stream()
-					.filter((e) -> !e.getKey().isHidden())
-					.sorted(comparator).map((e) -> this.formatEntry(type, e.getKey(), e.getValue())).forEach(result::add);
+				if(m.containsKey(type)) {
+					m.get(type).getModifications().entrySet().stream()
+						.filter((e) -> !e.getKey().isHidden())
+						.sorted(comparator).map((e) -> this.formatEntry(type, e.getKey(), e.getValue())).forEach(result::add);					
+				}
 			}
 		});
 		return result;
