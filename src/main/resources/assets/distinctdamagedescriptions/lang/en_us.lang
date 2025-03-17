@@ -86,6 +86,7 @@ tooltips.distinctdamagedescriptions.baubles.immunity=Immunity
 tooltips.distinctdamagedescriptions.baubles.slystrike=Bypass immunity to
 tooltips.distinctdamagedescriptions.firstaid.armor=Locational Armor
 tooltips.distinctdamagedescriptions.firstaid.toughness=Locational Armor Toughness
+tooltips.distinctdamagedescriptions.ebwizardry.spelldistribution=Spell Distribution:
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force

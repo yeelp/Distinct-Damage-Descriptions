@@ -237,7 +237,12 @@ public interface DefaultValues {
 			"lycanitesmobs:woodenpaxel;[(s, 0.5), (b, 0.5)]",
 			"lycanitesmobs:ironpaxel;[(s, 0.8), (p, 0.2)]",
 			"lycanitesmobs:sprigganheart;[(b, 1)]",
-			"lycanitesmobs:gammasphere;[(ddd_radiant, 1)]"};
+			"lycanitesmobs:gammasphere;[(ddd_radiant, 1)]",
+			"ebwizardry:spectral_sword[(s, 0.5), (ddd_force, 0.5)]",
+			"ebwizardry:spectral_pickaxe[(p, 0.5), (ddd_force, 0.5)]",
+			"ebwizardry:flaming_axe[(s, 0.5), (ddd_fire, 0.5)]",
+			"ebwizardry:frost_axe[(s, 0.5), (ddd_cold, 0.5)]",
+	};
 
 	/**
 	 * {@link ModConfig.DamageCategory#projectileDamageTypes}
@@ -287,7 +292,9 @@ public interface DefaultValues {
 			"spartanweaponry:arrow_iron;[(p,1)];spartanweaponry:arrow_iron,spartanweaponry:arrow_iron_tipped",
 			"spartanweaponry:arrow_diamond;[(p,1)];spartanweaponry:arrow_diamond,spartanweaponry:arrow_diamond_tipped",
 			"spartanweaponry:bolt;[(p,1)];spartanweaponry:bolt,spartanweaponry:bolt_tipped,spartanweaponry:bolt_spectral",
-			"spartanweaponry:arrow_explosive;[(b,1)];spartanweaponry:arrow_explosive"};
+			"spartanweaponry:arrow_explosive;[(b,1)];spartanweaponry:arrow_explosive",
+			"ebwizardry:conjured_arrow;[(p, 0.5), (ddd_force, 0.5)];ebwizardry:spectral_bow"
+	};
 
 	/***************
 	 * RESISTANCES *
@@ -316,7 +323,12 @@ public interface DefaultValues {
 			"minecraft:diamond_helmet;[(s, 0.15), (p, 1.0), (b, 0.7)]",
 			"minecraft:diamond_chestplate;[(s, 0.15), (p, 1.0), (b, 0.7)]",
 			"minecraft:diamond_leggings;[(s, 0.15), (p, 1.0), (b, 0.7)]",
-			"minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]"};
+			"minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]",
+			"ebwizardry:spectral_helmet;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",		
+			"ebwizardry:spectral_chestplate;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",		
+			"ebwizardry:spectral_leggings;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",		
+			"ebwizardry:spectral_boots;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",		
+	};
 
 	/**
 	 * {@link ModConfig.ResistanceCategory#mobBaseResist}
@@ -803,11 +815,107 @@ public interface DefaultValues {
 			"baubles:ring;4;[(ddd_poison,0.8)]"
 	};
 	
-	final String[] SPELL_DISTS = {
-		"magic_missile;[(ddd_force,1)]"	
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#minionCapabilities}
+	 */
+	final String[] MINON_CAPABILITIES = {
+			"zombie_minion;minecraft:zombie",
+			"silverfish_minion;minecraft:zombie",
+			"spider_minion;minecraft:cave_spider",
+			"wither_skeleton_minion;minecraft:wither_skeleton",
+			"skeleton_minion;minecraft:skeleton",
+			"stray_minion;minecraft:stray",
+			"husk_minon;minecraft:husk",
+			"blaze_minion;blaze",
+			"vex_minon;vex",
+			"magic_slime;minecraft:slime"
 	};
 	
-	final String[] MINON_RESISTANCES = {
-			"zombie_minion;minecraft:zombie"
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#spellDamageTypeDistributions}
+	 */
+	final String[] SPELL_TYPE_DISTRIBUTIONS = {
+			"magic;[(ddd_force, 1)]",
+			"fire;[(ddd_fire, 1)]",
+			"frost;[(ddd_cold, 1)]",
+			"shock;[(ddd_lightning, 1)]",
+			"wither;[(ddd_necrotic, 1)]",
+			"poison;[(ddd_poison, 1)]",
+			"force;[(ddd_force, 1)]",
+			"blast;[(b, 0.5), (ddd_thunder, 0.5)]",
+			"radiant;[(ddd_radiant, 1)]"
+	};
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#linkedThrowables}
+	 */
+	final String[] LINKED_THROWABLES = {
+			"firebomb;fire",
+			"poison_bomb;poison",
+			"spark_bomb;shock",
+			"flamecatcher;magic"
+	};
+	
+	final String[] SPELL_DAMAGE_TYPE = {
+			"arc;shock",
+			"black_hole;magic",
+			"blizzard;frost",
+			"boulder;magic",
+			"bubble;magic",
+			"celestial_smite;radiant",
+			"chain_lightning;shock",
+			"charge;shock",
+			"darkness_orb;wither",
+			"dart;magic",
+			"decay;wither",
+			"detonate;blast",
+			"disintegration;fire",
+			"earthquake;blast",
+			"entrapment;magic",
+			"fire_breath;fire",
+			"fire_sigil;fire",
+			"fireball;fire",
+			"firebolt;fire",
+			"firebomb;fire",
+			"firestorm;fire",
+			"flame_ray;fire",
+			"force_arrow;force",
+			"force_orb;blast",
+			"forest_of_thorns;magic",
+			"forests_curse;poison",
+			"frost_ray;frost",
+			"frost_sigil;frost",
+			"guardian_beam;magic",
+			"hailstorm;frost",
+			"homing_spark;shock",
+			"ice_charge;frost",
+			"ice_lance;frost",
+			"ice_shard;frost",
+			"ice_spikes;frost",
+			"iceball;frost",
+			"life_drain;magic",
+			"lightning_arrow;shock",
+			"lightning_bolt;shock",
+			"lightning_hammer;shock",
+			"lightning_pulse;shock",
+			"lightning_ray;shock",
+			"lightning_sigil;shock",
+			"lightning_web;shock",
+			"magic_missile;magic",
+			"paralysis;shock",
+			"plague_of_darkness;wither",
+			"poison_bomb;poison",
+			"radiant_totem;radiant",
+			"ray_of_purification;radiant",
+			"ring_of_fire;fire",
+			"shockwave;blast",
+			"snare;magic",
+			"spark_bomb;shock",
+			"stormcloud;shock",
+			"thunderbolt;shock",
+			"thunderstorm;shock",
+			"tornado;magic",
+			"wither;wither",
+			"withering_totem;wither"
 	};
 }

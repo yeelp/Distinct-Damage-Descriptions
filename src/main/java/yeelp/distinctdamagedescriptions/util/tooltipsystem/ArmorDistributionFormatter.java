@@ -70,7 +70,7 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 		if(cap.getCategories().isEmpty()) {
 			return Optional.of(ImmutableList.of(AbstractCapabilityTooltipFormatter.NONE_TEXT.getFormattedText()));
 		}
-		if(this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.PLAIN) {
+		if(this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.PLAIN && stack.getItem() instanceof ItemArmor) {
 			ItemArmor armor = (ItemArmor) stack.getItem();
 			ArmorValues av = YArmor.getArmorFromStack(stack, armor);
 			return this.getArmorTooltip(stack, cap, av.getArmor(), av.getToughness());

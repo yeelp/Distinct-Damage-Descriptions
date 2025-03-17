@@ -1,0 +1,95 @@
+{
+	"bookmark_start_section": "ddd_intro",
+	"colours": {
+		"text": "#000000",
+		"caption": "#666666",
+		"hyperlink": "#601ba0",
+		"highlight": "#dd4c1d",
+		"new_section": "#ee88f7"
+	},
+	"images": {},
+	"recipes": {},
+	"sections": {
+		"ddd_intro": {
+			"title": "DDD and EBWizardry",
+			"contents": {
+				"id": "ddd_subsections",
+				"hyperlinks": true,
+				"page_numbers": true,
+				"separator": "."
+			},
+			"include_in_contents": "main_contents",
+			"text": [
+				"Greetings wizard! If these pages have magically appeared in your handbook, then new rules of the universe have been created!",
+				"These pages document how Distinct Damage Descriptions works with your new wizard powers!",
+				"Each @spells spell@ has a @damage_distribution damage distribution@ corresponding to the type of damage it deals. Best of luck out there wizard!",
+				"-Yeelp" 
+			]
+		},
+		"damage_distribution": {
+			"title": "Spell Distributions",
+			"include_in_contents": "ddd_subsections",
+			"text": [
+				"This section lists the different damage types in EBWizardry what what damage distribution to use. These damage types may seem similar to certain elements, but are NOT the elements themselves.",
+				"(This is configurable in DDD's EBWizardry compat config under spellDamageTypeDistributions.)",
+				"Magic",
+				"Magic damage is a generic type of magical damage. Examples are Magic Missile and some other #colour_sorcerySorcery#colour_reset spells. Spells that inflict this damage are broken down as:",
+				"#magic_dist",
+				"Fire",
+				"Magical fire damage is a type of fire damage. This type of damage is not always limited to spells of the #colour_fireFire#colour_reset element. Spells that inflict this damage are broken down as:",
+				"#fire_dist",
+				"Frost",
+				"Magical frost is a type of ice damage, typically inflicted by spells of the #colour_iceIce#colour_reset element, though not exclusively. Spells that inflict this damage are broken down as:",
+				"#frost_dist",
+				"Shock",
+				"Spells inflict shock damage if they have the ability to charge creepers. Spells dealing this damage are broken down as:",
+				"#shock_dist",
+				"Wither",
+				"Different from the Wither mob and potion effect, this spell damage type is typically reserved for #colour_necromancyNecromancy#colour_reset spells. The damage from these spells are broken down as:",
+				"#wither_dist",
+				"Poison",
+				"Not the same as the potion effect, though mobs immune to poison normally would be immune to these spells. Some #colour_earthEarth#colour_reset spells inflict this damage, which is broken down as:",
+				"#poison_dist",
+				"Force",
+				"This type of damage is inflicted by a couple of #colour_sorcerySorcery#colour_reset spells. The damage is broken down as:",
+				"#force_dist",
+				"Blast",
+				"Spells dealing with explosions or other such forces likely deal this kind of damage. It is broken down as:",
+				"#blast_dist",
+				"Radiant",
+				"Radiant damage dealing spells focus on holy power. It is broken down as:",
+				"#radiant_dist"
+			]
+		},
+		"linked_throwables": {
+			"title": "Throwables",
+			"include_in_contents": "ddd_subsections",
+			"text": [
+				"The @throwable_items throwables@ that you can craft are the same as the throwables created by the corresponding spell. If that throwable deals damage, it will deal the same type of damage as it would when created by the spell. This is exactly what you would expect to happen and this little section here is to tell you that yes, it does in fact work that way.",
+				"The throwables even have a listed projectile distribution showing this as well!",
+				"",
+				"(Similar throwables added by addon mods will need to be linked to the EBWizardry type of damage they deal in DDD's config under linkedThrowables to have their projectile distributions show up on tooltips. Their damage will remain correct, this is just so the information shows up in tooltips.)",
+				"",
+				"(You could also just configure them as regular projectiles if you wish.)" 
+				
+			]
+		},
+		"minion_resistances": {
+			"title": "Minion Resistances",
+			"include_in_contents": "ddd_subsections",
+			"text": [
+				"If a spell summons a minion, it obviously will have a set of resistances. Thankfully, if a mob looks like one you've seen before, the summoned version will share the same resistances, and even the adaptability chance as well, potentially giving you the chance to have adaptable minions!",
+				"",
+				"(This is configurable on a per mob basis in DDD's EBWizardry compat config under minionResistances.)"
+			]
+		},
+		"pack_makers": {
+			"title": "For Pack Makers",
+			"include_in_contents": "ddd_subsections",
+			"text": [
+				"If you're a pack maker configuring DDD and EBWizardry together, it would be helpful to know what spell deals what kind of damage from EBWizardry, so you know what kind of DDD damage type it will inflict. Worry not! There is a way!",
+				"Under DDD's config for EBWizardry, there's an option to enable dev info in chat or in console. This works the same as DDD's other dev configuration options, and does require the dev mode to be enabled as well. It's basically an additional dev mode option just for EBWizardry to list what damage type it deals."
+			]
+		}
+	}
+}

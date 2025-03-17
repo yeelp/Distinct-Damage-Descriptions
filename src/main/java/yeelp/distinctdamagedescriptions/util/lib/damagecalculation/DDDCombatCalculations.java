@@ -111,7 +111,7 @@ public final class DDDCombatCalculations {
 			return;
 		}
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((ct) -> ct.handleAttackStage(evt));
-		DeveloperModeKernel.onAttackCallback(evt);
+		DeveloperModeKernel.fireCallbacks(evt);
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOW)
@@ -144,7 +144,7 @@ public final class DDDCombatCalculations {
 				});					
 			});
 		});
-		DeveloperModeKernel.onHurtCallback(evt);
+		DeveloperModeKernel.fireCallbacks(evt);
 	}
 
 	// Highest priority to remove temporary attribute modifiers.
@@ -161,7 +161,7 @@ public final class DDDCombatCalculations {
 			ct.getRecentResults().getAmount().ifPresent((d) -> evt.setAmount((float) d));
 			DDDEffects.doEffects(evt.getSource().getTrueSource(), ct.getFighter(), ct.getRecentResults());
 		});
-		DeveloperModeKernel.onDamageCallback(evt);
+		DeveloperModeKernel.fireCallbacks(evt);
 	}
 
 	@SubscribeEvent

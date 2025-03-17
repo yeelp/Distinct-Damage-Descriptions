@@ -1,28 +1,24 @@
-package yeelp.distinctdamagedescriptions.integration.electroblobswizardry;
+package yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers;
 
-import net.minecraft.util.Tuple;
+import java.util.Optional;
+
 import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.config.readers.DDDMultiEntryConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.GenericConfigReaderException;
+import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.WizardryConfigurations;
 
-public final class WizardryMinionConfigReader extends DDDMultiEntryConfigReader<String> {
+public final class WizardryMinionConfigReader extends AbstractWizardryConfigReader {
 
 	public WizardryMinionConfigReader() {
-		super("Electroblob's Wizardry Minion Resistances", ModConfig.compat.ebwizardry.minionResistances, WizardryConfigurations.minionResistancesReference, (arr) -> (String) arr[0]);
+		super("Electroblob's Wizardry Minion Capabilities", ModConfig.compat.ebwizardry.minionCapabilities, WizardryConfigurations.minionCapabilityReference);
 	}
 	
 	@Override
-	protected Tuple<String, String> readEntry(String s) throws DDDConfigReaderException {
-		String[] arr = s.split(";");
-		if(arr.length != 2) {
-			throw new ConfigInvalidException(this.getName(), s);
-		}
+	protected Optional<? extends DDDConfigReaderException> validateEntry(String[] arr) {
 		if(!arr[1].contains(":")) {
-			throw new GenericConfigReaderException(this.getName(), String.format("%s isn't a complete namespaced ID; missing a colon to split modid and entity id!", arr[1]));
+			return Optional.of(new GenericConfigReaderException(this.getName(), String.format("%s isn't a complete namespaced ID; missing a colon to split modid and entity id!", arr[1])));
 		}
-		return new Tuple<String, String>(arr[0], arr[1]);
+		return Optional.empty();
 	}
 
 }

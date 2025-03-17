@@ -29,7 +29,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 
 	private static ArmorDistributionIconAggregator instance;
 	
-	private enum IconAggregatingType implements Predicate<Float> {
+	protected enum IconAggregatingType implements Predicate<Float> {
 		RELATIVE(ArmorDistributionNumberFormat.RELATIVE) {
 			@Override
 			public boolean test(Float t) {
@@ -164,7 +164,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 	
 	@Override
 	protected final Stream<DDDDamageType> getOrderedTypes(ItemStack stack) {
-		IconAggregatingType type = IconAggregatingType.getType();
+		IconAggregatingType type = this.getType();
 		Optional<IArmorDistribution> cap = this.getCap(stack);
 		if(type.hasEdgeCases()) {
 			Optional<Stream<DDDDamageType>> result = cap.flatMap(type::handleEdgeCase);
@@ -178,5 +178,23 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 	@Override
 	protected boolean shouldKeepUnknown() {
 		return false;
+	}
+	
+	private IconAggregatingType getType() {
+		IconAggregatingType type = IconAggregatingType.getType();
+		if(this.supportsAggregatingType(type)) {
+			return type;
+		}
+		return this.getDefaultAggregatingType();
+	}
+	
+	@SuppressWarnings("static-method")
+	protected boolean supportsAggregatingType(@SuppressWarnings("unused") IconAggregatingType type) {
+		return true;
+	}
+	
+	@SuppressWarnings("static-method")
+	protected IconAggregatingType getDefaultAggregatingType() {
+		return IconAggregatingType.PERCENT;
 	}
 }

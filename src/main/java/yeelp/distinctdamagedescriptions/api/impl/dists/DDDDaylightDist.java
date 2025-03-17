@@ -9,8 +9,11 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public final class DDDDaylightDist extends AbstractSingleTypeDist {
+	
+	public static final String NAME = "daylight";
+	
 	public DDDDaylightDist() {
-		super("daylight", Source.BUILTIN, () -> ModConfig.dmg.extraDamage.enableDaylightBurningDamage);
+		super(NAME, Source.BUILTIN, () -> ModConfig.dmg.extraDamage.enableDaylightBurningDamage);
 	}
 
 	@Override
@@ -21,7 +24,7 @@ public final class DDDDaylightDist extends AbstractSingleTypeDist {
 	@Override
 	protected boolean useType(DamageSource source, EntityLivingBase target) {
 		if(source == DamageSource.ON_FIRE && target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD) {
-			return DDDRegistries.trackers.isTracking("daylight", target);
+			return DDDRegistries.trackers.isTracking(NAME, target);
 		}
 		return false;
 	}

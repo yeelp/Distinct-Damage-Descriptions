@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.event;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
@@ -22,26 +21,26 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
 public final class DDDHooks {
 
-	private static <E extends Event> E fire(E evt, Consumer<E> callback) {
+	private static <E extends Event> E fire(E evt) {
 		MinecraftForge.EVENT_BUS.post(evt);
-		callback.accept(evt);
+		DeveloperModeKernel.fireCallbacks(evt);
 		return evt;
 	}
 
 	public static ShieldBlockEvent fireShieldBlock(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ItemStack shield) {
-		return fire(new ShieldBlockEvent(directAttacker, indirectAttacker, defender, src, map, shield), DeveloperModeKernel::onShieldBlockCallback);
+		return fire(new ShieldBlockEvent(directAttacker, indirectAttacker, defender, src, map, shield));
 	}
 
 	public static DetermineDamageEvent fireDetermineDamage(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map) {
-		return fire(new DetermineDamageEvent(directAttacker, indirectAttacker, defender, src, map), DeveloperModeKernel::onDetermineDamageCallback);
+		return fire(new DetermineDamageEvent(directAttacker, indirectAttacker, defender, src, map));
 	}
 
 	public static GatherDefensesEvent fireGatherDefenses(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull ResistMap map, @Nonnull Set<DDDDamageType> immunities) {
-		return fire(new GatherDefensesEvent(directAttacker, indirectAttacker, defender, src, map, immunities), DeveloperModeKernel::onGatherDefensesCallback);
+		return fire(new GatherDefensesEvent(directAttacker, indirectAttacker, defender, src, map, immunities));
 	}
 
 	public static UpdateAdaptiveResistanceEvent fireUpdateAdaptiveResistances(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ResistMap resists, @Nonnull Set<DDDDamageType> immunities) {
-		return fire(new UpdateAdaptiveResistanceEvent(directAttacker, indirectAttacker, defender, src, map, resists, immunities), DeveloperModeKernel::onUpdateAdaptabilityCallback);
+		return fire(new UpdateAdaptiveResistanceEvent(directAttacker, indirectAttacker, defender, src, map, resists, immunities));
 	}
 	
 	public static ShouldDrawIconsEvent fireShouldDrawIcons() {
