@@ -78,7 +78,6 @@ public class ElectroblobsWizardryIntegration implements IModIntegration {
 			//Much like lycanites integration, the cast here avoids BootstrapMethodError, which is important!
 			Stream.of((IModCompatTooltipFormatter<ItemStack>) SpellDistributionItemFormatter.getInstance(), SpellcastingItemDamageDistributionFormatter.getInstance()).forEach(TooltipDistributor::registerModCompat);
 		}
-		//TODO need to test undeath, slime distributions plus spell tooltips and minion capabilities
 		DDDRegistries.trackers.register(new UndeathBurningDistribution.UndeathBurningTracker());
 		Stream.of((DDDPredefinedDistribution) new WizardrySlimeDistribution(), new UndeathBurningDistribution()).forEach(DDDRegistries.distributions::register);
 		return IModIntegration.super.init(evt);

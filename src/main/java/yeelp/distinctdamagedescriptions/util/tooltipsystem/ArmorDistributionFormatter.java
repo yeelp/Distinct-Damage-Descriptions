@@ -40,13 +40,16 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 	private static final Set<IArmorTooltipInjector> TOOLTIP_INJECTORS = Sets.newTreeSet();
 
 	private static ArmorDistributionFormatter instance;
-	private static final ITextComponent UNCHANGED = getComponentWithWhiteColour("unchanged");
+	private static final ITextComponent UNCHANGED_ALL_TYPES = getComponentWithWhiteColour("unchangedall");
+	private static final ITextComponent UNCHANGED_ALL_OTHER_TYPES = getComponentWithWhiteColour("unchangedallothers");
+	private static final ITextComponent ALL_TYPES = getComponentWithWhiteColour("alltypes");
+	private static final ITextComponent ALL_OTHER_TYPES = getComponentWithWhiteColour("allothertypes");
 
 	protected ArmorDistributionFormatter() {
 		this(DDDAPI.accessor::getArmorResistances, "armorresistances");
 	}
 	
-	protected ArmorDistributionFormatter(Function<ItemStack, Optional<IArmorDistribution>> capExtractor, String typeTextKey ) {
+	protected ArmorDistributionFormatter(Function<ItemStack, Optional<IArmorDistribution>> capExtractor, String typeTextKey) {
 		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, capExtractor, typeTextKey);
 	}
 
@@ -82,8 +85,13 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 				l.add(TooltipTypeFormatter.ARMOR.format(d, cap.getWeight(d), this));				
 			}
 		}, List<String>::addAll)).map((l) -> { 
-			if(relativeStrat && l.isEmpty()) {
-				return ImmutableList.of(UNCHANGED.getFormattedText()); 
+			if(ModConfig.resist.armorParseRule == ArmorParsingType.IMPLIED) {
+				if(relativeStrat && ModConfig.resist.impliedArmorEffectiveness == 1.0f) {
+					determineTextComponentOffListSize(UNCHANGED_ALL_TYPES, UNCHANGED_ALL_OTHER_TYPES, l).map(ITextComponent::getFormattedText).ifPresent(l::add);
+				}
+				else {
+					determineTextComponentOffListSize(ALL_TYPES, ALL_OTHER_TYPES, l).ifPresent((comp) -> l.add(TooltipTypeFormatter.ARMOR.formatNoType(comp, (float) ModConfig.resist.impliedArmorEffectiveness, this)));
+				}
 			}
 			return l;
 		});
@@ -105,7 +113,30 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 		ArmorMap aMap = cap.distributeArmor(av.getArmor(), av.getToughness());
 		ArmorValues baselineValue = new ArmorValues(av.getArmor(), av.getToughness()).mul(ModConfig.resist.armorParseRule == ArmorParsingType.IMPLIED ? (float) ModConfig.resist.impliedArmorEffectiveness : 0.0f);
 		Set<DDDDamageType> armorTypes = cap.getCategories();
-		return Optional.of(aMap.entrySet().stream().filter((e) -> armorTypes.contains(e.getKey()) && !e.getKey().isHidden() && e.getValue().compareTo(baselineValue) != 0).sorted(Comparator.comparing(Entry<DDDDamageType, ArmorValues>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, e) -> l.add(formatter.formatArmorAndToughness(e.getKey(), e.getValue().getArmor(), e.getValue().getToughness(), original.getArmor(), original.getToughness(), this)), LinkedList<String>::addAll));
+		return Optional.of(aMap.entrySet().stream().filter((e) -> armorTypes.contains(e.getKey()) && !e.getKey().isHidden() && e.getValue().compareTo(baselineValue) != 0).sorted(Comparator.comparing(Entry<DDDDamageType, ArmorValues>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, e) -> l.add(formatter.formatArmorAndToughness(e.getKey(), e.getValue().getArmor(), e.getValue().getToughness(), original.getArmor(), original.getToughness(), this)), LinkedList<String>::addAll)).map((lst) -> {
+			switch(ModConfig.resist.armorParseRule) {
+				case IMPLIED:
+					determineTextComponentOffListSize(ALL_TYPES, ALL_OTHER_TYPES, lst).ifPresent((comp) -> lst.add(formatter.formatArmorAndToughness(comp.getFormattedText(), baselineValue.getArmor(), baselineValue.getToughness(), original.getArmor(), original.getToughness(), this)));
+					break;
+				default:
+					if(lst.isEmpty()) {
+						lst.add(NONE_TEXT.getFormattedText());						
+					}
+					break;
+			}
+			return lst;
+		});
+	}
+	
+	private static final Optional<ITextComponent> determineTextComponentOffListSize(ITextComponent empty, ITextComponent notFull, List<String> lst) {
+		ITextComponent comp = null;
+		if(lst.isEmpty()) {
+			comp = empty;
+		}
+		else if(lst.size() < DDDRegistries.damageTypes.getUsableTypeCount()) {
+			comp = notFull;
+		}
+		return Optional.ofNullable(comp);
 	}
 
 	@Override

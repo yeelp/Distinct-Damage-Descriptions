@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import electroblob.wizardry.Wizardry;
+import electroblob.wizardry.entity.living.ISummonedCreature;
 import electroblob.wizardry.util.IElementalDamage;
 import electroblob.wizardry.util.MagicDamage.DamageType;
 import net.minecraft.entity.EntityLivingBase;
@@ -41,6 +42,9 @@ public final class WizardrySpellDistribution extends DDDAbstractPredefinedDistri
 	}
 	
 	private boolean isSpell(DamageSource src) {
+		if(src.getImmediateSource() instanceof ISummonedCreature && src.damageType.equals("mob")) {
+			return false;
+		}
 		if(!(src instanceof IElementalDamage)) {
 			return false;
 		}
@@ -48,6 +52,11 @@ public final class WizardrySpellDistribution extends DDDAbstractPredefinedDistri
 			return src.damageType.split("_")[0].equals(this.wizardryType.name().toLowerCase());
 		}
 		return ((IElementalDamage) src).getType().equals(this.wizardryType);
+	}
+	
+	@Override
+	public int priority() {
+		return -1;
 	}
 
 }

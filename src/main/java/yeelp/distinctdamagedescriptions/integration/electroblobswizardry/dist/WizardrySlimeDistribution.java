@@ -3,6 +3,9 @@ package yeelp.distinctdamagedescriptions.integration.electroblobswizardry.dist;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+
+import com.google.common.base.Functions;
 
 import electroblob.wizardry.entity.living.EntityMagicSlime;
 import net.minecraft.entity.Entity;
@@ -14,6 +17,9 @@ import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDist
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 
 public final class WizardrySlimeDistribution extends DDDAbstractPredefinedDistribution {
+	
+	private static final Function<Entity, Optional<IDamageDistribution>> DISTRIBUTION_EXTRACTOR = Functions.compose(DDDAPI.accessor::getDamageDistribution, EntityLivingBase.class::cast);
+	
 	public WizardrySlimeDistribution() {
 		super("wizardry slime", Source.BUILTIN);
 	}
@@ -41,10 +47,6 @@ public final class WizardrySlimeDistribution extends DDDAbstractPredefinedDistri
 	}
 	
 	private static Optional<IDamageDistribution> getSlimeDamageDistribution(EntityLivingBase target) {
-		Entity entity = target.getLowestRidingEntity();
-		if(entity instanceof EntityMagicSlime && entity.ticksExisted % 16 == 1) {
-			return DDDAPI.accessor.getDamageDistribution((EntityLivingBase) entity);
-		}
-		return Optional.empty();
+		return target.getPassengers().stream().filter((entity) -> entity instanceof EntityMagicSlime && entity.ticksExisted % 16 == 1).findFirst().flatMap(DISTRIBUTION_EXTRACTOR);
 	}
 }
