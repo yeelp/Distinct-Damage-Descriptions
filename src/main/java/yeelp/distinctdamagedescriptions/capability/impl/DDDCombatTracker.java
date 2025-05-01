@@ -261,9 +261,9 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 				});
 			});
 			results.withAmount((float) YMath.sum(m.values()));
-			calc.markCompleted();
-			this.cleanUpAfterCalculation();
 		});
+		calc.markCompleted();
+		this.cleanUpAfterCalculation();
 	}
 
 	private void cleanUpAfterCalculation() {

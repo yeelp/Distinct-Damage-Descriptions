@@ -216,4 +216,6 @@ public final class DDDCombatCalculations {
 			return this.bruteForce;
 		}
 	}
+	
+	//public static final class 
 }
