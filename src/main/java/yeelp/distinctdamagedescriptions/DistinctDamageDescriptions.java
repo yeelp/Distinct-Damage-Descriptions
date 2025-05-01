@@ -32,6 +32,7 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDInitialization;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.integration.ModIntegrationKernel;
+import yeelp.distinctdamagedescriptions.integration.OptionalMixinKernel;
 import yeelp.distinctdamagedescriptions.items.DDDDiscItem;
 import yeelp.distinctdamagedescriptions.proxy.Proxy;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
@@ -61,6 +62,9 @@ public class DistinctDamageDescriptions {
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		info(String.format("Distinct Damage Descriptions is version %s", ModConsts.VERSION));
+		if(OptionalMixinKernel.wasFermiumBooterPresent()) {
+			info("Distinct Damage Descriptions loaded optional mixins with Fermium Booter!");
+		}
 		ModIntegrationKernel.load();
 		configDirectory = event.getModConfigurationDirectory();
 		config = new Configuration(event.getSuggestedConfigurationFile());

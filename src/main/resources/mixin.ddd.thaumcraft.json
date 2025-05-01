@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"minVersion": 0.7,
+	"package": "yeelp.distinctdamagedescriptions.integration.thaumcraft.mixin",
+	"refMap": "mixins.distinctdamagedescriptions.thaumcraft.refmap.json",
+	"compatibilityLevel": "JAVA_8",
+	"target": "@env(DEFAULT)",
+	"mixins": [
+		"MixinFocusEngine"
+	],
+	"client": [
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -94,6 +95,7 @@ public final class DDDCombatCalculations {
 			type = entry.getKey();
 			r -= entry.getValue();
 		}
+		DistinctDamageDescriptions.debug("Representative Type: "+type.getDisplayName());
 		return type;
 	}
 

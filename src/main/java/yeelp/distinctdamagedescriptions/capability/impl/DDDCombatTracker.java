@@ -323,6 +323,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		this.calculations.push(calc);
 		calc.getResultsBuilder().withStartingDamage(amount);
 		calc.setDamage(amount);
+		this.lastCalcTime = this.getFighter().ticksExisted;
 		return calc;
 	}
 

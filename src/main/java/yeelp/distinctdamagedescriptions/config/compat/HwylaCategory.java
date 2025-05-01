@@ -4,7 +4,7 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DamageDistributionNumberFormat;
 
-public class HwylaCategory {
+public final class HwylaCategory {
 	@Name("HWYLA Damage Format")
 	@Comment({
 		"Control the way DDD displays damage on HWYLA info",

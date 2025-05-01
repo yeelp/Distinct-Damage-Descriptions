@@ -8,7 +8,6 @@ import com.google.common.collect.Sets;
 import electroblob.wizardry.Wizardry;
 import electroblob.wizardry.entity.living.ISummonedCreature;
 import electroblob.wizardry.util.IElementalDamage;
-import electroblob.wizardry.util.MagicDamage.DamageType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;
@@ -19,8 +18,8 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 public final class WizardrySpellDistribution extends DDDAbstractPredefinedDistribution {
 
 	private final IDamageDistribution dist;
-	private final DamageType wizardryType;
-	public WizardrySpellDistribution(DamageType type, IDamageDistribution dist) {
+	private final String wizardryType;
+	public WizardrySpellDistribution(String type, IDamageDistribution dist) {
 		super(IntegrationTitles.WIZARDRY_NAME + ": "+type.toString(), Source.BUILTIN);
 		this.dist = dist;
 		this.wizardryType = type;
@@ -49,9 +48,9 @@ public final class WizardrySpellDistribution extends DDDAbstractPredefinedDistri
 			return false;
 		}
 		if(Wizardry.settings.damageTypePerElement) {
-			return src.damageType.split("_")[0].equals(this.wizardryType.name().toLowerCase());
+			return src.damageType.split("_")[0].equals(this.wizardryType);
 		}
-		return ((IElementalDamage) src).getType().equals(this.wizardryType);
+		return ((IElementalDamage) src).getType().name().equalsIgnoreCase(this.wizardryType);
 	}
 	
 	@Override

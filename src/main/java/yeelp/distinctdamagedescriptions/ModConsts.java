@@ -30,6 +30,8 @@ public interface ModConsts {
 		final String BAUBLES_ID	= "baubles";
 		final String TECHGUNS_ID = "techguns";
 		final String WIZARDRY_ID = "ebwizardry";
+		final String THAUMCRAFT_ID = "thaumcraft";
+		final String FERMIUM_ID = "fermiumbooter";
 	}
 	
 	public interface IntegrationTitles {
@@ -47,6 +49,8 @@ public interface ModConsts {
 		final String BAUBLES_TITLE = "Baubles";
 		final String TECHGUNS_TITLE = "Techguns";
 		final String WIZARDRY_NAME = "Electroblob's Wizardry";
+		final String THAUMCRAFT_TITLE = "Thaumcraft";
+		final String FERMIUM_TITLE = "Fermium Booter";
 	}
 	
 	public interface TooltipConsts {

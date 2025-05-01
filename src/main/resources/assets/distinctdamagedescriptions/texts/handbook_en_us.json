@@ -58,7 +58,8 @@
 				"#blast_dist",
 				"Radiant",
 				"Radiant damage dealing spells focus on holy power. It is broken down as:",
-				"#radiant_dist"
+				"#radiant_dist",
+				"#ddd_others"
 			]
 		},
 		"linked_throwables": {

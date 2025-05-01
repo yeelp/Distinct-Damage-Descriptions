@@ -12,4 +12,9 @@ public class Proxy {
 	public void handleFingerprintViolation() {
 		return;
 	}
+	
+	@SuppressWarnings({"static-method", "unused"})
+	public void handleFermiumBooterNotFound(String integratedMod) {
+		return;
+	}
 }

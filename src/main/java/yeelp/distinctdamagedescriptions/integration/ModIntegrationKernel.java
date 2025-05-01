@@ -31,6 +31,7 @@ import yeelp.distinctdamagedescriptions.integration.baubles.BaublesIntegration;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.DDDCoTIntegration;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.ElectroblobsWizardryIntegration;
+import yeelp.distinctdamagedescriptions.integration.fermiumbooter.FermiumBooterIntegration;
 import yeelp.distinctdamagedescriptions.integration.firstaid.FirstAidIntegration;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesIntegration;
@@ -38,9 +39,11 @@ import yeelp.distinctdamagedescriptions.integration.qualitytools.QualityToolsInt
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.SpartanWeaponryCompat;
 import yeelp.distinctdamagedescriptions.integration.techguns.TechgunsCompat;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraIntegration;
+import yeelp.distinctdamagedescriptions.integration.thaumcraft.ThaumcraftIntegration;
 import yeelp.distinctdamagedescriptions.integration.thebewteenlands.TheBetweenlandsCompat;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.DDDConarmIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.DDDTinkersIntegration;
+import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
 public final class ModIntegrationKernel {
 	/**
@@ -69,6 +72,8 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.IntegrationIds.BAUBLES_ID, () -> new BaublesIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.TECHGUNS_ID, () -> new TechgunsCompat());
 		integratableMods.put(ModConsts.IntegrationIds.WIZARDRY_ID, () -> new ElectroblobsWizardryIntegration());
+		integratableMods.put(ModConsts.IntegrationIds.FERMIUM_ID, () -> FermiumBooterIntegration.getInstance());
+		integratableMods.put(ModConsts.IntegrationIds.THAUMCRAFT_ID, () -> new ThaumcraftIntegration());
 		
 		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));
@@ -109,14 +114,14 @@ public final class ModIntegrationKernel {
 
 	public static final void doPostInit(FMLPostInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::postInit, evt);
+		loadedMods.stream().map(IModIntegration::getModID).filter(foundMods::contains).forEach(integrationLoaded::add);
 		if(foundMods.size() == loadedMods.size()) {
 			DistinctDamageDescriptions.info("Mod integration loaded successfully! (Yay!)");
 		}
 		else {
 			DistinctDamageDescriptions.warn("DDD failed to load integrations with the following mods:");
-			loadedMods.stream().map(IModIntegration::getModID).filter(Predicates.not(foundMods::contains)).map((s) -> String.format("%s (%s)", getTitleFromId(s), s)).forEach(DistinctDamageDescriptions::warn);
+			YMath.setDifference(foundMods, integrationLoaded).stream().map((s) -> String.format("%s (%s)", getTitleFromId(s), s)).forEach(DistinctDamageDescriptions::warn);
 		}
-		loadedMods.stream().map(IModIntegration::getModID).filter(foundMods::contains).forEach(integrationLoaded::add);
 		loadedMods.stream().forEach(IModIntegration::registerCrossModCompat);
 	}
 

@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.Config.Name;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 
-public class ElectroblobsWizardryCategory {
+public final class ElectroblobsWizardryCategory {
 	
 	@Name("Minion Capabilities")
 	@Comment({

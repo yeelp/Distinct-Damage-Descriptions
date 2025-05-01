@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
@@ -14,10 +15,12 @@ import yeelp.distinctdamagedescriptions.client.screen.GuiFingerprintViolationWar
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.init.DDDItems;
 import yeelp.distinctdamagedescriptions.integration.ModIntegrationKernelClient;
+import yeelp.distinctdamagedescriptions.integration.fermiumbooter.client.screen.GuiFermiumBooterNotFound;
 
 public class ClientProxy extends Proxy {
 
 	public static final String FINGERPRINT_FILE = "ddd_ignorefingerprint.txt";
+	public static boolean willShowFermiumScreen = false;
 	
 	@Override
 	public void preInit() {
@@ -49,6 +52,24 @@ public class ClientProxy extends Proxy {
 				if(!this.openedOnce && evt.getGui() instanceof GuiMainMenu) {
 					this.openedOnce = true;
 					evt.setGui(new GuiFingerprintViolationWarning(evt.getGui()));
+				}
+			}
+		}.register();
+	}
+	
+	@Override
+	public void handleFermiumBooterNotFound(String integratedMod) {
+		if(willShowFermiumScreen) {
+			return;
+		}
+		willShowFermiumScreen = true;
+		new Handler() {
+			private boolean openedOnce = false;
+			@SubscribeEvent(priority = EventPriority.LOWEST)
+			public void onGuiOpen(GuiOpenEvent evt) {
+				if(!this.openedOnce && evt.getGui() instanceof GuiMainMenu) {
+					this.openedOnce = true;
+					evt.setGui(new GuiFermiumBooterNotFound(evt.getGui(), integratedMod));
 				}
 			}
 		}.register();

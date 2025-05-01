@@ -1,7 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -28,6 +31,11 @@ public interface DDDAttributeModifierCollections {
 		
 		default void removeModifier(EntityLivingBase target) {
 			target.getEntityAttribute(this.getAttribute()).removeModifier(this.getUUID());
+		}
+		
+		@Nullable
+		default AttributeModifier getModifier(EntityLivingBase target) {
+			return target.getEntityAttribute(this.getAttribute()).getModifier(this.getUUID());
 		}
 	}
 	
@@ -86,4 +94,5 @@ public interface DDDAttributeModifierCollections {
 		}
 		return Optional.empty();
 	}
+	
 }

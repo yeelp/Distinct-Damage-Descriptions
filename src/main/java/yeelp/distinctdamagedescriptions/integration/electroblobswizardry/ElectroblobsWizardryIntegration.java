@@ -1,14 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry;
 
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 
 import electroblob.wizardry.event.SpellCastEvent;
-import electroblob.wizardry.util.MagicDamage.DamageType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -42,8 +38,6 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 
 public class ElectroblobsWizardryIntegration implements IModIntegration {
 	
-	private static final Set<String> CACHED_INVALID_TYPES = Sets.newHashSet(); 
-
 	@Override
 	public String getModTitle() {
 		return IntegrationTitles.WIZARDRY_NAME;
@@ -89,34 +83,19 @@ public class ElectroblobsWizardryIntegration implements IModIntegration {
 			copyCapability(DDDConfigurations.mobDamage, entry, "damage");
 			copyCapability(DDDConfigurations.mobResists, entry, "resistances");
 		});
-		WizardryConfigurations.spellTypeDist.forEach((entry) -> getDamageType(entry.getKey()).ifPresent((type) -> DDDRegistries.distributions.register(new WizardrySpellDistribution(type, entry.getValue()))));
+		WizardryConfigurations.spellTypeDist.forEach((entry) -> DDDRegistries.distributions.register(new WizardrySpellDistribution(entry.getKey(), entry.getValue())));
 		WizardryConfigurations.linkedThrowables.forEach((entry) -> {
-			String damageTypeName = entry.getValue();
+			String damageTypeName = entry.getValue().toLowerCase();
 			String id = entry.getKey();
 			if(WizardryConfigurations.spellTypeDist.configured(damageTypeName.toLowerCase())) {
-				getDamageType(damageTypeName).ifPresent((type) -> {
-					DDDConfigurations.projectiles.registerItemProjectilePair(id, id);
-					DDDConfigurations.projectiles.put(id, new WizardryLinkedDamageDistribution(type));					
-				});
+				DDDConfigurations.projectiles.registerItemProjectilePair(id, id);
+				DDDConfigurations.projectiles.put(id, new WizardryLinkedDamageDistribution(damageTypeName));					
 			}
 			else {
 				DistinctDamageDescriptions.warn(String.format("The Wizardry Damage Type %s has no associated Damage Distribution in the config! Ignoring!", damageTypeName));
 			}
 		});
 		return IModIntegration.super.postInit(evt);
-	}
-	
-	private static Optional<DamageType> getDamageType(String name) {
-		if(CACHED_INVALID_TYPES.contains(name)) {
-			return Optional.empty();
-		}
-		try {
-			return Optional.of(DamageType.valueOf(name.toUpperCase()));
-		}
-		catch(IllegalArgumentException e) {
-			DistinctDamageDescriptions.err("The Wizardry Damage Type: " + name + " doesn't exist! Check spelling!");
-			return Optional.empty();
-		}
 	}
 	
 	private static <C> void copyCapability(IDDDConfiguration<C> config, IDDDConfiguration.ConfigEntry<String> entry, String type) {

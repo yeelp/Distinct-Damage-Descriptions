@@ -14,7 +14,7 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults.ResultsBuilder;
 
 /**
- * A damage calculation. Stores all the values relevent to this calculation.
+ * A damage calculation. Stores all the values relevant to this calculation.
  * 
  * @author Yeelp
  *

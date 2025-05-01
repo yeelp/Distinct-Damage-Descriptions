@@ -799,6 +799,10 @@ public interface DefaultValues {
 			"gold;[(b, 0.5), (p, 0.5)];0.4",
 			"diamond;[(s, 1)];0.5",
 			"obsidian;[(s, 0.8), (b, 0.2)];0.6"};
+	
+	/***********
+	 * BAUBLES *
+	 ***********/
 
 	/**
 	 * {@link ModConfig.CompatCategory.BaublesCategory#baubleMods}
@@ -809,6 +813,10 @@ public interface DefaultValues {
 			"baubles:ring;2;[(b,0.5)]",
 			"baubles:ring;3;[(ddd_fire,0.5)]",
 			"baubles:ring;4;[(ddd_poison,0.8)]"};
+	
+	/**************************
+	 * ELECTROBLOB'S WIZARDRY *
+	 **************************/
 
 	/**
 	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#minionCapabilities}
@@ -848,6 +856,9 @@ public interface DefaultValues {
 			"spark_bomb;shock",
 			"flamecatcher;magic"};
 
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#spellDamageType}
+	 */
 	final String[] SPELL_DAMAGE_TYPE = {
 			"arc;shock",
 			"black_hole;magic",
@@ -909,4 +920,61 @@ public interface DefaultValues {
 			"tornado;magic",
 			"wither;wither",
 			"withering_totem;wither"};
+	
+	/**************
+	 * THAUMCRAFT *
+	 **************/
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ThaumcraftCategory#aspectDistributions}
+	 */
+	final String[] ASPECT_DIST = {
+			"aer;[(b,1)]",
+			"terra;[(b,1)]",
+			"ignis;[(ddd_fire,1)]",
+			"aqua;[(b,1)]",
+			"ordo;[(ddd_psychic,0.5),(ddd_force,0.5)]",
+			"perditio;[(ddd_force,1)]",
+			"vacuos;[(ddd_force,0.5),(ddd_necrotic,0.5)]",
+			"lux;[(ddd_psychic,0.5),(ddd_radiant,0.5)]",
+			"motus;[(ddd_thunder,1)]",
+			"gelum;[(ddd_cold,1)]",
+			"vitreus;[(p,1)]",
+			"metallum;[(s,1)]",
+			"victus;[(ddd_radiant,1)]",
+			"mortuus;[(ddd_necrotic,1)]",
+			"potentia;[(ddd_lightning,1)]",
+			"permutatio;[(ddd_lightning,0.5),(ddd_force,0.5)]",
+			"praecantatio;[(ddd_force,1)]",
+			"auram;[(ddd_force,1)]",
+			"alkimia;[(ddd_acid,0.5),(ddd_fire,0.5)]",
+			"vitium;[(ddd_force,0.4),(ddd_psychic,0.3),(ddd_necrotic,0.3)]",
+			"tenebrae;[(ddd_psychic,0.5),(ddd_necrotic,0.5)]",
+			"alienis;[(ddd_psychic,0.7),(ddd_necrotic,0.3)]",
+			"volatus;[(b,1)]",
+			"herba;[(p,0.5),(ddd_poison,0.5)]",
+			"instrumentum;[(b,0.4),(s,0.3),(p,0.3)]",
+			"fabrico;[(b,0.5),(p,0.5)]",
+			"machina;[(s,0.3),(b,0.7)]",
+			"vinculum;[(p,0.7),(s,0.3)]",
+			"spiritus;[(ddd_psychic,0.7),(ddd_radiant,0.3)]",
+			"cognitio;[(ddd_psychic,1)]",
+			"sensus;[(ddd_psychic,1)]",
+			"aversio;[(ddd_psychic,1)]",
+			"praemunio;[(ddd_radiant,1)]",
+			"desiderium;[(ddd_psychic,0.7),(ddd_necrotic,0.3)]",
+			"exanimis;[(ddd_necrotic,1)]",
+			"bestia;[(p,0.5),(s,0.5)]",
+			"humanus;[(ddd_psychic,0.5),(b,0.5)]"
+		};
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ThaumcraftCategory#taintDist}
+	 */
+	String TAINT_DISTRIBUTION = "[(ddd_force, 0.5),(ddd_psychic,0.5)]";
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ThaumcraftCategory#dissolveDist}
+	 */
+	String DISSOLVE_DISTRIBUTION = "[(ddd_necrotic,1)]";
 }

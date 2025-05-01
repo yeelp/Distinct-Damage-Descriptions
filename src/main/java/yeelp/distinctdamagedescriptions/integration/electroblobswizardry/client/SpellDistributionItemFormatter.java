@@ -63,6 +63,11 @@ public final class SpellDistributionItemFormatter extends ItemDistributionFormat
 		return DDDNumberFormatter.PERCENT;
 	}
 	
+	@Override
+	protected boolean shouldShowDist(ItemStack stack) {
+		return true;
+	}
+	
 	private static final class SpellDistrbutionIconAggregator extends ItemDamageDistributionIconAggregator {
 
 		private static SpellDistrbutionIconAggregator instance;
