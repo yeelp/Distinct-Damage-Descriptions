@@ -44,6 +44,7 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 	private static final ITextComponent UNCHANGED_ALL_OTHER_TYPES = getComponentWithWhiteColour("unchangedallothers");
 	private static final ITextComponent ALL_TYPES = getComponentWithWhiteColour("alltypes");
 	private static final ITextComponent ALL_OTHER_TYPES = getComponentWithWhiteColour("allothertypes");
+	private static final ITextComponent INEFFECTIVE = getComponentWithWhiteColour("ineffective");
 
 	protected ArmorDistributionFormatter() {
 		this(DDDAPI.accessor::getArmorResistances, "armorresistances");
@@ -120,7 +121,7 @@ public class ArmorDistributionFormatter extends AbstractCapabilityTooltipFormatt
 					break;
 				default:
 					if(lst.isEmpty()) {
-						lst.add(NONE_TEXT.getFormattedText());						
+						lst.add(INEFFECTIVE.getFormattedText());						
 					}
 					break;
 			}

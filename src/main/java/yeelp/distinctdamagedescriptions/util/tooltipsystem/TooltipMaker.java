@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.google.common.base.Functions;
+
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
+import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ArmorDistributionIconAggregator;
@@ -43,7 +45,7 @@ public enum TooltipMaker {
 	MOB_DAMAGE(MobDamageDistributionFormatter.getInstance(), MobDamageDistributionIconAggregator.getInstance()) {
 		@Override
 		protected boolean isApplicable(ItemStack stack, String registryString) {
-			return ModConfig.client.showMobDamage && stack.getItem() instanceof ItemMonsterPlacer;
+			return ModConfig.client.showMobDamage && stack.getItem() instanceof ItemMonsterPlacer && isMobConfigured(stack, DDDConfigurations.mobDamage);
 		}
 	},
 	PROJECTILE(ProjectileDistributionFormatter.getInstance(), ProjectileDamageDistributionIconAggregator.getInstance()) {
@@ -67,9 +69,7 @@ public enum TooltipMaker {
 	MOB_RESISTANCES(MobResistancesFormatter.getInstance(), MobResistanceIconAggregator.getInstance()) {
 		@Override
 		protected boolean isApplicable(ItemStack stack, String registryString) {
-			boolean isMonsterPlacer = stack.getItem() instanceof ItemMonsterPlacer;
-			boolean underlyingMobIsConfigured = Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(stack)).map(ResourceLocation::toString).map(DDDConfigurations.mobResists::configured).orElse(false);
-			return isMonsterPlacer && underlyingMobIsConfigured;
+			return stack.getItem() instanceof ItemMonsterPlacer && isMobConfigured(stack, DDDConfigurations.mobResists);
 		}
 	};
 
@@ -115,4 +115,8 @@ public enum TooltipMaker {
 	}
 
 	protected abstract boolean isApplicable(ItemStack stack, String registryString);
+	
+	protected static boolean isMobConfigured(ItemStack spawnEgg, IDDDConfiguration<?> config) {
+		return Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(spawnEgg)).map(Functions.toStringFunction()).filter(config::configured).isPresent();
+	}
 }
