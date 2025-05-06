@@ -3,13 +3,13 @@ package yeelp.distinctdamagedescriptions.capability.impl;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
@@ -29,7 +29,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
@@ -37,8 +36,8 @@ import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.mixin.MixinASMEntityLivingBase;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.lib.ArmorClassification;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
+import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
@@ -47,27 +46,24 @@ import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults.ResultsBuilder;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations.DDDEnchantmentInfo;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation;
 
 public final class DDDCombatTracker implements IDDDCombatTracker {
 
 	@CapabilityInject(IDDDCombatTracker.class)
 	public static Capability<IDDDCombatTracker> cap;
-	
+
 	private final EntityLivingBase fighter;
-	private DDDDamageType type = null;
-	private ShieldDistribution shieldDist = null;
-	private Map<EntityEquipmentSlot, ArmorValues> armorVals = null;
-	private DamageMap incomingDamage = null;
-	private float damage = 0.0f;
-	private ResultsBuilder results = new ResultsBuilder();
-	private CombatContext ctx = null;
-	private boolean damageClassified = false;
-	private ArmorClassification armorClassification;
-	
+	private CombatResults lastResults = CombatResults.NO_RESULTS;
+	private DamageCalculation lastCalc = null;
+	private int lastCalcTime;
+	private Stack<ArmorValues> armorMods = new Stack<ArmorValues>();
+	private Stack<DamageCalculation> calculations = new Stack<DamageCalculation>();
+
 	public DDDCombatTracker(EntityLivingBase fighter) {
 		this.fighter = fighter;
 	}
-	
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
@@ -81,13 +77,12 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("type", (this.type == null ? DDDBuiltInDamageType.UNKNOWN : this.type).getTypeName());
 		return tag;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		this.type = DDDRegistries.damageTypes.get(nbt.getString("type"));
+		// nothing to do
 	}
 
 	@Override
@@ -96,111 +91,83 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 	}
 
 	@Override
-	public Optional<DDDDamageType> getTypeLastHitBy() {
-		return Optional.ofNullable(this.type);
-	}
-
-	@Override
-	public Optional<ShieldDistribution> getCurrentlyUsedShieldDistribution() {
-		return Optional.ofNullable(this.shieldDist);
-	}
-
-	@Override
-	public Optional<Map<EntityEquipmentSlot, ArmorValues>> getNewDeltaArmorValues() {
-		return Optional.ofNullable(this.armorVals);
-	}
-
-	@Override
 	public Optional<DamageMap> getIncomingDamage() {
-		if(this.ctx != null) {
-			if(!this.wasDamageClassified()) {
-				this.incomingDamage = DDDCombatCalculations.classifyDamage(this.ctx).orElse(null);
-				this.damageClassified = true;
+		return this.getCurrentCalculation().map((calc) -> {
+			if(!calc.wasDamageClassified()) {
+				calc.classifyDamage();
 			}
-			return Optional.ofNullable(this.incomingDamage);
+			return calc.getClassifiedDamage();
+		});
+	}
+
+	@Override
+	public Optional<DamageCalculation> getCurrentCalculation() {
+		return this.calculations.isEmpty() ? Optional.empty() : Optional.of(this.calculations.peek());
+	}
+
+	@Override
+	public Optional<DamageCalculation> getLastCalculation(int noLongerValidAfterTicks) {
+		if(this.getFighter().ticksExisted - this.lastCalcTime <= noLongerValidAfterTicks) {
+			return Optional.ofNullable(this.lastCalc);
 		}
 		return Optional.empty();
-	}
-	
-	@Override
-	public Optional<ArmorClassification> getArmorClassification() {
-		return Optional.ofNullable(this.armorClassification);
-	}
-
-	@Override
-	public float getDamageReference() {
-		return this.damage;
 	}
 
 	@Override
 	public CombatResults getRecentResults() {
-		return this.results.build();
+		return this.lastResults;
 	}
 
 	@Override
-	public CombatContext getCombatContext() {
-		return this.ctx;
+	public void applyArmorModifier(ArmorValues delta) {
+		for(DDDAttributeModifierCollections.ArmorModifiers mod : DDDAttributeModifierCollections.ArmorModifiers.values()) {
+			if(!this.armorMods.isEmpty()) {
+				mod.removeModifier(this.getFighter());
+			}
+			mod.applyModifier(this.getFighter(), delta);
+		}
+		DistinctDamageDescriptions.debug("Pushing Armor Mods");
+		this.armorMods.push(delta);
+		this.getCurrentCalculation().get().markArmorModified();
 	}
 
 	@Override
-	public void setTypeLastHitBy(DDDDamageType type) {
-		this.type = type;
+	public void removeArmorModifiers() {
+		this.removeArmorModifiers(false);
 	}
 
-	@Override
-	public void setUsedShieldDistribution(ShieldDistribution dist) {
-		this.shieldDist = dist;
-	}
-
-	@Override
-	public void setCombatContext(CombatContext ctx) {
-		this.ctx = ctx;
-	}
-
-	@Override
-	public void setNewDeltaArmorValues(Map<EntityEquipmentSlot, ArmorValues> vals) {
-		this.armorVals = vals;
-	}
-
-	@Override
-	public void setDamageReference(float amount) {
-		this.damage = amount;
-	}
-
-	@Override
-	public void setIncomingDamage(DamageMap map) {
-		this.incomingDamage = map;
-	}
-
-	@Override
-	public void wipeResults() {
-		this.results = new ResultsBuilder();
-	}
-	
-
-	@Override
-	public boolean wasDamageClassified() {
-		return this.damageClassified;
-	}
-
-	@Override
-	public void setDamageClassified(boolean state) {
-		this.damageClassified = state;
+	private void removeArmorModifiers(boolean force) {
+		if(!force && !this.getCurrentCalculation().filter(DamageCalculation::wasArmorModified).isPresent()) {
+			return;
+		}
+		if(!this.armorMods.isEmpty()) {
+			this.armorMods.pop();
+		}
+		DistinctDamageDescriptions.debug("Removing Armor Mods");
+		ArmorValues restoredValues = this.armorMods.isEmpty() ? null : this.armorMods.peek();
+		for(DDDAttributeModifierCollections.ArmorModifiers mod : DDDAttributeModifierCollections.ArmorModifiers.values()) {
+			mod.removeModifier(this.getFighter());
+			if(restoredValues != null) {
+				DistinctDamageDescriptions.debug("Applying previous armor mods");
+				mod.applyModifier(this.getFighter(), restoredValues);
+			}
+		}
 	}
 
 	@Override
 	public void handleAttackStage(LivingAttackEvent evt) {
-		this.clear();
-		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
-		if(this.getIncomingDamage().isPresent() && DDDCombatCalculations.doShieldCalcs(this.ctx)) {
-			DamageMap dmg = this.getIncomingDamage().get();
-			ItemStack shield = this.ctx.getShield().get();
-			ShieldBlockEvent blockEvt = DDDHooks.fireShieldBlock(this.ctx.getImmediateAttacker(), this.ctx.getTrueAttacker(), this.getFighter(), this.ctx.getSource(), dmg, shield);
+		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
+		CombatContext ctx = calc.getContext();
+		if(this.getIncomingDamage().isPresent() && DDDCombatCalculations.doShieldCalcs(ctx)) {
+			DamageMap dmg = calc.getClassifiedDamage();
+			ItemStack shield = ctx.getShield().get();
+			ShieldBlockEvent blockEvt = DDDHooks.fireShieldBlock(ctx.getImmediateAttacker(), ctx.getTrueAttacker(), this.getFighter(), ctx.getSource(), dmg, shield);
 			if(!blockEvt.isCanceled() && Sets.intersection(blockEvt.getShieldDistribution().getCategories(), dmg.keySet()).size() > 0) {
-				//record shield dist, but the distribution must be applied later. It won't work otherwise.
-				this.shieldDist = blockEvt.getShieldDistribution();
-				if(this.ctx.getImmediateAttacker() instanceof EntityLivingBase) {
-					((MixinASMEntityLivingBase) this.getFighter()).useBlockUsingShield((EntityLivingBase) this.ctx.getImmediateAttacker());
+				// record shield dist, but the distribution must be applied later. It won't work
+				// otherwise.
+				calc.setShieldDist(blockEvt.getShieldDistribution());
+				if(ctx.getImmediateAttacker() instanceof EntityLivingBase) {
+					((MixinASMEntityLivingBase) this.getFighter()).useBlockUsingShield((EntityLivingBase) ctx.getImmediateAttacker());
 				}
 			}
 			this.getFighter().resetActiveHand();
@@ -209,28 +176,36 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 
 	@Override
 	public void handleHurtStage(LivingHurtEvent evt) {
-		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
+		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
 		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
-			this.getCurrentlyUsedShieldDistribution().ifPresent((shield) -> {
+			CombatContext ctx = calc.getContext();
+			calc.getShieldDist().ifPresent((shield) -> {
 				double startingDamage = YMath.sum(m.values());
 				shield.block(m);
-				this.results.hasEffectiveShield(m);
-				this.ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (this.getRecentResults().getShieldRatio().getAsDouble())), this.getFighter()));
+				calc.getResultsBuilder().hasEffectiveShield(m);
+				ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (calc.getResultsBuilder().build().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
-			if(!m.isEmpty()) {
-				this.type = DDDCombatCalculations.getWeightedRandomRepresentativeType(m);
-			}
 			if(ModConfig.resist.enableArmorCalcs) {
-				DDDCombatCalculations.classifyArmor(this.ctx).ifPresent((classified) -> {
-					this.armorClassification = classified;
+				DDDCombatCalculations.classifyArmor(ctx).ifPresent((classified) -> {
+					calc.setArmorClassification(classified);
 					Set<DDDDamageType> damagingTypes = m.keySet().stream().filter((t) -> m.get(t) > 0).collect(Collectors.toSet());
 					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach((type) -> {
 						classified.forEachArmorMap((slot, map) -> map.remove(type));
 					});
-					this.armorVals = Maps.newHashMap();
+					//add missing types to the armor map as zero so values.stream() recognizes missing types as no effectiveness.
+					damagingTypes.forEach((t) -> {
+						classified.forEachArmorMap((slot, map) -> {
+							if(!map.containsKey(t)) {
+								map.put(t, new ArmorValues());
+							}
+						});
+					});
+					calc.setNewArmorValuesMap();
+					Map<EntityEquipmentSlot, ArmorValues> armorVals = calc.getDeltaArmor().get();
 					classified.forEachArmorMap((slot, map) -> {
-						this.armorVals.put(slot, ModConfig.resist.armorCalcRule.merge(map.values().stream().map((av) -> av.sub(ModConfig.resist.negativeRule.handlePotentialNegativeArmorValues(classified.getOriginalArmorValues(slot))))));
-						DebugLib.outputFormattedDebug("Armor Values for slot %s: %s", slot.getName(), this.armorVals.get(slot));
+						DebugLib.outputFormattedDebug("Armor Map for slot %s: %s", slot.toString(), DebugLib.entriesToString(map));
+						armorVals.put(slot, ModConfig.resist.armorCalcRule.merge(map.values().stream().map((av) -> av.sub(ModConfig.resist.negativeRule.handlePotentialNegativeArmorValues(classified.getOriginalArmorValues(slot))))));
+						DebugLib.outputFormattedDebug("Armor Values for slot %s: %s", slot.getName(), armorVals.get(slot));
 					});
 				});
 			}
@@ -239,37 +214,42 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 
 	@Override
 	public void handleDamageStage(LivingDamageEvent evt) {
-		this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
+		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
 		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
-			DDDCombatCalculations.classifyDefenses(this.ctx).ifPresent((defenses) -> {
-				DDDEnchantmentInfo enchants = DDDCombatCalculations.getDDDEnchants(this.ctx);
+			CombatContext ctx = calc.getContext();
+			ResultsBuilder results = calc.getResultsBuilder();
+			if(!m.isEmpty()) {
+				calc.setType(DDDCombatCalculations.getWeightedRandomRepresentativeType(m));
+			}
+			DDDCombatCalculations.classifyDefenses(ctx).ifPresent((defenses) -> {
+				DDDEnchantmentInfo enchants = DDDCombatCalculations.getDDDEnchants(ctx);
 				if(!enchants.isSlyStrike() && defenses.immunities.stream().map(Functions.compose((f) -> f != null && f > 0.0f, m::remove)).reduce(Boolean::logicalOr).orElse(false)) {
-					this.results.hasImmunity();
+					results.hasImmunity();
 				}
 				defenses.resistances.forEach((k, v) -> {
 					float resist = v > 0 ? MathHelper.clamp(v - enchants.getBruteForce(), 0.0f, 1.0f) : v;
 					if(m.computeIfPresent(k, (type, dmg) -> dmg * Math.max(1 - resist, 0)) != null) {
 						if(resist > 0) {
-							this.results.hasResistance();
+							results.hasResistance();
 						}
-						else if (resist < 0 && m.get(k) > 0) {
-							this.results.hasWeakness();
+						else if(resist < 0 && m.get(k) > 0) {
+							results.hasWeakness();
 						}
 					}
 				});
 				DDDAPI.accessor.getMobResistances(this.getFighter()).ifPresent((resistances) -> {
-					UpdateAdaptiveResistanceEvent updateEvt = DDDHooks.fireUpdateAdaptiveResistances(this.ctx.getImmediateAttacker(), this.ctx.getTrueAttacker(), this.getFighter(), this.ctx.getSource(), m, defenses.resistances, defenses.immunities);
+					UpdateAdaptiveResistanceEvent updateEvt = DDDHooks.fireUpdateAdaptiveResistances(ctx.getImmediateAttacker(), ctx.getTrueAttacker(), this.getFighter(), ctx.getSource(), m, defenses.resistances, defenses.immunities);
 					switch(updateEvt.getResult()) {
 						case DEFAULT:
 							if(!resistances.hasAdaptiveResistance()) {
-								break;								
+								break;
 							}
 							//$FALL-THROUGH$
 						case ALLOW:
 							float temp = resistances.getAdaptiveAmount();
 							resistances.setAdaptiveAmount(updateEvt.getAdaptiveAmount());
 							if(resistances.updateAdaptiveResistance(updateEvt.getDamageToAdaptTo())) {
-								this.results.wasAdaptive();
+								results.wasAdaptive();
 							}
 							resistances.setAdaptiveAmount(temp);
 							if(this.getFighter() instanceof EntityPlayer) {
@@ -280,27 +260,71 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 					}
 				});
 			});
-			this.results.withAmount((float) YMath.sum(m.values()));
+			results.withAmount((float) YMath.sum(m.values()));
 		});
+		calc.markCompleted();
+		this.cleanUpAfterCalculation();
+	}
+
+	private void cleanUpAfterCalculation() {
+		if(this.calculations.size() == 0) {
+			return;
+		}
+		DamageCalculation calc = this.calculations.pop();
+		if(calc.wasCompleted()) {
+			this.lastResults = calc.getResultsBuilder().build();
+			this.lastCalc = calc;
+		}
+		int armorMods = this.armorMods.size(), delta = armorMods - this.calculations.size();
+		if(delta > 0) {
+			if(ModConfig.salvageThis) {
+				DistinctDamageDescriptions.err(String.format("Combat Tracker for %s has %d extra armor modifiers! They should always have the same amount! Salvaging requested, removing extras...", this.getFighter().getName(), delta));
+				do {
+					this.removeArmorModifiers(true);
+				} while(this.armorMods.size() > this.calculations.size());				
+			}
+			else {
+				throw new RuntimeException(String.format("Combat Tracker for %s has extra armor modifiers! This shouldn't happen! Mods: %s", this.getFighter().getName(), this.armorMods.toString()));
+			}
+		}
 	}
 	
 	@Override
 	public void clear() {
-		IDDDCombatTracker.super.clear();
+		this.calculations.clear();
+		this.armorMods.clear();
+		this.removeArmorModifiers(true);
 	}
-	
-	private void updateContextAndDamage(DamageSource src, float amount, @Nullable Entity attacker) {
+
+	private DamageCalculation updateContextAndDamage(DamageSource src, float amount, @Nullable Entity attacker) {
 		DistinctDamageDescriptions.debug("Updating context and damage...");
-		if(this.ctx == null) {
+		DamageCalculation calc;
+		if(this.calculations.isEmpty()) {
 			DistinctDamageDescriptions.debug("Setting new context...");
-			this.setCombatContext(new CombatContext(src, amount, attacker, this.getFighter()));
-			this.results.withStartingDamage(amount);
-			this.damage = amount;
+			calc = this.pushNewDamageCalculation(src, amount, attacker);
 		}
-		else if(this.incomingDamage != null && amount != this.damage && this.ctx.contextMatches(src, attacker)) {
-			DebugLib.doDebug(() -> DebugLib.outputFormattedDebug("Adjusting damage... Current: %f, New %f", this.damage, amount));
-			this.incomingDamage.distributeDamageToCurrentTypes(amount);
+		else if((calc = this.calculations.peek()).getContext().contextMatches(src, attacker)) {
+			if(calc.getClassifiedDamage() != null && amount != calc.getDamage()) {
+				float oldDamage = calc.getDamage();
+				DebugLib.doDebug(() -> DebugLib.outputFormattedDebug("Adjusting damage... Current: %f, New %f", oldDamage, amount));
+				calc.getClassifiedDamage().distributeDamageToCurrentTypes(amount);
+				calc.setDamage(amount);
+			}
 		}
+		else {
+			DistinctDamageDescriptions.debug("Creating new nested damage calculation");
+			calc = this.pushNewDamageCalculation(src, amount, attacker);
+		}
+		return calc;
+	}
+
+	private DamageCalculation pushNewDamageCalculation(DamageSource src, float amount, @Nullable Entity attacker) {
+		DamageCalculation calc = new DamageCalculation(new CombatContext(src, amount, attacker, this.getFighter()));
+		this.calculations.push(calc);
+		calc.getResultsBuilder().withStartingDamage(amount);
+		calc.setDamage(amount);
+		this.lastCalcTime = this.getFighter().ticksExisted;
+		return calc;
 	}
 
 }

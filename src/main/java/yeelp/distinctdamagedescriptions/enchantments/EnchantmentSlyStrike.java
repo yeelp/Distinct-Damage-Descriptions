@@ -3,16 +3,20 @@ package yeelp.distinctdamagedescriptions.enchantments;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
-public class EnchantmentSlyStrike extends Enchantment {
+public class EnchantmentSlyStrike extends AbstractDDDEnchantment {
 
+	public static final String NAME = "slystrike";
+	
 	public EnchantmentSlyStrike() {
 		super(Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {
 				EntityEquipmentSlot.MAINHAND});
-		this.setRegistryName("slystrike");
-		this.setName(ModConsts.MODID + ".slystrike");
+	}
+	
+	@Override
+	protected String getEnchantmentNameInternal() {
+		return NAME;
 	}
 
 	@Override

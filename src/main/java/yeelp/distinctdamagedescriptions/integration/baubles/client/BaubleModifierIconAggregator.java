@@ -30,7 +30,9 @@ public final class BaubleModifierIconAggregator extends AbstractCapabilityIconAg
 					Builder<DDDDamageType> builder = Stream.builder();
 					for(BaubleModifierType type : BaubleModifierType.values()) {
 						Comparator<Entry<DDDDamageType, Float>> comparator = BaubleModifierFormatter.getComparator(type);
-						m.get(type).getModifications().entrySet().stream().sorted(comparator).map(Entry::getKey).forEach(builder::add);
+						if(m.containsKey(type)) {
+							m.get(type).getModifications().entrySet().stream().sorted(comparator).map(Entry::getKey).forEach(builder::add);
+						}
 					}
 					return builder.build();
 				}).orElse(Stream.empty());

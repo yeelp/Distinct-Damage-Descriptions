@@ -4,10 +4,12 @@
     "package": "yeelp.distinctdamagedescriptions.mixin",
     "refmap": "mixins.distinctdamagedescriptions.refmap.json",
     "compatibilityLevel": "JAVA_8",
+    "target": "@env(DEFAULT)",
     "mixins": [
         "MixinEntity",
         "MixinASMEntityLivingBase",
-        "MixinCombatTracker"
+        "MixinCombatTracker",
+        "MixinItem"
     ],
     "client": [
         "MixinFontRenderer"

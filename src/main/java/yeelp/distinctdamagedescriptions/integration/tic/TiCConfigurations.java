@@ -12,6 +12,7 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDArmorDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDistributionBiasConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDModIDPrependingConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.DDDNumericEntryConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
@@ -49,7 +50,7 @@ public abstract class TiCConfigurations {
 		armorMaterialDist = new DDDDistributionConfiguration<IArmorDistribution>(() -> new ArmorDistribution());
 		toolBiasResistance = new DDDBaseConfiguration<Float>(() -> 0.0f);
 		try {
-			DDDConfigLoader.getInstance().enqueueAll(new DDDModIDPrependingConfigReader<Float>(ModConsts.IntegrationIds.TCONSTRUCT_ID, "Tinker's Compat: Tool Bias", ModConfig.compat.tinkers.toolBias, toolBiasResistance, Float::parseFloat),
+			DDDConfigLoader.getInstance().enqueueAll(new DDDModIDPrependingConfigReader<Float>(ModConsts.IntegrationIds.TCONSTRUCT_ID, new DDDNumericEntryConfigReader<Float>("Tinker's Compat: Tool Bias", ModConfig.compat.tinkers.toolBias, toolBiasResistance, Float::parseFloat)),
 					new DDDDistributionBiasConfigReader("Tinker's Compat: Material Bias", ModConfig.compat.tinkers.matBias, toolMaterialBias),
 					new DDDArmorDistributionConfigReader("Conarm Compat: Material Distribution", ModConfig.compat.conarm.armorMatDist, armorMaterialDist));
 		}

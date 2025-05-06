@@ -60,7 +60,11 @@ tooltips.distinctdamagedescriptions.adaptiveamount=Adaptability Amount:
 tooltips.distinctdamagedescriptions.effectiveness=Effectiveness
 tooltips.distinctdamagedescriptions.weakness=Weakness
 tooltips.distinctdamagedescriptions.noresists=None
-tooltips.distinctdamagedescriptions.unchanged=Unchanged
+tooltips.distinctdamagedescriptions.ineffective=Ineffective
+tooltips.distinctdamagedescriptions.unchangedall=Unchanged against all types
+tooltips.distinctdamagedescriptions.unchangedallothers=Unchanged against all other types
+tooltips.distinctdamagedescriptions.alltypes=All types
+tooltips.distinctdamagedescriptions.allothertypes=All other types
 tooltips.distinctdamagedescriptions.damagedistribution=Damage Distribution:
 tooltips.distinctdamagedescriptions.projectiledistribution=Projectile Distribution:
 tooltips.distinctdamagedescriptions.armorresistances=Armor Effectiveness:
@@ -71,7 +75,12 @@ tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is o
 tooltips.distinctdamagedescriptions.effectiveArmor=Armor
 tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
 tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:
-tooltips.distinctdamagedescriptions.hwyla.witharmor=Max: %s with armor
+tooltips.distinctdamagedescriptions.hwyla.immunities=Immunities:
+tooltips.distinctdamagedescriptions.hwyla.max=Max:
+tooltips.distinctdamagedescriptions.hwyla.witharmor=with armor
+tooltips.distinctdamagedescriptions.hwyla.alltypes=All types:
+tooltips.distinctdamagedescriptions.hwyla.allothertypes=All other types:
+tooltips.distinctdamagedescriptions.hwyla.adaptedto=Adapted To:
 tooltips.distinctdamagedescriptions.tic.distributionbias=Distribution Bias:
 tooltips.distinctdamagedescriptions.tic.influence=Influence:
 tooltips.distinctdamagedescriptions.baubles.modifiers=While Equipped:
@@ -79,12 +88,16 @@ tooltips.distinctdamagedescriptions.baubles.bruteforce=Bypass up to
 tooltips.distinctdamagedescriptions.baubles.immunitychance=(%s chance)
 tooltips.distinctdamagedescriptions.baubles.immunity=Immunity
 tooltips.distinctdamagedescriptions.baubles.slystrike=Bypass immunity to
+tooltips.distinctdamagedescriptions.firstaid.armor=Locational Armor
+tooltips.distinctdamagedescriptions.firstaid.toughness=Locational Armor Toughness
+tooltips.distinctdamagedescriptions.ebwizardry.spelldistribution=Spell Distribution:
+tooltips.distinctdamagedescriptions.thaumcraft.focusdistribution=Spell Distribution:
 
 enchantment.distinctdamagedescriptions.slystrike=Sly Strike
 enchantment.distinctdamagedescriptions.bruteforce=Brute Force
 
 enchantment.distinctdamagedescriptions.slystrike.desc=A tool or weapon enchanted with this enchantment bypasses immunities!
-enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses up to 10% (per level) of mob resistances!
+enchantment.distinctdamagedescriptions.bruteforce.desc=A tool or weapon enchanted with this enchantment bypasses up to 10%% (per level) of mob resistances!
 
 distinctdamagedescriptions.subtitle.resist_ding=Attack reduced by resistance
 distinctdamagedescriptions.subtitle.weakness_hit=Attack increased by weakness
@@ -157,3 +170,14 @@ modifier.ddd_radiant_immunity_armor.name=Radiant Impunity
 modifier.ddd_radiant_immunity_armor.desc=§oThe Savior is here!§r\nYour armor makes you immune to Radiant damage!
 modifier.ddd_thunder_immunity_armor.name=Thunder Impunity
 modifier.ddd_thunder_immunity_armor.desc=§oThunderstruck!§r\nYour armor makes you immune to Thunder damage!
+
+### EBWIZARDRY ###
+ebwizardry.distinctdamagedescriptions.newDist=The %s damage is a new type of damage. Its damage is broken down as:
+
+### FERMIUMBOOTER ###
+fermiumbooter.distinctdamagedescriptions.info0=The mod %s requires Fermium Booter to integrate with Distinct Damage Descriptions properly.
+fermiumbooter.distinctdamagedescriptions.info1=You can find and install Fermium Booter from CurseForge.
+fermiumbooter.distinctdamagedescriptions.info2=Alternatively, you can disable integration with %s in Distinct Damage Descriptions' config.
+fermiumbooter.distinctdamagedescriptions.info3=Note that if you do, these two mods may not work very well together!
+fermiumbooter.distinctdamagedescriptions.ignore=Go to title
+fermiumbooter.distinctdamagedescriptions.close=Close game

@@ -237,7 +237,11 @@ public interface DefaultValues {
 			"lycanitesmobs:woodenpaxel;[(s, 0.5), (b, 0.5)]",
 			"lycanitesmobs:ironpaxel;[(s, 0.8), (p, 0.2)]",
 			"lycanitesmobs:sprigganheart;[(b, 1)]",
-			"lycanitesmobs:gammasphere;[(ddd_radiant, 1)]"};
+			"lycanitesmobs:gammasphere;[(ddd_radiant, 1)]",
+			"ebwizardry:spectral_sword;[(s, 0.5), (ddd_force, 0.5)]",
+			"ebwizardry:spectral_pickaxe;[(p, 0.5), (ddd_force, 0.5)]",
+			"ebwizardry:flaming_axe;[(s, 0.5), (ddd_fire, 0.5)]",
+			"ebwizardry:frost_axe;[(s, 0.5), (ddd_cold, 0.5)]"};
 
 	/**
 	 * {@link ModConfig.DamageCategory#projectileDamageTypes}
@@ -287,7 +291,8 @@ public interface DefaultValues {
 			"spartanweaponry:arrow_iron;[(p,1)];spartanweaponry:arrow_iron,spartanweaponry:arrow_iron_tipped",
 			"spartanweaponry:arrow_diamond;[(p,1)];spartanweaponry:arrow_diamond,spartanweaponry:arrow_diamond_tipped",
 			"spartanweaponry:bolt;[(p,1)];spartanweaponry:bolt,spartanweaponry:bolt_tipped,spartanweaponry:bolt_spectral",
-			"spartanweaponry:arrow_explosive;[(b,1)];spartanweaponry:arrow_explosive"};
+			"spartanweaponry:arrow_explosive;[(b,1)];spartanweaponry:arrow_explosive",
+			"ebwizardry:conjured_arrow;[(p, 0.5), (ddd_force, 0.5)];ebwizardry:spectral_bow"};
 
 	/***************
 	 * RESISTANCES *
@@ -316,7 +321,11 @@ public interface DefaultValues {
 			"minecraft:diamond_helmet;[(s, 0.15), (p, 1.0), (b, 0.7)]",
 			"minecraft:diamond_chestplate;[(s, 0.15), (p, 1.0), (b, 0.7)]",
 			"minecraft:diamond_leggings;[(s, 0.15), (p, 1.0), (b, 0.7)]",
-			"minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]"};
+			"minecraft:diamond_boots;[(s, 0.15), (p, 1.0), (b, 0.7)]",
+			"ebwizardry:spectral_helmet;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",
+			"ebwizardry:spectral_chestplate;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",
+			"ebwizardry:spectral_leggings;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]",
+			"ebwizardry:spectral_boots;[(s, 1), (p, 1), (b, 1), (ddd_force, 1)]"};
 
 	/**
 	 * {@link ModConfig.ResistanceCategory#mobBaseResist}
@@ -476,7 +485,7 @@ public interface DefaultValues {
 			"lycanitesmobs:triffid;[(ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_lightning, -0.25), (ddd_necrotic, -1.0), (ddd_poison, 1.0), (ddd_psychic, 0.6), (ddd_thunder, 1.0)];[ddd_thunder, ddd_poison];0;0",
 			"lycanitesmobs:treant;[(s, -0.15), (b, 1.0), (ddd_acid, -0.5), (ddd_fire, -1.0), (ddd_necrotic, -0.25), (ddd_poison, -0.25)];[];0;0",
 			"lycanitesmobs:ent;[(s, -0.3), (b, 1.0), (ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_poison, -0.25)];[];0;0",
-			"lycanitesmobs:tpumpkyn;[(s, -0.3), (b, 0.5), (ddd_acid, -0.5), (ddd_fire, -1.0), (ddd_poison, -0.25)];[];0;0",			
+			"lycanitesmobs:tpumpkyn;[(s, -0.3), (b, 0.5), (ddd_acid, -0.5), (ddd_fire, -1.0), (ddd_poison, -0.25)];[];0;0",
 			"lycanitesmobs:shambler;[(s, -0.25), (p, 1.0), (b, 0.5), (ddd_acid, -1.0), (ddd_fire, -1.0), (ddd_lightning, -0.25), (ddd_necrotic, -0.5), (ddd_poison, 1.0), (ddd_psychic, 0.25), (ddd_thunder, 0.25)];[ddd_piercing, ddd_poison];0;0",
 			"lycanitesmobs:beholder;[];[];0.8;1",
 			"lycanitesmobs:grell;[(ddd_necrotic, 0.3)];[ddd_acid, ddd_fire];0;0",
@@ -527,13 +536,12 @@ public interface DefaultValues {
 			"lycanitesmobs:ghoul",
 			"lycanitesmobs:geist",
 			"lycanitesmobs:necrovore"};
-	
+
 	/**
 	 * {@link Modconfig.CompatCategory#shieldClasses}
 	 */
 	final String[] SHIELD_CLASSES = {
-			"ItemShieldCore"
-	};
+			"ItemShieldCore"};
 
 	/******************
 	 * SINGLE STRINGS *
@@ -699,52 +707,52 @@ public interface DefaultValues {
 			"waterjet;ioray",
 			"whirlwind;djinn",
 			"acidglob;grell"};
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#scorchfireDistribution}
 	 */
 	final String SCORCHFIRE_DIST = "[(ddd_fire, 0.5), (ddd_force, 0.5)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#doomfireDistribution}
 	 */
 	final String DOOMFIRE_DIST = "[(ddd_fire, 0.5), (ddd_necrotic, 0.5)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#hellfireDistribution}
 	 */
 	final String HELLFIRE_DIST = "[(ddd_fire, 0.3), (ddd_necrotic, 0.7)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#icefireDistribution}
 	 */
 	final String ICEFIRE_DIST = "[(ddd_fire, 0.5), (ddd_cold, 0.5)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#frostfireDistribution}
 	 */
 	final String FROSTFIRE_DIST = "[(ddd_fire, 0.3), (ddd_cold, 0.7)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#shadowfireDistribution}
 	 */
 	final String SHADOWFIRE_DIST = "[(ddd_fire, 0.2), (ddd_psychic, 0.4), (ddd_necrotic, 0.4)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#smitefireDistribution}
 	 */
 	final String SMITEFIRE_DIST = "[(ddd_fire, 0.3), (ddd_radiant, 0.7)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#primefireDistribution}
 	 */
 	final String PRIMEFIRE_DIST = "[(ddd_fire, 1)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#acidDistribution}
 	 */
 	final String ACID_DIST = "[(ddd_acid, 1)]";
-	
+
 	/**
 	 * {@link ModConfig.CompatCategory.LycanitesConfigCategory#oozeDistribution}
 	 */
@@ -792,6 +800,10 @@ public interface DefaultValues {
 			"diamond;[(s, 1)];0.5",
 			"obsidian;[(s, 0.8), (b, 0.2)];0.6"};
 	
+	/***********
+	 * BAUBLES *
+	 ***********/
+
 	/**
 	 * {@link ModConfig.CompatCategory.BaublesCategory#baubleMods}
 	 */
@@ -800,6 +812,169 @@ public interface DefaultValues {
 			"baubles:ring;1;[(ddd_necrotic,0.5)]",
 			"baubles:ring;2;[(b,0.5)]",
 			"baubles:ring;3;[(ddd_fire,0.5)]",
-			"baubles:ring;4;[(ddd_poison,0.8)]"
-	};
+			"baubles:ring;4;[(ddd_poison,0.8)]"};
+	
+	/**************************
+	 * ELECTROBLOB'S WIZARDRY *
+	 **************************/
+
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#minionCapabilities}
+	 */
+	final String[] MINON_CAPABILITIES = {
+			"zombie_minion;minecraft:zombie",
+			"silverfish_minion;minecraft:silverfish",
+			"spider_minion;minecraft:cave_spider",
+			"wither_skeleton_minion;minecraft:wither_skeleton",
+			"skeleton_minion;minecraft:skeleton",
+			"stray_minion;minecraft:stray",
+			"husk_minon;minecraft:husk",
+			"blaze_minion;minecraft:blaze",
+			"vex_minon;minecraft:vex",
+			"magic_slime;minecraft:slime"};
+
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#spellDamageTypeDistributions}
+	 */
+	final String[] SPELL_TYPE_DISTRIBUTIONS = {
+			"magic;[(ddd_force, 1)]",
+			"fire;[(ddd_fire, 1)]",
+			"frost;[(ddd_cold, 1)]",
+			"shock;[(ddd_lightning, 1)]",
+			"wither;[(ddd_necrotic, 1)]",
+			"poison;[(ddd_poison, 1)]",
+			"force;[(ddd_force, 1)]",
+			"blast;[(b, 0.5), (ddd_thunder, 0.5)]",
+			"radiant;[(ddd_radiant, 1)]"};
+
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#linkedThrowables}
+	 */
+	final String[] LINKED_THROWABLES = {
+			"firebomb;fire",
+			"poison_bomb;poison",
+			"spark_bomb;shock",
+			"flamecatcher;magic"};
+
+	/**
+	 * {@link ModConfig.CompatCategory.ElectroblobsWizardryCategory#spellDamageType}
+	 */
+	final String[] SPELL_DAMAGE_TYPE = {
+			"arc;shock",
+			"black_hole;magic",
+			"blizzard;frost",
+			"boulder;magic",
+			"bubble;magic",
+			"celestial_smite;radiant",
+			"chain_lightning;shock",
+			"charge;shock",
+			"darkness_orb;wither",
+			"dart;magic",
+			"decay;wither",
+			"detonate;blast",
+			"disintegration;fire",
+			"earthquake;blast",
+			"entrapment;magic",
+			"fire_breath;fire",
+			"fire_sigil;fire",
+			"fireball;fire",
+			"firebolt;fire",
+			"firebomb;fire",
+			"firestorm;fire",
+			"flame_ray;fire",
+			"force_arrow;force",
+			"force_orb;blast",
+			"forest_of_thorns;magic",
+			"forests_curse;poison",
+			"frost_ray;frost",
+			"frost_sigil;frost",
+			"guardian_beam;magic",
+			"hailstorm;frost",
+			"homing_spark;shock",
+			"ice_charge;frost",
+			"ice_lance;frost",
+			"ice_shard;frost",
+			"ice_spikes;frost",
+			"iceball;frost",
+			"life_drain;magic",
+			"lightning_arrow;shock",
+			"lightning_bolt;shock",
+			"lightning_hammer;shock",
+			"lightning_pulse;shock",
+			"lightning_ray;shock",
+			"lightning_sigil;shock",
+			"lightning_web;shock",
+			"magic_missile;magic",
+			"paralysis;shock",
+			"plague_of_darkness;wither",
+			"poison_bomb;poison",
+			"radiant_totem;radiant",
+			"ray_of_purification;radiant",
+			"ring_of_fire;fire",
+			"shockwave;blast",
+			"snare;magic",
+			"spark_bomb;shock",
+			"stormcloud;shock",
+			"thunderbolt;shock",
+			"thunderstorm;shock",
+			"tornado;magic",
+			"wither;wither",
+			"withering_totem;wither"};
+	
+	/**************
+	 * THAUMCRAFT *
+	 **************/
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ThaumcraftCategory#aspectDistributions}
+	 */
+	final String[] ASPECT_DIST = {
+			"aer;[(b,1)]",
+			"terra;[(b,1)]",
+			"ignis;[(ddd_fire,1)]",
+			"aqua;[(b,1)]",
+			"ordo;[(ddd_psychic,0.5),(ddd_force,0.5)]",
+			"perditio;[(ddd_force,1)]",
+			"vacuos;[(ddd_force,0.5),(ddd_necrotic,0.5)]",
+			"lux;[(ddd_psychic,0.5),(ddd_radiant,0.5)]",
+			"motus;[(ddd_thunder,1)]",
+			"gelum;[(ddd_cold,1)]",
+			"vitreus;[(p,1)]",
+			"metallum;[(s,1)]",
+			"victus;[(ddd_radiant,1)]",
+			"mortuus;[(ddd_necrotic,1)]",
+			"potentia;[(ddd_lightning,1)]",
+			"permutatio;[(ddd_lightning,0.5),(ddd_force,0.5)]",
+			"praecantatio;[(ddd_force,1)]",
+			"auram;[(ddd_force,1)]",
+			"alkimia;[(ddd_acid,0.5),(ddd_fire,0.5)]",
+			"vitium;[(ddd_force,0.4),(ddd_psychic,0.3),(ddd_necrotic,0.3)]",
+			"tenebrae;[(ddd_psychic,0.5),(ddd_necrotic,0.5)]",
+			"alienis;[(ddd_psychic,0.7),(ddd_necrotic,0.3)]",
+			"volatus;[(b,1)]",
+			"herba;[(p,0.5),(ddd_poison,0.5)]",
+			"instrumentum;[(b,0.4),(s,0.3),(p,0.3)]",
+			"fabrico;[(b,0.5),(p,0.5)]",
+			"machina;[(s,0.3),(b,0.7)]",
+			"vinculum;[(p,0.7),(s,0.3)]",
+			"spiritus;[(ddd_psychic,0.7),(ddd_radiant,0.3)]",
+			"cognitio;[(ddd_psychic,1)]",
+			"sensus;[(ddd_psychic,1)]",
+			"aversio;[(ddd_psychic,1)]",
+			"praemunio;[(ddd_radiant,1)]",
+			"desiderium;[(ddd_psychic,0.7),(ddd_necrotic,0.3)]",
+			"exanimis;[(ddd_necrotic,1)]",
+			"bestia;[(p,0.5),(s,0.5)]",
+			"humanus;[(ddd_psychic,0.5),(b,0.5)]"
+		};
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ThaumcraftCategory#taintDist}
+	 */
+	String TAINT_DISTRIBUTION = "[(ddd_force, 0.5),(ddd_psychic,0.5)]";
+	
+	/**
+	 * {@link ModConfig.CompatCategory.ThaumcraftCategory#dissolveDist}
+	 */
+	String DISSOLVE_DISTRIBUTION = "[(ddd_necrotic,1)]";
 }

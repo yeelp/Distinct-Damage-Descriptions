@@ -28,6 +28,11 @@ public interface ModConsts {
 		final String FIRST_AID_ID = "firstaid";
 		final String QUALITY_TOOLS_ID = "qualitytools";
 		final String BAUBLES_ID	= "baubles";
+		final String TECHGUNS_ID = "techguns";
+		final String WIZARDRY_ID = "ebwizardry";
+		final String THAUMCRAFT_ID = "thaumcraft";
+		final String FERMIUM_ID = "fermiumbooter";
+		final String BETTER_SURVIVAL_ID = "mujmajnkraftsbettersurvival";
 	}
 	
 	public interface IntegrationTitles {
@@ -43,6 +48,11 @@ public interface ModConsts {
 		final String FIRST_AID_TITLE = "First Aid";
 		final String QUALITY_TOOLS_TITLE = "Quality Tools";
 		final String BAUBLES_TITLE = "Baubles";
+		final String TECHGUNS_TITLE = "Techguns";
+		final String WIZARDRY_NAME = "Electroblob's Wizardry";
+		final String THAUMCRAFT_TITLE = "Thaumcraft";
+		final String FERMIUM_TITLE = "Fermium Booter";
+		final String BETTER_SURVIVAL_TITLE = "Better Survival";
 	}
 	
 	public interface TooltipConsts {
@@ -53,6 +63,14 @@ public interface ModConsts {
 		final String NO_RESISTS = "noresists";
 		final String UNCHANGED = "unchanged";
 		final String NO_ICONS = "dddnoicons";
+		
+		final String DAMAGE = "damage";
+		final String RESISTANCE = "resistance";
+		final String WEAKNESS = "weakness";
+		final String EFFECTIVENESS = "effectiveness";
+		final String ADAPTABILITY_CHANCE = "adaptivechance";
+		final String ADAPTABILITY_AMOUNT = "adaptiveamount";
+		final String IMMUNITIES = "immunities";
 	}
 	
 	public interface CommandConsts {

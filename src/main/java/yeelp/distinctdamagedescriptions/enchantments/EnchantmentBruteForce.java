@@ -4,7 +4,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.math.MathHelper;
-import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
 /**
@@ -13,13 +12,18 @@ import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
  * @author Yeelp
  *
  */
-public class EnchantmentBruteForce extends Enchantment {
+public class EnchantmentBruteForce extends AbstractDDDEnchantment {
 
+	public static final String NAME = "bruteforce";
+	
 	public EnchantmentBruteForce() {
 		super(Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[] {
 				EntityEquipmentSlot.MAINHAND});
-		this.setRegistryName("bruteforce");
-		this.setName(ModConsts.MODID + ".bruteforce");
+	}
+	
+	@Override
+	protected String getEnchantmentNameInternal() {
+		return NAME;
 	}
 
 	@Override

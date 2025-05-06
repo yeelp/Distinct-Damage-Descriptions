@@ -24,9 +24,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
  * The constructor takes a {@link Supplier} of booleans, which should always
  * return the config value that enables or disables this distribution. A
  * Supplier is used as this abstracts away checking the config, and also allows
- * the distribution to be enabled/disabled during gameplay. If you want the
- * distribution to always be enabled (i.e. there is no such config values that
- * toggles it on or off), use the no argument constructor.
+ * the distribution to be enabled/disabled during gameplay.
  * 
  * @author Yeelp
  *

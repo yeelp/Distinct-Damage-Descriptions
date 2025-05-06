@@ -10,6 +10,8 @@ import com.google.common.base.Predicates;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import yeelp.distinctdamagedescriptions.api.impl.dists.DDDDaylightDist;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
@@ -17,7 +19,7 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.GenericConfigR
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
-public final class DaylightTracker extends AbstractTracker {
+public class DaylightTracker extends AbstractTracker {
 
 	protected static final Set<ResourceLocation> WHITELIST = new HashSet<ResourceLocation>();
 
@@ -66,17 +68,21 @@ public final class DaylightTracker extends AbstractTracker {
 
 	@Override
 	public boolean shouldStartTracking(EntityLivingBase entity) {
-		return entity.world.isDaytime() && YResources.getEntityID(entity).filter(WHITELIST::contains).isPresent() && entity.isBurning() && entity.world.canBlockSeeSky(entity.getPosition());
+		return isInDaylight(entity) && YResources.getEntityID(entity).filter(WHITELIST::contains).isPresent();
 	}
 
 	@Override
 	public boolean shouldStopTracking(EntityLivingBase entity) {
 		return !entity.isBurning();
 	}
+	
+	protected static boolean isInDaylight(EntityLivingBase entity) {
+		return entity.world.isDaytime() && entity.getBrightness() > 0.5f && entity.isBurning() && entity.world.canBlockSeeSky(new BlockPos(entity.posX, entity.posY +entity.getEyeHeight(), entity.posZ));
+	}
 
 	@Override
 	public String getName() {
-		return "daylight";
+		return DDDDaylightDist.NAME;
 	}
 
 	public static void update() {

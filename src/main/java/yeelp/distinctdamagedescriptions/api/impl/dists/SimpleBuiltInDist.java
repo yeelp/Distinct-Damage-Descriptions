@@ -16,6 +16,7 @@ public final class SimpleBuiltInDist extends AbstractSingleTypeDist {
 	public static final SimpleBuiltInDist FLY_INTO_WALL = new SimpleBuiltInDist(() -> ModConfig.dmg.extraDamage.enableFlyIntoWallDamage, DamageSource.FLY_INTO_WALL, DDDBuiltInDamageType.BLUDGEONING);
 	public static final SimpleBuiltInDist LIGHTNING = new SimpleBuiltInDist(() -> ModConfig.dmg.extraDamage.enableLightningDamage, DamageSource.LIGHTNING_BOLT, DDDBuiltInDamageType.LIGHTNING);
 	public static final SimpleBuiltInDist WITHER = new SimpleBuiltInDist(() -> ModConfig.dmg.extraDamage.enableWitherDamage, DamageSource.WITHER, DDDBuiltInDamageType.NECROTIC);
+	public static final SimpleBuiltInDist SUFFOCATION = new SimpleBuiltInDist(() -> ModConfig.dmg.extraDamage.enableSuffocationDamage, DamageSource.IN_WALL, DDDBuiltInDamageType.FORCE);
 
 	private final DamageSource src;
 	private final DDDDamageType result;

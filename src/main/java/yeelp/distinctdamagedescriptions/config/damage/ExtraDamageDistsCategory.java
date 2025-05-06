@@ -18,7 +18,7 @@ public final class ExtraDamageDistsCategory {
 	public boolean enableExplosionDamage = true;
 
 	@Name("Falling Distribution")
-	@Comment("Enable/disable the fall damage distribution. This applies to any fall damage (falling, ender pearls). Falling inflicts bludgeoning damage with this enabled, can only be reduced by boots, and WILL damage boots. If disabled, vanilla handles it normally.")
+	@Comment("Enable/disable the fall damage distribution. This applies to any fall damage (falling, ender pearls). Falling inflicts bludgeoning damage with this enabled. If disabled, vanilla handles it normally.")
 	public boolean enableFallDamage = true;
 
 	@Name("Fly Into Wall Distribution")
@@ -78,6 +78,15 @@ public final class ExtraDamageDistsCategory {
 	public boolean enableGuardianSpikesDamage = true;
 
 	@Name("Parrot Poison Damage")
-	@Comment("Enable/disable parrot cookie distribution. Parrots take poison damage when fed cookies")
+	@Comment("Enable/disable parrot cookie distribution. Parrots take poison damage when fed cookies.")
 	public boolean enableParrotPoisonDamage = true;
+	
+	@Name("Suffocation Damage")
+	@Comment("Enable/disable suffocation distribution. Suffocating inflicts force damage when enabled.")
+	public boolean enableSuffocationDamage = true;
+	
+	@Name("Ender Pearl Damage")
+	@Comment("Enable/disable Ender Pearl distribution, overriding the fall damage distribution for ender pearls specifically. Teleporting with Ender Pearls inflict force damage when enabled. Otherwise, it uses the same rules as falling.")
+	public boolean enableEnderPearlDamage = true;
+	
 }

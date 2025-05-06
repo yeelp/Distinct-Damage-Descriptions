@@ -25,31 +25,23 @@ import yeelp.distinctdamagedescriptions.util.lib.YLib;
  */
 public abstract class TooltipTypeFormatter {
 
-	public static final String DAMAGE = "damage";
-	public static final String RESISTANCE = "resistance";
-	public static final String WEAKNESS = "weakness";
-	public static final String EFFECTIVENESS = "effectiveness";
-	public static final String ADAPTABILITY_CHANCE = "adaptivechance";
-	public static final String ADAPTABILITY_AMOUNT = "adaptiveamount";
-	public static final String IMMUNITIES = "immunities";
-
 	protected static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 	protected static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
 
 	/**
 	 * Default formatter for damage
 	 */
-	public static final TooltipTypeFormatter DEFAULT_DAMAGE = new Default(DAMAGE);
+	public static final TooltipTypeFormatter DEFAULT_DAMAGE = new Default(TooltipConsts.DAMAGE);
 
 	/**
 	 * Formatter for armor.
 	 */
-	public static final Armor ARMOR = new Armor();
+	public static final Armor ARMOR = new Armor.Vanilla();
 
 	/**
 	 * Formatter for shields' effectiveness
 	 */
-	public static final TooltipTypeFormatter SHIELD = new Default(EFFECTIVENESS);
+	public static final TooltipTypeFormatter SHIELD = new Default(TooltipConsts.EFFECTIVENESS);
 
 	/**
 	 * Formatter for mob resistances
@@ -63,7 +55,11 @@ public abstract class TooltipTypeFormatter {
 	}
 
 	protected final String standardFormat(TextFormatting colorStart, DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
-		return String.format("   %s%s %s %s", colorStart.toString(), formatter.getNumberFormattingStrategy().format(amount), formatter.getDamageFormatter().format(type), this.suffix.getFormattedText());
+		return regularFormat(colorStart, formatter.getDamageFormatter().format(type), amount, formatter);
+	}
+	
+	protected final String regularFormat(TextFormatting colorStart, String typePlaceholder, float amount, AbstractTooltipFormatter<?> formatter) {
+		return String.format("   %s%s %s %s", colorStart.toString(), formatter.getNumberFormattingStrategy().format(amount), typePlaceholder, this.suffix.getFormattedText());
 	}
 
 	protected final String defaultFormat(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
@@ -105,34 +101,92 @@ public abstract class TooltipTypeFormatter {
 	 * @author Yeelp
 	 *
 	 */
-	public static final class Armor extends TooltipTypeFormatter {
+	public static abstract class Armor extends TooltipTypeFormatter {
 
-		private static final ITextComponent ARMOR = TRANSLATOR.getComponent("effectiveArmor", GRAY);
-		private static final ITextComponent TOUGHNESS = TRANSLATOR.getComponent("effectiveToughness", GRAY);
-
-		Armor() {
-			super(EFFECTIVENESS);
+		protected Armor() {
+			super(TooltipConsts.EFFECTIVENESS);
 		}
 
 		@Override
-		public String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
+		public final String format(DDDDamageType type, float amount, AbstractTooltipFormatter<?> formatter) {
 			return super.standardFormat(formatter.getColourScheme().getFormattingBasedOnValue(amount, 1.0f), type, amount, formatter);
 		}
+		
+		public final String formatNoType(ITextComponent typePlaceholder, float amount, AbstractTooltipFormatter<?> formatter) {
+			return super.regularFormat(formatter.getColourScheme().getFormattingBasedOnValue(amount, 1.0f), typePlaceholder.getFormattedText(), amount, formatter);
+		}
+
+		protected abstract ITextComponent getArmorText();
+
+		protected abstract ITextComponent getToughnessText();
 
 		/**
-		 * Format armor values as a damage type, armor, toughness triplet
+		 * Format armor values as a damage type, armor tuple, or as a triple if there is
+		 * toughness
 		 * 
-		 * @param type      the damage type
-		 * @param armor     the armor value
-		 * @param toughness the toughness value
-		 * @param formatter the formatter whose number and damage formatters are to be
-		 *                  used
-		 * @return the formatted String.
+		 * @param type              The damage type.
+		 * @param armor             The armor values.
+		 * @param toughness         The toughness value.
+		 * @param originalArmor     The original armor value this armor piece provided.
+		 *                          Used as a reference for colour coding.
+		 * @param originalToughness The original toughess value this armor piece
+		 *                          provided. If non-zero, toughness will be included in
+		 *                          the tooltip, also used as a reference for colour
+		 *                          coding.
+		 * @param formatter         The formatter whose number and damage formatters are
+		 *                          to be used.
+		 * @return The formatted String.
 		 */
-		@SuppressWarnings("static-method")
-		public final String formatArmorAndToughness(DDDDamageType type, float armor, float toughness, AbstractTooltipFormatter<?> formatter) {
+		public final String formatArmorAndToughness(DDDDamageType type, float armor, float toughness, float originalArmor, float originalToughness, AbstractTooltipFormatter<?> formatter) {
+			return formatArmorAndToughness(formatter.getDamageFormatter().format(type), armor, toughness, originalArmor, originalToughness, formatter);
+		}
+		
+		/**
+		 * Format armor values as a placeholder string, armor tuple, or as a triple if there is
+		 * toughness
+		 * 
+		 * @param typePlaceholder   The string to place where a damage type would normally be
+		 * @param armor             The armor values.
+		 * @param toughness         The toughness value.
+		 * @param originalArmor     The original armor value this armor piece provided.
+		 *                          Used as a reference for colour coding.
+		 * @param originalToughness The original toughess value this armor piece
+		 *                          provided. If non-zero, toughness will be included in
+		 *                          the tooltip, also used as a reference for colour
+		 *                          coding.
+		 * @param formatter         The formatter whose number formatter is
+		 *                          to be used.
+		 * @return The formatted String.
+		 */
+		public final String formatArmorAndToughness(String typePlaceholder, float armor, float toughness, float originalArmor, float originalToughness, AbstractTooltipFormatter<?> formatter) {
 			TextFormatting gray = TextFormatting.GRAY;
-			return String.format("   %s%s: (%s %s%s, %s %s%s)%s", formatter.getDamageFormatter().format(type), gray.toString(), formatter.getNumberFormattingStrategy().format(armor), ARMOR.getFormattedText(), gray.toString(), formatter.getNumberFormattingStrategy().format(toughness), TOUGHNESS.getFormattedText(), gray.toString(), TextFormatting.RESET.toString());
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("   %s%s: (%s", typePlaceholder, gray.toString(), formatValue(armor, originalArmor, formatter, this.getArmorText().getFormattedText())));
+			if(originalToughness != 0) {
+				sb.append(String.format(", %s", formatValue(toughness, originalToughness, formatter, this.getToughnessText().getFormattedText())));
+			}
+			return sb.append(String.format("%s)", gray.toString())).toString();
+		}
+
+		private static String formatValue(float val, float threshold, AbstractTooltipFormatter<?> formatter, String suffix) {
+			return String.format("%s%s%s %s", formatter.getColourScheme().getFormattingBasedOnValue(val, threshold), formatter.getNumberFormattingStrategy().format(val), TextFormatting.GRAY.toString(), suffix);
+		}
+		
+		public static final class Vanilla extends Armor {
+			
+			private static final ITextComponent ARMOR = TRANSLATOR.getComponent("effectiveArmor", GRAY);
+			private static final ITextComponent TOUGHNESS = TRANSLATOR.getComponent("effectiveToughness", GRAY);
+
+			@Override
+			protected ITextComponent getArmorText() {
+				return ARMOR;
+			}
+
+			@Override
+			protected ITextComponent getToughnessText() {
+				return TOUGHNESS;
+			}
+			
 		}
 	}
 
@@ -145,14 +199,14 @@ public abstract class TooltipTypeFormatter {
 	public static final class MobResistances extends TooltipTypeFormatter {
 
 		private static final Style LIGHT_PURPLE = new Style().setColor(TextFormatting.LIGHT_PURPLE);
-		private static final ITextComponent RESISTANCE_SUFFIX = TRANSLATOR.getComponent(RESISTANCE, GRAY);
-		private static final ITextComponent WEAKNESS_SUFFIX = TRANSLATOR.getComponent(WEAKNESS, new Style().setColor(TextFormatting.DARK_RED));
-		private static final ITextComponent ADAPTABILITY_CHANCE_PREFIX = TRANSLATOR.getComponent(ADAPTABILITY_CHANCE, LIGHT_PURPLE);
-		private static final ITextComponent ADAPTABILITY_AMOUNT_PREFIX = TRANSLATOR.getComponent(ADAPTABILITY_AMOUNT, LIGHT_PURPLE);
-		private static final ITextComponent STARTING_IMMUNITIES = TRANSLATOR.getComponent(IMMUNITIES, new Style().setColor(TextFormatting.AQUA));
+		private static final ITextComponent RESISTANCE_SUFFIX = TRANSLATOR.getComponent(TooltipConsts.RESISTANCE, GRAY);
+		private static final ITextComponent WEAKNESS_SUFFIX = TRANSLATOR.getComponent(TooltipConsts.WEAKNESS, new Style().setColor(TextFormatting.DARK_RED));
+		private static final ITextComponent ADAPTABILITY_CHANCE_PREFIX = TRANSLATOR.getComponent(TooltipConsts.ADAPTABILITY_CHANCE, LIGHT_PURPLE);
+		private static final ITextComponent ADAPTABILITY_AMOUNT_PREFIX = TRANSLATOR.getComponent(TooltipConsts.ADAPTABILITY_AMOUNT, LIGHT_PURPLE);
+		private static final ITextComponent STARTING_IMMUNITIES = TRANSLATOR.getComponent(TooltipConsts.IMMUNITIES, new Style().setColor(TextFormatting.AQUA));
 
 		MobResistances() {
-			super(RESISTANCE);
+			super(TooltipConsts.RESISTANCE);
 		}
 
 		@Override

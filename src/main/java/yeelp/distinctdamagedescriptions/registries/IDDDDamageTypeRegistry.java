@@ -44,4 +44,13 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 		msg = msg.replaceAll("#defender", defender.getName());
 		return Optional.of(new TextComponentString(msg));
 	}
+
+	/**
+	 * Get a count of usuable types. This count is not merely calling
+	 * {@link DDDDamageType#isUsable()} on each registered type. This is a count of
+	 * all types that are NOT hidden and NOT an internal type.
+	 * 
+	 * @return a count of all non hidden, non internal types.
+	 */
+	int getUsableTypeCount();
 }

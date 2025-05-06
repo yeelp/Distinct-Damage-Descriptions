@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * A collection of useful methods
@@ -18,8 +19,20 @@ public final class YLib {
 	 * @return a String that is the result of nicely joining the {@code strings}
 	 */
 	public static String joinNiceString(boolean addSpace, String sep, String... strings) {
+		return joinNiceString(addSpace, sep, Arrays.stream(strings));
+	}
+	
+	/**
+	 * Join a Stream or strings together nicely with a separator
+	 * 
+	 * @param addSpace true if a space will be added after every separator
+	 * @param sep      the separator to use
+	 * @param strings  the stream of strings
+	 * @return a String that is the result of nicely joining the {@code strings}
+	 */
+	public static String joinNiceString(boolean addSpace, String sep, Stream<String> strings) {
 		String sepUsed = addSpace ? sep.concat(" ") : sep;
-		return Arrays.stream(strings).reduce((s1, s2) -> s1.concat(sepUsed).concat(s2)).orElse("");
+		return strings.reduce((s1, s2) -> s1.concat(sepUsed).concat(s2)).orElse("");
 	}
 
 	/**

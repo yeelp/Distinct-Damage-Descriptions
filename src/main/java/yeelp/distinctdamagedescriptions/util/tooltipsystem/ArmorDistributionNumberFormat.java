@@ -2,6 +2,8 @@ package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import java.util.function.Predicate;
 
+import yeelp.distinctdamagedescriptions.config.ModConfig;
+
 public enum ArmorDistributionNumberFormat implements ObjectFormatter<Float>, Predicate<Float> {
 	PLAIN(DDDNumberFormatter.PLAIN) {
 		@Override
@@ -12,7 +14,12 @@ public enum ArmorDistributionNumberFormat implements ObjectFormatter<Float>, Pre
 	PERCENT(DDDNumberFormatter.PERCENT) {
 		@Override
 		public boolean test(Float t) {
-			return t != 0.0f;
+			switch(ModConfig.resist.armorParseRule) {
+				case IMPLIED:
+					return t != ModConfig.resist.impliedArmorEffectiveness;
+				default:
+					return t != 0.0f;
+			}
 		}
 	},
 	RELATIVE(DDDNumberFormatter.RELATIVE) {

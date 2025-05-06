@@ -31,6 +31,7 @@ public enum ArmorCalculationType {
 			DoubleStream.Builder armors = DoubleStream.builder();
 			DoubleStream.Builder toughness = DoubleStream.builder();			
 			aVals.forEach((av) -> {
+				DebugLib.outputFormattedDebug("Armor Value for averaging: %s", av.toString());
 				armors.add(av.getArmor());
 				toughness.add(av.getToughness());
 			});

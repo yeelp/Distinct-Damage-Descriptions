@@ -65,6 +65,10 @@ dependencies {
     implementation fg.deobf("curse.maven:spartanweaponry-278141:3634012")
     implementation fg.deobf("curse.maven:first-aid-276837:4414252")
     implementation fg.deobf("curse.maven:baubles-227083:2518667")
+    implementation fg.deobf("curse.maven:electroblobswizardry-265642:5354477")
+    implementation fg.deobf("curse.maven:thaumcraft-223628:2629023")
+    implementation fg.deobf("curse.maven:fermiumbooter-968474:5672830")
+    implementation fg.deobf("curse.maven:better-survival-mod-260360:5729552")
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.3'
@@ -76,8 +80,8 @@ dependencies {
     
     shadow 'io.github.llamalad7:mixinextras-common:0.3.5'
 
-    shadow 'org.spongepowered:mixin:0.8.5'
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    shadow 'org.spongepowered:mixin:0.8.7'
+    annotationProcessor 'org.spongepowered:mixin:0.8.7:processor'
 }
 
 mixin {

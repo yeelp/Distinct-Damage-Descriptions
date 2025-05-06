@@ -15,6 +15,8 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.enchantments.EnchantmentBruteForce;
+import yeelp.distinctdamagedescriptions.enchantments.EnchantmentSlyStrike;
 import yeelp.distinctdamagedescriptions.integration.baubles.BaublesConfigurations;
 import yeelp.distinctdamagedescriptions.integration.baubles.util.BaubleModifierType;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
@@ -27,7 +29,6 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 
 public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<ItemStack> implements IModCompatTooltipFormatter<ItemStack> {
@@ -45,10 +46,10 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 	private static final BasicTranslator BASE_TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 	private static final Style GRAY = new Style().setColor(TextFormatting.GRAY);
 	
-	private static final ITextComponent BRUTE_FORCE_TEXT = TRANSLATOR.getComponent("bruteforce", GRAY);
-	private static final ITextComponent SLY_STRIKE_TEXT = TRANSLATOR.getComponent("slystrike", GRAY);
-	private static final ITextComponent RESISTANCE_TEXT = BASE_TRANSLATOR.getComponent(TooltipTypeFormatter.RESISTANCE, GRAY);
-	private static final ITextComponent DAMAGE_TEXT = BASE_TRANSLATOR.getComponent(TooltipTypeFormatter.DAMAGE, GRAY);
+	private static final ITextComponent BRUTE_FORCE_TEXT = TRANSLATOR.getComponent(EnchantmentBruteForce.NAME, GRAY);
+	private static final ITextComponent SLY_STRIKE_TEXT = TRANSLATOR.getComponent(EnchantmentSlyStrike.NAME, GRAY);
+	private static final ITextComponent RESISTANCE_TEXT = BASE_TRANSLATOR.getComponent(TooltipConsts.RESISTANCE, GRAY);
+	private static final ITextComponent DAMAGE_TEXT = BASE_TRANSLATOR.getComponent(TooltipConsts.DAMAGE, GRAY);
 	private static final ITextComponent IMMUNITY_TEXT = TRANSLATOR.getComponent("immunity", new Style().setColor(TextFormatting.AQUA));
 	static final ITextComponent START = TRANSLATOR.getComponent("modifiers", GRAY);
 
@@ -74,9 +75,11 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 		.ifPresent((m) -> {
 			for(BaubleModifierType type : BaubleModifierType.values()) {
 				Comparator<Entry<DDDDamageType, Float>> comparator = getComparator(type);
-				m.get(type).getModifications().entrySet().stream()
-					.filter((e) -> !e.getKey().isHidden())
-					.sorted(comparator).map((e) -> this.formatEntry(type, e.getKey(), e.getValue())).forEach(result::add);
+				if(m.containsKey(type)) {
+					m.get(type).getModifications().entrySet().stream()
+						.filter((e) -> !e.getKey().isHidden())
+						.sorted(comparator).map((e) -> this.formatEntry(type, e.getKey(), e.getValue())).forEach(result::add);					
+				}
 			}
 		});
 		return result;

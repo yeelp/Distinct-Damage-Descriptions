@@ -21,6 +21,7 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
@@ -34,7 +35,7 @@ public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistri
 	private final ITextComponent damageSuffix = AbstractCapabilityTooltipFormatter.getComponentWithGrayColour("damage");
 
 	private HwylaMobDamageFormatter() {
-		super(KeyTooltip.SHIFT, DDDDamageFormatter.STANDARD, HwylaMobDamageFormatter::getCap, "mobdistribution");
+		super(KeyTooltip.SHIFT, DDDDamageFormatter.COLOURED, HwylaMobDamageFormatter::getCap, "mobdistribution");
 	}
 
 	/**
@@ -79,11 +80,12 @@ public class HwylaMobDamageFormatter extends HwylaTooltipFormatter<IDamageDistri
 			dmg = 1.0;
 		}
 		DamageMap dMap = cap.distributeDamage((float) dmg);
+		DDDMaps.adjustHiddenWeightsToUnknown(dMap);
 		return Optional.of(dMap.entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).map((e) -> this.makeOneDamageString(e.getValue(), e.getKey())).collect(Collectors.toList()));
 	}
 
 	private String makeOneDamageString(float amount, DDDDamageType type) {
-		return String.format("   %s%s %s %s", TextFormatting.GRAY.toString(), this.getNumberFormattingStrategy().format(amount), this.getDamageFormatter().format(type), this.damageSuffix.getFormattedText());
+		return String.format("   %s%s %s %s", TextFormatting.WHITE.toString(), this.getNumberFormattingStrategy().format(amount), this.getDamageFormatter().format(type), this.damageSuffix.getFormattedText());
 	}
 
 	@Override

@@ -10,15 +10,24 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 
-public class Hwyla implements IModIntegration {
-
-	public Hwyla() {
-
+public final class Hwyla implements IModIntegration {
+	
+	public interface HwylaConsts {
+		String REGISTER_METHOD = "yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.registerHwyla";
+		String REGISTER_MESSAGE = "register";
+		String HWYLA = "hwyla";
+		String MAX = "max";
+		String WITH_ARMOR = "witharmor";
+		String ALL_TYPES = "alltypes";
+		String ALL_OTHER_TYPES = "allothertypes";
+		String ADAPTED_TO = "adaptedto";
+		
+		String HWYLA_RESISTS = "ddd.resists";
 	}
 
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
-		return FMLInterModComms.sendMessage(ModConsts.IntegrationIds.HWYLA_ID, "register", "yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.registerHwyla");
+		return FMLInterModComms.sendMessage(ModConsts.IntegrationIds.HWYLA_ID, HwylaConsts.REGISTER_MESSAGE, HwylaConsts.REGISTER_METHOD);
 	}
 
 	public static void registerHwyla(IWailaRegistrar registrar) {

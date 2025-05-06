@@ -12,7 +12,7 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReade
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
-public final class DDDDamageDistributionConfigReader extends DDDBasicConfigReader<IDamageDistribution> {
+public class DDDDamageDistributionConfigReader extends DDDBasicConfigReader<IDamageDistribution> {
 
 	public DDDDamageDistributionConfigReader(String name, String[] configList, IDDDConfiguration<IDamageDistribution> config) throws NoSuchMethodException, SecurityException {
 		super(name, configList, config, DamageDistribution.class.getConstructor(Map.class), 0.0f);

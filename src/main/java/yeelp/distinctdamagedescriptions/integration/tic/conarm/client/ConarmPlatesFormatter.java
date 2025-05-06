@@ -9,6 +9,8 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ArmorDistributionIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 
@@ -41,7 +43,12 @@ public final class ConarmPlatesFormatter extends ArmorDistributionFormatter impl
 	public IconAggregator getIconAggregator() {
 		return ConarmPlatesIconAggregator.getInstance();
 	}
-
+	
+	@Override
+	public ObjectFormatter<Float> getNumberFormattingStrategy() {
+		return super.getNumberFormattingStrategy().equals(DDDNumberFormatter.PLAIN) ? DDDNumberFormatter.PERCENT : super.getNumberFormattingStrategy();
+	}
+	
 	protected static final class ConarmPlatesIconAggregator extends ArmorDistributionIconAggregator {
 
 		private static ConarmPlatesIconAggregator instance;
@@ -53,6 +60,11 @@ public final class ConarmPlatesFormatter extends ArmorDistributionFormatter impl
 
 		public static ConarmPlatesIconAggregator getInstance() {
 			return instance == null ? instance = new ConarmPlatesFormatter.ConarmPlatesIconAggregator() : instance;
+		}
+		
+		@Override
+		protected boolean supportsAggregatingType(IconAggregatingType type) {
+			return type != IconAggregatingType.PLAIN;
 		}
 
 	}

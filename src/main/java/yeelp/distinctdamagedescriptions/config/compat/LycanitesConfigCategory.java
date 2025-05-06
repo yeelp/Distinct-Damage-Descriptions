@@ -5,7 +5,7 @@ import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
-public class LycanitesConfigCategory {
+public final class LycanitesConfigCategory {
 	@Name("Enable Smited Distribution")
 	@Comment("Enable/disable the smited distribution. Burning entities will take radiant damage while Smited")
 	public boolean enableSmitedDist = true;

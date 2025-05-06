@@ -72,7 +72,7 @@ public final class ResistanceCategory {
 			"Change the default behaviour of armor pieces with no distribution defined in the Armor Resistance config. Note that setting this to anything but NO_EFFECTIVENESS will make undefined armor pieces very strong, as their armor values will basically be multiplied by the number of types being inflicted (that they are effective against)",
 			"    NO_EFFECTIVENESS: Armor not defined will have no effectiveness. DDD calculated damage will effectively go right through the armor.",
 			"    ALL_EFFECTIVENESS: Armor not defined will have 100% effectiveness against all types. This sort of reverts the armor to \"vanilla\" behaviour, though again, the strength of the armor will be multiplied by the amount of damage types inflicted.",
-			"    EFFECTIVE_TO_REGULAR_TYPES: Armor not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.",
+			"    EFFECTIVE_TO_REGULAR_TYPES: Armor not defined will have 100% effectiveness to all regular types. Regular types are types that DDD doesn't treat differently (only two \"non-regular\" types exist, and they are built-in.)",
 			"    ALLOW_BYPASS_DAMAGE_TYPE: Armor not defined will have 100% effectiveness to almost all types, except for one internal built-in type; the unknown type. This unknown type will bypass the armor entirely."})
 	public DefaultArmorDistributionBehaviour defaultArmorResists = DefaultArmorDistributionBehaviour.NO_EFFECTIVENESS;
 
@@ -98,6 +98,7 @@ public final class ResistanceCategory {
 			"Define the rule DDD will use when parsing the armorResist config.",
 			"    LITERAL: DDD will parse the config exactly as it is written. Only the types written in an item's armor distribution will be used.",
 			"    IMPLIED: DDD will add in armor effectiveness for types not mentioned in an armor distribution. For example, an armor distribution of [(s, 0.8), (p, 0.5)] will have all the other registered DDD types added to its distribution. The effectiveness these types get is defined by impliedArmorEffectivess."})
+	@RequiresMcRestart
 	public ArmorParsingType armorParseRule = ArmorParsingType.LITERAL;
 
 	@Name("Negative Armor Handling")
@@ -121,6 +122,7 @@ public final class ResistanceCategory {
 	@Comment({
 			"The armor effectiveness that non-specified types get when using the IMPLIED armor parsing rule."})
 	@RangeDouble(min = 0.0)
+	@RequiresMcRestart
 	public double impliedArmorEffectiveness = 1.0;
 
 	@Name("Enable Shield Calculations")

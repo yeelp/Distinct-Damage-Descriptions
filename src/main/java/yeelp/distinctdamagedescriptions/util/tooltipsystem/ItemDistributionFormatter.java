@@ -1,6 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -11,6 +13,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
@@ -27,6 +30,10 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 
 	private ItemDistributionFormatter() {
 		super(KeyTooltip.SHIFT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, "damagedistribution");
+	}
+	
+	protected ItemDistributionFormatter(KeyTooltip keyTooltip, DDDDamageFormatter formatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
+		super(keyTooltip, formatter, capExtractor, typeTextKey);
 	}
 
 	/**

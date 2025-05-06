@@ -1,7 +1,12 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
+import java.util.Optional;
+import java.util.function.Function;
+
+import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
 
 /**
@@ -16,6 +21,10 @@ public class ItemDamageDistributionIconAggregator extends DistributionIconAggreg
 
 	private ItemDamageDistributionIconAggregator() {
 		super(ItemDistributionFormatter.getInstance(), DDDAPI.accessor::getDamageDistribution);
+	}
+	
+	protected ItemDamageDistributionIconAggregator(AbstractCapabilityTooltipFormatter<IDamageDistribution, ItemStack> formatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor) {
+		super(formatter, capExtractor);
 	}
 
 	/**
