@@ -32,6 +32,7 @@ public interface ModConsts {
 		final String WIZARDRY_ID = "ebwizardry";
 		final String THAUMCRAFT_ID = "thaumcraft";
 		final String FERMIUM_ID = "fermiumbooter";
+		final String BETTER_SURVIVAL_ID = "mujmajnkraftsbettersurvival";
 	}
 	
 	public interface IntegrationTitles {
@@ -51,6 +52,7 @@ public interface ModConsts {
 		final String WIZARDRY_NAME = "Electroblob's Wizardry";
 		final String THAUMCRAFT_TITLE = "Thaumcraft";
 		final String FERMIUM_TITLE = "Fermium Booter";
+		final String BETTER_SURVIVAL_TITLE = "Better Survival";
 	}
 	
 	public interface TooltipConsts {

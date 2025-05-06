@@ -30,7 +30,7 @@ public abstract class MixinFocusEngine {
 	}
 	
 	@Inject(method = "runFocusPackage(Lthaumcraft/api/casters/FocusPackage;[Lthaumcraft/api/casters/Trajectory;[Lnet/minecraft/util/math/RayTraceResult;)V", at = @At("TAIL"))
-	private static void focusPackageCleanup(FocusPackage focusPackage, @SuppressWarnings("unused") Trajectory[] trajectories, @SuppressWarnings("unused") RayTraceResult[] targets, @SuppressWarnings("unused") CallbackInfo info) {
+	private static void focusPackageCleanup(@SuppressWarnings("unused") FocusPackage focusPackage, @SuppressWarnings("unused") Trajectory[] trajectories, @SuppressWarnings("unused") RayTraceResult[] targets, @SuppressWarnings("unused") CallbackInfo info) {
 		DistinctDamageDescriptions.debug("Leaving Thaumcraft runFocusPackage!");
 	}
 }
