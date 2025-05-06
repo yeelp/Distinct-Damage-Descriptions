@@ -185,9 +185,6 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 				calc.getResultsBuilder().hasEffectiveShield(m);
 				ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (calc.getResultsBuilder().build().getShieldRatio().getAsDouble())), this.getFighter()));
 			});
-			if(!m.isEmpty()) {
-				calc.setType(DDDCombatCalculations.getWeightedRandomRepresentativeType(m));
-			}
 			if(ModConfig.resist.enableArmorCalcs) {
 				DDDCombatCalculations.classifyArmor(ctx).ifPresent((classified) -> {
 					calc.setArmorClassification(classified);
@@ -221,6 +218,9 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
 			CombatContext ctx = calc.getContext();
 			ResultsBuilder results = calc.getResultsBuilder();
+			if(!m.isEmpty()) {
+				calc.setType(DDDCombatCalculations.getWeightedRandomRepresentativeType(m));
+			}
 			DDDCombatCalculations.classifyDefenses(ctx).ifPresent((defenses) -> {
 				DDDEnchantmentInfo enchants = DDDCombatCalculations.getDDDEnchants(ctx);
 				if(!enchants.isSlyStrike() && defenses.immunities.stream().map(Functions.compose((f) -> f != null && f > 0.0f, m::remove)).reduce(Boolean::logicalOr).orElse(false)) {

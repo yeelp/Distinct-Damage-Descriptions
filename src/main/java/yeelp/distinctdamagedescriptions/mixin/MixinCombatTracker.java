@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.CombatTracker;
 import net.minecraft.util.text.ITextComponent;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
@@ -35,14 +34,6 @@ public abstract class MixinCombatTracker {
 		}
 		Optional<IDDDCombatTracker> tracker = DDDAPI.accessor.getDDDCombatTracker(this.getFighter());
 		DebugLib.outputFormattedDebug("Combat Tracker %spresent for death message", tracker.isPresent() ? "" : "NOT ");
-		tracker.ifPresent((ct) -> ct.getLastCalculation(TICK_DELTA).ifPresent((calc) -> {
-			DistinctDamageDescriptions.debug("Found last calculation for death message.");
-			if(calc.getType().isPresent()) {
-				DistinctDamageDescriptions.debug("Has damage type for death message");
-				calc.getType().flatMap((type) -> DDDRegistries.damageTypes.getDeathMessageForType(type, calc.getContext().getSource().getTrueSource(), this.getFighter())).map(ITextComponent::getFormattedText).ifPresent(DistinctDamageDescriptions::debug);
-			}
-			
-			calc.getType().flatMap((type) -> DDDRegistries.damageTypes.getDeathMessageForType(type, calc.getContext().getSource().getTrueSource(), this.getFighter())).ifPresent(info::setReturnValue);
-		}));
+		tracker.ifPresent((ct) -> ct.getLastCalculation(TICK_DELTA).ifPresent((calc) -> calc.getType().flatMap((type) -> DDDRegistries.damageTypes.getDeathMessageForType(type, calc.getContext().getSource().getTrueSource(), this.getFighter())).ifPresent(info::setReturnValue)));
 	}
 }
