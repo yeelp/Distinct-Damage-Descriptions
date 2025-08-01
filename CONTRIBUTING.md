@@ -63,4 +63,4 @@ Feature requests for DDD should be within the scope of the mod. New blocks, mobs
 The more specific you can be about your feature request, the better the discussion around your feature request will be.
 
 ##### Mod Integration/Compatibility Requests
-If you are making any feature request for new mod intergration or compatibility, you should check the Discord's `#ddd-official-mod-integration-list` channel to know which mods have been added/planned/considered/denied. Denied mods are unlikely to be reconsidered.
+If you are making any feature request for new mod integration or compatibility, you should check the Discord's `#ddd-official-mod-integration-list` channel to know which mods have been added/planned/considered/denied. Denied mods are unlikely to be reconsidered.
