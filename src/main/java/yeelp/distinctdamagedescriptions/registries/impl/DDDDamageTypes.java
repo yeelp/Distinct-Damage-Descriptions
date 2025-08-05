@@ -18,4 +18,10 @@ public final class DDDDamageTypes extends DDDSourcedRegistry<DDDDamageType> impl
 	public int getUsableTypeCount() {
 		return (int) this.getAll().stream().filter((type) -> !type.isHidden() && !DDDDamageType.isInternalType(type)).count();
 	}
+	
+	@Override
+	public void register(boolean suppressOutput, DDDDamageType obj) {
+		obj.onRegister();
+		super.register(suppressOutput, obj);
+	}
 }

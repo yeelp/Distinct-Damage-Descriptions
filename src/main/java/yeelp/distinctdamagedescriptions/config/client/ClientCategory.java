@@ -1,7 +1,13 @@
 package yeelp.distinctdamagedescriptions.config.client;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
+import yeelp.distinctdamagedescriptions.ModConsts.DamageTypeNames;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumberFormat;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DamageDistributionNumberFormat;
@@ -79,5 +85,26 @@ public final class ClientCategory {
 	@Comment("Enable/disable DDD's sound effects for resistance/weakness/immunity.")
 	public boolean enableSfx = true;
 	
+	@Name("Built-In Damage Type Colours")
+	@Comment("The colours used in tooltips for built in damage types. The colour needs to be a valid HEX colour (rrggbb)")
+	@RequiresMcRestart
+	public Map<String, String> damageTypeColours = Maps.newHashMap();
 	
+	public ClientCategory() {
+		this.damageTypeColours.put(DamageTypeNames.UNKNOWN, "aaaaaa");
+		this.damageTypeColours.put(DamageTypeNames.NORMAL, "000000");
+		this.damageTypeColours.put(DamageTypeNames.SLASHING, "ffffff");
+		this.damageTypeColours.put(DamageTypeNames.PIERCING, "ffffff");
+		this.damageTypeColours.put(DamageTypeNames.BLUDGEONING, "ffffff");
+		this.damageTypeColours.put(DamageTypeNames.ACID, "00e600");
+		this.damageTypeColours.put(DamageTypeNames.COLD, "00dbd8");
+		this.damageTypeColours.put(DamageTypeNames.FIRE, "db5f00");
+		this.damageTypeColours.put(DamageTypeNames.FORCE, "db2100");
+		this.damageTypeColours.put(DamageTypeNames.LIGHTNING, "0000cf");
+		this.damageTypeColours.put(DamageTypeNames.NECROTIC, "404040");
+		this.damageTypeColours.put(DamageTypeNames.POISON, "7600ba");
+		this.damageTypeColours.put(DamageTypeNames.PSYCHIC, "ff0084");
+		this.damageTypeColours.put(DamageTypeNames.RADIANT, "fffa5e");
+		this.damageTypeColours.put(DamageTypeNames.THUNDER, "c9c9c9");
+	}
 }

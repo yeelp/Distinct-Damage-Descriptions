@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemPotion;
@@ -56,19 +57,14 @@ public final class DDDInstantEffectsDist extends DDDAbstractPredefinedDistributi
 
 	private Optional<DDDDamageType> classify(DamageSource source, EntityLivingBase target) {
 		Optional<DDDDamageType> inflictedType = Optional.empty();
-		DDDDamageType type = null;
 		if(this.enabled()) {
 			Entity sourceEntity = source.getImmediateSource();
 			List<PotionEffect> effects = Collections.emptyList();
-			Potion potionToCheck;
-			switch(target.getCreatureAttribute()) {
-				case UNDEAD:
-					potionToCheck = MobEffects.INSTANT_HEALTH;
-					type = DDDBuiltInDamageType.RADIANT;
-					break;
-				default:
-					potionToCheck = MobEffects.INSTANT_DAMAGE;
-					type = DDDBuiltInDamageType.NECROTIC;
+			Potion potionToCheck = MobEffects.INSTANT_DAMAGE;
+			DDDDamageType type = DDDBuiltInDamageType.NECROTIC;
+			if(target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD) {
+				potionToCheck = MobEffects.INSTANT_HEALTH;
+				type = DDDBuiltInDamageType.RADIANT;				
 			}
 			if(sourceEntity instanceof EntityPotion) {
 				EntityPotion potion = (EntityPotion) sourceEntity;

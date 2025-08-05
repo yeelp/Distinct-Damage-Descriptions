@@ -15,6 +15,24 @@ public interface ModConsts {
 	final String NAME = "Distinct Damage Descriptions";
 	final String VERSION = "@version@";
 	
+	public interface DamageTypeNames {
+		final String UNKNOWN = "unknown";
+		final String NORMAL = "normal";
+		final String SLASHING = "slashing";
+		final String PIERCING = "piercing";
+		final String BLUDGEONING = "bludgeoning";
+		final String ACID = "acid";
+		final String COLD = "cold";
+		final String FIRE = "fire";
+		final String FORCE = "force";
+		final String LIGHTNING = "lightning";
+		final String NECROTIC = "necrotic";
+		final String POISON = "poison";
+		final String PSYCHIC = "psychic";
+		final String RADIANT = "radiant";
+		final String THUNDER = "thunder";
+	}
+	
 	public interface IntegrationIds {
 		final String CRAFTTWEAKER_ID = "crafttweaker";
 		final String CONTENTTWEAKER_ID = "contenttweaker";
