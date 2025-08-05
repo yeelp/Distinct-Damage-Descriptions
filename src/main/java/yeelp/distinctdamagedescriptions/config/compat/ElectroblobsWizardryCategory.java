@@ -38,7 +38,7 @@ public final class ElectroblobsWizardryCategory {
 	@Comment({
 		"Link throwables to their damage type.",
 		"What this does is give DDD a hint as to what damage type a throwable inflicts. Then, DDD will link a projectile distribution to the item, so it shows the damage distribution in the tooltip.",
-		"This can be done manually through the projectil distribution config, these is just to make it easier, as all you need here is the Wizardry damage type it deals, and not a full damage distribution.",
+		"This can be done manually through the projectil distribution config, this is just to make it easier, as all you need here is the Wizardry damage type it deals, and not a full damage distribution.",
 		"If you specify a damage type that isn't defined in Spell Damage Type Distributions, the entry will be ignored.",
 		"Format is id;type where:",
 		"   id is the namespaced ITEM id of the throwable. The mod id can be excluded ONLY if the item is from ebwizardry. Items added by addon mods will need the full namespaced id.",
