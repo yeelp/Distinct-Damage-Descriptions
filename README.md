@@ -1,4 +1,4 @@
-![](images/DDDBanner.png)
+![](images/dddtitle2.png)
 
 # [Distinct Damage Descriptions](https://www.curseforge.com/minecraft/mc-mods/distinct-damage-descriptions)
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X8X5G4LPG)
