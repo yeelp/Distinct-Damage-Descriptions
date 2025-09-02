@@ -10,11 +10,12 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDistributionBiasConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
-@DDDLoader(modid = ModConsts.IntegrationIds.TETRA_ID, name = "Tetra Configurations", requiredLoaders = "DDD Registries")
+@DDDLoader(modid = ModConsts.IntegrationIds.TETRA_ID, name = "Tetra Configurations", requiredLoaders = DDDLoaderIDs.REGISTRIES)
 public abstract class TetraConfigurations {
 
 	public static IDDDConfiguration<DistributionBias> toolBiasResistance;

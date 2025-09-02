@@ -69,6 +69,7 @@ dependencies {
     implementation fg.deobf("curse.maven:thaumcraft-223628:2629023")
     implementation fg.deobf("curse.maven:fermiumbooter-968474:5672830")
     implementation fg.deobf("curse.maven:better-survival-mod-260360:5729552")
+    implementation fg.deobf("curse.maven:ender-skills-391325:5185081")
     
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.3'

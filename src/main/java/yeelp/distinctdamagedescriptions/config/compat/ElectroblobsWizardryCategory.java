@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.config.compat;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 
@@ -20,6 +21,7 @@ public final class ElectroblobsWizardryCategory {
 		"Minions not listed here will check the regular mob resistances config for a config entry.",
 		"Malformed entries in this list will be ignored."
 	})
+	@RequiresMcRestart
 	public String[] minionCapabilities = DefaultValues.MINON_CAPABILITIES;
 	
 	@Name("Spell Damage Type Distributions")
@@ -32,6 +34,7 @@ public final class ElectroblobsWizardryCategory {
 		"Types not listed here, will do force damage.",
 		"Malformed entries in this list will be ignored."
 	})
+	@RequiresMcRestart
 	public String[] spellDamageTypeDistributions = DefaultValues.SPELL_TYPE_DISTRIBUTIONS;
 	
 	@Name("Linked Throwables")
@@ -45,6 +48,7 @@ public final class ElectroblobsWizardryCategory {
 		"   type is the Wizardry damage type. NOT the DDD damage type.",
 		"Malformed entries in this list will be ignored."
 	})
+	@RequiresMcRestart
 	public String[] linkedThrowables = DefaultValues.LINKED_THROWABLES;
 	
 	@Name("Show Spell Distirbution Tooltips")
@@ -60,6 +64,7 @@ public final class ElectroblobsWizardryCategory {
 		"   type is the Wizardry damage type. NOT the DDD damage type.",
 		"Malformed entries in this list will be ignored."
 	})
+	@RequiresMcRestart
 	public String[] spellDamageType = DefaultValues.SPELL_DAMAGE_TYPE;
 	
 	@Name("Show Spell Damage Info")

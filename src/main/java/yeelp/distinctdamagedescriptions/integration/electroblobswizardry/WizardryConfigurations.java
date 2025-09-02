@@ -9,6 +9,7 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDamageDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers.AbstractWizardryConfigReader.BasicWizardryConfigReader;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers.WizardryMinionConfigReader;
@@ -19,7 +20,7 @@ import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers
  * @author Yeelp
  *
  */
-@DDDLoader(modid = IntegrationIds.WIZARDRY_ID, name = "Electroblob's Wizardry Configurations", requiredLoaders = "DDD Registries")
+@DDDLoader(modid = IntegrationIds.WIZARDRY_ID, name = "Electroblob's Wizardry Configurations", requiredLoaders = DDDLoaderIDs.REGISTRIES)
 public abstract class WizardryConfigurations {
 	
 	/**

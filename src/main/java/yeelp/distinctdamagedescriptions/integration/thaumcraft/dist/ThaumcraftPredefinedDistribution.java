@@ -91,7 +91,7 @@ public final class ThaumcraftPredefinedDistribution extends DDDAbstractPredefine
 		});
 	}
 	
-	public static Iterable<DDDConfigReader> geReaders() {
+	public static Iterable<DDDConfigReader> getReaders() {
 		return DISTS.stream().map((td) -> td.reader).collect(Collectors.toList());
 	}
 	

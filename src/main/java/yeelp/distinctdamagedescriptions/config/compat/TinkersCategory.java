@@ -23,4 +23,15 @@ public final class TinkersCategory {
 			"A material's influence rating is a measure of how good that material is at influencing head pieces."})
 	@RequiresMcRestart
 	public String[] matBias = DefaultValues.MATERIAL_BIAS;
+	
+	@Name("Use Bleed Distribution")
+	@Comment({
+		"Set to true for DDD to use a distribution for the Bleed potion effect (usually caused by the Sharp trait).", 
+		"If DDD doesn't use this distribution, this damage will not be classified and will either use the distribution of the weapon/entity that caused the effect (if there is one), otherwise it won't have DDD's calculations applied to it."
+	})
+	public boolean useBleedDistribution = true;
+	
+	@Name("Bleed Distribution")
+	@Comment("Set the distribution used when taking damage from the Bleed potion effect (usually from the Sharp trait); a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String bleedDist = DefaultValues.TIC_BLEED_DIST;
 }

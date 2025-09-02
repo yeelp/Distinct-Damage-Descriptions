@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.config.compat;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
 public final class ThaumcraftCategory {
@@ -23,6 +24,7 @@ public final class ThaumcraftCategory {
 			"ALL weights must add to 1.",
 			"Aspects not listed here will do force damage.",
 			"Malformed entries in this list will be ignored."})
+	@RequiresMcRestart
 	public String[] aspectDistributions = DefaultValues.ASPECT_DIST;
 
 	@Name("Use Taint Distribution")

@@ -51,6 +51,7 @@ public interface ModConsts {
 		final String THAUMCRAFT_ID = "thaumcraft";
 		final String FERMIUM_ID = "fermiumbooter";
 		final String BETTER_SURVIVAL_ID = "mujmajnkraftsbettersurvival";
+		final String ENDER_SKILLS_ID = "enderskills";
 	}
 	
 	public interface IntegrationTitles {
@@ -71,6 +72,7 @@ public interface ModConsts {
 		final String THAUMCRAFT_TITLE = "Thaumcraft";
 		final String FERMIUM_TITLE = "Fermium Booter";
 		final String BETTER_SURVIVAL_TITLE = "Better Survival";
+		final String ENDER_SKILLS_TITLE = "Ender Skills";
 	}
 	
 	public interface TooltipConsts {

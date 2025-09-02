@@ -32,6 +32,7 @@ public class DaylightTracker extends AbstractTracker {
 
 		@Override
 		public void read() {
+			WHITELIST.clear();
 			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).forEach((c) -> this.parse(c).ifPresent(WHITELIST::add));
 		}
 

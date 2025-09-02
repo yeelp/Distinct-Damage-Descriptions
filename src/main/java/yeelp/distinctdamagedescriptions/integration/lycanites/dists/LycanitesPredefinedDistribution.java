@@ -48,7 +48,7 @@ public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefi
 		}
 	}
 	
-	private static final Collection<LycanitesPredefinedDistribution> DISTS = ImmutableSet.of(LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE);
+	private static final Collection<LycanitesPredefinedDistribution> DISTS = ImmutableSet.of(LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE, new LycanitesBleedDistribution());
 	
 	private IDamageDistribution dist;
 	private final Supplier<Boolean> config;
@@ -93,7 +93,7 @@ public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefi
 	}
 	
 	public static Iterable<DDDConfigReader> getReaders() {
-		return DISTS.stream().map((lfd) -> lfd.reader).collect(Collectors.toList());
+		return DISTS.stream().map((lpd) -> lpd.reader).collect(Collectors.toList());
 	}
 	
 	public static Iterable<LycanitesPredefinedDistribution> getDists() {

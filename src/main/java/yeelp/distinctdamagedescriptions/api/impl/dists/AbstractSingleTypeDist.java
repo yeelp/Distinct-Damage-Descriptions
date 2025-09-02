@@ -61,7 +61,7 @@ public abstract class AbstractSingleTypeDist extends DDDAbstractPredefinedDistri
 
 	@Override
 	public final Set<DDDDamageType> getTypes(DamageSource source, EntityLivingBase target) {
-		if(this.enabled() && this.useType(source, target)) {
+		if(this.useType(source, target)) {
 			return ImmutableSet.of(this.getType());
 		}
 		return ImmutableSet.of();
