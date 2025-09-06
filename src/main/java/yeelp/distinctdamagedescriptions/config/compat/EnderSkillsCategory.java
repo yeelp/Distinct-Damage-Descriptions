@@ -46,10 +46,24 @@ public final class EnderSkillsCategory {
 	@Name("Shadow Distribution")
 	@Comment("The distribution the shadow uses with the Shadow skill; a valid damage distribution as defined in the damage category")
 	public String shadowDist = DefaultValues.SHADOW_DISTRIBUTION;
-	
+
 	@Name("Smash Distribution")
 	@Comment("The distribution the Smash skill uses; a valid damage distribution as defined in the damage category.")
 	public String smashDist = DefaultValues.SMASH_DISTRIBUTION;
+
+	@Name("Syphon Distribution")
+	@Comment({
+			"The distribution the Syphon skill uses; a valid damage distribution as defined in the damage category.",
+			"If you can give Syphon a distribution that gets recognized in the Skill Distribution list, you don't need this.",
+			"You need Use Separate Syphon Distribution set to true for this to be used."})
+	public String syphonDist = DefaultValues.SYPHON_DISTRIBUTION;
+
+	@Name("Use Separate Syphon Distribution")
+	@Comment({
+		"If set to true, DDD will use Syphon Distribution for the Syphon skill. ",
+		"If you can get Syphon to work by putting a distribution for it in the Skill Distribution list, then you don't need this enabled."
+	})
+	public boolean useSeparateSyphonDist = true;
 
 	@Name("Show Skill Type Info")
 	@Comment({

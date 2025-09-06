@@ -49,7 +49,7 @@ public abstract class EnderSkillsPredefinedDistribution extends DDDAbstractPrede
 		
 	}
 	
-	private static final Collection<EnderSkillsPredefinedDistribution> DISTS = ImmutableSet.of(new EnderSkillsShadowDistribution(), new SimpleEnderSkillsPredefinedDistribution("smash", () -> ModConfig.compat.enderskills.smashDist, () -> DefaultValues.SMASH_DISTRIBUTION));
+	private static final Collection<EnderSkillsPredefinedDistribution> DISTS = ImmutableSet.of(new EnderSkillsShadowDistribution(), new SimpleEnderSkillsPredefinedDistribution("smash", () -> ModConfig.compat.enderskills.smashDist, () -> DefaultValues.SMASH_DISTRIBUTION), new EnderSkillsSyphonDistribution());
 	
 	private IDamageDistribution dist;
 	private DDDConfigReader reader;

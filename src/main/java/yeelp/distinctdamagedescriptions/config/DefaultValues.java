@@ -1030,4 +1030,9 @@ public interface DefaultValues {
 	 * {@link ModConfig.CompatCategory.EnderSkillsCategory#smashDist}
 	 */
 	String SMASH_DISTRIBUTION = "[(b, 1)]";
+	
+	/**
+	 * {@linkModConfig.CompatCategory.EnderSkillsCategory#syphonDist}
+	 */
+	String SYPHON_DISTRIBUTION = "[(ddd_necrotic, 1)]";
 }

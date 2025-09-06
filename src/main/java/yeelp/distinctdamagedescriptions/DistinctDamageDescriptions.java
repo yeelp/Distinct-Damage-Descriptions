@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -39,7 +40,7 @@ import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
 import yeelp.distinctdamagedescriptions.util.json.DDDJsonIO;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
-@Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION, certificateFingerprint = "176200587b5c58adc4f846bdcc0065ae8f1a3835")
+@Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION, dependencies = "after:"+IntegrationIds.WIZARDRY_ID+"@[4.3.14,)", certificateFingerprint = "176200587b5c58adc4f846bdcc0065ae8f1a3835")
 public class DistinctDamageDescriptions {
 	public static Logger logger;
 	private static File configDirectory;
