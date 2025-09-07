@@ -86,7 +86,7 @@ public class LycanitesFireDistribution extends LycanitesPredefinedDistribution {
 
 	@Override
 	protected boolean isApplicable(DamageSource src, EntityLivingBase target) {
-		return this.enabled() && this.doesDamageSourceMatch(src) && this.isInsideFire(target);
+		return this.doesDamageSourceMatch(src) && this.isInsideFire(target);
 	}
 
 	protected boolean doesDamageSourceMatch(DamageSource src) {

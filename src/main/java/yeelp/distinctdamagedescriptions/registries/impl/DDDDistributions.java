@@ -71,10 +71,11 @@ public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDist
 	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
 		T result;
 		DDDPredefinedDistribution dist = null;
-		Iterator<DDDPredefinedDistribution> it = this.map.values().stream().sorted().iterator();
-		for(result = start; p.test(result) && it.hasNext(); result = next.apply(dist = it.next()));
+		boolean unusable = true;
+		Iterator<DDDPredefinedDistribution> it = this.map.values().stream().sorted().filter(DDDPredefinedDistribution::enabled).iterator();
+		for(result = start; unusable = p.test(result) && it.hasNext(); result = next.apply(dist = it.next()));
 		if(ModConfig.showDotsOn) {
-			if(dist != null) {
+			if(dist != null && !unusable) {
 				DebugLib.outputFormattedDebug("Selected Predefined Distribution is: %s", dist.getName());
 			}
 			else {

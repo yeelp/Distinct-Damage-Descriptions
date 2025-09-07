@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -33,6 +34,7 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
+import yeelp.distinctdamagedescriptions.integration.tic.dists.TiCBleedDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkersLinkedProjectileDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.distributors.TinkerProjectileCapabilityDistributor;
@@ -109,11 +111,13 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 		slyStrike.addRecipeMatch(new RecipeMatch.ItemCombination(1, new ItemStack(Items.GHAST_TEAR), new ItemStack(Items.COMPASS), new ItemStack(Items.ENDER_EYE)));
 		bruteForce.addItem(Items.FIREWORK_CHARGE);
 		DDDCapabilityDistributors.addProjCap(TinkerProjectileCapabilityDistributor.getInstance());
+		DDDRegistries.distributions.register(new TiCBleedDistribution());
 		return true;
 	}
 
 	@Override
 	public boolean postInit(FMLPostInitializationEvent evt) {
+		
 		if(TConstruct.pulseManager.isPulseLoaded(TinkerRangedWeapons.PulseId)) {
 			for(Item i : ImmutableList.of(TinkerRangedWeapons.arrow, TinkerRangedWeapons.bolt, TinkerRangedWeapons.shuriken)) {
 				String s = ForgeRegistries.ITEMS.getKey(i).toString();
@@ -155,7 +159,14 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 
 	@Override
 	public Iterable<Handler> getHandlers() {
-		return ImmutableList.of();
+		return ImmutableList.of(new Handler() {
+			@SubscribeEvent
+			public void onConfigChange(ConfigChangedEvent evt) {
+				if(evt.getModID().equals(ModConsts.MODID)) {
+					TiCBleedDistribution.update();
+				}
+			}
+		});
 	}
 
 	@Override

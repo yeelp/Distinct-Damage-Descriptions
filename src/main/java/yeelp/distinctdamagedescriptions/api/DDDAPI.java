@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.api;
 import yeelp.distinctdamagedescriptions.api.impl.DistinctDamageDescriptionsAPIImpl;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 
 /**
  * API for Distinct Damage Descriptions
@@ -10,7 +11,7 @@ import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
  * @author Yeelp
  *
  */
-@DDDLoader(name = "DDD API")
+@DDDLoader(name = DDDLoaderIDs.API)
 public abstract class DDDAPI {
 	public static IDistinctDamageDescriptionsAccessor accessor;
 	public static IDistinctDamageDescriptionsMutator mutator;

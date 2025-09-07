@@ -14,7 +14,9 @@ import yeelp.distinctdamagedescriptions.config.readers.DDDDistributionBiasConfig
 import yeelp.distinctdamagedescriptions.config.readers.DDDModIDPrependingConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDNumericEntryConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
+import yeelp.distinctdamagedescriptions.integration.tic.dists.TiCBleedDistribution;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
@@ -24,7 +26,7 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
  * @author Yeelp
  *
  */
-@DDDLoader(modid = ModConsts.IntegrationIds.TCONSTRUCT_ID, name = "TiC Configurations", requiredLoaders = "DDD Registries")
+@DDDLoader(modid = ModConsts.IntegrationIds.TCONSTRUCT_ID, name = "TiC Configurations", requiredLoaders = DDDLoaderIDs.REGISTRIES)
 public abstract class TiCConfigurations {
 
 	/**
@@ -52,7 +54,8 @@ public abstract class TiCConfigurations {
 		try {
 			DDDConfigLoader.getInstance().enqueueAll(new DDDModIDPrependingConfigReader<Float>(ModConsts.IntegrationIds.TCONSTRUCT_ID, new DDDNumericEntryConfigReader<Float>("Tinker's Compat: Tool Bias", ModConfig.compat.tinkers.toolBias, toolBiasResistance, Float::parseFloat)),
 					new DDDDistributionBiasConfigReader("Tinker's Compat: Material Bias", ModConfig.compat.tinkers.matBias, toolMaterialBias),
-					new DDDArmorDistributionConfigReader("Conarm Compat: Material Distribution", ModConfig.compat.conarm.armorMatDist, armorMaterialDist));
+					new DDDArmorDistributionConfigReader("Conarm Compat: Material Distribution", ModConfig.compat.conarm.armorMatDist, armorMaterialDist),
+					TiCBleedDistribution.getConfigReader());
 		}
 		catch(NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();

@@ -17,6 +17,7 @@ import yeelp.distinctdamagedescriptions.config.readers.DDDProjectileConfigReader
 import yeelp.distinctdamagedescriptions.config.readers.DDDShieldClassesConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
@@ -26,7 +27,7 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
  * @author Yeelp
  *
  */
-@DDDLoader(name = "DDD Configurations", requiredLoaders = "DDD Registries")
+@DDDLoader(name = DDDLoaderIDs.CONFIGURATIONS, requiredLoaders = DDDLoaderIDs.REGISTRIES)
 public abstract class DDDConfigurations {
 
 	/**

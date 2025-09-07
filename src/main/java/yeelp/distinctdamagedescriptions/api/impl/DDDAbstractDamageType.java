@@ -22,8 +22,9 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	private final String noAttackerDeathMessage;
 	private final IDamageDistribution dist;
 	private final Type type;
-	private final int colour;
+	private int colour;
 	private boolean hidden;
+	private boolean registered = false;
 
 	/**
 	 * Build a new damage type
@@ -48,6 +49,24 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 		this.colour = colour;
 		this.hidden = hidden;
 	}
+	
+	/**
+	 * Build a new damage type without a defined colour.
+	 * 
+	 * @param name                 the internal name of the type. Will be prepended
+	 *                             with "ddd_"
+	 * @param isPhysical           true if the damage type is physical or not.
+	 * @param deathAttackerMessage The death message to display when the death was
+	 *                             caused by an attacker
+	 * @param deathMessage         The death message to display when there is no
+	 *                             attacker
+	 * 
+	 * @param hidden               If this type should show in tooltips.
+	 */
+	DDDAbstractDamageType(String name, boolean isPhysical, String deathAttackerMessage, String deathMessage, boolean hidden) {
+		this(name, isPhysical, deathAttackerMessage, deathMessage, -1, hidden);
+	}
+	
 
 	@Override
 	public final String getTypeName() {
@@ -83,6 +102,10 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 		return this.colour;
 	}
 	
+	protected final void setColour(int colour) {
+		this.colour = colour;
+	}
+	
 	@Override
 	public boolean isHidden() {
 		return this.hidden;
@@ -102,6 +125,17 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	public String toString() {
 		return String.format("%s (%s, %s)", this.name, this.type.toString(), this.isCustomDamage() ? "custom" : "built-in");
 	}
+	
+	@Override
+	public final void onRegister() {
+		if(this.registered) {
+			throw new RuntimeException("Damage types can't be registered twice?");
+		}
+		this.initialize();
+		this.registered = true;
+	}
+	
+	protected abstract void initialize();
 
 	/**
 	 * @implNote The ordering is done via a {@link Comparator} that first compares

@@ -8,6 +8,7 @@ public final class DDDShieldClassesConfigReader implements DDDConfigReader {
 
 	@Override
 	public void read() {
+		//don't need to clear current shield class names, since config requires mc restart anyway
 		for(String s : ModConfig.compat.shieldClasses) {
 			if(ConfigReaderUtilities.isCommentEntry(s)) {
 				continue;

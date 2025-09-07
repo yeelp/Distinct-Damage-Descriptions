@@ -15,6 +15,24 @@ public interface ModConsts {
 	final String NAME = "Distinct Damage Descriptions";
 	final String VERSION = "@version@";
 	
+	public interface DamageTypeNames {
+		final String UNKNOWN = "unknown";
+		final String NORMAL = "normal";
+		final String SLASHING = "slashing";
+		final String PIERCING = "piercing";
+		final String BLUDGEONING = "bludgeoning";
+		final String ACID = "acid";
+		final String COLD = "cold";
+		final String FIRE = "fire";
+		final String FORCE = "force";
+		final String LIGHTNING = "lightning";
+		final String NECROTIC = "necrotic";
+		final String POISON = "poison";
+		final String PSYCHIC = "psychic";
+		final String RADIANT = "radiant";
+		final String THUNDER = "thunder";
+	}
+	
 	public interface IntegrationIds {
 		final String CRAFTTWEAKER_ID = "crafttweaker";
 		final String CONTENTTWEAKER_ID = "contenttweaker";
@@ -33,6 +51,7 @@ public interface ModConsts {
 		final String THAUMCRAFT_ID = "thaumcraft";
 		final String FERMIUM_ID = "fermiumbooter";
 		final String BETTER_SURVIVAL_ID = "mujmajnkraftsbettersurvival";
+		final String ENDER_SKILLS_ID = "enderskills";
 	}
 	
 	public interface IntegrationTitles {
@@ -53,6 +72,7 @@ public interface ModConsts {
 		final String THAUMCRAFT_TITLE = "Thaumcraft";
 		final String FERMIUM_TITLE = "Fermium Booter";
 		final String BETTER_SURVIVAL_TITLE = "Better Survival";
+		final String ENDER_SKILLS_TITLE = "Ender Skills";
 	}
 	
 	public interface TooltipConsts {

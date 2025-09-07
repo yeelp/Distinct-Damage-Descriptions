@@ -32,6 +32,7 @@ import yeelp.distinctdamagedescriptions.integration.bettersurvival.BetterSurviva
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.events.CTEventHandler;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.DDDCoTIntegration;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.ElectroblobsWizardryIntegration;
+import yeelp.distinctdamagedescriptions.integration.enderskills.EnderSkillsIntegration;
 import yeelp.distinctdamagedescriptions.integration.fermiumbooter.FermiumBooterIntegration;
 import yeelp.distinctdamagedescriptions.integration.firstaid.FirstAidIntegration;
 import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla;
@@ -76,6 +77,7 @@ public final class ModIntegrationKernel {
 		integratableMods.put(ModConsts.IntegrationIds.FERMIUM_ID, () -> FermiumBooterIntegration.getInstance());
 		integratableMods.put(ModConsts.IntegrationIds.THAUMCRAFT_ID, () -> new ThaumcraftIntegration());
 		integratableMods.put(ModConsts.IntegrationIds.BETTER_SURVIVAL_ID, () -> new BetterSurvivalCompat());
+		integratableMods.put(ModConsts.IntegrationIds.ENDER_SKILLS_ID, () -> new EnderSkillsIntegration());
 		
 		Iterator<String> ids = getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationIds.class).iterator();
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));

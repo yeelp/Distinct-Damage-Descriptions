@@ -7,10 +7,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Predicates;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDDaylightDist;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
@@ -21,13 +23,16 @@ import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public class DaylightTracker extends AbstractTracker {
 
-	protected static final Set<ResourceLocation> WHITELIST = new HashSet<ResourceLocation>();
+	protected static final Set<ResourceLocation> WHITELIST = Sets.newHashSet();
+	protected static final Set<Class<? extends EntityLivingBase>> CLASS_WHITELIST = Sets.newHashSet();
+	protected static final Set<Class<? extends EntityLivingBase>> CLASS_BLACKLIST = Sets.newHashSet();
 
 	private static final class ConfigReader implements DDDConfigReader {
 		private static final Set<DDDConfigReaderException> ERRORS = new HashSet<DDDConfigReaderException>();
 
 		@Override
 		public void read() {
+			WHITELIST.clear();
 			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).forEach((c) -> this.parse(c).ifPresent(WHITELIST::add));
 		}
 
@@ -68,7 +73,22 @@ public class DaylightTracker extends AbstractTracker {
 
 	@Override
 	public boolean shouldStartTracking(EntityLivingBase entity) {
-		return isInDaylight(entity) && YResources.getEntityID(entity).filter(WHITELIST::contains).isPresent();
+		Class<? extends EntityLivingBase> entityClass = entity.getClass();
+		if(CLASS_BLACKLIST.contains(entityClass)) {
+			return false;
+		}
+		if(CLASS_WHITELIST.contains(entityClass)) {
+			return isInDaylight(entity);
+		}
+		return YResources.getEntityID(entity).filter(WHITELIST::contains).map((loc -> {
+			CLASS_WHITELIST.add(entityClass);
+			DistinctDamageDescriptions.debug(entityClass.getName());
+			return isInDaylight(entity);
+		})).orElseGet(() -> {
+			CLASS_BLACKLIST.add(entityClass);
+			DistinctDamageDescriptions.debug(entityClass.getName());
+			return false;
+		});
 	}
 
 	@Override
@@ -77,7 +97,7 @@ public class DaylightTracker extends AbstractTracker {
 	}
 	
 	protected static boolean isInDaylight(EntityLivingBase entity) {
-		return entity.world.isDaytime() && entity.getBrightness() > 0.5f && entity.isBurning() && entity.world.canBlockSeeSky(new BlockPos(entity.posX, entity.posY +entity.getEyeHeight(), entity.posZ));
+		return entity.world.isDaytime() && entity.isBurning() && entity.getBrightness() > 0.5f && entity.world.canBlockSeeSky(new BlockPos(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ));
 	}
 
 	@Override

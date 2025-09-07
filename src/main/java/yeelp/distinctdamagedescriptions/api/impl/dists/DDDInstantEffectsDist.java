@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemPotion;
@@ -41,7 +42,7 @@ public final class DDDInstantEffectsDist extends DDDAbstractPredefinedDistributi
 
 	@Override
 	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
-		return this.classify(src, target).map(ImmutableSet::of).orElse(ImmutableSet.of());
+		return classify(src, target).map(ImmutableSet::of).orElse(ImmutableSet.of());
 	}
 
 	@Override
@@ -51,39 +52,32 @@ public final class DDDInstantEffectsDist extends DDDAbstractPredefinedDistributi
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return this.classify(src, target).map(DDDDamageType::getBaseDistribution);
+		return classify(src, target).map(DDDDamageType::getBaseDistribution);
 	}
 
-	private Optional<DDDDamageType> classify(DamageSource source, EntityLivingBase target) {
+	private static Optional<DDDDamageType> classify(DamageSource source, EntityLivingBase target) {
 		Optional<DDDDamageType> inflictedType = Optional.empty();
-		DDDDamageType type = null;
-		if(this.enabled()) {
-			Entity sourceEntity = source.getImmediateSource();
-			List<PotionEffect> effects = Collections.emptyList();
-			Potion potionToCheck;
-			switch(target.getCreatureAttribute()) {
-				case UNDEAD:
-					potionToCheck = MobEffects.INSTANT_HEALTH;
-					type = DDDBuiltInDamageType.RADIANT;
-					break;
-				default:
-					potionToCheck = MobEffects.INSTANT_DAMAGE;
-					type = DDDBuiltInDamageType.NECROTIC;
+		Entity sourceEntity = source.getImmediateSource();
+		List<PotionEffect> effects = Collections.emptyList();
+		Potion potionToCheck = MobEffects.INSTANT_DAMAGE;
+		DDDDamageType type = DDDBuiltInDamageType.NECROTIC;
+		if(target.getCreatureAttribute() == EnumCreatureAttribute.UNDEAD) {
+			potionToCheck = MobEffects.INSTANT_HEALTH;
+			type = DDDBuiltInDamageType.RADIANT;				
+		}
+		if(sourceEntity instanceof EntityPotion) {
+			EntityPotion potion = (EntityPotion) sourceEntity;
+			ItemStack stack = potion.getPotion();
+			if(stack.getItem() instanceof ItemPotion) {
+				effects = PotionUtils.getEffectsFromStack(potion.getPotion());
 			}
-			if(sourceEntity instanceof EntityPotion) {
-				EntityPotion potion = (EntityPotion) sourceEntity;
-				ItemStack stack = potion.getPotion();
-				if(stack.getItem() instanceof ItemPotion) {
-					effects = PotionUtils.getEffectsFromStack(potion.getPotion());
-				}
-			}
-			else if(sourceEntity instanceof EntityAreaEffectCloud) {
-				EntityAreaEffectCloud cloud = (EntityAreaEffectCloud) sourceEntity;
-				effects = getEffectsForCloud(cloud);
-			}
-			if(effects.stream().map(PotionEffect::getPotion).anyMatch(Predicates.and(Potion::isInstant, potionToCheck::equals))) {
-				inflictedType = Optional.of(type);
-			}
+		}
+		else if(sourceEntity instanceof EntityAreaEffectCloud) {
+			EntityAreaEffectCloud cloud = (EntityAreaEffectCloud) sourceEntity;
+			effects = getEffectsForCloud(cloud);
+		}
+		if(effects.stream().map(PotionEffect::getPotion).anyMatch(Predicates.and(Potion::isInstant, potionToCheck::equals))) {
+			inflictedType = Optional.of(type);
 		}
 		return inflictedType;
 	}

@@ -9,6 +9,10 @@ public final class LycanitesConfigCategory {
 	@Name("Enable Smited Distribution")
 	@Comment("Enable/disable the smited distribution. Burning entities will take radiant damage while Smited")
 	public boolean enableSmitedDist = true;
+	
+	@Name("Enable Bleed Distribution")
+	@Comment("Enable/disable the bleed distribution. Taking damage from the Bleed potion effect will use the Bleed distribution. Otherwise, damage will be unclassified and not use DDD's damage calculations")
+	public boolean enableBleedDist = true;
 
 	@Name("Enable Scorchfire Distribution")
 	@Comment("Enable/disable the Scorchfire Distribution. Burning in Scorchfire will use the Scorchfire distribution. Otherwise, will deal fire damage if the fire distribution is enabled.")
@@ -101,4 +105,8 @@ public final class LycanitesConfigCategory {
 	@Name("Acid Distribution")
 	@Comment("The distribution that Acid and Sharacid use if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
 	public String acidDistribution = DefaultValues.ACID_DIST;
+	
+	@Name("Bleed Distribution")
+	@Comment("The distribution that taking damage from the Bleed effect uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	public String bleedDistribution = DefaultValues.LYCANITES_BLEED_DIST;
 }

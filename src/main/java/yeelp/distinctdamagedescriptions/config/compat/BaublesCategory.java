@@ -2,6 +2,7 @@ package yeelp.distinctdamagedescriptions.config.compat;
 
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 
@@ -24,6 +25,7 @@ public final class BaublesCategory {
 		"Baubles not listed here will have none of these effects.",
 		"Malformed entries in this list are ignored."
 	})
+	@RequiresMcRestart
 	public String[] baubleMods = DefaultValues.BAUBLE_MODS;
 	
 	@Name("Bauble Tooltip Colour Scheme")

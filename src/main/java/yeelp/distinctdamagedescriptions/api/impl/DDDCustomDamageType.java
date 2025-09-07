@@ -34,4 +34,9 @@ public class DDDCustomDamageType extends DDDAbstractDamageType {
 	public Source getCreationSource() {
 		return this.src;
 	}
+	
+	@Override
+	protected void initialize() {
+		return;
+	}
 }

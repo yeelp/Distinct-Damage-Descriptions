@@ -115,6 +115,11 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	}
 	
 	/**
+	 * Register callback for initializing anything that has to be done later.
+	 */
+	void onRegister();
+	
+	/**
 	 * Is this damage type hidden? Hidden types don't show up in tooltips. Missing distributions for damage distributions get listed under @link {@link DDDBuiltInDamageType#UNKNOWN}.
 	 * @return if this type should be hidden in tooltips or not.
 	 */
