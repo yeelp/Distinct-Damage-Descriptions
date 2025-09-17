@@ -72,15 +72,19 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 	public void deserializeSpecificNBT(NBTTagCompound tag) {
 		this.distMap = DDDBaseMap.fromNBT(tag.getTagList(MODDED_WEIGHTS, NBT.COMPOUND_TAG_ID), () -> 0.0f);
 		this.originalMap = DDDBaseMap.fromNBT(tag.getTagList(ORIGINAL_WEIGHTS, NBT.COMPOUND_TAG_ID), () -> 0.0f);
-		if(this.originalMap.isEmpty() && !this.distMap.isEmpty()) {
-			this.originalMap.putAll(this.distMap);
-		}
-		else if(this.distMap.isEmpty() && !this.originalMap.isEmpty()) {
-			this.distMap.putAll(this.originalMap);
-		}
-		else if(this.distMap.isEmpty() && this.originalMap.isEmpty() && !this.canHaveEmptyDistribution()) {
-			DistinctDamageDescriptions.err("NBT for distribution was empty and should not be! Reverting to Bludgeoning!");
-			Stream.of(this.distMap, this.originalMap).forEach((m) -> m.put(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
+		if(!this.canHaveEmptyDistribution()) {
+			if(this.originalMap.isEmpty() && !this.distMap.isEmpty()) {
+				DistinctDamageDescriptions.err("NBT for original weights is empty but this distribution can't be empty! Copying modified weights as original!");
+				this.originalMap.putAll(this.distMap);
+			}
+			else if(this.distMap.isEmpty() && !this.originalMap.isEmpty()) {
+				DistinctDamageDescriptions.err("NBT for current weights is empty but this distribution can't be empty! Using original weights as modified weights...");
+				this.distMap.putAll(this.originalMap);
+			}
+			else if(this.distMap.isEmpty() && this.originalMap.isEmpty()) {
+				DistinctDamageDescriptions.err("NBT for distribution was empty and should not be! Reverting to Bludgeoning!");
+				Stream.of(this.distMap, this.originalMap).forEach((m) -> m.put(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
+			}			
 		}
 		if(!this.areWeightsValid()) {
 			DistinctDamageDescriptions.err(String.format("Weights: %s are invalid! Scrapping!", this.toString()));

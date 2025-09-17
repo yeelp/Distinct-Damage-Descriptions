@@ -145,12 +145,6 @@ public abstract class DamageResistances extends AbstractUpdatableCapability<NBTT
 		resistancesFromNBT(this.originalResistances, tag.getTagList(ORIGINAL_RESISTANCES_KEY, NBT.COMPOUND_TAG_ID));
 		immunitiesFromNBT(this.immunities, tag.getTagList(IMMUNITIES_KEY, NBT.STRING_TAG_ID));
 		immunitiesFromNBT(this.originalImmunities, tag.getTagList(ORIGINAL_IMMUNITIES_KEY, NBT.STRING_TAG_ID));
-		if(this.originalImmunities.isEmpty() && !this.immunities.isEmpty()) {
-			this.originalImmunities.addAll(this.immunities);
-		}
-		if(this.originalResistances.isEmpty() && !this.resistances.isEmpty()) {
-			this.originalResistances.putAll(this.resistances);
-		}
 	}
 
 	protected Set<DDDDamageType> copyImmunities() {
