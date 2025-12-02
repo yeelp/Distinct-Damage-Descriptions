@@ -30,13 +30,15 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 
 	@CapabilityInject(IDamageDistribution.class)
 	public static Capability<IDamageDistribution> cap;
+	
+	public static final double SUM_OF_WEIGHTS_TOLERANCE = 0.01;
 
 	protected static boolean invariantViolated(Collection<Float> weights) {
 		float sum = 0.0f;
 		for(float f : weights) {
 			sum += f;
 		}
-		return !(Math.abs(sum - 1) <= 0.01) || Distribution.invariantViolated(weights);
+		return !(Math.abs(sum - 1) <= SUM_OF_WEIGHTS_TOLERANCE) || Distribution.invariantViolated(weights);
 	}
 
 	public DamageDistribution() {

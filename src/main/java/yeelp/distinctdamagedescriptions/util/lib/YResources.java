@@ -24,12 +24,18 @@ import net.minecraftforge.oredict.OreDictionary;
  *
  */
 public final class YResources {
+	
+	public static final String ITEM_ID_WITH_META = ".+:.+:\\d+";
 	public static Optional<ResourceLocation> getRegistryName(ItemStack stack) {
 		return getRegistryName(stack.getItem());
 	}
 
 	public static Optional<ResourceLocation> getRegistryName(Item item) {
 		return Optional.ofNullable(item.getRegistryName());
+	}
+	
+	public static Optional<String> getRegistryStringWithMetadata(ItemStack stack) {
+		return getRegistryString(stack).map((s) -> stack.getHasSubtypes() ? s + ":" + stack.getMetadata() : s);
 	}
 
 	public static Optional<String> getRegistryString(ItemStack stack) {
@@ -50,5 +56,9 @@ public final class YResources {
 
 	public static String[] getOreDictEntries(ItemStack stack) {
 		return Arrays.stream(OreDictionary.getOreIDs(stack)).mapToObj(OreDictionary::getOreName).toArray(String[]::new);
+	}
+	
+	public static String stripMetadataInfo(String s) {
+		return s.substring(0, s.lastIndexOf(":"));
 	}
 }

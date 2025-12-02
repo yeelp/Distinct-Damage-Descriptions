@@ -15,37 +15,23 @@ import thaumcraft.api.damagesource.DamageSourceThaumcraft;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.DDDSingleStringConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
-import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+import yeelp.distinctdamagedescriptions.config.readers.DDDSingleDamageDistributionConfigReader;
 
 public final class ThaumcraftPredefinedDistribution extends DDDAbstractPredefinedDistribution {
 
-	private final class ConfigReader extends DDDSingleStringConfigReader {
+	private final class ConfigReader extends DDDSingleDamageDistributionConfigReader {
 
 		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
 			super(name, configSup, fallbackSup);
 		}
-
-		@Override
-		protected boolean validEntry(String entry) {
-			return entry.matches(ConfigReaderUtilities.DIST_REGEX);
-		}
-
+		
 		@SuppressWarnings("synthetic-access")
 		@Override
-		protected void parseEntry(String entry) {
-			try {
-				ThaumcraftPredefinedDistribution.this.dist = new DamageDistribution(ConfigReaderUtilities.parseMap(this, entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));				
-			}
-			catch(ConfigParsingException e) {
-				//something bad happened
-				e.printStackTrace();
-			}
+		protected void setDistribution(IDamageDistribution dist) {
+			ThaumcraftPredefinedDistribution.this.dist = dist;
 		}
 		
 	}

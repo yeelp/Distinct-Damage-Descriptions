@@ -14,38 +14,25 @@ import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.DDDSingleStringConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
-import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+import yeelp.distinctdamagedescriptions.config.readers.DDDSingleDamageDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
 public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefinedDistribution {
 
-	private final class ConfigReader extends DDDSingleStringConfigReader {
+	private final class ConfigReader extends DDDSingleDamageDistributionConfigReader {
 
 		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
 			super(name, configSup, fallbackSup);
 		}
 		
-		@Override
-		protected boolean validEntry(String entry) {
-			return entry.matches(ConfigReaderUtilities.DIST_REGEX);
-		}
-
 		@SuppressWarnings("synthetic-access")
 		@Override
-		protected void parseEntry(String entry) {
-			try {
-				LycanitesPredefinedDistribution.this.dist = new DamageDistribution(ConfigReaderUtilities.parseMap(this, entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
-				DebugLib.outputFormattedDebug("%s Distribution is: %s", this.getName(), LycanitesPredefinedDistribution.this.dist.toString());
-			}
-			catch (ConfigParsingException e) {
-				//Much like explosion dist, if this happens, something really bad happened.
-				e.printStackTrace();
-			}
+		protected void setDistribution(IDamageDistribution dist) {
+			LycanitesPredefinedDistribution.this.dist = dist;
+			DebugLib.outputFormattedDebug("%s Distribution is: %s", this.getName(), LycanitesPredefinedDistribution.this.dist.toString());					
 		}
+
 	}
 	
 	private static final Collection<LycanitesPredefinedDistribution> DISTS = ImmutableSet.of(LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE, new LycanitesBleedDistribution());

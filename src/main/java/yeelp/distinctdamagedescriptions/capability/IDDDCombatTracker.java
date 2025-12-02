@@ -98,6 +98,11 @@ public interface IDDDCombatTracker extends DDDCapabilityBase<NBTTagCompound> {
 	void handleDamageStage(LivingDamageEvent evt);
 	
 	/**
+	 * Clean up after the calculation is complete.
+	 */
+	void cleanUpAfterCalculation();
+	
+	/**
 	 * Clear the tracker
 	 */
 	void clear();

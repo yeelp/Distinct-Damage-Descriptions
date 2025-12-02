@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,7 +14,9 @@ import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDSingleStringConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 
@@ -35,13 +38,26 @@ public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 		@Override
 		protected void parseEntry(String entry) {
 			try {
-				dist = new DamageDistribution(ConfigReaderUtilities.parseMap(this, entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f));
+				Map<DDDDamageType, Float> map = ConfigReaderUtilities.parseMap(this, entry, ConfigReaderUtilities::parseDamageType, Float::parseFloat, () -> 0.0f);
+				if(map.values().stream().reduce(Float::sum).filter((f) -> Math.abs(f - 1) <= DamageDistribution.SUM_OF_WEIGHTS_TOLERANCE).isPresent()) {
+					dist = new DamageDistribution(map);					
+				}
 			}
 			catch(ConfigParsingException e) {
 				// If we get here, something went really badly. The default fallback should
 				// always work
 				e.printStackTrace();
 			}
+		}
+		
+		@Override
+		public boolean doesSelfReportErrors() {
+			return false;
+		}
+		
+		@Override
+		protected DDDConfigReaderException getException() {
+			return null;
 		}
 	}
 
@@ -71,6 +87,9 @@ public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 	public static void update() {
 		if(ModConfig.dmg.extraDamage.enableExplosionDamage) {
 			READER.read();
+			if(dist == null) {
+				throw new InvariantViolationException("DDD's explosion distribution's weights do not add to 1!");
+			}	
 		}
 	}
 	

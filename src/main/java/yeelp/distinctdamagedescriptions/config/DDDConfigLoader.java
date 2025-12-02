@@ -1,11 +1,17 @@
 package yeelp.distinctdamagedescriptions.config;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
+
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigWrappedException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
 public final class DDDConfigLoader {
@@ -50,11 +56,21 @@ public final class DDDConfigLoader {
 			return c1;
 		}).filter((c) -> !c.isEmpty()).ifPresent((errors) -> {
 			DistinctDamageDescriptions.fatal("There were some problems reading from the config! Check the following:");
-			errors.forEach(DDDConfigReaderException::log);
+			errors.forEach((e) -> {
+				e.log();
+				if(e instanceof ConfigWrappedException) {
+					Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(DistinctDamageDescriptions::fatal);
+				}
+			});
 		});
 	}
 	
 	public static Iterable<String> getErrorMessages() {
-		return getInstance().readers.stream().filter(DDDConfigReader::doesSelfReportErrors).flatMap((r) -> r.getSelfReportedErrors().stream().map(DDDConfigReaderException::getLocalizedMessage)).collect(Collectors.toList());
+		List<String> msgs = Lists.newArrayList();
+		msgs.addAll(getInstance().readers.stream().filter(DDDConfigReader::doesSelfReportErrors).flatMap((r) -> r.getSelfReportedErrors().stream().map(DDDConfigReaderException::getLocalizedMessage)).collect(Collectors.toSet()));
+		if(msgs.size() > 0) {
+			msgs.add(0, "DDD has some errors reading the config. You may need to check the log for more details.");
+		}
+		return msgs;
 	}
 }

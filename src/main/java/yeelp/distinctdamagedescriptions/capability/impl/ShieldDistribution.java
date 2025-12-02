@@ -10,11 +10,13 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
@@ -41,6 +43,9 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 			float f = blockDamage(v, this.getWeight(k));
 			return f <= 0 ? null : f;
 		}));
+		DebugLib.doDebug(() -> {
+			DistinctDamageDescriptions.debug(String.format("After blocking: %s", DebugLib.entriesToString(fullDamage)));
+		});
 		return fullDamage;
 	}
 

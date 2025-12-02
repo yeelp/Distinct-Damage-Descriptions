@@ -1,6 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.baubles.client;
 
-import baubles.api.IBauble;
+import baubles.api.cap.BaublesCapabilities;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatTooltipFormatterWrapper;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
@@ -16,7 +16,7 @@ public final class BaublesItemDamageDistributionFormatter extends AbstractModCom
 
 	@Override
 	public boolean applicable(ItemStack t) {
-		return t.getItem() instanceof IBauble;
+		return t.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
 	}
 	
 	public static BaublesItemDamageDistributionFormatter getInstance() {

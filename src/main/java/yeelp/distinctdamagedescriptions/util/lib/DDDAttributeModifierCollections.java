@@ -10,6 +10,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 
 public interface DDDAttributeModifierCollections {
 	
@@ -22,7 +24,13 @@ public interface DDDAttributeModifierCollections {
 		IAttribute getAttribute();
 		
 		default void applyModifier(EntityLivingBase target, float amount, int op) {
-			target.getEntityAttribute(this.getAttribute()).applyModifier(new AttributeModifier(this.getUUID(), this.getName(), amount, op));
+			IAttributeInstance attribute = target.getEntityAttribute(this.getAttribute());
+			AttributeModifier mod = new AttributeModifier(this.getUUID(), this.getName(), amount, op);
+			if(attribute.hasModifier(mod)) {
+				DistinctDamageDescriptions.warn("Applying an armor modifier while one is already present! Normally, existing armor modifiers applied by DDD should get removed first, but something prevented that from happening...? Will remove current armor modifier.");
+				attribute.removeModifier(mod);
+			}
+			attribute.applyModifier(mod);
 		}
 		
 		default void applyModifier(EntityLivingBase target, float amount) {

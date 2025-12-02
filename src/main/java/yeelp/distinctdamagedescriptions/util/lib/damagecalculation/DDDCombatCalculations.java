@@ -124,10 +124,16 @@ public final class DDDCombatCalculations {
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((ct) -> {
 			ct.handleHurtStage(evt);
 			DamageCalculation calc = ct.getCurrentCalculation().get();
-			ct.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).filter((d) -> !Double.isNaN(d)).map(Double::floatValue).ifPresent((f) -> {
-				evt.setAmount(f);
-				calc.setDamage(f);
-			});
+			float damage = ct.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).get().floatValue();
+			evt.setAmount(damage);
+			calc.setDamage(damage);
+			if(damage <= 0.0f && ModConfig.compat.endEarlyCalculations) {
+				DistinctDamageDescriptions.debug("Damage is zero in Hurt step, will leave calculation early.");
+				//Leave early and don't apply armor mods if the damage is zero because Minecraft does the same.
+				calc.markCompleted();
+				ct.cleanUpAfterCalculation();
+				return;
+			}
 			if(!ModConfig.resist.enableArmorCalcs) {
 				return;
 			}

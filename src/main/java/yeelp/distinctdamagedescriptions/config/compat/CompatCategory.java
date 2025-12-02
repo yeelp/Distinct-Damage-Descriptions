@@ -65,4 +65,12 @@ public final class CompatCategory {
 		"If none of this made any sense, you probably don't need to touch this."})
 	@RequiresMcRestart
 	public String[] shieldClasses = DefaultValues.SHIELD_CLASSES;
+	
+	@Name("End Calculations Early When Damage is Zero")
+	@Comment({"If true, DDD will end its calculations early when the damage is at or below zero.",
+		"Forge breaks damage into three steps: Attack, Hurt and Damage.",
+		"Vanilla Minecraft skips the Damage step if the amount of damage is at or below zero after the Hurt step.",
+		"In order to not get confused, DDD should ends its calculations at that point, else carry over information might mess something up.",
+		"However, if some mod changes this vanilla behaviour such that the Damage step is still performed, you can set this to false so DDD won't clean up its calculation if the damage becomes 0 or less after the Hurt step."})
+	public boolean endEarlyCalculations = true;
 }

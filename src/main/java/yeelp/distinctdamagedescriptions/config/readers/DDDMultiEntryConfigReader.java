@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigWrappedException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
@@ -103,9 +104,8 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 			return Objects.requireNonNull(this.constructor, "Reader not initialized with Constructor!").newInstance(objects);
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			// if this happens, something likely went terribly wrong on my part, just stop
-			// everything.
 			e.printStackTrace();
+			this.errors.add(new ConfigWrappedException(this.getName(), (e.getCause() != null) ? e.getCause() : e));
 			throw new RuntimeException(e);
 		}
 	}

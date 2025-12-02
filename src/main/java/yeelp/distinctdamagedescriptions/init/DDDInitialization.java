@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
 public final class DDDInitialization {
 
@@ -59,7 +60,12 @@ public final class DDDInitialization {
 			}
 		}
 		catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			if(e.getCause() instanceof InvariantViolationException) {
+				throw (InvariantViolationException) e.getCause();
+			}
+			//scream louder
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

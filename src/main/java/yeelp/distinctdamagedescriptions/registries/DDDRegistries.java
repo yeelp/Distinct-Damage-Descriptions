@@ -63,9 +63,9 @@ public abstract class DDDRegistries {
 		creatureTypes = new DDDCreatureTypes();
 		distributions = new DDDDistributions();
 		trackers = new DDDTrackers();
-		DDDExplosionDist.update();
 		potions = new DDDPotionsRegistry();
 		modifiers = DDDModifierRegistries.INSTANCE;
+		DDDExplosionDist.update();
 		if(ModConfig.core.useCustomDamageTypesFromJSON) {
 			distributions.register(DDDJsonIO.loadDamageTypes());
 		}

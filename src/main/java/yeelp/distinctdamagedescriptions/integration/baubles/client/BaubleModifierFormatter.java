@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Lists;
 
-import baubles.api.IBauble;
+import baubles.api.cap.BaublesCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -93,7 +93,7 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 
 	@Override
 	public boolean applicable(ItemStack t) {
-		return t.getItem() instanceof IBauble && YResources.getRegistryString(t).filter(BaublesConfigurations.baubleModifiers::configured).isPresent();
+		return t.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null) && YResources.getRegistryString(t).filter(BaublesConfigurations.baubleModifiers::configured).isPresent();
 	}
 
 	@Override

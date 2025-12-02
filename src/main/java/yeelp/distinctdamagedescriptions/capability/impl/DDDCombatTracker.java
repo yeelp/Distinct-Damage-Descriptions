@@ -181,9 +181,13 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 			CombatContext ctx = calc.getContext();
 			calc.getShieldDist().ifPresent((shield) -> {
 				double startingDamage = YMath.sum(m.values());
-				shield.block(m);
+				boolean isDamageZero = shield.block(m).values().stream().reduce(Float::sum).orElse(0.0f) <= 0.0f;
 				calc.getResultsBuilder().hasEffectiveShield(m);
 				ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (calc.getResultsBuilder().build().getShieldRatio().getAsDouble())), this.getFighter()));
+				if(isDamageZero && ModConfig.compat.endEarlyCalculations) {
+					//mark calculation as complete and end calculation early in hurt callback; it still needs the current calculation!
+					return;
+				}
 			});
 			if(ModConfig.resist.enableArmorCalcs) {
 				DDDCombatCalculations.classifyArmor(ctx).ifPresent((classified) -> {
@@ -226,13 +230,16 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 				if(!enchants.isSlyStrike() && defenses.immunities.stream().map(Functions.compose((f) -> f != null && f > 0.0f, m::remove)).reduce(Boolean::logicalOr).orElse(false)) {
 					results.hasImmunity();
 				}
+				m.values().removeIf((f) -> f.isNaN());
 				defenses.resistances.forEach((k, v) -> {
 					float resist = v > 0 ? MathHelper.clamp(v - enchants.getBruteForce(), 0.0f, 1.0f) : v;
-					if(m.computeIfPresent(k, (type, dmg) -> dmg * Math.max(1 - resist, 0)) != null) {
-						if(resist > 0) {
+					//to account for null in computeIfPresent
+					Float newDamage;
+					if((newDamage = m.computeIfPresent(k, (type, dmg) -> dmg * Math.max(1 - resist, 0))) != null) {
+						if(resist > 0 && (!(newDamage.floatValue() == 0.0f) || resist >= 1.0f)) {
 							results.hasResistance();
 						}
-						else if(resist < 0 && m.get(k) > 0) {
+						else if(resist < 0 && newDamage.floatValue() > 0) {
 							results.hasWeakness();
 						}
 					}
@@ -266,7 +273,8 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		this.cleanUpAfterCalculation();
 	}
 
-	private void cleanUpAfterCalculation() {
+	@Override
+	public void cleanUpAfterCalculation() {
 		if(this.calculations.size() == 0) {
 			return;
 		}
