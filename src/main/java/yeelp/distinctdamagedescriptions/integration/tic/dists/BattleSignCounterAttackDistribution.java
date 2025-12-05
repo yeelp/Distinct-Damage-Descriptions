@@ -1,4 +1,4 @@
-package yeelp.distinctdamagedescriptions.integration.tic.tinkers;
+package yeelp.distinctdamagedescriptions.integration.tic.dists;
 
 import java.util.Optional;
 import java.util.Set;

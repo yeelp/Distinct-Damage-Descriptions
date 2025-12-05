@@ -40,6 +40,10 @@ public class DDDBaseConfiguration<T> implements IDDDConfiguration<T> {
 		return this.new ConfigurationIterator();
 	}
 	
+	public IDDDConfiguration<T> wrapInMetadataAcceptingConfiguration() {
+		return DDDMetadataAcceptingConfiguration.createMetadataConfiguration(this);
+	}
+	
 	private final class ConfigurationIterator implements Iterator<ConfigEntry<T>> {
 
 		private final Iterator<String> keys;

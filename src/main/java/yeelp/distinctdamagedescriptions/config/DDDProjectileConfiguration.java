@@ -1,6 +1,7 @@
 package yeelp.distinctdamagedescriptions.config;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -9,7 +10,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
 public class DDDProjectileConfiguration extends DDDDistributionConfiguration<IDamageDistribution> implements IDDDProjectileConfiguration {
-	private final HashMap<String, String> itemProjMap = new HashMap<String, String>();
+	private final Map<String, String> itemProjMap = new HashMap<String, String>();
 
 	DDDProjectileConfiguration(Supplier<IDamageDistribution> defaultDist) {
 		super(defaultDist);
@@ -17,7 +18,7 @@ public class DDDProjectileConfiguration extends DDDDistributionConfiguration<IDa
 
 	@Override
 	public IDamageDistribution getFromItemID(String itemID) {
-		return this.get(this.itemProjMap.get(itemID));
+		return this.get(DDDMetadataAcceptingConfiguration.wrapOperationInMetadataCheck(itemID, this.itemProjMap::get, null));
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class DDDProjectileConfiguration extends DDDDistributionConfiguration<IDa
 
 	@Override
 	public boolean isProjectilePairRegistered(String itemID) {
-		return this.itemProjMap.containsKey(itemID);
+		return DDDMetadataAcceptingConfiguration.wrapOperationInMetadataCheck(itemID, this.itemProjMap::containsKey, false);
 	}
 
 	@Override

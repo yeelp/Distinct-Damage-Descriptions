@@ -174,7 +174,11 @@ public class DistinctDamageDescriptions {
 	}
 
 	public static File getModConfigDirectory() {
-		return new File(configDirectory, ModConsts.MODID);
+		File f = new File(configDirectory, ModConsts.MODID);
+		if(!f.isDirectory()) {
+			f.mkdir();
+		}
+		return f;
 	}
 
 	public static Configuration getConfiguration() {
