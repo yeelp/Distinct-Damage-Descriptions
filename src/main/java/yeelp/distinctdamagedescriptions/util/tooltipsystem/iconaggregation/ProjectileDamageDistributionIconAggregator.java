@@ -16,7 +16,7 @@ public class ProjectileDamageDistributionIconAggregator extends DistributionIcon
 	private static ProjectileDamageDistributionIconAggregator instance;
 
 	private ProjectileDamageDistributionIconAggregator() {	
-		super(ProjectileDistributionFormatter.getInstance(), (s) -> YResources.getRegistryString(s).map(DDDConfigurations.projectiles::getFromItemID));
+		super(ProjectileDistributionFormatter.getInstance(), (s) -> YResources.getRegistryStringWithMetadata(s).map(DDDConfigurations.projectiles::getFromItemID));
 	}
 
 	/**

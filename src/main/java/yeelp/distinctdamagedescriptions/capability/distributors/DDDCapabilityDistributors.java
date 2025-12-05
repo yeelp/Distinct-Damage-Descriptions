@@ -49,7 +49,7 @@ public final class DDDCapabilityDistributors {
 	}
 
 	public static Optional<Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>>> getCapabilities(ItemStack stack) {
-		return YResources.getRegistryString(stack).map((s) -> getAllCaps(stack, s, BASE_ITEM_CAPS, itemCaps));
+		return YResources.getRegistryStringWithMetadata(stack).map((s) -> getAllCaps(stack, s, BASE_ITEM_CAPS, itemCaps));
 	}
 
 	public static Optional<Map<ResourceLocation, ? extends DDDCapabilityBase<? extends NBTBase>>> getCapabilities(IProjectile projectile) {

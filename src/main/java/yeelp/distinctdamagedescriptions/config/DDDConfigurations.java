@@ -65,9 +65,9 @@ public abstract class DDDConfigurations {
 	 */
 	@Initializer
 	public static void init() {
-		items = new DDDDistributionConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
-		armors = new DDDDistributionConfiguration<IArmorDistribution>(() -> new ArmorDistribution());
-		shields = new DDDDistributionConfiguration<ShieldDistribution>(() -> new ShieldDistribution());
+		items = new DDDDistributionConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution()).wrapInMetadataAcceptingConfiguration();
+		armors = new DDDDistributionConfiguration<IArmorDistribution>(() -> new ArmorDistribution()).wrapInMetadataAcceptingConfiguration();
+		shields = new DDDDistributionConfiguration<ShieldDistribution>(() -> new ShieldDistribution()).wrapInMetadataAcceptingConfiguration();
 		mobDamage = new DDDDistributionConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.BLUDGEONING.getBaseDistribution());
 		mobResists = new DDDBaseConfiguration<MobResistanceCategories>(() -> new MobResistanceCategories(new NonNullMap<DDDDamageType, Float>(() -> 0.0f), new HashSet<DDDDamageType>(), 0.0f, 0.0f));
 		projectiles = new DDDProjectileConfiguration(() -> DDDBuiltInDamageType.PIERCING.getBaseDistribution());

@@ -34,6 +34,7 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
+import yeelp.distinctdamagedescriptions.integration.tic.dists.BattleSignCounterAttackDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.dists.TiCBleedDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkersLinkedProjectileDistribution;

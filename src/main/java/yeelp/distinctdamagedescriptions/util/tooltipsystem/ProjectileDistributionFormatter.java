@@ -15,7 +15,7 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 	private static ProjectileDistributionFormatter instance;
 
 	protected ProjectileDistributionFormatter() {
-		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, (s) -> YResources.getRegistryString(s.getItem()).filter(DDDConfigurations.projectiles::isProjectilePairRegistered).map(DDDConfigurations.projectiles::getFromItemID), "projectiledistribution");
+		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, (s) -> YResources.getRegistryStringWithMetadata(s).filter(DDDConfigurations.projectiles::isProjectilePairRegistered).map(DDDConfigurations.projectiles::getFromItemID), "projectiledistribution");
 	}
 
 	/**
