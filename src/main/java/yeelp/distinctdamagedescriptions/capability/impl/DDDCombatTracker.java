@@ -181,7 +181,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 			CombatContext ctx = calc.getContext();
 			calc.getShieldDist().ifPresent((shield) -> {
 				double startingDamage = YMath.sum(m.values());
-				boolean isDamageZero = shield.block(m).values().stream().reduce(Float::sum).orElse(0.0f) <= 0.0f;
+				boolean isDamageZero = YMath.sum(shield.block(m).values()) <= 0.0;
 				calc.getResultsBuilder().hasEffectiveShield(m);
 				ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (calc.getResultsBuilder().build().getShieldRatio().getAsDouble())), this.getFighter()));
 				if(isDamageZero && ModConfig.compat.endEarlyCalculations) {

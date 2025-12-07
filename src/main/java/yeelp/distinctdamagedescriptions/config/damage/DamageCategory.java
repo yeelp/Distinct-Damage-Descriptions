@@ -26,7 +26,7 @@ public final class DamageCategory {
 	@Comment({
 			"Modify the base damage type distribution of weapons/items.",
 			"Each entry is of the form id;[(t,a)] where:",
-			"   id is the namespaced id of the item (e.g. minecraft:diamond_sword)",
+			"   id is the namespaced id of the item (e.g. minecraft:diamond_sword), you can optionally specify metadata as well such as minecraft:wool:3",
 			"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type an item does.",
 			"      t is the type of damage. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludegeoning",
 			"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
@@ -47,7 +47,7 @@ public final class DamageCategory {
 			"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
 			"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
 			"   All percents MUST add to 1",
-			"   items are the item ids associated with this projectile, separated by a comma (For example, arrow entities are associated with the item ids minecraft:arrow and minecraft:tipped_arrow). This is used for tooltips.",
+			"   items are the item ids (modid:itemid:metadata, :metadata is optional) associated with this projectile, separated by a comma (For example, arrow entities are associated with the item ids minecraft:arrow and minecraft:tipped_arrow). This is used for tooltips.",
 			"      If the projectile has no item form, omit this part, including the semicolon.",
 			"Projectiles that aren't listed here will use the default projectile damage distribution, no matter the projectile.",
 			"Malformed entries in this list will be ignored."})

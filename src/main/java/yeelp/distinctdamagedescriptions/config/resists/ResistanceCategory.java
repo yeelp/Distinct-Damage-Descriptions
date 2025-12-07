@@ -42,7 +42,7 @@ public final class ResistanceCategory {
 	@Comment({
 			"Modify how shields block damage.",
 			"Each entry is of the form id;[(t,a)] where:",
-			"   id is the namespaced id of the item (e.g. minecraft:shield)",
+			"   id is the namespaced id of the item (e.g. minecraft:shield), you can optionally specify metadata as modid:itemid:metadata",
 			"   [(t,a)] is a list of comma separated tuples of damage types this shield blocks.",
 			"      t is the type this shield blocks. Requires the 'ddd_' prefix. Can use s, p, b as shorthand for slashing, piercing and bludgeoning damage, respectively.",
 			"      a is the effectiveness the shield has against that damage type.",
@@ -57,7 +57,7 @@ public final class ResistanceCategory {
 	@Comment({
 			"Modify the base resistance effectiveness of armor",
 			"Each entry is of the form id;[(t,a)] where:",
-			"   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate)",
+			"   id is the namespaced id of the item (e.g. minecraft:diamond_chestplate), you can optionally specify metadata as modid:itemid:metadata",
 			"   [(t,a)] is a list of comma separated tuples of damage types this armor resists (if enabled).",
 			"      t is the damage type this armor resists. Requires the 'ddd_' prefix.",
 			"      a is the armor's effectiveness against that damage type.",

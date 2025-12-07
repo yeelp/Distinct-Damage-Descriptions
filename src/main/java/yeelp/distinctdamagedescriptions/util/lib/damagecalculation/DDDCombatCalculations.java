@@ -3,10 +3,11 @@ package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.ToDoubleFunction;
 
-import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
 
@@ -52,6 +53,7 @@ public final class DDDCombatCalculations {
 	
 	private static final Set<ICancelCalculationInjector> CANCEL_CALCULATION_INJECTORS = Sets.newTreeSet();
 	private static final Set<IArmorModifierInjector> ARMOR_MOD_INJECTORS = Sets.newTreeSet();
+	private static final ToDoubleFunction<DamageMap> SUM_DAMAGE = (m) -> YMath.sum(m.values());
 	private static final int CLEAR_INTERVAL_TICKS = 20;
 	
 	public static final void registerArmorValuesInjector(IArmorValuesInjector injector) {
@@ -124,15 +126,18 @@ public final class DDDCombatCalculations {
 		DDDAPI.accessor.getDDDCombatTracker(evt.getEntityLiving()).ifPresent((ct) -> {
 			ct.handleHurtStage(evt);
 			DamageCalculation calc = ct.getCurrentCalculation().get();
-			float damage = ct.getIncomingDamage().map(Functions.compose(YMath::sum, DamageMap::values)).get().floatValue();
-			evt.setAmount(damage);
-			calc.setDamage(damage);
-			if(damage <= 0.0f && ModConfig.compat.endEarlyCalculations) {
-				DistinctDamageDescriptions.debug("Damage is zero in Hurt step, will leave calculation early.");
-				//Leave early and don't apply armor mods if the damage is zero because Minecraft does the same.
-				calc.markCompleted();
-				ct.cleanUpAfterCalculation();
-				return;
+			OptionalDouble potentialTotalDamage = mapToDouble(ct.getIncomingDamage(), SUM_DAMAGE);
+			if(potentialTotalDamage.isPresent()) {
+				float damage = (float) potentialTotalDamage.getAsDouble();
+				evt.setAmount(damage);
+				calc.setDamage(damage);
+				if(damage <= 0.0f && ModConfig.compat.endEarlyCalculations) {
+					DistinctDamageDescriptions.debug("Damage is zero in Hurt step, will leave calculation early.");
+					//Leave early and don't apply armor mods if the damage is zero because Minecraft does the same.
+					calc.markCompleted();
+					ct.cleanUpAfterCalculation();
+					return;
+				}
 			}
 			if(!ModConfig.resist.enableArmorCalcs) {
 				return;
@@ -194,6 +199,13 @@ public final class DDDCombatCalculations {
 		Iterator<ICancelCalculationInjector> it = CANCEL_CALCULATION_INJECTORS.iterator();
 		for(b = false; it.hasNext(); b = it.next().shouldCancel(b, phase, defender, src, amount));
 		return b;
+	}
+	
+	private static <T> OptionalDouble mapToDouble(Optional<T> optional, ToDoubleFunction<T> function) {
+		if(optional.isPresent()) {
+			return OptionalDouble.of(function.applyAsDouble(optional.get()));
+		}
+		return OptionalDouble.empty();
 	}
 
 	public static final class DDDEnchantmentInfo {
