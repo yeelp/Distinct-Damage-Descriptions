@@ -104,6 +104,7 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 	@ZenClass("mods.ddd.modifiers.IsModifierApplicableForEntity")
 	@ZenRegister
 	public interface IsModifierApplicableForEntity extends Predicate<IEntity> {
+		@ZenMethod
 		boolean handle(IEntity entity);
 		
 		@Override
@@ -115,6 +116,7 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 	@ZenClass("mods.ddd.modifiers.IsModifierApplicableForEntityLivingBase")
 	@ZenRegister
 	public interface IsModifierApplicableForEntityLivingBase extends Predicate<IEntityLivingBase> {
+		@ZenMethod
 		boolean handle(IEntityLivingBase entityLivingBase);
 		
 		@Override
@@ -126,6 +128,7 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 	@ZenClass("mods.ddd.modifiers.IsModifierApplicableForItemStack")
 	@ZenRegister
 	public interface IsModifierApplicableForItemStack extends Predicate<IItemStack> {
+		@ZenMethod
 		boolean handle(IItemStack itemStack);
 		
 		@Override
