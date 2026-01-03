@@ -50,6 +50,8 @@ public abstract class ModUpdatingDamageDistribution extends DamageDistribution {
 		f.apply(t).filter((m) -> !this.originalMap.entrySet().equals(m.entrySet())).ifPresent((m) -> {
 			this.setNewWeights(m);
 			this.updateOriginalWeightsToCurrentWeights();
+			//clear modifiers to recompute after changing weights
+			this.getModifiers().clear();
 		});
 	}
 }
