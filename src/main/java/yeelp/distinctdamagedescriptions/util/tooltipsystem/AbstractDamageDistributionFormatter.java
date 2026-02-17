@@ -32,9 +32,6 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 
 	@Override
 	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IDamageDistribution cap) {
-		if(!this.shouldShowDist(stack)) {
-			return Optional.empty();
-		}
 		final DamageMap vals = this.getVals(stack, cap);
 		DDDMaps.adjustHiddenWeightsToUnknown(vals);
 		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.DEFAULT_DAMAGE.format(d.getKey(), vals.get(d.getKey()), this)), LinkedList<String>::addAll);

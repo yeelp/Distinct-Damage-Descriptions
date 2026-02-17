@@ -14,6 +14,7 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDis
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
+import yeelp.distinctdamagedescriptions.integration.client.UpdatingDamageDistributionTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesEquipmentDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesProjectileDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.distributors.LycanitesDamageDistributionDistributor;
@@ -62,7 +63,8 @@ public class LycanitesIntegration implements IModIntegration {
 		// Iterator<AbstractCapabilityTooltipFormatter> which is incompatible with
 		// TooltipDistributor::registerModCompat
 		if(evt.getSide() == Side.CLIENT) {
-			Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);	
+			Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);
+			UpdatingDamageDistributionTooltipFormatter.registerModCompatTooltipFormatting(LycanitesEquipmentDistribution.cap);
 		}
 		DDDRegistries.distributions.registerAll(new SmitedDistribution(), new LycanitesMinionDistribution());
 		LycanitesPredefinedDistribution.getDists().forEach(DDDRegistries.distributions::register);

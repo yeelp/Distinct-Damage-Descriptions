@@ -1,20 +1,18 @@
 package yeelp.distinctdamagedescriptions.integration.thaumcraft.client;
 
 import net.minecraft.item.ItemStack;
-import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatTooltipFormatterWrapper;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatItemDamageTooltipFormatterWrapper;
 
-public final class FocusItemDamageDistributionFormatter extends AbstractModCompatTooltipFormatterWrapper<ItemStack> {
+public final class FocusItemDamageDistributionFormatter extends AbstractModCompatItemDamageTooltipFormatterWrapper {
 
 	private static FocusItemDamageDistributionFormatter instance;
 
-	protected FocusItemDamageDistributionFormatter() {
-		super(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance());
+	private FocusItemDamageDistributionFormatter() {
+		//nothing
 	}
 	
 	@Override
-	public boolean applicable(ItemStack t) {
+	public boolean checkForSpecificApplicability(ItemStack t) {
 		return FocusDistributionItemFormatter.getInstance().applicable(t);
 	}
 	

@@ -72,6 +72,7 @@ tooltips.distinctdamagedescriptions.shielddist=Shield Effectiveness:
 tooltips.distinctdamagedescriptions.mobresistances=Mob Resistances:
 tooltips.distinctdamagedescriptions.mobdistribution=Mob Damage:
 tooltips.distinctdamagedescriptions.notgenerated=Auto Generate Capabilities is on and Mob Capabilities not generated yet! Spawn this mob to generate capabilities (may need to restart)!
+tooltips.distinctdamagedescriptions.notooltip=No tooltip info generated for this capability.
 tooltips.distinctdamagedescriptions.effectiveArmor=Armor
 tooltips.distinctdamagedescriptions.effectiveToughness=Toughness
 tooltips.distinctdamagedescriptions.hwyla.mobresistances=Maximum Resistance:

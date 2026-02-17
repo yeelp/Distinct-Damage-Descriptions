@@ -3,10 +3,12 @@ package yeelp.distinctdamagedescriptions.integration.tetra;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
+import yeelp.distinctdamagedescriptions.integration.client.UpdatingDamageDistributionTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tetra.capability.TetraToolDistribution;
 import yeelp.distinctdamagedescriptions.integration.tetra.capability.distributor.TetraToolDistributionDistributor;
 
@@ -21,6 +23,9 @@ public final class TetraIntegration implements IModIntegration {
 	public boolean init(FMLInitializationEvent evt) {
 		TetraToolDistribution.register();
 		DDDCapabilityDistributors.addItemCap(TetraToolDistributionDistributor.getInstance());
+		if(evt.getSide() == Side.CLIENT) {
+			UpdatingDamageDistributionTooltipFormatter.registerModCompatTooltipFormatting(TetraToolDistribution.cap);			
+		}
 		return IModIntegration.super.init(evt);
 	}
 

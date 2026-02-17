@@ -2,20 +2,18 @@ package yeelp.distinctdamagedescriptions.integration.baubles.client;
 
 import baubles.api.cap.BaublesCapabilities;
 import net.minecraft.item.ItemStack;
-import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatTooltipFormatterWrapper;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatItemDamageTooltipFormatterWrapper;
 
-public final class BaublesItemDamageDistributionFormatter extends AbstractModCompatTooltipFormatterWrapper<ItemStack> {
+public final class BaublesItemDamageDistributionFormatter extends AbstractModCompatItemDamageTooltipFormatterWrapper {
 
 	private static BaublesItemDamageDistributionFormatter instance;
 	
 	private BaublesItemDamageDistributionFormatter() {
-		super(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance());
-	}
-
+		//nothing
+	}	
+	
 	@Override
-	public boolean applicable(ItemStack t) {
+	protected boolean checkForSpecificApplicability(ItemStack t) {
 		return t.hasCapability(BaublesCapabilities.CAPABILITY_ITEM_BAUBLE, null);
 	}
 	

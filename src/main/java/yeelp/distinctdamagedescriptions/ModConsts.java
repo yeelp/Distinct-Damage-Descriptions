@@ -83,6 +83,7 @@ public interface ModConsts {
 		final String NO_RESISTS = "noresists";
 		final String UNCHANGED = "unchanged";
 		final String NO_ICONS = "dddnoicons";
+		final String NO_TOOLTIP = "notooltip";
 		
 		final String DAMAGE = "damage";
 		final String RESISTANCE = "resistance";

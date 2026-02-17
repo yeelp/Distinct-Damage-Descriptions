@@ -208,7 +208,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 					Map<EntityEquipmentSlot, ArmorValues> armorVals = calc.getDeltaArmor().get();
 					classified.forEachArmorMap((slot, map) -> {
 						DebugLib.outputFormattedDebug("Armor Map for slot %s: %s", slot.toString(), DebugLib.entriesToString(map));
-						armorVals.put(slot, ModConfig.resist.armorCalcRule.merge(map.values().stream().map((av) -> av.sub(ModConfig.resist.negativeRule.handlePotentialNegativeArmorValues(classified.getOriginalArmorValues(slot))))));
+						armorVals.put(slot, ModConfig.resist.armorCalcRule.merge(map.values().stream()).sub(ModConfig.resist.negativeRule.handlePotentialNegativeArmorValues(classified.getOriginalArmorValues(slot))));
 						DebugLib.outputFormattedDebug("Armor Values for slot %s: %s", slot.getName(), armorVals.get(slot));
 					});
 				});

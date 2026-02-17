@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.mantle.util.RecipeMatch.ItemCombination;
 import slimeknights.tconstruct.TConstruct;
@@ -32,6 +33,7 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDis
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
+import yeelp.distinctdamagedescriptions.integration.client.UpdatingDamageDistributionTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDTiCIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.dists.BattleSignCounterAttackDistribution;
@@ -113,6 +115,9 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 		bruteForce.addItem(Items.FIREWORK_CHARGE);
 		DDDCapabilityDistributors.addProjCap(TinkerProjectileCapabilityDistributor.getInstance());
 		DDDRegistries.distributions.register(new TiCBleedDistribution());
+		if(evt.getSide() == Side.CLIENT) {
+			UpdatingDamageDistributionTooltipFormatter.registerModCompatTooltipFormatting(TinkerDamageDistribution.cap);
+		}
 		return true;
 	}
 

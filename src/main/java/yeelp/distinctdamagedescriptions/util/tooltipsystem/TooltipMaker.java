@@ -38,37 +38,37 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Shiel
 public enum TooltipMaker {
 	ITEM(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance()) {
 		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
+		public boolean isApplicable(ItemStack stack, String registryString) {
 			return (DDDConfigurations.items.configured(registryString) || stack.hasCapability(DamageDistribution.cap, null)) || (!MOB_DAMAGE.isApplicable(stack, registryString) && ModConfig.client.alwaysShowDamageDistTooltip);
 		}
 	},
 	MOB_DAMAGE(MobDamageDistributionFormatter.getInstance(), MobDamageDistributionIconAggregator.getInstance()) {
 		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
+		public boolean isApplicable(ItemStack stack, String registryString) {
 			return ModConfig.client.showMobDamage && stack.getItem() instanceof ItemMonsterPlacer && isMobConfigured(stack, DDDConfigurations.mobDamage);
 		}
 	},
 	PROJECTILE(ProjectileDistributionFormatter.getInstance(), ProjectileDamageDistributionIconAggregator.getInstance()) {
 		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
+		public boolean isApplicable(ItemStack stack, String registryString) {
 			return DDDConfigurations.projectiles.isProjectilePairRegistered(registryString);
 		}
 	},
 	ARMOR(ArmorDistributionFormatter.getInstance(), ArmorDistributionIconAggregator.getInstance()) {
 		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
+		public boolean isApplicable(ItemStack stack, String registryString) {
 			return ModConfig.resist.enableArmorCalcs && (DDDConfigurations.armors.configured(registryString) || stack.hasCapability(ArmorDistribution.cap, null));
 		}
 	},
 	SHIELD(ShieldDistributionFormatter.getInstance(), ShieldDistributionIconAggregator.getInstance()) {
 		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
+		public boolean isApplicable(ItemStack stack, String registryString) {
 			return ModConfig.resist.enableShieldCalcs && (DDDConfigurations.shields.configured(registryString) || stack.hasCapability(ShieldDistribution.cap, null));
 		}
 	},
 	MOB_RESISTANCES(MobResistancesFormatter.getInstance(), MobResistanceIconAggregator.getInstance()) {
 		@Override
-		protected boolean isApplicable(ItemStack stack, String registryString) {
+		public boolean isApplicable(ItemStack stack, String registryString) {
 			return stack.getItem() instanceof ItemMonsterPlacer && isMobConfigured(stack, DDDConfigurations.mobResists);
 		}
 	};
@@ -114,7 +114,7 @@ public enum TooltipMaker {
 		return YResources.getRegistryStringWithMetadata(stack).map((r) -> Arrays.stream(TooltipMaker.values()).filter((m) -> m.isApplicable(stack, r)).sorted()).orElse(Stream.empty());
 	}
 
-	protected abstract boolean isApplicable(ItemStack stack, String registryString);
+	public abstract boolean isApplicable(ItemStack stack, String registryString);
 	
 	protected static boolean isMobConfigured(ItemStack spawnEgg, IDDDConfiguration<?> config) {
 		return Optional.ofNullable(ItemMonsterPlacer.getNamedIdFrom(spawnEgg)).map(Functions.toStringFunction()).filter(config::configured).isPresent();

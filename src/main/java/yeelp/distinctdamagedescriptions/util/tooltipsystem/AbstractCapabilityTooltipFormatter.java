@@ -30,6 +30,7 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	private static final Style WHITE_COLOUR = new Style().setColor(TextFormatting.WHITE);
 	private static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
 
+	private static final ITextComponent NO_TOOLTIP = getComponentWithGrayColour(TooltipConsts.NO_TOOLTIP);
 	protected static final ITextComponent NONE_TEXT = getComponentWithWhiteColour(TooltipConsts.NO_RESISTS);
 	
 	protected AbstractCapabilityTooltipFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter, Function<T, Optional<C>> capExtractor, String typeTextKey) {
@@ -53,15 +54,19 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 		List<String> result = new LinkedList<String>();
 		result.add(this.typeText.getFormattedText() + this.getKeyText());
 		if(this.shouldShow() && t != null) {
-			Optional<List<String>> formattedCap = this.capExtractor.apply(t).flatMap((c) -> this.formatCapabilityFor(t, c));
-			formattedCap.ifPresent((l) -> {
+			Optional<List<String>> formatCap = this.capExtractor.apply(t).flatMap((c) -> this.formatCapabilityFor(t, c));
+			if(formatCap.isPresent()) {
+				List<String> l = formatCap.get();
 				if(ModConfig.client.useIcons) {
 					l.stream().map((s) -> new StringBuilder(" ").append(s.replaceAll("  ", " ")).toString()).forEach(result::add);
 				}
 				else {
 					result.addAll(l);
-				}
-			});
+				}				
+			}
+			else {
+				result.add(NO_TOOLTIP.getFormattedText());
+			}
 		}
 		return result;
 	}

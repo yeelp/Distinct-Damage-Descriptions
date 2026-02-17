@@ -9,7 +9,8 @@
         "MixinEntity",
         "MixinASMEntityLivingBase",
         "MixinCombatTracker",
-        "MixinItem"
+        "MixinItem",
+        "MixinASMItemStack"
     ],
     "client": [
         "MixinFontRenderer"

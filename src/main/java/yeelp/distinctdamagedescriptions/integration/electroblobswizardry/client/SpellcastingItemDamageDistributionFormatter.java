@@ -1,20 +1,18 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client;
 
 import net.minecraft.item.ItemStack;
-import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatTooltipFormatterWrapper;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+import yeelp.distinctdamagedescriptions.integration.client.AbstractModCompatItemDamageTooltipFormatterWrapper;
 
-public final class SpellcastingItemDamageDistributionFormatter extends AbstractModCompatTooltipFormatterWrapper<ItemStack> {
+public final class SpellcastingItemDamageDistributionFormatter extends AbstractModCompatItemDamageTooltipFormatterWrapper {
 
 	private static SpellcastingItemDamageDistributionFormatter instance;
 
 	private SpellcastingItemDamageDistributionFormatter() {
-		super(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance());
+		//nothing
 	}
 
 	@Override
-	public boolean applicable(ItemStack t) {
+	public boolean checkForSpecificApplicability(ItemStack t) {
 		return SpellDistributionItemFormatter.getInstance().applicable(t);
 	}
 
