@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -15,6 +17,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
@@ -26,6 +30,7 @@ import yeelp.distinctdamagedescriptions.command.DDDCommand;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
+import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.handlers.MobHandler;
 import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
@@ -86,8 +91,6 @@ public class DistinctDamageDescriptions {
 	public void init(FMLInitializationEvent event) {
 		ModIntegrationKernel.doInitStart(event);
 		DDDConfigLoader.readConfig();
-		new CapabilityHandler().register();
-		new TooltipHandler().register();
 		new MobHandler().register();
 		new DDDDiscItem.DropHandler().register();
 		IMobResistances.register();
@@ -100,6 +103,15 @@ public class DistinctDamageDescriptions {
 		DDDSounds.init();
 		DDDEnchantments.init();
 		ModIntegrationKernel.doInit(event);
+		new Handler() {
+			@SubscribeEvent
+			public void onWorldLoad(@SuppressWarnings("unused") WorldEvent.Load evt) {
+				CapabilityHandler.getInstance().register();
+				if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+					TooltipHandler.getInstance().register();
+				}
+			}
+		}.register();
 	}
 
 	@SuppressWarnings("static-method")

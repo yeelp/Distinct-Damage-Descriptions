@@ -20,6 +20,23 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
 public class CapabilityHandler extends Handler {
 
+	private static CapabilityHandler instance;
+	private boolean registered;
+	
+	public static CapabilityHandler getInstance() {
+		return instance == null ? instance = new CapabilityHandler() : instance;
+	}
+	
+	
+	@Override
+	public boolean register() {
+		if(this.registered) {
+			return false;
+		}
+		this.registered = true;
+		return super.register();
+	}
+	
 	private static final ResourceLocation creatureType = new ResourceLocation(ModConsts.MODID, "creatureTypes");
 
 	@SuppressWarnings("static-method")

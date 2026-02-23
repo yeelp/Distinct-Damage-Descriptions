@@ -29,10 +29,29 @@ public class TooltipHandler extends Handler {
 	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
 	private static final Map<String, ItemStack> CACHED_GENERATED_CAPABILITIES = Maps.newHashMap();
 	
+	private static TooltipHandler instance;
+	private boolean registered = false;
+	
+	public static TooltipHandler getInstance() {
+		return instance == null ? instance = new TooltipHandler() : instance;
+	}
+	
+	@Override
+	public boolean register() {
+		if(this.registered) {
+			return false;
+		}
+		this.registered = true;
+		return super.register();
+	}
+	
 	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	@SideOnly(value = Side.CLIENT)
 	public void onTooltip(ItemTooltipEvent evt) {
+		if(evt.getEntityPlayer() == null) {
+			return;
+		}
 		ItemStack stack = evt.getItemStack();
 		if(evt.getToolTip().size() > 0 && !stack.isEmpty()) {
 			ItemStack cachedStack = getCachedStackWithCapabilities(stack);
