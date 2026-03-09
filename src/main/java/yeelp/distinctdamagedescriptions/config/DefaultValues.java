@@ -9,6 +9,15 @@ package yeelp.distinctdamagedescriptions.config;
  *
  */
 public interface DefaultValues {
+	
+	String[] DISTINCT_DISC_LIST = {
+			"minecraft:wolf",
+			"minecraft:villager_golem",
+			"minecraft:snowman",
+			"minecraft:skeleton",
+			"minecraft:stray",
+			"minecraft:wither_skeleton"
+	};
 
 	/**********
 	 * DAMAGE *

@@ -1,6 +1,8 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiPredicate;
 
 import org.lwjgl.opengl.GL11;
 
@@ -28,6 +30,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 public class TooltipHandler extends Handler {
 	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
 	private static final Map<String, ItemStack> CACHED_GENERATED_CAPABILITIES = Maps.newHashMap();
+	private static final BiPredicate<String, MixinASMItemStack> HAS_CAPABILITIES_CHECK = (s, stack) -> !TooltipHandler.shouldHaveCapabilities(s) || stack.getCapNBT().getKeySet().stream().anyMatch((str) -> str.startsWith(ModConsts.MODID));
 	
 	private static TooltipHandler instance;
 	private boolean registered = false;
@@ -88,18 +91,17 @@ public class TooltipHandler extends Handler {
 	
 	private static ItemStack getCachedStackWithCapabilities(ItemStack stack) {
 		MixinASMItemStack asmStack = (MixinASMItemStack) (Object) stack;
-		if(asmStack.getCapNBT() == null) {
-			return YResources.getRegistryStringWithMetadata(stack).map((s) -> {
-				if(shouldHaveCapabilities(s)) {
-					if(CACHED_GENERATED_CAPABILITIES.containsKey(s)) {
-						return CACHED_GENERATED_CAPABILITIES.get(s);
-					}
-					asmStack.doForgeInit();
-					CACHED_GENERATED_CAPABILITIES.put(s, stack);
-				}
+		Optional<String> regString = YResources.getRegistryStringWithMetadata(stack);
+		return regString.map((s) -> {
+			if(HAS_CAPABILITIES_CHECK.test(s, asmStack)) {
 				return stack;
-			}).orElse(stack);
-		}
-		return stack;
+			}
+			if(CACHED_GENERATED_CAPABILITIES.containsKey(s)) {
+				return CACHED_GENERATED_CAPABILITIES.get(s);				
+			}
+			asmStack.doForgeInit();
+			CACHED_GENERATED_CAPABILITIES.put(s, stack);
+			return stack;
+		}).orElse(stack);
 	}
 }

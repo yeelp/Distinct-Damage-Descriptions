@@ -4,13 +4,26 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.RequiresWorldRestart;
+import yeelp.distinctdamagedescriptions.util.lib.FilterListType;
 
 public final class GeneralCategory {
 	@Name("Enable Distinct Disc Drop")
 	@Comment({
 			"Enable the Distinct Disc to drop from Skeletons",
-			"The disc will drop if a Skeleton is killed by a non-player, non-skeleton, non-golem and non-tamable mob."})
+			"The disc will drop if a Skeleton is killed by a non-player mob that matches the list , non-skeleton, non-golem and non-tamable mob."})
 	public boolean enableDiscDrop = true;
+	
+	@Name("Distinct Disc Drop Attacker List")
+	@Comment({
+		"The list of non-player mobs that, when killing a Skeleton, will cause that skeleton to drop the Distinct Disc.",
+		"If Distinct Disc Drop Attacker List Type is set to BLACKLIST, any non-player mob NOT in this list will cause the disc to drop instead.",
+		"Format is modid:mobid"
+	})
+	public String[] discDropList = DefaultValues.DISTINCT_DISC_LIST;
+	
+	@Name("Distinct Disc Drop Attacker List Type")
+	@Comment("If WHITELIST, only mobs in the Distinct Drop Attacker List can make Skeletons drop the Distinct Disc. Otherwise, mobs in the list won't cause the disc to drop.")
+	public FilterListType discListType = FilterListType.BLACKLIST;
 
 	@Name("Suppress Warnings")
 	@Comment("If warning messages from Distinct Damage Descriptions are clogging the log, you can disable them here. This may be indicative of a real issue though, so make sure there's no real issue first!")
