@@ -3,6 +3,7 @@ package yeelp.distinctdamagedescriptions.items;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemRecord;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -32,7 +33,7 @@ public class DDDDiscItem extends ItemRecord {
 		@SubscribeEvent
 		public final void onLivingDrops(LivingDropsEvent evt) {
 			Entity source = evt.getSource().getTrueSource();
-			if(source == null || !(source instanceof EntityLivingBase)) {
+			if(source == null || !(source instanceof EntityLivingBase) || source instanceof EntityPlayer) {
 				return;
 			}
 			EntityLivingBase entity = evt.getEntityLiving();

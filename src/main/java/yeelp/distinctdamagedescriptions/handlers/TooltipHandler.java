@@ -30,7 +30,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 public class TooltipHandler extends Handler {
 	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
 	private static final Map<String, ItemStack> CACHED_GENERATED_CAPABILITIES = Maps.newHashMap();
-	private static final BiPredicate<String, MixinASMItemStack> HAS_CAPABILITIES_CHECK = (s, stack) -> !TooltipHandler.shouldHaveCapabilities(s) || stack.getCapNBT().getKeySet().stream().anyMatch((str) -> str.startsWith(ModConsts.MODID));
+	private static final BiPredicate<String, MixinASMItemStack> HAS_CAPABILITIES_CHECK = (s, stack) -> !TooltipHandler.shouldHaveCapabilities(s) || Optional.ofNullable(stack.getCapNBT()).map((nbt) -> nbt.getKeySet().stream().anyMatch((str) -> str.startsWith(ModConsts.MODID))).orElse(false);
 	
 	private static TooltipHandler instance;
 	private boolean registered = false;
