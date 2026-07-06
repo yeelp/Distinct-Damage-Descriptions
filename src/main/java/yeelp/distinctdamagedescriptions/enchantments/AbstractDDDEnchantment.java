@@ -7,7 +7,7 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 
 public abstract class AbstractDDDEnchantment extends Enchantment {
 
-	protected AbstractDDDEnchantment(Rarity rarityIn, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
+	protected AbstractDDDEnchantment(Rarity rarityIn, @SuppressWarnings("SameParameterValue") EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots) {
 		super(rarityIn, typeIn, slots);
 		this.setRegistryName(this.getEnchantmentNameInternal());
 		this.setName(String.format("%s.%s", ModConsts.MODID, this.getEnchantmentNameInternal()));

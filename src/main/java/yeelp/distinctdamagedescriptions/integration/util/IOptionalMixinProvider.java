@@ -2,7 +2,8 @@ package yeelp.distinctdamagedescriptions.integration.util;
 
 public interface IOptionalMixinProvider {
 
-	String getModID();
+	@SuppressWarnings("SameReturnValue")
+    String getModID();
 	
 	boolean enabled();
 }

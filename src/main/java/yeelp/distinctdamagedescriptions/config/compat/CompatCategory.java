@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
+@SuppressWarnings("CanBeFinal")
 public final class CompatCategory {
 	@Name("Construct's Armory Integration")
 	@Comment("Configure integration with Construct's Armory")

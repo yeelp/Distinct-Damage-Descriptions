@@ -24,6 +24,7 @@ import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
+@SuppressWarnings("CanBeFinal")
 @Config(modid = ModConsts.MODID)
 public class ModConfig {
 	@Name("Core")
