@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.potion.Potion;
 import yeelp.distinctdamagedescriptions.api.IHasCreationSource;
+
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Data storage for CreatureTypes
@@ -20,16 +20,16 @@ public final class CreatureType implements IHasCreationSource {
 	 */
 	public static final CreatureType UNKNOWN = new CreatureType();
 
-	private Source src;
-	private String type;
-	private Set<String> potionImmunities;
+	private final Source src;
+	private final String type;
+	private final Set<String> potionImmunities;
 	public boolean criticalImmunity;
 	public boolean flammable;
 
 	/**
 	 * Build a new CreatureType with a creation Source of {@link Source#JSON}.
 	 * 
-	 * @param name
+	 * @param name name of the creature type used internally.
 	 * @param potionImmunities set of potion effect strings this creature type is
 	 *                         immune to.
 	 * @param criticalImmunity if this creature type is immune to criticals.
@@ -41,7 +41,7 @@ public final class CreatureType implements IHasCreationSource {
 	
 	/**
 	 * Build a new CreatureType
-	 * @param name
+	 * @param name name of the creature type used internally.
 	 * @param potionImmunities set of potion effect strings this creature type is immune to.
 	 * @param criticalImmunity if this creature type is immune to criticals.
 	 * @param flammable if this creature type is flammable or not.
@@ -82,11 +82,11 @@ public final class CreatureType implements IHasCreationSource {
 	 * @param potion Potion immunity to add.
 	 */
 	public void addPotionImmunity(Potion potion) {
-		this.potionImmunities.add(potion.getRegistryName().toString());
+		this.potionImmunities.add(Objects.requireNonNull(potion.getRegistryName()).toString());
 	}
 	
 	public void removePotionImmunity(Potion potion) {
-		this.potionImmunities.remove(potion.getRegistryName().toString());
+		this.potionImmunities.remove(Objects.requireNonNull(potion.getRegistryName()).toString());
 	}
 
 	/**

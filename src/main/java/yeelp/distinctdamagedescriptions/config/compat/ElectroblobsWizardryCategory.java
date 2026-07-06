@@ -6,12 +6,13 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 
+@SuppressWarnings("ALL")
 public final class ElectroblobsWizardryCategory {
 	
 	@Name("Minion Capabilities")
 	@Comment({
 		"Specify what capabilities minions mimic. Minions will basically copy the entire config entry for mob resistances (adaptability included) and damage distribution of the specified entity and use it as their own.",
-		"They will only copy resistances if and only if they don't have an entry in the mob resistances config already. Same applies to damage distirbution.",
+		"They will only copy resistances if and only if they don't have an entry in the mob resistances config already. Same applies to damage distribution.",
 		"You technically don't need this, you can specify the mob resistances and damage distribution for each minion in the mob resistances and mob damage section, this is just to save some obvious copying,",
 		"such as how zombie minions are likely to be configured to use the same resistances and damage as regular zombies.",
 		"Format is minionid;mobid where:",
@@ -22,7 +23,7 @@ public final class ElectroblobsWizardryCategory {
 		"Malformed entries in this list will be ignored."
 	})
 	@RequiresMcRestart
-	public String[] minionCapabilities = DefaultValues.MINON_CAPABILITIES;
+	public String[] minionCapabilities = DefaultValues.MINION_CAPABILITIES;
 	
 	@Name("Spell Damage Type Distributions")
 	@Comment({
@@ -51,7 +52,7 @@ public final class ElectroblobsWizardryCategory {
 	@RequiresMcRestart
 	public String[] linkedThrowables = DefaultValues.LINKED_THROWABLES;
 	
-	@Name("Show Spell Distirbution Tooltips")
+	@Name("Show Spell Distribution Tooltips")
 	@Comment("If enabled, DDD will add distribution info to the currently selected spell in a wand or spell stored in a scroll or book if it is configured in spellDamageType. The distribution will be shown by holding CTRL.")
 	public boolean showSpellDistributions = true;
 	

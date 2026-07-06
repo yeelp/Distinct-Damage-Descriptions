@@ -1,8 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * A tooltip formatter. Can format an ItemStack, adding DDD specific tooltip
@@ -23,7 +22,7 @@ public interface TooltipFormatter<T> {
 	boolean supportsDamageFormat(DDDDamageFormatter f);
 
 	/**
-	 * Set this TooltipFormatter's DDDDamageFormatter
+	 * Set the DDDDamageFormatter for this TooltipFormatter.
 	 * 
 	 * @param f formatter to set
 	 * @throws IllegalArgumentException if this formatter doesn't support this
@@ -72,7 +71,7 @@ public interface TooltipFormatter<T> {
 		PROJECTILE,
 		ARMOR,
 		SHIELD,
-		MOB_RESISTANCES;
+		MOB_RESISTANCES
 	}
 
 }

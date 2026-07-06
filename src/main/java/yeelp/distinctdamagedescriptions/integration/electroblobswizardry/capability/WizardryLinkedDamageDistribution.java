@@ -6,7 +6,7 @@ import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.Wizardr
 
 public class WizardryLinkedDamageDistribution extends LinkedDamageDistribution {
 
-	private IDamageDistribution ref;
+	private final IDamageDistribution ref;
 	
 	public WizardryLinkedDamageDistribution(String type) {
 		this.ref = WizardryConfigurations.spellTypeDist.get(type.toLowerCase());

@@ -5,7 +5,7 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 public final class LivingDamageEventInfo extends AbstractLivingEventDeveloperModeInfo<LivingDamageEvent> {
 
-	protected LivingDamageEventInfo() {
+	public LivingDamageEventInfo() {
 		super(() -> ModConfig.dev.showDamageInfo);
 	}
 

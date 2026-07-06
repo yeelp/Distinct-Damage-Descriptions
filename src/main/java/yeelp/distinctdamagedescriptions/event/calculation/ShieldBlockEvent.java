@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.event.calculation;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -12,6 +8,9 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * Fired when DDD computes shield reductions. If no shield calculations are to
@@ -30,7 +29,8 @@ public final class ShieldBlockEvent extends DDDCalculationEvent {
 	private final ItemStack shield;
 	private final ShieldDistribution shieldDist;
 
-	public ShieldBlockEvent(Entity attacker, Entity trueAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ItemStack shield) {
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+    public ShieldBlockEvent(Entity attacker, Entity trueAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map, @Nonnull ItemStack shield) {
 		super(attacker, trueAttacker, defender, src, map);
 		this.shield = Objects.requireNonNull(shield, "Shield can't be null!");
 		this.shieldDist = DDDAPI.accessor.getShieldDistribution(this.getShield()).get().copy();
@@ -47,7 +47,7 @@ public final class ShieldBlockEvent extends DDDCalculationEvent {
 	}
 
 	/**
-	 * Get the {@link ShieldDistribution} being used. Changes can be made here and
+	 * Get the {@link ShieldDistribution} being used. Changes can be made here, and
 	 * it will affect the effectiveness of the shield for this calculation only.
 	 * 
 	 * @return The active {@link ShieldDistribution}

@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Organizes useful methods for debug info here
@@ -35,7 +35,7 @@ public final class DebugLib {
 	 * @return A String representing the entries in the map, in a nicely joined
 	 *         String.
 	 */
-	public static final <K, V> String entriesToString(Map<K, V> map) {
+	public static <K, V> String entriesToString(Map<K, V> map) {
 		if(!status) {
 			return "";
 		}
@@ -55,7 +55,7 @@ public final class DebugLib {
 	 * 
 	 * @implNote status check needed as {@link String#format} doesn't need to run if not enabled.
 	 */
-	public static final void outputFormattedDebug(String format, Object... objects) {
+	public static void outputFormattedDebug(String format, Object... objects) {
 		if(!status) {
 			return;
 		}
@@ -71,12 +71,12 @@ public final class DebugLib {
 	 * @param it the Iterable.
 	 * @return A String representing the elements of the Iterable.
 	 */
-	public static final <T> String iterableToString(Iterable<T> it) {
+	public static <T> String iterableToString(Iterable<T> it) {
 		if(!status) {
 			return "";
 		}
 		StringBuilder builder = new StringBuilder();
-		it.forEach((s) -> builder.append(s.toString() + ";"));
+		it.forEach((s) -> builder.append(s.toString()).append(";"));
 		String[] strings = builder.toString().split(";");
 		return "[" + YLib.joinNiceString(true, ",", strings) + "]";
 	}
@@ -85,9 +85,9 @@ public final class DebugLib {
 	 * Run some Runnable. Useful to isolate debug code from running when debug mode
 	 * is not enabled.
 	 * 
-	 * @param runnable
+	 * @param runnable procedure to run
 	 */
-	public static final void doDebug(Runnable runnable) {
+	public static void doDebug(Runnable runnable) {
 		if(!status) {
 			return;
 		}

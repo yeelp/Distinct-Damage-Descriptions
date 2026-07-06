@@ -1,17 +1,19 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
-
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
 public abstract class DDDSingleStringConfigReader implements DDDConfigReader {
 
 	private final Supplier<String> config, fallback;
 	private final String name;
 
-	public DDDSingleStringConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
+	public DDDSingleStringConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) {
 		this.config = configSup;
 		this.fallback = fallbackSup;
 		this.name = name;
@@ -20,6 +22,7 @@ public abstract class DDDSingleStringConfigReader implements DDDConfigReader {
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return this.name;
@@ -47,11 +50,12 @@ public abstract class DDDSingleStringConfigReader implements DDDConfigReader {
 	
 	/**
 	 * The exception that might have been created reading this entry from the config.
-	 * 
+	 * <p>
 	 * If this reader does not self report errors ({@link #doesSelfReportErrors()}), then this should always return null.
 	 * 
 	 * @return The exception that was created reading the config entry, or null if the config was read successfully.
 	 */
+	@Nullable
 	protected abstract DDDConfigReaderException getException();
 	
 	@Override
@@ -59,6 +63,7 @@ public abstract class DDDSingleStringConfigReader implements DDDConfigReader {
 		return true;
 	}
 	
+	@Nonnull
 	@Override
 	public final Collection<DDDConfigReaderException> getSelfReportedErrors() {
 		if(this.getException() != null) {

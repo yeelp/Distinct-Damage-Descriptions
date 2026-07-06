@@ -2,8 +2,6 @@ package yeelp.distinctdamagedescriptions.util;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 public final class DDDFontColour {
 
 	/**
@@ -12,7 +10,8 @@ public final class DDDFontColour {
 	 * @author Yeelp
 	 *
 	 */
-	public static enum Marker {
+	@SuppressWarnings("UnnecessaryUnicodeEscape")
+    public enum Marker {
 		START('\u222b') {
 			@Override
 			public String replaceWith() {
@@ -34,7 +33,7 @@ public final class DDDFontColour {
 
 		private final char c;
 
-		private Marker(char c) {
+		Marker(char c) {
 			this.c = c;
 		}
 
@@ -76,35 +75,8 @@ public final class DDDFontColour {
 	public static String encodeColour(int colour) {
 		int r = ((colour >> 16) & 255);
 		int g = ((colour >> 8) & 255);
-		int b = ((colour >> 0) & 255);
+		int b = (colour & 255);
 		return String.format("%c%c%c%c", Marker.START.getC(), encode(r), encode(g), encode(b));
-	}
-
-	/**
-	 * Decode a type's encoded text colour information.
-	 * 
-	 * @param type The type with encoded text colour information.
-	 * @return a short array with values {r, g, b} for colour information, or null
-	 *         if the provided string had no colour information that could be
-	 *         decoded.
-	 */
-	@Nullable
-	public static short[] decodeColour(String type) {
-		byte colourState = 0;
-		short[] colour = new short[3];
-		for(char c : type.toCharArray()) {
-			if(colourState > 0) {
-				short val = (short) (c & 0xFF);
-				colour[colourState++ - 1] = val;
-				if((colourState %= 4) == 0) {
-					return colour;
-				}
-			}
-			else {
-				colourState += DDDFontColour.Marker.getMarker(c).filter(Marker.START::equals).map((marker) -> 1).orElse(0).byteValue();
-			}
-		}
-		return null;
 	}
 
 	private static char encode(int i) {

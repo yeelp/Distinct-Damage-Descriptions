@@ -1,19 +1,19 @@
 package yeelp.distinctdamagedescriptions.integration.baubles;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Optional;
-
 import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.config.DDDBaseConfiguration;
 import yeelp.distinctdamagedescriptions.integration.baubles.modifier.IDDDBaubleModifier;
 import yeelp.distinctdamagedescriptions.integration.baubles.util.BaubleModifierType;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+
 public final class DDDBaublesConfiguration extends DDDBaseConfiguration<Map<BaubleModifierType, IDDDBaubleModifier<? extends Event>>> {
 
 	public DDDBaublesConfiguration() {
-		super(() -> new EnumMap<BaubleModifierType, IDDDBaubleModifier<? extends Event>>(BaubleModifierType.class));
+		super(() -> new EnumMap<>(BaubleModifierType.class));
 	}
 	
 	/**
@@ -29,7 +29,7 @@ public final class DDDBaublesConfiguration extends DDDBaseConfiguration<Map<Baub
 		}
 		Map<BaubleModifierType, IDDDBaubleModifier<? extends Event>> map = this.get(key);
 		BaubleModifierType type = modifier.getType();
-		boolean contains = map.containsKey(type);
+		@SuppressWarnings("DataFlowIssue") boolean contains = map.containsKey(type);
 		DebugLib.outputFormattedDebug("Bauble Modifier Registered: %s", modifier.toString());
 		map.put(type, modifier);
 		return contains;

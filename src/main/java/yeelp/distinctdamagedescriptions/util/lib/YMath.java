@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import com.google.common.collect.Sets;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.google.common.collect.Sets;
 
 /**
  * A collection of useful math methods
@@ -21,7 +21,7 @@ public final class YMath {
 	 * @return a double representation of the sum. Each value will be cast to a
 	 *         double via {@link Number#doubleValue()}
 	 */
-	public static final <T extends Number> double sum(Collection<T> values) {
+	public static <T extends Number> double sum(Collection<T> values) {
 		return values.stream().mapToDouble(Number::doubleValue).sum();
 	}
 
@@ -34,11 +34,10 @@ public final class YMath {
 	 * @param b   set B
 	 * @return a new Set that is the result of the set union of a and b
 	 */
-	public static final <X> Set<X> setUnion(Set<X> a, Set<X> b) {
-		HashSet<X> result = new HashSet<X>(a);
-		for(X x : b) {
-			result.add(x);
-		}
+	@SuppressWarnings("unused")
+    public static <X> Set<X> setUnion(Set<X> a, Set<X> b) {
+		Set<X> result = Sets.newHashSet(a);
+        result.addAll(b);
 		return result;
 	}
 
@@ -51,7 +50,8 @@ public final class YMath {
 	 * @param b   set B
 	 * @return True if the sets are equal in terms of set equality.
 	 */
-	public static final <X> boolean setEquals(Set<X> a, Set<X> b) {
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static <X> boolean setEquals(Set<X> a, Set<X> b) {
 		return a.containsAll(b) && b.containsAll(a);
 	}
 
@@ -64,7 +64,7 @@ public final class YMath {
 	 * @param b   set B
 	 * @return a new Set that is the set difference of a and b.
 	 */
-	public static final <X> Set<X> setDifference(Set<X> a, Set<X> b) {
+	public static <X> Set<X> setDifference(Set<X> a, Set<X> b) {
 		HashSet<X> result = Sets.newHashSet(a);
 		b.forEach(result::remove);
 		return result;

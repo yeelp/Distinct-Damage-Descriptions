@@ -5,7 +5,7 @@ public enum DamageDistributionNumberFormat implements ObjectFormatter<Float> {
 	PERCENT(DDDNumberFormatter.PERCENT);
 	
 	private final DDDNumberFormatter formatter;
-	private DamageDistributionNumberFormat(DDDNumberFormatter formatter) {
+	DamageDistributionNumberFormat(DDDNumberFormatter formatter) {
 		this.formatter = formatter;
 	}
 	

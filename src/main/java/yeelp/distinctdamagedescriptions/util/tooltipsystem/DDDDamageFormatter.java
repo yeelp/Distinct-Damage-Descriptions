@@ -28,5 +28,5 @@ public enum DDDDamageFormatter implements ObjectFormatter<DDDDamageType> {
 		public String format(DDDDamageType t) {
 			return t.getDisplayName();
 		}
-	};
+	}
 }

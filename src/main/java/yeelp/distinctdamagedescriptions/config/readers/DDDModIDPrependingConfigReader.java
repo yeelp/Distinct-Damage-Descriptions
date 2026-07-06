@@ -3,6 +3,8 @@ package yeelp.distinctdamagedescriptions.config.readers;
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
+import javax.annotation.Nonnull;
+
 public final class DDDModIDPrependingConfigReader<T> extends DDDMultiEntryConfigReader<T> {
 
 	private final DDDMultiEntryConfigReader<T> delegate;
@@ -14,6 +16,7 @@ public final class DDDModIDPrependingConfigReader<T> extends DDDMultiEntryConfig
 		this.delegate = internal;
 	}
 
+	@Nonnull
 	@Override
 	protected Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
 		if(!s.split(";")[0].contains(":")) {

@@ -1,18 +1,17 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.client;
 
 import com.lycanitesmobs.core.item.ItemCustomSpawnEgg;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.MobDamageDistributionFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.MobDamageDistributionIconAggregator;
 
-public final class LycantiesCreatureSpawnItemDamageFormatter extends MobDamageDistributionFormatter implements IModCompatTooltipFormatter<ItemStack> {
+public final class LycanitesCreatureSpawnItemDamageFormatter extends MobDamageDistributionFormatter implements IModCompatTooltipFormatter<ItemStack> {
 
-	private static LycantiesCreatureSpawnItemDamageFormatter instance;
+	private static LycanitesCreatureSpawnItemDamageFormatter instance;
 
-	private LycantiesCreatureSpawnItemDamageFormatter() {
+	private LycanitesCreatureSpawnItemDamageFormatter() {
 		super(LycanitesFormatterUtilities::getCreatureResourceLocation);
 	}
 
@@ -26,25 +25,20 @@ public final class LycantiesCreatureSpawnItemDamageFormatter extends MobDamageDi
 		return t.getItem() instanceof ItemCustomSpawnEgg;
 	}
 
-	@Override
-	protected boolean shouldShowDist(ItemStack stack) {
-		return this.applicable(stack);
-	}
-
-	public static LycantiesCreatureSpawnItemDamageFormatter getInstance() {
-		return instance == null ? instance = new LycantiesCreatureSpawnItemDamageFormatter() : instance;
+    public static LycanitesCreatureSpawnItemDamageFormatter getInstance() {
+		return instance == null ? instance = new LycanitesCreatureSpawnItemDamageFormatter() : instance;
 	}
 
 	protected static final class LycanitesDamageIconAggregator extends MobDamageDistributionIconAggregator {
 
 		private LycanitesDamageIconAggregator() {
-			super(LycantiesCreatureSpawnItemDamageFormatter.getInstance(), LycanitesFormatterUtilities::getCreatureResourceLocation);
+			super(LycanitesCreatureSpawnItemDamageFormatter.getInstance(), LycanitesFormatterUtilities::getCreatureResourceLocation);
 		}
 
 		private static LycanitesDamageIconAggregator instance;
 
-		public static LycantiesCreatureSpawnItemDamageFormatter.LycanitesDamageIconAggregator getInstance() {
-			return instance == null ? instance = new LycantiesCreatureSpawnItemDamageFormatter.LycanitesDamageIconAggregator() : instance;
+		public static LycanitesCreatureSpawnItemDamageFormatter.LycanitesDamageIconAggregator getInstance() {
+			return instance == null ? instance = new LycanitesCreatureSpawnItemDamageFormatter.LycanitesDamageIconAggregator() : instance;
 		}
 	}
 

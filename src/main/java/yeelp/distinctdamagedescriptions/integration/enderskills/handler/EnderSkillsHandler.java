@@ -1,14 +1,9 @@
 package yeelp.distinctdamagedescriptions.integration.enderskills.handler;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.google.common.collect.Maps;
-
 import arekkuusu.enderskills.api.event.SkillDamageEvent;
 import arekkuusu.enderskills.api.registry.Skill;
 import arekkuusu.enderskills.common.skill.ability.BaseAbility;
+import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -19,6 +14,11 @@ import yeelp.distinctdamagedescriptions.integration.enderskills.dist.EnderSkills
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+
 public final class EnderSkillsHandler extends Handler {
 	
 	public static final class SkillUseRecord {
@@ -27,7 +27,7 @@ public final class EnderSkillsHandler extends Handler {
 		
 		SkillUseRecord(EntityLivingBase owner, Skill skillUsed) {
 			this.tickTimestamp = owner.ticksExisted;
-			this.skillUsed = skillUsed.getRegistryName().toString();
+			this.skillUsed = Objects.requireNonNull(skillUsed.getRegistryName()).toString();
 		}
 		
 		public String getSkillUsed() {
@@ -53,7 +53,7 @@ public final class EnderSkillsHandler extends Handler {
 	
 	@SuppressWarnings("static-method")
 	@SubscribeEvent
-	public final void onSkillUse(SkillDamageEvent evt) {
+	public void onSkillUse(SkillDamageEvent evt) {
 		getTracker(evt.getSource()).ifPresent((m) -> {
 			EntityLivingBase owner = evt.getEntityLiving();
 			if(owner == null) {
@@ -66,7 +66,7 @@ public final class EnderSkillsHandler extends Handler {
 	
 	@SuppressWarnings("static-method")
 	@SubscribeEvent
-	public final void onConfigChange(ConfigChangedEvent evt) {
+	public void onConfigChange(ConfigChangedEvent evt) {
 		if(evt.getModID().equals(ModConsts.MODID)) {
 			EnderSkillsPredefinedDistribution.update();
 		}

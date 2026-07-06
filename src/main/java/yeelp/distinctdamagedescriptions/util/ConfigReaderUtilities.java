@@ -1,5 +1,13 @@
 package yeelp.distinctdamagedescriptions.util;
 
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
+import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+import yeelp.distinctdamagedescriptions.registries.IDDDRegistry;
+import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,14 +17,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
-import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
-import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.registries.IDDDRegistry;
-import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
-
 /**
  * Contains some useful utilities for config readers
  * 
@@ -25,20 +25,22 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
  */
 public final class ConfigReaderUtilities {
 
-	private static final String LIST_SPLIT_REGEX = "\\),(?:\\s?)\\(";
+	@SuppressWarnings("RegExpUnnecessaryNonCapturingGroup")
+    private static final String LIST_SPLIT_REGEX = "\\),(?:\\s?)\\(";
 	public static final String DDD_TYPE_REGEX = "ddd_[a-zA-Z]+";
 	public static final String DAMAGE_TYPE_SUBREGEX = "([spb]|(" + DDD_TYPE_REGEX + "))";
 	public static final String DECIMAL_REGEX = "\\d+(\\.\\d+)?";
 	public static final String POTENTIALLY_NEGATIVE_DECIMAL_REGEX = "-?\\d+(\\.\\d+)?";
 	public static final String ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + DECIMAL_REGEX + "\\)";
 	public static final String ALLOW_NEGATIVE_ENTRY_TUPLE_SUBREGEX = "\\(" + DAMAGE_TYPE_SUBREGEX + ",\\s?" + POTENTIALLY_NEGATIVE_DECIMAL_REGEX + "\\)";
-	public static final String COMMENT_REGEX = "^(\\/\\/.*)?$";
+	public static final String COMMENT_REGEX = "^(//.*)?$";
 	public static final String DIST_REGEX = buildListRegex(ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX);
+	@SuppressWarnings("unused")
 	public static final String DIST_REGEX_ALLOW_EMPTY = buildListRegex(ONLY_POSITIVE_ENTRY_TUPLE_SUBREGEX, true);
 	public static final String EMPTY_DIST = "\\[\\]";
 	
 	private ConfigReaderUtilities() {
-		throw new UnsupportedOperationException("Utilities can't be instatiated!");
+		throw new UnsupportedOperationException("Utilities can't be instantiated!");
 	}
 	
 	/**
@@ -51,7 +53,7 @@ public final class ConfigReaderUtilities {
 	}
 
 	/**
-	 * Validate an object is non null. This differs from
+	 * Validate an object is non-null. This differs from
 	 * {@link Objects#requireNonNull(Object, Supplier)} in that it throws generic
 	 * exceptions, allowing client code to specify the thrown exception type.
 	 * 
@@ -59,7 +61,7 @@ public final class ConfigReaderUtilities {
 	 * @param <X>          The type of exception thrown
 	 * @param u            the object to validate
 	 * @param exceptionSup The generic exception {@link Supplier}
-	 * @return The object if non null
+	 * @return The object if non-null
 	 * @throws X The exception returned by {@code exceptionSup.get()} if
 	 *           {@code u == null}
 	 */
@@ -79,7 +81,7 @@ public final class ConfigReaderUtilities {
 	 * @param s            The map to parse, which should match a regex returned by
 	 *                     {@link #buildListRegex(String)}.
 	 * @param kParser      The function that parses keys of the map. Should always
-	 *                     return a non null value.
+	 *                     return a non-null value.
 	 * @param vParser      The function that parses values of the map
 	 * @param defaultValue The default value for the {@link NonNullMap}
 	 * @return The NonNullMap populated with the entries specified by {@code s}
@@ -146,9 +148,9 @@ public final class ConfigReaderUtilities {
 
 	private static <K, V> NonNullMap<K, V> buildMap(Supplier<V> defaultValue, Iterable<Entry<K, V>> mappings) {
 		if(mappings == null) {
-			return new NonNullMap<K, V>(defaultValue);
+			return new NonNullMap<>(defaultValue);
 		}
-		NonNullMap<K, V> map = new NonNullMap<K, V>(defaultValue);
+		NonNullMap<K, V> map = new NonNullMap<>(defaultValue);
 		mappings.forEach((e) -> map.put(e.getKey(), e.getValue()));
 		return map;
 	}
@@ -160,10 +162,10 @@ public final class ConfigReaderUtilities {
 		}
 		// can't simply use Stream ops; we potentially throw checked
 		// exceptions and want to throw that up the call stack
-		Set<Entry<K, V>> result = new HashSet<Entry<K, V>>();
+		Set<Entry<K, V>> result = new HashSet<>();
 		for(String str : s.substring(2, s.length() - 2).split(LIST_SPLIT_REGEX)) {
 			String[] arr = str.split(",");
-			result.add(new SimpleEntry<K, V>(validateNonNull(kParser.apply(arr[0].trim()), () -> new ConfigParsingException(reader.getName(), s)), vParser.apply(arr[1].trim())));
+			result.add(new SimpleEntry<>(validateNonNull(kParser.apply(arr[0].trim()), () -> new ConfigParsingException(reader.getName(), s)), vParser.apply(arr[1].trim())));
 		}
 		return result;
 	}

@@ -1,13 +1,6 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiPredicate;
-
-import org.lwjgl.opengl.GL11;
-
 import com.google.common.collect.Maps;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.item.ItemStack;
@@ -19,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
@@ -26,6 +20,11 @@ import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.mixin.MixinASMItemStack;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiPredicate;
 
 public class TooltipHandler extends Handler {
 	private static final ResourceLocation ICONS = new ResourceLocation(ModConsts.MODID, "textures/tooltips/internaldamagetypes.png");
@@ -56,7 +55,7 @@ public class TooltipHandler extends Handler {
 			return;
 		}
 		ItemStack stack = evt.getItemStack();
-		if(evt.getToolTip().size() > 0 && !stack.isEmpty()) {
+		if(!evt.getToolTip().isEmpty() && !stack.isEmpty()) {
 			ItemStack cachedStack = getCachedStackWithCapabilities(stack);
 			evt.getToolTip().addAll(1, TooltipDistributor.getDistributor(cachedStack).getTooltip(cachedStack));			
 		}
@@ -89,7 +88,7 @@ public class TooltipHandler extends Handler {
 		return DDDConfigurations.armors.configured(key) || DDDConfigurations.items.configured(key) || DDDConfigurations.shields.configured(key);
 	}
 	
-	private static ItemStack getCachedStackWithCapabilities(ItemStack stack) {
+	private static ItemStack getCachedStackWithCapabilities(@Nonnull ItemStack stack) {
 		MixinASMItemStack asmStack = (MixinASMItemStack) (Object) stack;
 		Optional<String> regString = YResources.getRegistryStringWithMetadata(stack);
 		return regString.map((s) -> {

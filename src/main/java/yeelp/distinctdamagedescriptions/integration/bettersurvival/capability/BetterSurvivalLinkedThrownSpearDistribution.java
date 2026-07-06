@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.bettersurvival.capability;
 
 import com.mujmajnkraft.bettersurvival.entities.projectiles.EntityFlyingSpear;
-
 import net.minecraft.entity.IProjectile;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;

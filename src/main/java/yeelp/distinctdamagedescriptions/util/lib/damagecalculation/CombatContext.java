@@ -1,16 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -20,6 +11,9 @@ import net.minecraft.util.math.Vec3d;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IValidArmorSlotInjector;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 public final class CombatContext {
 
@@ -36,13 +30,14 @@ public final class CombatContext {
 	private final Entity attacker;
 	private final EntityLivingBase defender;
 	private final int hitTime;
-	private Optional<ItemStack> shield;
-	private Iterable<EntityEquipmentSlot> validArmorSlots;
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private final Optional<ItemStack> shield;
+	private final Iterable<EntityEquipmentSlot> validArmorSlots;
 	
 	static {
 		registerInjector(new DDDValidArmorInjector());
 		ARMOR_SLOTS_SET = EnumSet.noneOf(EntityEquipmentSlot.class);
-		Arrays.stream(armorSlots).forEach(ARMOR_SLOTS_SET::add);
+        ARMOR_SLOTS_SET.addAll(Arrays.asList(armorSlots));
 	}
 
 	public CombatContext(DamageSource src, float amount, Entity attacker, EntityLivingBase defender) {
@@ -83,7 +78,8 @@ public final class CombatContext {
 	public EntityLivingBase getDefender() {
 		return this.defender;
 	}
-	
+
+	@SuppressWarnings("unused")
 	int getLastHitTime() {
 		return this.hitTime;
 	}
@@ -144,12 +140,13 @@ public final class CombatContext {
 	}
 	
 	@SuppressWarnings("null")
-	private static final boolean entitiesMatchOrAreBothNull(Entity a, Entity b) {
+	private static boolean entitiesMatchOrAreBothNull(Entity a, Entity b) {
 		boolean aNull = a == null, bNull = b == null;
 		if(aNull ^ bNull) {
 			return false;
 		}
-		if(aNull && bNull) {
+		//entity B is only null here if entity A is null as well. If entity B is non-null, short-circuiting skips the need to check.
+		if(aNull) {
 			return true;
 		}
 		return a.getUniqueID().equals(b.getUniqueID());

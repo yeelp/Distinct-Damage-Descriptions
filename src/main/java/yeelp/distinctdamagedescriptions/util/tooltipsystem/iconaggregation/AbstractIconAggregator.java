@@ -1,16 +1,15 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
+import com.google.common.collect.ImmutableList;
+import net.minecraft.item.ItemStack;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.item.ItemStack;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
 /**
  * A skeletal implementation of a IconAggregator. Extenders need to provide
@@ -18,7 +17,7 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
  * the ones passed in) and a way to get a set of <b><em>ordered</em></b>
  * {@link DDDDamageType}s that relate to the type icons to display. The order is
  * defined by the natural ordering specified by
- * {@link DDDDamageType#compareTo(DDDDamageType)}
+ * {@link DDDDamageType#compareTo(Object)}
  * 
  * @author Yeelp
  *
@@ -32,7 +31,7 @@ public abstract class AbstractIconAggregator implements IconAggregator {
 		if(this.shouldShowIcons()) {
 			final int xVal = this.getStartX(x, tooltips);
 			Iterator<Integer> ys = Stream.iterate(this.getStartY(y, tooltips), (i) -> i + ICON_HEIGHT).iterator();
-			return this.getOrderedTypes(stack).collect(LinkedList<Icon>::new, (l, d) -> l.add(new Icon(xVal, ys.next(), getUFromType(d))), List<Icon>::addAll);
+			return this.getOrderedTypes(stack).collect(LinkedList::new, (l, d) -> l.add(new Icon(xVal, ys.next(), getUFromType(d))), List::addAll);
 		}
 		return ImmutableList.of();
 	}

@@ -1,12 +1,7 @@
 package yeelp.distinctdamagedescriptions.init;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalDouble;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
@@ -17,9 +12,14 @@ import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
 import yeelp.distinctdamagedescriptions.network.SoundMessage;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+
 public final class DDDSounds {
-	private static final Map<String, SoundEvent> SOUND_MAP = new HashMap<String, SoundEvent>();
-	private static final List<String> ID_LIST = new ArrayList<String>();
+	private static final Map<String, SoundEvent> SOUND_MAP = Maps.newHashMap();
+	private static final List<String> ID_LIST = Lists.newArrayList();
 
 	public enum DDDCombatSounds {
 		RESIST(RESIST_DING) {
@@ -78,9 +78,9 @@ public final class DDDSounds {
 			}
 		};
 
-		private SoundEvent evt;
+		private final SoundEvent evt;
 
-		private DDDCombatSounds(SoundEvent evt) {
+		DDDCombatSounds(SoundEvent evt) {
 			this.evt = evt;
 		}
 
@@ -92,7 +92,8 @@ public final class DDDSounds {
 
 		public abstract float getRecommendedVolume();
 
-		protected static boolean isRatioWithinBounds(double lo, double hi, OptionalDouble opt) {
+		@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        protected static boolean isRatioWithinBounds(double lo, double hi, OptionalDouble opt) {
 			if(opt.isPresent()) {
 				return lo < opt.getAsDouble() && opt.getAsDouble() < hi;
 			}
@@ -124,12 +125,11 @@ public final class DDDSounds {
 		ForgeRegistries.SOUND_EVENTS.register(sound);
 	}
 
-	public static boolean playSound(EntityPlayer player, SoundEvent name, float vol, float pitch) {
+	public static void playSound(EntityPlayer player, SoundEvent name, float vol, float pitch) {
 		if(player instanceof EntityPlayerMP) {
-			PacketHandler.INSTANCE.sendTo(new SoundMessage(encodeSoundID(name.getRegistryName().toString()), vol, pitch), (EntityPlayerMP) player);
-			return true;
+            //noinspection DataFlowIssue
+            PacketHandler.INSTANCE.sendTo(new SoundMessage(encodeSoundID(name.getRegistryName().toString()), vol, pitch), (EntityPlayerMP) player);
 		}
-		return false;
 	}
 
 	public static byte encodeSoundID(String id) {

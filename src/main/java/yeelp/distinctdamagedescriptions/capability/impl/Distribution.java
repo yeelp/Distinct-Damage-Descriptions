@@ -1,14 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -22,9 +14,16 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCompound> implements IDistribution {
-	protected DDDBaseMap<Float> distMap = new DDDBaseMap<Float>(() -> 0.0f);
-	protected DDDBaseMap<Float> originalMap = new DDDBaseMap<Float>(() -> 0.0f);
+	protected DDDBaseMap<Float> distMap = new DDDBaseMap<>(() -> 0.0f);
+	protected DDDBaseMap<Float> originalMap = new DDDBaseMap<>(() -> 0.0f);
 	protected static final String ORIGINAL_WEIGHTS = "originalWeights";
 	protected static final String MODDED_WEIGHTS = "moddedWeights";
 
@@ -44,11 +43,7 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 			if(t.getSecond() < 0.0f) {
 				throw new InvariantViolationException("New weights are invalid!");
 			}
-			else if(t.getSecond() == 0.0f && !this.allowZeroWeightedEntries()) // ignore 0 weighted entries.
-			{
-				continue;
-			}
-			else {
+			else if(t.getSecond() != 0.0f || this.allowZeroWeightedEntries()) {
 				this.distMap.put(t.getFirst(), t.getSecond());
 			}
 		}
@@ -81,13 +76,13 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 				DistinctDamageDescriptions.err("NBT for current weights is empty but this distribution can't be empty! Using original weights as modified weights...");
 				this.distMap.putAll(this.originalMap);
 			}
-			else if(this.distMap.isEmpty() && this.originalMap.isEmpty()) {
+			else if(this.distMap.isEmpty()) {
 				DistinctDamageDescriptions.err("NBT for distribution was empty and should not be! Reverting to Bludgeoning!");
 				Stream.of(this.distMap, this.originalMap).forEach((m) -> m.put(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
 			}			
 		}
 		if(!this.areWeightsValid()) {
-			DistinctDamageDescriptions.err(String.format("Weights: %s are invalid! Scrapping!", this.toString()));
+			DistinctDamageDescriptions.err(String.format("Weights: %s are invalid! Scrapping!", this));
 			if(this.canHaveEmptyDistribution()) {
 				this.distMap.clear();
 				this.originalMap.clear();
@@ -128,12 +123,12 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 	}
 
 	@Override
-	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	public void setNewWeights(Map<DDDDamageType, Float> map) {
 		this.setNewMap(this.distMap, map);
 	}
 	
 	@Override
-	public void setNewBaseWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	public void setNewBaseWeights(Map<DDDDamageType, Float> map) {
 		this.setNewMap(this.originalMap, map);
 	}
 
@@ -154,7 +149,7 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 		return map;
 	}
 
-	private final void setNewMap(DDDBaseMap<Float> target, Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	private void setNewMap(DDDBaseMap<Float> target, Map<DDDDamageType, Float> map) {
 		if(invariantViolated(map.values())) {
 			throw new InvariantViolationException("Some weights are non positive!");			
 		}
@@ -166,10 +161,10 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 	}
 
 	protected final DDDBaseMap<Float> copyMap(float defaultVal) {
-		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<Float>(() -> defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap::putAll);
+		return this.distMap.entrySet().stream().collect(() -> new DDDBaseMap<>(() -> defaultVal), (m, e) -> m.put(e.getKey(), e.getValue()), DDDBaseMap::putAll);
 	}
 
-	protected static final <Dist extends Distribution & IDistribution> DDDBaseMap<Float> copyMap(Dist dist) {
+	protected static <Dist extends Distribution & IDistribution> DDDBaseMap<Float> copyMap(Dist dist) {
 		return dist.copyMap(dist.distMap.getDefaultValue());
 	}
 	
@@ -188,9 +183,8 @@ public abstract class Distribution extends AbstractUpdatableCapability<NBTTagCom
 	
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("[");
-		builder.append(YLib.joinNiceString(true, ",", this.distMap.entrySet().stream().map((e) -> String.format("(%s, %.2f)", e.getKey().getTypeName(), e.getValue())).toArray(String[]::new)));
-		return builder.append("]").toString();
+        return "[" + YLib.joinNiceString(true, ",", this.distMap.entrySet().stream().map((e) -> String.format("(%s, %.2f)", e.getKey().getTypeName(), e.getValue())).toArray(String[]::new)) +
+                "]";
 	}
 	
 	private void setWeight(DDDBaseMap<Float> map, DDDDamageType type, float amount) {

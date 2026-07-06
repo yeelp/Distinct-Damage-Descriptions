@@ -36,9 +36,9 @@ public enum KeyTooltip {
 		}
 	};
 
-	private ITextComponent comp;
+	private final ITextComponent comp;
 
-	private KeyTooltip(String string) {
+	KeyTooltip(String string) {
 		this.comp = Translations.INSTANCE.getTranslator(TooltipConsts.KEYS_ROOT).getComponent(string, new Style().setColor(TextFormatting.YELLOW));
 	}
 

@@ -23,7 +23,7 @@ If you'd like to learn more about Distinct Damage Descriptions (shortened to DDD
 ## Using Gradle with Distinct Damage Descriptions
 This section assumes the following:
 - You know how to set up a Forge MDK for the correct Minecraft version.
-- You have the correct Java version installed and your `JAVA_HOME` system environment variable and points to an approriate JDK installation and is correctly prioritized in your `PATH` environment variable. (Note that from 1.12 until 1.18, Minecraft ran on Java 8.)
+- You have the correct Java version installed and your `JAVA_HOME` system environment variable and points to an appropriate JDK installation and is correctly prioritized in your `PATH` environment variable. (Note that from 1.12 until 1.18, Minecraft ran on Java 8.)
 - You have your IDE of choice at hand.
 
 Using Gradle with Distinct Damage Descriptions is the same as building with pretty much any other mod.
@@ -44,7 +44,7 @@ gradlew build
 ```
 from inside that directory. If successful, this will output `.jar` files to `./build/libs`. One is the actual jar, and the second, which will have `-sources` appended to the file name, is the source of what you just built.
 
-If you'd rather not use the Gradle wrapper for whatever reasons, then you also probably already know what you're doing. 😉
+If you'd rather not use the Gradle wrapper for whatever reason, then you also probably already know what you're doing. 😉
 
 ## Adding Distinct Damage Descriptions as a dependency
 If you want DDD as a dependency for a mod you're developing, you can use the Curse Maven plugin to add it as a dependency. In your `build.gradle`, under `dependencies`, use the following in your Gradle instruction:

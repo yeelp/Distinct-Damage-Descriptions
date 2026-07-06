@@ -21,6 +21,7 @@ public abstract class DDDAPI {
 	 * does this during startup in preinit.
 	 */
 	@Initializer(shouldTime = false)
+    @SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void init() {
 		DistinctDamageDescriptionsAPIImpl.values();
 	}

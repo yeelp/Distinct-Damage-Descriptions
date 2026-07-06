@@ -3,7 +3,7 @@ package yeelp.distinctdamagedescriptions.api.impl.dists;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 
 /**
- * The ground work of a {@link DDDPredefinedDistribution}.
+ * The groundwork of a {@link DDDPredefinedDistribution}.
  * @author Yeelp
  *
  */

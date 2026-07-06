@@ -1,18 +1,18 @@
 package yeelp.distinctdamagedescriptions.integration;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.integration.thaumcraft.ThaumcraftMixinProvider;
 import yeelp.distinctdamagedescriptions.integration.util.IOptionalMixinProvider;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+
+@SuppressWarnings("Convert2MethodRef")
 public final class OptionalMixinKernel {
 
 	private OptionalMixinKernel() {
@@ -29,15 +29,15 @@ public final class OptionalMixinKernel {
 
 	public static void enqueueMixins() {
 		try {
-			PROVIDERS.entrySet().stream().forEach((entry) -> {
-				IOptionalMixinProvider provider = entry.getValue().get();
-				fermiumbooter.FermiumRegistryAPI.enqueueMixin(true, String.format("mixin.ddd.%s.json", provider.getModID()), () -> Loader.instance().getModList().stream().map(ModContainer::getModId).filter(provider.getModID()::equals).findFirst().isPresent());
-				MIXINS_ENQUEUED.add(provider.getModID());
-			});
+			PROVIDERS.forEach((key, value) -> {
+                IOptionalMixinProvider provider = value.get();
+                fermiumbooter.FermiumRegistryAPI.enqueueMixin(true, String.format("mixin.ddd.%s.json", provider.getModID()), () -> Loader.instance().getModList().stream().map(ModContainer::getModId).anyMatch(provider.getModID()::equals));
+                MIXINS_ENQUEUED.add(provider.getModID());
+            });
 			loaded = true;
 		}
 		catch(NoClassDefFoundError e) {
-			return;
+			//do nothing
 		}
 	}
 	

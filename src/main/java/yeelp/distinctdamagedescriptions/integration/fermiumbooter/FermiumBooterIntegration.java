@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.fermiumbooter;
 
 import com.google.common.collect.ImmutableList;
-
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;
 import yeelp.distinctdamagedescriptions.handlers.Handler;

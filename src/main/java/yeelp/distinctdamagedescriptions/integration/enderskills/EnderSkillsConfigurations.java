@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.enderskills;
 
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -31,8 +32,8 @@ public abstract class EnderSkillsConfigurations {
 	
 	@Initializer
 	public static void init() {
-		skillDist = new DDDBaseConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.FORCE.getBaseDistribution());
-		skillDotDist = new DDDBaseConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.FORCE.getBaseDistribution());
+		skillDist = new DDDBaseConfiguration<>(DDDBuiltInDamageType.FORCE::getBaseDistribution);
+		skillDotDist = new DDDBaseConfiguration<>(DDDBuiltInDamageType.FORCE::getBaseDistribution);
 		try {
 			DDDConfigLoader.getInstance().enqueueAll(
 					wrapModIDReader(new DDDDamageDistributionConfigReader("Ender Skills Compat: Skill Distributions", ModConfig.compat.enderskills.skillDistribution, skillDist)), 
@@ -40,12 +41,12 @@ public abstract class EnderSkillsConfigurations {
 			DDDConfigLoader.getInstance().enqueueAll(EnderSkillsPredefinedDistribution.getReaders());
 		}
 		catch (NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			throw new RuntimeException(e);
 		}
 	}
 	
-	private static final <T> DDDConfigReader wrapModIDReader(DDDMultiEntryConfigReader<T> internal) {
-		return new DDDModIDPrependingConfigReader<T>(ModConsts.IntegrationIds.ENDER_SKILLS_ID, internal);
+	private static <T> DDDConfigReader wrapModIDReader(DDDMultiEntryConfigReader<T> internal) {
+		return new DDDModIDPrependingConfigReader<>(ModConsts.IntegrationIds.ENDER_SKILLS_ID, internal);
 	}
 }

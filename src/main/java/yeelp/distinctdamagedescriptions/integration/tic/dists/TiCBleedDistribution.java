@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic.dists;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import slimeknights.tconstruct.tools.traits.TraitSharp;
@@ -15,10 +11,15 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDSingleDamageDistributionConfigReader;
 
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
 public final class TiCBleedDistribution extends DDDAbstractPredefinedDistribution {
 
 	private static final class ConfigReader extends DDDSingleDamageDistributionConfigReader {
-		public ConfigReader() throws IllegalArgumentException {
+		public ConfigReader() {
 			super("TiC Bleed", () -> ModConfig.compat.tinkers.bleedDist, () -> DefaultValues.TIC_BLEED_DIST);
 		}
 		
@@ -28,7 +29,7 @@ public final class TiCBleedDistribution extends DDDAbstractPredefinedDistributio
 		}
 	}
 	
-	protected static IDamageDistribution dist;
+	private static IDamageDistribution dist;
 	private static final DDDConfigReader READER = new ConfigReader();
 	
 	public TiCBleedDistribution() {
@@ -41,12 +42,12 @@ public final class TiCBleedDistribution extends DDDAbstractPredefinedDistributio
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return isBleeding(src, target) ? dist.getCategories() : Collections.emptySet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return isBleeding(src, target) ? Optional.of(dist) : Optional.empty();
 	}
 	

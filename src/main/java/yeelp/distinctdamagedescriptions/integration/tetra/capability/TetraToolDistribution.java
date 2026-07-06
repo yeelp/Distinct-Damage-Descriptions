@@ -1,13 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.tetra.capability;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -28,6 +22,12 @@ import yeelp.distinctdamagedescriptions.integration.tetra.TetraNBT;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public final class TetraToolDistribution extends AbstractBiasedDamageDistribution {
 
 	@CapabilityInject(TetraToolDistribution.class)
@@ -37,17 +37,18 @@ public final class TetraToolDistribution extends AbstractBiasedDamageDistributio
 		super();
 	}
 
+	@SuppressWarnings("unused")
 	public TetraToolDistribution(Map<DDDDamageType, Float> weights) {
 		super(weights);
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return this.hasCapability(capability, facing) ? cap.cast(this) : null;
 	}
 

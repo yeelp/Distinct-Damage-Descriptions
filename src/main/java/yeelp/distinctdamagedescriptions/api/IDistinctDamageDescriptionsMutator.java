@@ -1,10 +1,11 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 
 @ParametersAreNonnullByDefault
 public interface IDistinctDamageDescriptionsMutator {
@@ -17,7 +18,7 @@ public interface IDistinctDamageDescriptionsMutator {
 	 *              capabilities
 	 * @param cap   The capability instance
 	 */
-	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerItemCap(Class<T> clazz, Capability<? extends T> cap);
+	<T extends DDDCapabilityBase<? extends NBTBase>> void registerItemCap(Class<T> clazz, Capability<? extends T> cap);
 
 	/**
 	 * Register a projectile capability
@@ -27,7 +28,7 @@ public interface IDistinctDamageDescriptionsMutator {
 	 *              capabilities
 	 * @param cap   The capability instance
 	 */
-	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerProjectileCap(Class<T> clazz, Capability<? extends T> cap);
+	<T extends DDDCapabilityBase<? extends NBTBase>> void registerProjectileCap(Class<T> clazz, Capability<? extends T> cap);
 
 	/**
 	 * Register an entity capability
@@ -37,5 +38,6 @@ public interface IDistinctDamageDescriptionsMutator {
 	 *              capabilities
 	 * @param cap   The capability instance
 	 */
-	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerEntityCap(Class<T> clazz, Capability<? extends T> cap);
+	@SuppressWarnings("unused")
+	<T extends DDDCapabilityBase<? extends NBTBase>> void registerEntityCap(Class<T> clazz, Capability<? extends T> cap);
 }

@@ -1,15 +1,15 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.common.base.Predicates;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+
+import javax.annotation.Nonnull;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The singleton instance for formatting {@link ShieldDistribution} instances
@@ -41,10 +41,7 @@ public class ShieldDistributionFormatter extends AbstractCapabilityTooltipFormat
 	}
 
 	@Override
-	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, ShieldDistribution cap) {
-		if(cap == null) {
-			return Optional.empty();
-		}
+	protected Optional<List<String>> formatCapabilityFor(@Nonnull ItemStack stack, @Nonnull ShieldDistribution cap) {
 		return Optional.of(cap.getCategories().stream().filter(Predicates.not(DDDDamageType::isHidden)).sorted().collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.SHIELD.format(d, cap.getWeight(d), this)), LinkedList<String>::addAll));
 	}
 

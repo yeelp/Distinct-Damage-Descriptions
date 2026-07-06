@@ -1,16 +1,15 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Set;
 
 public interface IDefaultDistribution extends IDistribution {
 
@@ -35,12 +34,12 @@ public interface IDefaultDistribution extends IDistribution {
 	}
 
 	@Override
-	default void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	default void setNewWeights(Map<DDDDamageType, Float> map) {
 		throw new UnsupportedOperationException("Default distributions can't update weights!");
 	}
 	
 	@Override
-	default void setNewBaseWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	default void setNewBaseWeights(Map<DDDDamageType, Float> map) {
 		throw new UnsupportedOperationException("Default distributions can't update weights!");
 	}
 	
@@ -65,12 +64,12 @@ public interface IDefaultDistribution extends IDistribution {
 	}
 
 	@Override
-	default boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	default boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return false;
 	}
 
 	@Override
-	default <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	default <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return null;
 	}
 	

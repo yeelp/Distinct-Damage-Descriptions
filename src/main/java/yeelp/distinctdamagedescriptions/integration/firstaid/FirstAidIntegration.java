@@ -1,18 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.firstaid;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
-
 import ichttt.mods.firstaid.api.IDamageDistribution;
 import ichttt.mods.firstaid.common.EventHandler;
 import ichttt.mods.firstaid.common.apiimpl.FirstAidRegistryImpl;
@@ -36,6 +24,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;
@@ -53,6 +42,11 @@ import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculati
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter.Armor;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public final class FirstAidIntegration implements IModIntegration { 
 
@@ -85,7 +79,7 @@ public final class FirstAidIntegration implements IModIntegration {
 			DistinctDamageDescriptions.fatal("DDD will continue loading as normal, but it is encouraged to report this error! DDD will inform on world load as well. See the error below!");
 			DistinctDamageDescriptions.fatal(e.getClass().getSimpleName());
 			DistinctDamageDescriptions.fatal(e.getLocalizedMessage());
-			Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(DistinctDamageDescriptions::fatal);
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			new Handler() {
 				@SubscribeEvent
 				public void onJoinWorld(PlayerLoggedInEvent evt) {
@@ -143,7 +137,7 @@ public final class FirstAidIntegration implements IModIntegration {
 				else {
 					return;
 				}
-				IDamageDistribution idist = FirstAidRegistryImpl.INSTANCE.getDamageDistributionForSource(t);
+				@SuppressWarnings("SpellCheckingInspection") IDamageDistribution idist = FirstAidRegistryImpl.INSTANCE.getDamageDistributionForSource(t);
 				if(t.isProjectile()) {
 					Pair<Entity, RayTraceResult> result = EventHandler.HIT_LIST.get(player);
 					if(result != null) {
@@ -168,10 +162,10 @@ public final class FirstAidIntegration implements IModIntegration {
 					}
 					catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						DistinctDamageDescriptions.err("An exception occurred and DDD was unable to use FirstAid to determine valid player parts being damaged. Please report!");
-						Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(DistinctDamageDescriptions::err);
+						DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::err);
 						Entity entity = t.getTrueSource();
-						if(!entity.world.isRemote) {
-							entity.getServer().getPlayerList().getPlayers().forEach((p) -> p.sendMessage(new TextComponentString("An exception occurred with DDD's FirstAid integration. Please check the logs and report the error!")));
+						if(!Objects.requireNonNull(entity).world.isRemote) {
+							Objects.requireNonNull(entity.getServer()).getPlayerList().getPlayers().forEach((p) -> p.sendMessage(new TextComponentString("An exception occurred with DDD's FirstAid integration. Please check the logs and report the error!")));
 						}
 					}
 				}
@@ -229,13 +223,12 @@ public final class FirstAidIntegration implements IModIntegration {
 
 	class FirstAidTooltipTypeFormatter extends Armor {
 
-		private final LayeredTranslator translator = Translations.INSTANCE.getLayeredTranslator(TooltipConsts.TOOLTIPS_ROOT, FirstAidIntegration.this.getModID()); 
-		
-		private final ITextComponent armor, toughness;
+        private final ITextComponent armor, toughness;
 		FirstAidTooltipTypeFormatter() {
 			super();
-			this.armor = this.translator.getComponent("armor");
-			this.toughness = this.translator.getComponent("toughness");
+            LayeredTranslator translator = Translations.INSTANCE.getLayeredTranslator(TooltipConsts.TOOLTIPS_ROOT, FirstAidIntegration.this.getModID());
+            this.armor = translator.getComponent("armor");
+			this.toughness = translator.getComponent("toughness");
 		}
 
 		@Override

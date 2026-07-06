@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.capability.distributors;
 
 import com.lycanitesmobs.core.entity.BaseProjectileEntity;
-
 import net.minecraft.entity.IProjectile;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
@@ -9,6 +8,8 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributi
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesProjectileDistribution;
+
+import javax.annotation.Nonnull;
 
 public class LycanitesProjectileDistributionDistributor extends AbstractCapabilityDistributor<IProjectile, IDamageDistribution, IDamageDistribution> {
 	private static LycanitesProjectileDistributionDistributor instance;
@@ -23,7 +24,7 @@ public class LycanitesProjectileDistributionDistributor extends AbstractCapabili
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(IProjectile t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull IProjectile t, @Nonnull String key) {
 		return new LycanitesProjectileDistribution().update(t);
 	}
 

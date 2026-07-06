@@ -8,9 +8,9 @@ public enum DDDParticleType {
 	RESISTANCE("resist_shield"),
 	IMMUNITY("immunity_shield");
 
-	private ResourceLocation loc;
+	private final ResourceLocation loc;
 
-	private DDDParticleType(String particleName) {
+	DDDParticleType(String particleName) {
 		this.loc = new ResourceLocation(ModConsts.MODID, "particle/" + particleName);
 	}
 

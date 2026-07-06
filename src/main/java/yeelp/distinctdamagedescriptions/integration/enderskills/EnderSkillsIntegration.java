@@ -1,10 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.enderskills;
 
-import java.util.Arrays;
-
-import com.google.common.collect.ImmutableList;
-
 import arekkuusu.enderskills.api.event.SkillDamageEvent;
+import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
@@ -18,6 +15,8 @@ import yeelp.distinctdamagedescriptions.integration.enderskills.dist.EnderSkills
 import yeelp.distinctdamagedescriptions.integration.enderskills.handler.EnderSkillsHandler;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
+
+import java.util.Arrays;
 
 public final class EnderSkillsIntegration implements IModIntegration {
 

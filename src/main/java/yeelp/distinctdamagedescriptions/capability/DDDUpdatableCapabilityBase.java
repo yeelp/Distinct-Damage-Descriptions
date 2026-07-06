@@ -1,13 +1,13 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import yeelp.distinctdamagedescriptions.ModConsts;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 public interface DDDUpdatableCapabilityBase<NBT extends NBTBase> extends DDDCapabilityBase<NBTBase> {
 	

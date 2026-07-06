@@ -1,10 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.baubles.client;
 
-import java.util.Comparator;
-import java.util.Map.Entry;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -15,11 +10,16 @@ import yeelp.distinctdamagedescriptions.util.lib.YResources;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.AbstractCapabilityIconAggregator;
 
+import java.util.Comparator;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
+
 public final class BaubleModifierIconAggregator extends AbstractCapabilityIconAggregator {
 
 	private static BaubleModifierIconAggregator instance;
 	private BaubleModifierIconAggregator() {
-		super(TextFormatting.GRAY.toString() + BaubleModifierFormatter.START.getFormattedText(), () -> KeyTooltip.CTRL.checkKeyIsHeld() || ModConfig.client.neverHideInfo);
+		super(TextFormatting.GRAY + BaubleModifierFormatter.START.getFormattedText(), () -> KeyTooltip.CTRL.checkKeyIsHeld() || ModConfig.client.neverHideInfo);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public final class BaubleModifierIconAggregator extends AbstractCapabilityIconAg
 	}
 	
 	public static BaubleModifierIconAggregator getInstance() {
-		return instance == null ? new BaubleModifierIconAggregator() : instance;
+		return instance == null ? instance = new BaubleModifierIconAggregator() : instance;
 	}
 
 }

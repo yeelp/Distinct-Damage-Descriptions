@@ -1,12 +1,7 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -21,6 +16,10 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YArmor;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorValuesInjector;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 class ArmorClassifier implements IClassifier<ArmorClassification> {
 

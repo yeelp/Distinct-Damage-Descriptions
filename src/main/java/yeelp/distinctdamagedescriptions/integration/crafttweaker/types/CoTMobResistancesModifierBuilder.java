@@ -1,14 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import com.google.common.base.Functions;
 import com.google.common.collect.Sets;
-
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntityLivingBase;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,6 +15,12 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.modifiers.CTEntityLivingBaseResistanceModifier;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 @ZenClass(CTConsts.CTClasses.COTRESISTANCESMODIFIERBUILDER)
 @ZenRegister
 public final class CoTMobResistancesModifierBuilder extends CoTDDDModifierBuilder<IEntityLivingBase, EntityLivingBase> {
@@ -34,7 +33,7 @@ public final class CoTMobResistancesModifierBuilder extends CoTDDDModifierBuilde
 	@ZenProperty
 	public IsModifierApplicableForEntityLivingBase isModifierApplicable;
 	
-	private Set<String> stringImmunitiesAdded = Sets.newHashSet(), stringImmunitiesRemoved = Sets.newHashSet();
+	private final Set<String> stringImmunitiesAdded = Sets.newHashSet(), stringImmunitiesRemoved = Sets.newHashSet();
 	
 	private CoTMobResistancesModifierBuilder(String name) {
 		super(ModifierType.ENTITY_LIVING_BASE_RESISTANCE, name);

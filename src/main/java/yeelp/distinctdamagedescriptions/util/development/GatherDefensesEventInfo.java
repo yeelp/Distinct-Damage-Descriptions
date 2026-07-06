@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.util.development;
 
-import java.util.stream.Stream;
-
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.Translations;
+
+import java.util.stream.Stream;
 
 public class GatherDefensesEventInfo extends AbstractDDDClassificationEventDeveloperModeInfo<GatherDefensesEvent> {
 

@@ -1,13 +1,14 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.capability.distributors;
 
 import com.lycanitesmobs.core.item.equipment.ItemEquipment;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributionCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesEquipmentDistribution;
+
+import javax.annotation.Nonnull;
 
 public class LycanitesDamageDistributionDistributor extends AbstractCapabilityDistributor<ItemStack, IDamageDistribution, IDamageDistribution> {
 
@@ -23,7 +24,7 @@ public class LycanitesDamageDistributionDistributor extends AbstractCapabilityDi
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(ItemStack t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull ItemStack t, @Nonnull String key) {
 		return new LycanitesEquipmentDistribution().update(t);
 	}
 

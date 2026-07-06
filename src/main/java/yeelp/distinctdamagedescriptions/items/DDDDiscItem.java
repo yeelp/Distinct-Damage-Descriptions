@@ -15,6 +15,8 @@ import yeelp.distinctdamagedescriptions.init.DDDItems;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
+import javax.annotation.Nonnull;
+
 public class DDDDiscItem extends ItemRecord {
 
 	public DDDDiscItem() {
@@ -23,6 +25,7 @@ public class DDDDiscItem extends ItemRecord {
 		this.setTranslationKey(ModConsts.MODID + ".recorddistinction");
 	}
 
+	@Nonnull
 	@Override
 	public String getRecordNameLocal() {
 		return "Yeelp - Distinction";
@@ -31,15 +34,13 @@ public class DDDDiscItem extends ItemRecord {
 	public static final class DropHandler extends Handler {
 		@SuppressWarnings("static-method")
 		@SubscribeEvent
-		public final void onLivingDrops(LivingDropsEvent evt) {
+		public void onLivingDrops(LivingDropsEvent evt) {
 			Entity source = evt.getSource().getTrueSource();
-			if(source == null || !(source instanceof EntityLivingBase) || source instanceof EntityPlayer) {
+			if(!(source instanceof EntityLivingBase) || source instanceof EntityPlayer || !ModConfig.core.enableDiscDrop) {
 				return;
 			}
 			EntityLivingBase entity = evt.getEntityLiving();
-			YResources.getEntityIDString(source).filter((s) -> ModConfig.core.discListType.checkMob(s, ModConfig.core.discDropList)).ifPresent((s) -> {
-				evt.getDrops().add(new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, new ItemStack(DDDItems.disc)));				
-			});
+			YResources.getEntityIDString(source).filter((s) -> ModConfig.core.discListType.checkMob(s, ModConfig.core.discDropList)).ifPresent((s) -> evt.getDrops().add(new EntityItem(entity.world, entity.posX, entity.posY, entity.posZ, new ItemStack(DDDItems.disc))));
 		}
 	}
 }

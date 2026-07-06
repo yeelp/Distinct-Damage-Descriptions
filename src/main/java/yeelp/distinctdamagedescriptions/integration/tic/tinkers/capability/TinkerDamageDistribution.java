@@ -1,16 +1,8 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -27,6 +19,14 @@ import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
 public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 
 	@CapabilityInject(TinkerDamageDistribution.class)
@@ -41,12 +41,12 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return this.hasCapability(capability, facing) ? cap.cast(this) : null;
 	}
 	
@@ -63,13 +63,13 @@ public class TinkerDamageDistribution extends AbstractBiasedDamageDistribution {
 	@Override
 	protected Set<DDDBaseMap<Float>> computeBiasedMaps(ItemStack owner) {
 		Collection<String> mats = TiCUtil.getKeyMaterialIdentifiers(owner, MaterialTypes.HEAD);
-		if(mats.size() == 0) {
+		if(mats.isEmpty()) {
 			return Collections.emptySet();
 		}
 		float biasResist = YResources.getRegistryString(owner).map(TiCConfigurations.toolBiasResistance::getOrFallbackToDefault).orElse(TiCConfigurations.toolBiasResistance.getDefaultValue());
 		DDDBaseMap<Float> base = TiCUtil.getBaseDist(owner);
 		Set<DDDBaseMap<Float>> dists = mats.stream().map(Functions.compose((b) -> b.getBiasedDistributionMap(base, biasResist), TiCConfigurations.toolMaterialBias::getOrFallbackToDefault)).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
-		if(dists.size() > 0) {
+		if(!dists.isEmpty()) {
 			return dists;
 		}
 		return ImmutableSet.of(base);

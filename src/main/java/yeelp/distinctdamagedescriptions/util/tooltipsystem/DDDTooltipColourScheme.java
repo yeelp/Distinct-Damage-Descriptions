@@ -10,12 +10,12 @@ public enum DDDTooltipColourScheme {
 	GRAY(TextFormatting.GRAY);
 	
 	private final TextFormatting negative, positive;
-	private DDDTooltipColourScheme(TextFormatting negative, TextFormatting positive) {
+	DDDTooltipColourScheme(TextFormatting negative, TextFormatting positive) {
 		this.negative = negative;
 		this.positive = positive;
 	}
 	
-	private DDDTooltipColourScheme(TextFormatting colour) {
+	DDDTooltipColourScheme(TextFormatting colour) {
 		this(colour, colour);
 	}
 	

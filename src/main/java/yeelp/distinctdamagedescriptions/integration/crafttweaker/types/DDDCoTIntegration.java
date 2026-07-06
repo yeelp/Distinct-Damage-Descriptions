@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.Collections;
-
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
+
+import java.util.Collections;
 
 public final class DDDCoTIntegration implements IModIntegration {
 

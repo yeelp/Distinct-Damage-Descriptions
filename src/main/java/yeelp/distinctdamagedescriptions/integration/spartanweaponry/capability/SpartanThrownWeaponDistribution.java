@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability;
 
-import java.util.Optional;
-
 import com.oblivioussp.spartanweaponry.entity.projectile.EntityThrownWeapon;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -15,6 +12,9 @@ import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.capability.ModUpdatingDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public final class SpartanThrownWeaponDistribution extends ModUpdatingDamageDistribution {
 
@@ -40,12 +40,12 @@ public final class SpartanThrownWeaponDistribution extends ModUpdatingDamageDist
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return this.hasCapability(capability, facing) ? cap.cast(this) : null;
 	}
 

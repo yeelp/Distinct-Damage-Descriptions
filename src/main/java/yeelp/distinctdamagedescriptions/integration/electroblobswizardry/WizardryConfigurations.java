@@ -1,5 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry;
 
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -9,8 +10,8 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDDamageDistributionConfigReader;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
-import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers.AbstractWizardryConfigReader.BasicWizardryConfigReader;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers.WizardryMinionConfigReader;
 
@@ -45,10 +46,10 @@ public abstract class WizardryConfigurations {
 	
 	@Initializer
 	public static void init() {
-		spellTypeDist = new DDDBaseConfiguration<IDamageDistribution>(() -> DDDBuiltInDamageType.FORCE.getBaseDistribution());
-		spellTypeDamage = new DDDBaseConfiguration<String>(() -> "");
-		minionCapabilityReference = new DDDBaseConfiguration<String>(() -> "");
-		linkedThrowables = new DDDBaseConfiguration<String>(() -> "");
+		spellTypeDist = new DDDBaseConfiguration<>(DDDBuiltInDamageType.FORCE::getBaseDistribution);
+		spellTypeDamage = new DDDBaseConfiguration<>(() -> "");
+		minionCapabilityReference = new DDDBaseConfiguration<>(() -> "");
+		linkedThrowables = new DDDBaseConfiguration<>(() -> "");
 		try {
 			DDDConfigLoader.getInstance().enqueueAll(
 					new DDDDamageDistributionConfigReader("Electroblob's Wizardry Compat: Spell Type Distributions", ModConfig.compat.ebwizardry.spellDamageTypeDistributions, spellTypeDist),
@@ -57,7 +58,7 @@ public abstract class WizardryConfigurations {
 					new BasicWizardryConfigReader("Electroblob's Wizardry Compat: Spell Type Damage", ModConfig.compat.ebwizardry.spellDamageType, spellTypeDamage).wrapInModIDConfigReader());
 		}
 		catch(NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			throw new RuntimeException(e);
 		}
 	}

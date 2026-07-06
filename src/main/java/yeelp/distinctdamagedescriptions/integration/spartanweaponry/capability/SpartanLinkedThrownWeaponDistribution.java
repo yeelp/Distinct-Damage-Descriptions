@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability;
 
 import com.oblivioussp.spartanweaponry.entity.projectile.EntityThrownWeapon;
-
 import net.minecraft.entity.IProjectile;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;

@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.tic.dists;
 
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
@@ -14,6 +10,10 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
+import java.util.Set;
 
 public class BattleSignCounterAttackDistribution extends DDDAbstractPredefinedDistribution {
 
@@ -27,7 +27,7 @@ public class BattleSignCounterAttackDistribution extends DDDAbstractPredefinedDi
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		if(check(src)) {
 			return getDist((EntityPlayer) src.getTrueSource()).getCategories();
 		}
@@ -35,7 +35,7 @@ public class BattleSignCounterAttackDistribution extends DDDAbstractPredefinedDi
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		if(check(src)) {
 			return Optional.of(getDist((EntityPlayer) src.getTrueSource()));
 		}
@@ -51,7 +51,8 @@ public class BattleSignCounterAttackDistribution extends DDDAbstractPredefinedDi
 		return false;
 	}
 
-	private static IDamageDistribution getDist(EntityPlayer player) {
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+    private static IDamageDistribution getDist(EntityPlayer player) {
 		// safe because the tracker guarantees a battlesign is being held
 		return DDDAPI.accessor.getDamageDistribution(player.getActiveItemStack()).get();
 	}

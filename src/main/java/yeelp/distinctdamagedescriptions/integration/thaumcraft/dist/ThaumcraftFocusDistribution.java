@@ -1,14 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.thaumcraft.dist;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-
 import com.google.common.base.Functions;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import thaumcraft.api.aspects.Aspect;
@@ -20,6 +13,13 @@ import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.thaumcraft.ThaumcraftConfigurations;
 import yeelp.distinctdamagedescriptions.integration.thaumcraft.ThaumcraftFocusTracker;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 public final class ThaumcraftFocusDistribution extends DDDAbstractPredefinedDistribution {
 
@@ -35,7 +35,7 @@ public final class ThaumcraftFocusDistribution extends DDDAbstractPredefinedDist
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		if(isDamageCausedByFocusEffect(src, target)) {
 			//@formatter:off
 			return ThaumcraftFocusTracker.getInstance().getAspects(target).stream()
@@ -53,7 +53,7 @@ public final class ThaumcraftFocusDistribution extends DDDAbstractPredefinedDist
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		if(isDamageCausedByFocusEffect(src, target)) {
 			DistinctDamageDescriptions.debug("Damage caused by focus effects.");
 			Collection<Aspect> aspects = ThaumcraftFocusTracker.getInstance().getAspects(target);
@@ -78,8 +78,8 @@ public final class ThaumcraftFocusDistribution extends DDDAbstractPredefinedDist
 		}
 		//@formatter:off
 		DDDBaseMap<Float> map = aspects.stream().map(ASPECT_MAPPER)
-			.collect(() -> new DDDBaseMap<Float>(() -> 0.0f), 
-					(m, d) -> d.getBaseCategories().stream().forEach((t) -> m.merge(t, d.getBaseWeight(t), Float::sum)), 
+			.collect(() -> new DDDBaseMap<>(() -> 0.0f),
+					(m, d) -> d.getBaseCategories().forEach((t) -> m.merge(t, d.getBaseWeight(t), Float::sum)),
 					(m1, m2) -> m2.keySet().forEach((t) -> m1.merge(t, m2.get(t), Float::sum)));
 		//@formatter:on
 		int aspectCount = aspects.size();

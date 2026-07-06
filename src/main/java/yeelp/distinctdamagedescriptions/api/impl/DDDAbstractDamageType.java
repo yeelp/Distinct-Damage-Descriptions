@@ -1,12 +1,13 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.Comparator;
-
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+
+import javax.annotation.Nonnull;
+import java.util.Comparator;
 
 /**
  * An abstract skeleton implementation of DDDDamageType
@@ -44,7 +45,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 		this.name = DDDDamageType.addDDDPrefixIfNeeded(name);
 		this.attackerDeathMessage = deathAttackerMessage;
 		this.noAttackerDeathMessage = deathMessage;
-		this.dist = new DamageDistribution(new Tuple<DDDDamageType, Float>(this, 1.0f));
+		this.dist = new DamageDistribution(new Tuple<>(this, 1.0f));
 		this.type = isPhysical ? Type.PHYSICAL : Type.SPECIAL;
 		this.colour = colour;
 		this.hidden = hidden;
@@ -143,7 +144,7 @@ public abstract class DDDAbstractDamageType implements DDDDamageType {
 	 *           then comparing type name lexicographically. {@inheritDoc}
 	 */
 	@Override
-	public int compareTo(DDDDamageType o) {
+	public int compareTo(@Nonnull DDDDamageType o) {
 		return DAMAGE_TYPE_COMPARATOR.compare(this, o);
 	}
 }

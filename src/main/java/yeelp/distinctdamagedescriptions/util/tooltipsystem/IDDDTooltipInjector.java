@@ -6,7 +6,7 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 
 public interface IDDDTooltipInjector extends IPriority {
 	
-	public interface IArmorTooltipInjector extends IDDDTooltipInjector {
+	interface IArmorTooltipInjector extends IDDDTooltipInjector {
 		
 		boolean applies(ItemStack stack);
 		

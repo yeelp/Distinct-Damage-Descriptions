@@ -1,19 +1,19 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.function.Function;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigWrappedException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A skeletal reader that reads lists of config entries.
@@ -57,6 +57,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 		this.generator = ref.generator;
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return this.name;
@@ -94,6 +95,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 		return true;
 	}
 	
+	@Nonnull
 	@Override
 	public Collection<DDDConfigReaderException> getSelfReportedErrors() {
 		return this.errors;
@@ -104,7 +106,7 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 			return Objects.requireNonNull(this.constructor, "Reader not initialized with Constructor!").newInstance(objects);
 		}
 		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			this.errors.add(new ConfigWrappedException(this.getName(), (e.getCause() != null) ? e.getCause() : e));
 			throw new RuntimeException(e);
 		}
@@ -114,5 +116,6 @@ public abstract class DDDMultiEntryConfigReader<T> implements DDDConfigReader {
 		return this.generator.apply(objects);
 	}
 
+	@Nonnull
 	protected abstract Tuple<String, T> readEntry(String s) throws DDDConfigReaderException;
 }

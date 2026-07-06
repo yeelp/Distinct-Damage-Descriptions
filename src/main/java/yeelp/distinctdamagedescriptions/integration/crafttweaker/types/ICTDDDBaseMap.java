@@ -1,15 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.Map;
-
 import crafttweaker.annotations.ZenRegister;
-import stanhebben.zenscript.annotations.IterableMap;
-import stanhebben.zenscript.annotations.OperatorType;
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMemberGetter;
-import stanhebben.zenscript.annotations.ZenMethod;
-import stanhebben.zenscript.annotations.ZenOperator;
+import stanhebben.zenscript.annotations.*;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
+
+import java.util.Map;
 
 @ZenClass(CTConsts.CTClasses.DDDMAP)
 @IterableMap(key = CTConsts.CTClasses.CTDAMAGETYPE, value = "float")

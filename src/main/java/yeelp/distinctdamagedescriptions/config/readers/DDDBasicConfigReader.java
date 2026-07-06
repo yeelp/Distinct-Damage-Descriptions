@@ -1,11 +1,12 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.lang.reflect.Constructor;
-
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
 
 public class DDDBasicConfigReader<T> extends DDDMapParsingConfigReader<T> {
 
@@ -16,6 +17,7 @@ public class DDDBasicConfigReader<T> extends DDDMapParsingConfigReader<T> {
 		this.defaultVal = defaultVal;
 	}
 
+	@Nonnull
 	@Override
 	protected T parseMapping(final String entry, final String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
 		if(map.matches(ConfigReaderUtilities.DIST_REGEX)) {

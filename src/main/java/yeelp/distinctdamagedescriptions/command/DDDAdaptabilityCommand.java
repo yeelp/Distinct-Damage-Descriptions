@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.command;
 
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -14,6 +11,10 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
 import yeelp.distinctdamagedescriptions.util.Translations;
 
+import javax.annotation.Nonnull;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
+
 public final class DDDAdaptabilityCommand extends AbstractDDDCommand {
 
 	private static final String USAGE = Translations.INSTANCE.getLayeredTranslator(CommandConsts.COMMANDS_ROOT, "adaptability").getKey(CommandConsts.USAGE);
@@ -23,11 +24,13 @@ public final class DDDAdaptabilityCommand extends AbstractDDDCommand {
 		this.addSubcommand(new DDDAdaptabilityAmountSubCommand());
 	}
 	
+	@Nonnull
 	@Override
-	public String getUsage(ICommandSender sender) {
+	public String getUsage(@Nonnull ICommandSender sender) {
 		return USAGE;
 	}
 	
+	@Nonnull
 	@Override
 	public String getName() {
 		return "adaptability";
@@ -52,7 +55,7 @@ public final class DDDAdaptabilityCommand extends AbstractDDDCommand {
 	}
 	
 	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 		if(args.length == 0) {
 			throw new WrongUsageException(USAGE);
 		}
@@ -109,7 +112,7 @@ public final class DDDAdaptabilityCommand extends AbstractDDDCommand {
 			}
 
 			@Override
-			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+			public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 				if(args.length != 1) {
 					throw new WrongUsageException(this.getUsage(sender));
 				}
@@ -144,7 +147,7 @@ public final class DDDAdaptabilityCommand extends AbstractDDDCommand {
 			}
 			
 			@Override
-			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+			public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 				if(args.length != 2) {
 					throw new WrongUsageException(this.getUsage(sender));
 				}

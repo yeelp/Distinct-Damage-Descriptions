@@ -1,15 +1,15 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import com.google.common.collect.Lists;
-
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Collection;
 
 public final class LycaniteConfigReader implements DDDConfigReader {
 
@@ -37,6 +37,7 @@ public final class LycaniteConfigReader implements DDDConfigReader {
 		return true;
 	}
 	
+	@Nonnull
 	@Override
 	public Collection<DDDConfigReaderException> getSelfReportedErrors() {
 		return this.errors;
@@ -47,7 +48,8 @@ public final class LycaniteConfigReader implements DDDConfigReader {
 		return true;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String getName() {
 		return "Lycanite Creature Projectiles";
 	}

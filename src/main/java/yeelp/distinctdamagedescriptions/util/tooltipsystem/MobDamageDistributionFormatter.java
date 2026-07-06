@@ -1,20 +1,19 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
+import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * A formatter for mob damage distributions
@@ -26,7 +25,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 
 	private static MobDamageDistributionFormatter instance;
 	private final Function<ItemStack, Optional<ResourceLocation>> resourceLocationGetter;
-	private Map<ResourceLocation, Float> cache;
+	private final Map<ResourceLocation, Float> cache;
 
 	private MobDamageDistributionFormatter() {
 		this(TooltipFormatterUtilities::getResourceLocationFromSpawnEgg);
@@ -35,7 +34,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	protected MobDamageDistributionFormatter(Function<ItemStack, Optional<ResourceLocation>> f) {
 		super(KeyTooltip.SHIFT, DDDDamageFormatter.COLOURED, (s) -> f.apply(s).flatMap(TooltipFormatterUtilities::getMobDamageIfConfigured), "mobdistribution");
 		this.resourceLocationGetter = f;
-		this.cache = new HashMap<ResourceLocation, Float>();
+		this.cache = Maps.newHashMap();
 	}
 
 	/**
@@ -45,11 +44,6 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 	 */
 	public static MobDamageDistributionFormatter getInstance() {
 		return instance == null ? instance = new MobDamageDistributionFormatter() : instance;
-	}
-
-	@Override
-	protected boolean shouldShowDist(ItemStack stack) {
-		return stack.getItem() instanceof ItemMonsterPlacer;
 	}
 
 	@Override
@@ -64,7 +58,7 @@ public class MobDamageDistributionFormatter extends AbstractDamageDistributionFo
 				return this.cache.get(loc);
 			}
 			Optional<Entity> oEntity = Optional.ofNullable(ForgeRegistries.ENTITIES.getValue(loc)).map((entry) -> entry.newInstance(Minecraft.getMinecraft().world));
-			Optional<IAttributeInstance> oAttribute = oEntity.filter((e) -> e instanceof EntityLivingBase).<EntityLivingBase>map((e) -> (EntityLivingBase) e).map((e) -> e.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE));
+			Optional<IAttributeInstance> oAttribute = oEntity.filter((e) -> e instanceof EntityLivingBase).map((e) -> (EntityLivingBase) e).map((e) -> e.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE));
 			if(oAttribute.isPresent()) {
 				float dmg = (float) oAttribute.get().getAttributeValue();
 				this.cache.put(loc, dmg);

@@ -1,5 +1,16 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
+import yeelp.distinctdamagedescriptions.api.impl.dists.*;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
+import yeelp.distinctdamagedescriptions.registries.IDDDDistributionRegistry;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
@@ -7,29 +18,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInFire;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInForce;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInPiercing;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDBuiltInPoison;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDDaylightDist;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDExplosionDist;
-import yeelp.distinctdamagedescriptions.api.impl.dists.DDDInstantEffectsDist;
-import yeelp.distinctdamagedescriptions.api.impl.dists.EnderPearlDist;
-import yeelp.distinctdamagedescriptions.api.impl.dists.ParrotPoisonDist;
-import yeelp.distinctdamagedescriptions.api.impl.dists.SimpleBuiltInDist;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.registries.IDDDDistributionRegistry;
-import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
-
 public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDistribution> implements IDDDDistributionRegistry {
 	public DDDDistributions() {
-		super((dist) -> dist.getName(), "Distribution");
+		super(DDDPredefinedDistribution::getName, "Distribution");
 	}
 
 	@Override
@@ -60,22 +51,25 @@ public final class DDDDistributions extends DDDSourcedRegistry<DDDPredefinedDist
 	@Override
 	public Set<DDDDamageType> getDamageTypes(DamageSource src, EntityLivingBase target) {
 		Set<DDDDamageType> types = Collections.emptySet();
-		return checkDists(types, (set) -> set.isEmpty(), (dist) -> dist.getTypes(src, target));
+		return this.checkDists(types, Set::isEmpty, (dist) -> dist.getTypes(src, target));
 	}
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		return checkDists(Optional.empty(), (dist) -> !dist.isPresent(), (dist) -> dist.getDamageDistribution(src, target));
+		return this.checkDists(Optional.empty(), (dist) -> !dist.isPresent(), (dist) -> dist.getDamageDistribution(src, target));
 	}
 
-	private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
+    private <T> T checkDists(T start, Predicate<T> p, Function<DDDPredefinedDistribution, T> next) {
 		T result;
 		DDDPredefinedDistribution dist = null;
-		boolean unusable = true;
+        //noinspection UnusedAssignment
+        boolean unusable = true;
 		Iterator<DDDPredefinedDistribution> it = this.map.values().stream().sorted().filter(DDDPredefinedDistribution::enabled).iterator();
-		for(result = start; unusable = p.test(result) && it.hasNext(); result = next.apply(dist = it.next()));
+        //noinspection StatementWithEmptyBody,AssignmentUsedAsCondition
+        for(result = start; unusable = p.test(result) && it.hasNext(); result = next.apply(dist = it.next()));
 		if(ModConfig.showDotsOn) {
-			if(dist != null && !unusable) {
+            //noinspection ConstantValue
+            if(dist != null && !unusable) {
 				DebugLib.outputFormattedDebug("Selected Predefined Distribution is: %s", dist.getName());
 			}
 			else {

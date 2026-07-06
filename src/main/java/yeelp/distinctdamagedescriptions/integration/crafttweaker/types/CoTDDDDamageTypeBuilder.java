@@ -1,10 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.ZenRuntimeException;
@@ -18,16 +15,20 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
+import java.util.Collection;
+import java.util.Set;
+
+@SuppressWarnings("CanBeFinal")
 @ZenClass(CTConsts.CTClasses.COTDAMAGETYPEBUILDER)
 @ZenRegister
 public final class CoTDDDDamageTypeBuilder {
 
-	private static final Collection<CoTDDDDamageTypeBuilder> BUILDERS = new ArrayList<CoTDDDDamageTypeBuilder>();
-	private static final Set<String> USED_NAMES = new HashSet<String>();
+	private static final Collection<CoTDDDDamageTypeBuilder> BUILDERS = Lists.newArrayList();
+	private static final Set<String> USED_NAMES = Sets.newHashSet();
 	
 	private boolean wasBuilt = false;
-	
-	@ZenProperty
+
+    @ZenProperty
 	public String name;
 	
 	@ZenProperty
@@ -74,6 +75,7 @@ public final class CoTDDDDamageTypeBuilder {
 		this.deathMessageNoAttacker = builder.deathMessageNoAttacker;
 		this.type = builder.type;
 		this.wasBuilt = builder.wasBuilt;
+		this.hidden = builder.hidden;
 	}
 	
 	@ZenMethod
@@ -103,7 +105,8 @@ public final class CoTDDDDamageTypeBuilder {
 	public static void registerTypes() {
 		BUILDERS.stream().map(CoTDDDDamageTypeBuilder::createDamageType).forEach((t) -> {
 			if(DDDRegistries.damageTypes.isRegistered(t)) {
-				throw new ZenRuntimeException(String.format("%s was already registered! Original registration source: %s!", t.getTypeName(), DDDRegistries.damageTypes.get(t.getTypeName()).getCreationSourceString()));
+                //noinspection DataFlowIssue
+                throw new ZenRuntimeException(String.format("%s was already registered! Original registration source: %s!", t.getTypeName(), DDDRegistries.damageTypes.get(t.getTypeName()).getCreationSourceString()));
 			}
 			DDDRegistries.damageTypes.register(t);
 		});

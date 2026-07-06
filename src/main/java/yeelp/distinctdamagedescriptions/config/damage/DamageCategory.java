@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultDamageDistributionBehaviour;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
+@SuppressWarnings("CanBeFinal")
 public final class DamageCategory {
 	@Name("Mob Base Damage")
 	@Comment({
@@ -13,7 +14,7 @@ public final class DamageCategory {
 			"Each entry is of the form id;[(t,a)] where:",
 			"   id is the namespaced id of the mob (e.g. minecraft:zombie)",
 			"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a mob does.",
-			"      t is the type of damage. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludegeoning",
+			"      t is the type of damage. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludgeoning",
 			"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
 			"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
 			"   All percents MUST add to 1",
@@ -28,7 +29,7 @@ public final class DamageCategory {
 			"Each entry is of the form id;[(t,a)] where:",
 			"   id is the namespaced id of the item (e.g. minecraft:diamond_sword), you can optionally specify metadata as well such as minecraft:wool:3",
 			"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type an item does.",
-			"      t is the type of damage. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludegeoning",
+			"      t is the type of damage. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludgeoning",
 			"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
 			"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
 			"   All percents MUST add to 1",
@@ -43,7 +44,7 @@ public final class DamageCategory {
 			"Each entry is of the form id;[(t,a)];items where:",
 			"   id is the namespaced id of the projectile ENTITY (e.g. minecraft:arrow)",
 			"   [(t,a)] is a list of tuples (t,a), separated by commas, that lists the percent of each damage type a projectile does.",
-			"      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludegeoning",
+			"      t is the type of damage. Requires the 'ddd_' prefix. can use s, p, b, instead for slashing, piercing or bludgeoning",
 			"      a is the percent of this damage this mob does. if a = 0, it is ignored.",
 			"      If custom damage is disabled, any custom damage here will be distributed amongst all non-zero damages (Or just bludgeoning if none are non zero)",
 			"   All percents MUST add to 1",

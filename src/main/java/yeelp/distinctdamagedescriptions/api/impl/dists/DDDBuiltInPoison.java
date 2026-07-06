@@ -8,6 +8,8 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
+import java.util.Objects;
+
 public final class DDDBuiltInPoison extends AbstractSingleTypeDist {
 	public DDDBuiltInPoison() {
 		super("builtInPoison", Source.BUILTIN, () -> ModConfig.dmg.extraDamage.enablePoisonEffectDamage);
@@ -22,9 +24,7 @@ public final class DDDBuiltInPoison extends AbstractSingleTypeDist {
 	protected boolean useType(DamageSource source, EntityLivingBase target) {
 		if(source == DamageSource.MAGIC && target.isPotionActive(MobEffects.POISON)) {
 			PotionEffect effect = target.getActivePotionEffect(MobEffects.POISON);
-			if(effect.getPotion().isReady(effect.getDuration(), effect.getAmplifier())) {
-				return true;
-			}
+            return Objects.requireNonNull(effect).getPotion().isReady(effect.getDuration(), effect.getAmplifier());
 		}
 		return false;
 	}

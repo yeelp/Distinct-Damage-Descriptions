@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 
+@SuppressWarnings("CanBeFinal")
 public final class BaublesCategory {
 
 	@Name("Bauble Modifiers")
@@ -20,7 +21,7 @@ public final class BaublesCategory {
 		"      3 - SLY STRIKE: Has an a% chance of bypassing immunity to type t when attacking.",
 		"      4 - IMMUNITY: Has an a% chance to grant immunity to type t when taking damage.",
 		"   [(t,a)] is a list of tuples (t,a), separated by commas, where:",
-		"      t is the type. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludegeoning.",
+		"      t is the type. Requires the 'ddd_' prefix. Can use s, p, b, instead for slashing, piercing or bludgeoning.",
 		"      a is a decimal form of a percentage (e.g. 0.2 = 20%). The effect this value has depends on the operation specified before. Unless specified, it must always be positive.",
 		"Baubles not listed here will have none of these effects.",
 		"Malformed entries in this list are ignored."

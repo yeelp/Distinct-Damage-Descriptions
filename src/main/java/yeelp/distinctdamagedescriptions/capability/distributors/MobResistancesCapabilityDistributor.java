@@ -39,7 +39,7 @@ public final class MobResistancesCapabilityDistributor extends AbstractCapabilit
 		return new MobResistances(configResult.getResistanceMap(), configResult.getImmunities(), Math.random() < configResult.adaptiveChance(), configResult.getAdaptiveAmount());
 	}
 
-	public static final MobResistancesCapabilityDistributor getInstance() {
+	public static MobResistancesCapabilityDistributor getInstance() {
 		return instance == null ? instance = new MobResistancesCapabilityDistributor() : instance;
 	}
 }

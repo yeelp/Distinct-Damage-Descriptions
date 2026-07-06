@@ -1,13 +1,5 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,15 +12,19 @@ import yeelp.distinctdamagedescriptions.init.DDDSounds;
 import yeelp.distinctdamagedescriptions.network.ParticleMessage;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class DDDEffects {
-	private static Random particleDisplacement = new Random(), soundPitch = new Random();
+	private static final Random PARTICLE_DISPLACEMENT_RNG = new Random();
+    private static final Random SOUND_PITCH_RNG = new Random();
 
 	public static class ParticleInfo {
 		private double x, y, z;
 		private DDDParticleType type;
 
 		public ParticleInfo(PacketBuffer pakBuf) {
-			fromBytes(pakBuf);
+            this.fromBytes(pakBuf);
 		}
 
 		ParticleInfo(DDDParticleType type, double x, double y, double z) {
@@ -65,9 +61,9 @@ public class DDDEffects {
 	}
 
 	private static class SoundInfo {
-		private SoundEvent evt;
-		private float pitch, vol;
-		private EntityPlayer target;
+		private final SoundEvent evt;
+		private final float pitch, vol;
+		private final EntityPlayer target;
 
 		SoundInfo(EntityPlayer target, SoundEvent evt, float vol, float pitch) {
 			this.target = target;
@@ -76,8 +72,8 @@ public class DDDEffects {
 			this.vol = vol;
 		}
 
-		boolean playSound() {
-			return DDDSounds.playSound(this.target, this.evt, this.vol, this.pitch);
+        void playSound() {
+			DDDSounds.playSound(this.target, this.evt, this.vol, this.pitch);
 		}
 	}
 
@@ -87,14 +83,12 @@ public class DDDEffects {
 	 * @param attacker The attacking entity
 	 * @param defender the defending EntityLivingBase
 	 * @param results  the results from DDD's combat calculations
-	 * @return true if immunity blocked all damage. I.e.
-	 *         {@code results.wasImmunityTriggered() && ratio == 0}
-	 */
+     */
 	public static void doEffects(Entity attacker, EntityLivingBase defender, CombatResults results) {
 		if(attacker instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) attacker;
-			List<ParticleInfo> particles = new LinkedList<ParticleInfo>();
-			List<SoundInfo> sounds = Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, true).map((evt) -> new SoundInfo(player, evt, sound.getRecommendedVolume(), 0.8f + soundPitch.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+			List<ParticleInfo> particles = new LinkedList<>();
+			List<SoundInfo> sounds = Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, true).map((evt) -> new SoundInfo(player, evt, sound.getRecommendedVolume(), 0.8f + SOUND_PITCH_RNG.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 			if(results.wasResistanceHit()) {
 				addParticles(defender, DDDParticleType.RESISTANCE, particles);
 			}
@@ -109,7 +103,7 @@ public class DDDEffects {
 
 		if(defender instanceof EntityPlayer) {
 			EntityPlayer defendingPlayer = (EntityPlayer) defender;
-			sendEffectPackets(defendingPlayer, Collections.emptyList(), Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, false).map((evt) -> new SoundInfo(defendingPlayer, evt, sound.getRecommendedVolume(), 0.8f + soundPitch.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
+			sendEffectPackets(defendingPlayer, Collections.emptyList(), Arrays.stream(DDDSounds.DDDCombatSounds.values()).map((sound) -> sound.getSoundIfApplicable(results, false).map((evt) -> new SoundInfo(defendingPlayer, evt, sound.getRecommendedVolume(), 0.8f + SOUND_PITCH_RNG.nextFloat() * 0.4f))).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()));
 		}
 	}
 
@@ -126,9 +120,9 @@ public class DDDEffects {
 	private static void addParticles(EntityLivingBase origin, DDDParticleType type, List<ParticleInfo> particles) {
 		int amount = (int) (2 * Math.random()) + 2;
 		for(int i = 0; i < amount; i++) {
-			double x = origin.posX + origin.width * particleDisplacement.nextDouble() - origin.width / 2;
-			double y = origin.posY + origin.getEyeHeight() + origin.height * particleDisplacement.nextDouble() - origin.height / 2;
-			double z = origin.posZ + origin.width * particleDisplacement.nextDouble() - origin.width / 2;
+			double x = origin.posX + origin.width * PARTICLE_DISPLACEMENT_RNG.nextDouble() - origin.width / 2;
+			double y = origin.posY + origin.getEyeHeight() + origin.height * PARTICLE_DISPLACEMENT_RNG.nextDouble() - origin.height / 2;
+			double z = origin.posZ + origin.width * PARTICLE_DISPLACEMENT_RNG.nextDouble() - origin.width / 2;
 			particles.add(new ParticleInfo(type, x, y, z));
 		}
 	}

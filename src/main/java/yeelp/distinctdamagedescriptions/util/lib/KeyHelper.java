@@ -1,11 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 
-import net.minecraft.client.Minecraft;
-
 /**
- * Simple helper class for keyboard inputs Borrwed from AppleSkin's own <a
+ * Simple helper class for keyboard inputs Borrowed from AppleSkin's own <a
  * href=https://github.com/squeek502/AppleSkin/blob/821f83b6405f434ad4e8969a103bf6396cdd4a86/java/squeek/appleskin/helpers/KeyHelper.java>KeyHelper</a>
  * 
  * @author Yeelp

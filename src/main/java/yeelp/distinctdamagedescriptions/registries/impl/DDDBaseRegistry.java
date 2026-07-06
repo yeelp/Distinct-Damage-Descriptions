@@ -1,17 +1,18 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.registries.IDDDRegistry;
+
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.registries.IDDDRegistry;
-
 public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
-	protected final Map<String, T> map = new HashMap<String, T>();
-	private Function<T, String> keyFunc;
+	protected final Map<String, T> map = new HashMap<>();
+	private final Function<T, String> keyFunc;
 	private final String name;
 
 	protected DDDBaseRegistry(Function<T, String> f, String name) {
@@ -35,7 +36,8 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 	protected abstract String getRegistrationInfo(String regName, T regObj);
 	
 	@Override
-	public final void registerAll(boolean suppressOutput, @SuppressWarnings("unchecked") T... objs) {
+	@SuppressWarnings("unchecked")
+	public final void registerAll(boolean suppressOutput, T... objs) {
 		for(T t : objs) {
 			this.register(suppressOutput, t);
 		}
@@ -56,6 +58,7 @@ public abstract class DDDBaseRegistry<T> implements IDDDRegistry<T> {
 		return this.map.containsKey(this.keyFunc.apply(obj));
 	}
 
+	@Nonnull
 	@Override
 	public final Iterator<T> iterator() {
 		return this.map.values().iterator();

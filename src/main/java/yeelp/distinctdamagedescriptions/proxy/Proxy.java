@@ -10,11 +10,11 @@ public class Proxy {
 	
 	@SuppressWarnings("static-method")
 	public void handleFingerprintViolation() {
-		return;
+		//nothing
 	}
 	
 	@SuppressWarnings({"static-method", "unused"})
 	public void handleFermiumBooterNotFound(String integratedMod) {
-		return;
+		//nothing
 	}
 }

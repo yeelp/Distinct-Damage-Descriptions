@@ -1,16 +1,11 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
-import java.util.Map;
-import java.util.stream.Stream;
-
 import com.google.common.base.Functions;
 import com.google.common.collect.Maps;
-
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
@@ -22,10 +17,15 @@ import yeelp.distinctdamagedescriptions.potion.DDDResistPotion;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.registries.IDDDPotionsRegistry;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> implements IDDDPotionsRegistry {
 
 	private static final int DURATION = 180 * 20;
-	private static final Map<AbstractDDDPotion, Map<String, PotionType>> POTION_TYPES = Maps.newHashMap();
+	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private static final Map<AbstractDDDPotion, Map<String, PotionType>> POTION_TYPES = Maps.newHashMap();
 
 	public DDDPotionsRegistry() {
 		super(Functions.compose(ResourceLocation::getPath, AbstractDDDPotion::getRegistryName), "Potions");
@@ -45,13 +45,10 @@ public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> 
 			return;
 		}
 		this.iterator().forEachRemaining((p) -> {
-			PotionType normal = new PotionType(new PotionEffect[] {
-					new PotionEffect(p, DURATION, 0)});
-			PotionType extended = new PotionType(new PotionEffect[] {
-					new PotionEffect(p, 2 * DURATION, 0)});
-			PotionType strong = new PotionType(new PotionEffect[] {
-					new PotionEffect(p, DURATION / 2, 1)});
-			String name = p.getRegistryName().getPath();
+			PotionType normal = new PotionType(new PotionEffect(p, DURATION, 0));
+			PotionType extended = new PotionType(new PotionEffect(p, 2 * DURATION, 0));
+			PotionType strong = new PotionType(new PotionEffect(p, DURATION / 2, 1));
+			String name = Objects.requireNonNull(p.getRegistryName()).getPath();
 			normal.setRegistryName(new ResourceLocation(ModConsts.MODID, name));
 			extended.setRegistryName(new ResourceLocation(ModConsts.MODID, name.concat("_extended")));
 			strong.setRegistryName(new ResourceLocation(ModConsts.MODID, name.concat("_strong")));
@@ -59,7 +56,7 @@ public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> 
 			map.put("base", normal);
 			map.put("extended", extended);
 			map.put("strong", strong);
-			checkIfRegisteredByForge(ForgeRegistries.POTION_TYPES, normal, extended, strong);
+			checkIfRegisteredByForge(normal, extended, strong);
 			ForgeRegistries.POTION_TYPES.registerAll(normal, extended, strong);
 			POTION_TYPES.put(p, map);
 		});
@@ -75,7 +72,7 @@ public class DDDPotionsRegistry extends DDDUnsourcedRegistry<AbstractDDDPotion> 
 	}
 	
 	@SafeVarargs
-	private static final <T extends IForgeRegistryEntry<T>> void checkIfRegisteredByForge(IForgeRegistry<T> registry, T...ts) {
-		Stream.of(ts).map(IForgeRegistryEntry::getRegistryName).filter(registry::containsKey).forEach((loc) -> DistinctDamageDescriptions.err(String.format("The object %s was registered by Forge before DDD registered it!", loc)));
+	private static <T extends IForgeRegistryEntry<T>> void checkIfRegisteredByForge(T... ts) {
+		Stream.of(ts).map(IForgeRegistryEntry::getRegistryName).filter(ForgeRegistries.POTION_TYPES::containsKey).forEach((loc) -> DistinctDamageDescriptions.err(String.format("The object %s was registered by Forge before DDD registered it!", loc)));
 	}
 }

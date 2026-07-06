@@ -1,11 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.dists;
 
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import com.lycanitesmobs.ObjectManager;
 import com.lycanitesmobs.core.block.BlockFireBase;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -18,18 +14,23 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesConsts;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 public class LycanitesFireDistribution extends LycanitesPredefinedDistribution {
 
 	public static final LycanitesFireDistribution SCORCHFIRE = new LycanitesFireDistribution(LycanitesConsts.SCORCHFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableScorchFireDistribution, () -> ModConfig.compat.lycanites.scorchFireDistribution, () -> DefaultValues.SCORCHFIRE_DIST);
 	public static final LycanitesFireDistribution DOOMFIRE = new LycanitesFireDistribution(LycanitesConsts.DOOMFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableDoomFireDistribution, () -> ModConfig.compat.lycanites.doomFireDistribution, () -> DefaultValues.DOOMFIRE_DIST);
 	public static final LycanitesFireDistribution HELLFIRE = new LycanitesFireDistribution(LycanitesConsts.HELLFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableHellFireDistribution, () -> ModConfig.compat.lycanites.hellFireDistribution, () -> DefaultValues.HELLFIRE_DIST);
-	public static final LycanitesFireDistribution FROSTFIRE = new LycanitesColdFireDistribution(LycanitesConsts.FROSTFIRE, () -> ModConfig.compat.lycanites.enableFrostFireDistribution, () -> ModConfig.compat.lycanites.frostFireDistribution, () -> DefaultValues.FROSTFIRE_DIST);
-	public static final LycanitesFireDistribution ICEFIRE = new LycanitesColdFireDistribution(LycanitesConsts.ICEFIRE, () -> ModConfig.compat.lycanites.enableIceFireDistribution, () -> ModConfig.compat.lycanites.iceFireDistribution, () -> DefaultValues.ICEFIRE_DIST);
 	public static final LycanitesFireDistribution SHADOWFIRE = new LycanitesFireDistribution(LycanitesConsts.SHADOWFIRE, DamageSource.WITHER, () -> ModConfig.compat.lycanites.enableShadowFireDistribution, () -> ModConfig.compat.lycanites.shadowFireDistribution, () -> DefaultValues.SHADOWFIRE_DIST);
 	public static final LycanitesFireDistribution SMITEFIRE = new LycanitesFireDistribution(LycanitesConsts.SMITEFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enableSmiteFireDistribution, () -> ModConfig.compat.lycanites.smiteFireDistribution, () -> DefaultValues.SMITEFIRE_DIST);
 	public static final LycanitesFireDistribution PRIMEFIRE = new LycanitesFireDistribution(LycanitesConsts.PRIMEFIRE, DamageSource.IN_FIRE, () -> ModConfig.compat.lycanites.enablePrimeFireDistribution, () -> ModConfig.compat.lycanites.primeFireDistribution, () -> DefaultValues.PRIMEFIRE_DIST);
 
-	private static final class LycanitesColdFireDistribution extends LycanitesFireDistribution {
+	public static final class LycanitesColdFireDistribution extends LycanitesFireDistribution {
+
+		public static final LycanitesFireDistribution FROSTFIRE = new LycanitesColdFireDistribution(LycanitesConsts.FROSTFIRE, () -> ModConfig.compat.lycanites.enableFrostFireDistribution, () -> ModConfig.compat.lycanites.frostFireDistribution, () -> DefaultValues.FROSTFIRE_DIST);
+		public static final LycanitesFireDistribution ICEFIRE = new LycanitesColdFireDistribution(LycanitesConsts.ICEFIRE, () -> ModConfig.compat.lycanites.enableIceFireDistribution, () -> ModConfig.compat.lycanites.iceFireDistribution, () -> DefaultValues.ICEFIRE_DIST);
+
 		private static final boolean FOUND_COLD_FIRE;
 		private static final Predicate<DamageSource> IS_COLD_FIRE = (src) -> src.damageType.equals(LycanitesConsts.COLD_FIRE);
 		private static final Predicate<DamageSource> IS_MAGIC = (src) -> src == DamageSource.MAGIC;
@@ -132,7 +133,7 @@ public class LycanitesFireDistribution extends LycanitesPredefinedDistribution {
 				DistinctDamageDescriptions.warn(String.format("Could not find BlockFireBase for %s. However, if this version of Lycanite's Mobs doesn't have %s, this can be ignored.", this.getName(), YLib.capitalize(this.getName())));
 			}
 			else {
-				DistinctDamageDescriptions.err(String.format("Could not find BlockFireBase for %s! DDD doesn't expect this fire block to not exist!"));
+				DistinctDamageDescriptions.err(String.format("Could not find BlockFireBase for %s! DDD doesn't expect this fire block to not exist!", this.getName()));
 			}
 			this.fire = null;
 		}

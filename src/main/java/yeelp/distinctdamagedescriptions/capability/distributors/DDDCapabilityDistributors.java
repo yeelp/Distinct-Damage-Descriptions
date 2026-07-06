@@ -1,14 +1,8 @@
 package yeelp.distinctdamagedescriptions.capability.distributors;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -23,6 +17,11 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributi
 import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributionCapabilityDistributor.ForItem;
 import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributionCapabilityDistributor.ForProjectile;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public final class DDDCapabilityDistributors {
 	private DDDCapabilityDistributors() {
@@ -44,6 +43,7 @@ public final class DDDCapabilityDistributors {
 		projCaps.add(distributor);
 	}
 
+	@SuppressWarnings("unused")
 	public static void addMobCap(AbstractCapabilityDistributor<EntityLivingBase, ?, ? extends DDDCapabilityBase<? extends NBTBase>> distributor) {
 		mobCaps.add(distributor);
 	}

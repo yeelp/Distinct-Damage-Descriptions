@@ -1,10 +1,9 @@
 package yeelp.distinctdamagedescriptions.registries;
 
-import java.util.Collection;
+import yeelp.distinctdamagedescriptions.config.ModConfig;
 
 import javax.annotation.Nullable;
-
-import yeelp.distinctdamagedescriptions.config.ModConfig;
+import java.util.Collection;
 
 /**
  * Base registry for DDD
@@ -22,10 +21,10 @@ public interface IDDDRegistry<T> extends Iterable<T> {
 	/**
 	 * Register an object
 	 * 
-	 * @param obj
+	 * @param obj object to register
 	 */
 	default void register(T obj) {
-		register(ModConfig.core.suppressRegistrationInfo, obj);
+		this.register(ModConfig.core.suppressRegistrationInfo, obj);
 	}
 
 	/**
@@ -33,31 +32,33 @@ public interface IDDDRegistry<T> extends Iterable<T> {
 	 * 
 	 * @param suppressOutput true if log output should be suppressed for this
 	 *                       registration.
-	 * @param obj
+	 * @param obj object to register
 	 */
 	void register(boolean suppressOutput, T obj);
 
 	/**
 	 * Register a collection of objects
 	 * 
-	 * @param objs
+	 * @param objs objects to register
 	 */
-	default void registerAll(@SuppressWarnings("unchecked") T... objs) {
-		registerAll(ModConfig.core.suppressRegistrationInfo, objs);
+	@SuppressWarnings("unchecked")
+    default void registerAll(T... objs) {
+		this.registerAll(ModConfig.core.suppressRegistrationInfo, objs);
 	}
 
 	/**
 	 * Register a collection of objects
 	 * 
 	 * @param suppressOutput true if log output should be suppressed
-	 * @param objs
+	 * @param objs objects to register
 	 */
-	void registerAll(boolean suppressOutput, @SuppressWarnings("unchecked") T... objs);
+	@SuppressWarnings("unchecked")
+	void registerAll(boolean suppressOutput, T... objs);
 
 	/**
 	 * Check if an object is registered
 	 * 
-	 * @param obj
+	 * @param obj object to check
 	 * @return true if registered
 	 */
 	boolean isRegistered(T obj);
@@ -65,7 +66,7 @@ public interface IDDDRegistry<T> extends Iterable<T> {
 	/**
 	 * Get a value from the registry
 	 * 
-	 * @param key
+	 * @param key key to use
 	 * @return The value from the registry, null if not present.
 	 */
 	@Nullable

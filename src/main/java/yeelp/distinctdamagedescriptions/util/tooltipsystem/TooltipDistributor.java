@@ -1,15 +1,14 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.List;
-import java.util.function.BinaryOperator;
-import java.util.stream.Stream;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
+
+import java.util.List;
+import java.util.function.BinaryOperator;
+import java.util.stream.Stream;
 
 public enum TooltipDistributor {
 	BASE {
@@ -56,7 +55,7 @@ public enum TooltipDistributor {
 			return this.formatters.stream().filter((f) -> f.applicable(stack)).sorted();
 		}
 
-		private final <T> BinaryOperator<List<T>> listReduction() {
+		private <T> BinaryOperator<List<T>> listReduction() {
 			return (l1, l2) -> {
 				l1.addAll(l2);
 				return l1;

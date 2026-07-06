@@ -3,14 +3,9 @@ package yeelp.distinctdamagedescriptions.registries;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDExplosionDist;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
-import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
-import yeelp.distinctdamagedescriptions.registries.impl.DDDCreatureTypes;
-import yeelp.distinctdamagedescriptions.registries.impl.DDDDamageTypes;
-import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributions;
-import yeelp.distinctdamagedescriptions.registries.impl.DDDModifierRegistries;
-import yeelp.distinctdamagedescriptions.registries.impl.DDDPotionsRegistry;
-import yeelp.distinctdamagedescriptions.registries.impl.DDDTrackers;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
+import yeelp.distinctdamagedescriptions.registries.impl.*;
 import yeelp.distinctdamagedescriptions.util.json.DDDJsonIO;
 
 /**

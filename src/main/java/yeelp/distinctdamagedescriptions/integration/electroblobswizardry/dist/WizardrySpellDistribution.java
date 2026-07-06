@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry.dist;
 
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import electroblob.wizardry.Wizardry;
 import electroblob.wizardry.entity.living.ISummonedCreature;
 import electroblob.wizardry.util.IElementalDamage;
@@ -15,12 +11,16 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 
+import javax.annotation.Nonnull;
+import java.util.Optional;
+import java.util.Set;
+
 public final class WizardrySpellDistribution extends DDDAbstractPredefinedDistribution {
 
 	private final IDamageDistribution dist;
 	private final String wizardryType;
 	public WizardrySpellDistribution(String type, IDamageDistribution dist) {
-		super(IntegrationTitles.WIZARDRY_NAME + ": "+type.toString(), Source.BUILTIN);
+		super(IntegrationTitles.WIZARDRY_NAME + ": "+ type, Source.BUILTIN);
 		this.dist = dist;
 		this.wizardryType = type;
 	}
@@ -31,12 +31,12 @@ public final class WizardrySpellDistribution extends DDDAbstractPredefinedDistri
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.isSpell(src) ? this.dist.getCategories() : Sets.newHashSet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return Optional.ofNullable(this.isSpell(src) ? this.dist : null);
 	}
 	

@@ -1,12 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Maps;
-
+import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
@@ -19,20 +14,25 @@ import yeelp.distinctdamagedescriptions.util.json.DamageTypeData;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 public final class DDDCustomDistributions extends DDDAbstractPredefinedDistribution {
 	private final Map<String, DDDDamageType> includeAllMap;
 	private final Map<String, SourceMap> srcMap;
 
-	private final class SourceMap {
+	private static final class SourceMap {
 		private final Map<String, DDDDamageType> direct, indirect;
 
 		SourceMap() {
 			this(DDDBuiltInDamageType.NORMAL);
 		}
 
-		SourceMap(DDDDamageType defaultVal) {
-			this.direct = new NonNullMap<String, DDDDamageType>(() -> defaultVal);
-			this.indirect = new NonNullMap<String, DDDDamageType>(() -> defaultVal);
+		SourceMap(@SuppressWarnings("SameParameterValue") DDDDamageType defaultVal) {
+			this.direct = new NonNullMap<>(() -> defaultVal);
+			this.indirect = new NonNullMap<>(() -> defaultVal);
 		}
 
 		void update(DDDDamageType type, DamageTypeData data) {
@@ -66,8 +66,8 @@ public final class DDDCustomDistributions extends DDDAbstractPredefinedDistribut
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
-		HashSet<DDDDamageType> set = new HashSet<DDDDamageType>();
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
+		Set<DDDDamageType> set = Sets.newHashSet();
 		if(this.includeAllMap.containsKey(src.getDamageType())) {
 			set.add(this.includeAllMap.get(src.getDamageType()));
 		}
@@ -87,15 +87,15 @@ public final class DDDCustomDistributions extends DDDAbstractPredefinedDistribut
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
-		Set<DDDDamageType> types = getTypes(src, target);
-		if(types.size() == 0) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
+		Set<DDDDamageType> types = this.getTypes(src, target);
+		if(types.isEmpty()) {
 			return Optional.empty();
 		}
 		if(types.size() == 1) {
 			return Optional.of(types.iterator().next().getBaseDistribution());
 		}
-		Map<DDDDamageType, Float> map = new NonNullMap<DDDDamageType, Float>(() -> 0.0f);
+		Map<DDDDamageType, Float> map = new NonNullMap<>(() -> 0.0f);
 		float weight = 1.0f / types.size();
 		for(DDDDamageType type : types) {
 			map.put(type, weight);
@@ -105,7 +105,7 @@ public final class DDDCustomDistributions extends DDDAbstractPredefinedDistribut
 
 	public void registerDamageTypeData(DDDDamageType type, DamageTypeData[] datas) {
 		for(DamageTypeData d : datas) {
-			update(type, d);
+			this.update(type, d);
 		}
 		DistinctDamageDescriptions.info(String.format("Registered damage type info for type %s!", type.getDisplayName()));
 	}

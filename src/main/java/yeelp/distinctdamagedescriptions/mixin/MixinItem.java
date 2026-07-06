@@ -1,16 +1,14 @@
 package yeelp.distinctdamagedescriptions.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-
 import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 import yeelp.distinctdamagedescriptions.ModConsts.NBT;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
@@ -24,7 +22,8 @@ public abstract class MixinItem extends IForgeRegistryEntry.Impl<Item> {
 		if(stack.isEmpty()) {
 			return original;
 		}
-		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey("AttributeModifiers", NBT.LIST_TAG_ID)) {
+		//noinspection DataFlowIssue
+		if(!stack.hasTagCompound() || !stack.getTagCompound().hasKey(NBT.ATTRIBUTE_MODIFIERS_KEY, NBT.LIST_TAG_ID)) {
 			return original;
 		}
 		Multimap<String, AttributeModifier> mods = stack.getAttributeModifiers(slot);

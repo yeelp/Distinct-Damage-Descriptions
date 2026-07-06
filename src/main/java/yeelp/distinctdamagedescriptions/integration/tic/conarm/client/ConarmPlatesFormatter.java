@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.client;
 
-import java.util.Optional;
-
 import c4.conarm.lib.armor.ArmorPart;
 import c4.conarm.lib.materials.ArmorMaterialType;
 import net.minecraft.item.ItemStack;
+import slimeknights.tconstruct.library.tinkering.IMaterialItem;
+import slimeknights.tconstruct.library.tools.IToolPart;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
@@ -14,11 +14,13 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ArmorDistributionIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 
+import java.util.Optional;
+
 public final class ConarmPlatesFormatter extends ArmorDistributionFormatter implements IModCompatTooltipFormatter<ItemStack> {
 
 	private static ConarmPlatesFormatter instance;
 
-	protected ConarmPlatesFormatter() {
+	private ConarmPlatesFormatter() {
 		super(ConarmPlatesFormatter::getArmorDistribution, "armorresistances");
 
 	}
@@ -27,16 +29,16 @@ public final class ConarmPlatesFormatter extends ArmorDistributionFormatter impl
 		return instance == null ? instance = new ConarmPlatesFormatter() : instance;
 	}
 
-	private static final Optional<IArmorDistribution> getArmorDistribution(ItemStack stack) {
+	private static Optional<IArmorDistribution> getArmorDistribution(ItemStack stack) {
 		if(stack.getItem() instanceof ArmorPart) {
-			return Optional.of(TiCConfigurations.armorMaterialDist.getOrFallbackToDefault(((ArmorPart) stack.getItem()).getMaterialID(stack)));
+			return Optional.of(TiCConfigurations.armorMaterialDist.getOrFallbackToDefault(((IMaterialItem) stack.getItem()).getMaterialID(stack)));
 		}
 		return Optional.empty();
 	}
 
 	@Override
 	public boolean applicable(ItemStack t) {
-		return t.getItem() instanceof ArmorPart && ((ArmorPart) t.getItem()).hasUseForStat(ArmorMaterialType.PLATES);
+		return t.getItem() instanceof ArmorPart && ((IToolPart) t.getItem()).hasUseForStat(ArmorMaterialType.PLATES);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public final class ConarmPlatesFormatter extends ArmorDistributionFormatter impl
 		private static ConarmPlatesIconAggregator instance;
 
 		@SuppressWarnings("synthetic-access")
-		protected ConarmPlatesIconAggregator() {
+        private ConarmPlatesIconAggregator() {
 			super(ConarmPlatesFormatter.getInstance(), ConarmPlatesFormatter::getArmorDistribution);
 		}
 

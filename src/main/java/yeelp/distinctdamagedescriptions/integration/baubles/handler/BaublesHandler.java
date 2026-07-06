@@ -1,12 +1,8 @@
 package yeelp.distinctdamagedescriptions.integration.baubles.handler;
 
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
-
-import com.google.common.base.Predicates;
-
 import baubles.api.BaublesApi;
 import baubles.api.cap.IBaublesItemHandler;
+import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,6 +16,9 @@ import yeelp.distinctdamagedescriptions.integration.baubles.BaublesConfiguration
 import yeelp.distinctdamagedescriptions.integration.baubles.modifier.IDDDBaubleModifier;
 import yeelp.distinctdamagedescriptions.integration.baubles.util.BaubleModifierType;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
+
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 public final class BaublesHandler extends Handler {
 
@@ -42,15 +41,13 @@ public final class BaublesHandler extends Handler {
 	private static <E extends Event> void processBaublesOnTarget(Entity entity, E evt, BaubleModifierType...types) {
 		if(entity instanceof EntityPlayer) {
 			IBaublesItemHandler handler = BaublesApi.getBaublesHandler((EntityPlayer) entity);
-			IntStream.range(0, handler.getSlots()).mapToObj(handler::getStackInSlot).filter(IS_NON_EMPTY).map(YResources::getRegistryString).forEach((opt) -> {
-				opt.ifPresent((s) -> {
-					for(BaubleModifierType type : types) {
-						if(type.doesRespondToEvent(evt)) {
-							BaublesConfigurations.baubleModifiers.getModifier(s, type).ifPresent((mod) -> ((IDDDBaubleModifier<E>) mod).respondToEvent(evt));						
-						}
-					}
-				});
-			});
+			IntStream.range(0, handler.getSlots()).mapToObj(handler::getStackInSlot).filter(IS_NON_EMPTY).map(YResources::getRegistryString).forEach((opt) -> opt.ifPresent((s) -> {
+                for(BaubleModifierType type : types) {
+                    if(type.doesRespondToEvent(evt)) {
+                        BaublesConfigurations.baubleModifiers.getModifier(s, type).ifPresent((mod) -> ((IDDDBaubleModifier<E>) mod).respondToEvent(evt));
+                    }
+                }
+            }));
 		}
 	}
 }

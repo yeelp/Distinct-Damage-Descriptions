@@ -1,13 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
-import java.util.Comparator;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import com.google.common.base.Predicates;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -15,6 +8,12 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.MobResistancesFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipFormatterUtilities;
+
+import java.util.Comparator;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * An icon aggregator for mob resistances

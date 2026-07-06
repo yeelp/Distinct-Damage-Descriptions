@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.baubles.modifier;
 
-import java.util.Map;
-
 import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import java.util.Map;
 
 public abstract class AbstractBaubleModifier<E extends Event> extends DDDBaseMap<Float> implements IDDDBaubleModifier<E> { 
 	

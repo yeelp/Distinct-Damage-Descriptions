@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,6 +11,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import yeelp.distinctdamagedescriptions.api.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
+
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class MobCreatureType implements IMobCreatureType {
 
@@ -28,8 +29,8 @@ public class MobCreatureType implements IMobCreatureType {
 	private boolean isFlammable = true;
 
 	public MobCreatureType(Set<CreatureType> datas) {
-		this.types = new HashSet<String>();
-		this.potionImmunities = new HashSet<String>();
+		this.types = new HashSet<>();
+		this.potionImmunities = new HashSet<>();
 		for(CreatureType data : datas) {
 			this.types.add(data.getTypeName());
 			this.potionImmunities.addAll(data.getPotionImmunities());
@@ -40,7 +41,7 @@ public class MobCreatureType implements IMobCreatureType {
 	}
 
 	public MobCreatureType(CreatureType... datas) {
-		this(new HashSet<CreatureType>(ImmutableList.copyOf(datas)));
+		this(new HashSet<>(ImmutableList.copyOf(datas)));
 	}
 
 	@Override
@@ -49,13 +50,13 @@ public class MobCreatureType implements IMobCreatureType {
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == cap ? cap.<T>cast(this) : null;
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+		return capability == cap ? cap.cast(this) : null;
 	}
 
 	@Override
@@ -77,10 +78,10 @@ public class MobCreatureType implements IMobCreatureType {
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		this.types = new HashSet<String>();
-		this.potionImmunities = new HashSet<String>();
+		this.types = new HashSet<>();
+		this.potionImmunities = new HashSet<>();
 		this.critImmunity = nbt.getBoolean("critImmunity");
-		this.isFlammable = nbt.hasKey("flammable") ? nbt.getBoolean("flammable") : true;
+		this.isFlammable = !nbt.hasKey("flammable") || nbt.getBoolean("flammable");
 		for(NBTBase s : nbt.getTagList("types", new NBTTagString().getId())) {
 			this.types.add(((NBTTagString) s).getString());
 		}
@@ -91,7 +92,7 @@ public class MobCreatureType implements IMobCreatureType {
 
 	@Override
 	public boolean isImmuneToPotionEffect(PotionEffect effect) {
-		return this.potionImmunities.contains(effect.getPotion().getRegistryName().toString());
+		return this.potionImmunities.contains(Objects.requireNonNull(effect.getPotion().getRegistryName()).toString());
 	}
 
 	@Override

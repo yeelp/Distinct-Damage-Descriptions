@@ -7,6 +7,8 @@ import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
 import yeelp.distinctdamagedescriptions.capability.impl.DDDCombatTracker;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 
+import javax.annotation.Nonnull;
+
 public class CombatTrackerDistributor extends AbstractCapabilityDistributor<EntityLivingBase, IDDDCombatTracker, IDDDCombatTracker> {
 
 	private static CombatTrackerDistributor instance;
@@ -22,7 +24,7 @@ public class CombatTrackerDistributor extends AbstractCapabilityDistributor<Enti
 	}
 
 	@Override
-	protected IDDDCombatTracker getCapability(EntityLivingBase t, String key) {
+	protected IDDDCombatTracker getCapability(@Nonnull EntityLivingBase t, @Nonnull String key) {
 		return new DDDCombatTracker(t);
 	}
 
@@ -32,7 +34,7 @@ public class CombatTrackerDistributor extends AbstractCapabilityDistributor<Enti
 	}
 	
 	public static CombatTrackerDistributor getInstance() {
-		return instance == null ? new CombatTrackerDistributor() : instance;
+		return instance == null ? instance = new CombatTrackerDistributor() : instance;
 	}
 
 }

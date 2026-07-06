@@ -30,6 +30,7 @@ public class ModifierBruteForce extends ModifierTrait {
 
 	@Override
 	public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
-		for(int level = ToolBuilder.getEnchantmentLevel(rootCompound, DDDEnchantments.bruteForce); level++ < ModifierNBT.readInteger(modifierTag).current / 10; ToolBuilder.addEnchantment(rootCompound, DDDEnchantments.bruteForce));
+        //noinspection StatementWithEmptyBody
+        for(int level = ToolBuilder.getEnchantmentLevel(rootCompound, DDDEnchantments.bruteForce); level++ < ModifierNBT.readInteger(modifierTag).current / 10; ToolBuilder.addEnchantment(rootCompound, DDDEnchantments.bruteForce));
 	}
 }

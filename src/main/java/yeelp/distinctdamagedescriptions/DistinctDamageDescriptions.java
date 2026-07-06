@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions;
 
-import java.io.File;
-import java.util.function.Consumer;
-
-import org.apache.logging.log4j.Logger;
-
+import com.google.common.base.Functions;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -12,28 +8,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
-import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
-import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+import yeelp.distinctdamagedescriptions.capability.*;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.command.DDDCommand;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.handlers.CapabilityHandler;
-import yeelp.distinctdamagedescriptions.handlers.Handler;
-import yeelp.distinctdamagedescriptions.handlers.MobHandler;
-import yeelp.distinctdamagedescriptions.handlers.PacketHandler;
-import yeelp.distinctdamagedescriptions.handlers.TooltipHandler;
+import yeelp.distinctdamagedescriptions.handlers.*;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 import yeelp.distinctdamagedescriptions.init.DDDInitialization;
 import yeelp.distinctdamagedescriptions.init.DDDSounds;
@@ -44,6 +29,10 @@ import yeelp.distinctdamagedescriptions.proxy.Proxy;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
 import yeelp.distinctdamagedescriptions.util.json.DDDJsonIO;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 @Mod(modid = ModConsts.MODID, name = ModConsts.NAME, version = ModConsts.VERSION, dependencies = "after:"+IntegrationIds.WIZARDRY_ID+"@[4.3.14,)", certificateFingerprint = "176200587b5c58adc4f846bdcc0065ae8f1a3835")
 public class DistinctDamageDescriptions {
@@ -177,17 +166,23 @@ public class DistinctDamageDescriptions {
 			return;
 		}
 		if(ModConfig.showDotsOn) {
-			logger.info(String.format("%s %s", LOGGER_DEBUG_PREFIX, msg));
+			logger.info("{} {}", LOGGER_DEBUG_PREFIX, msg);
 		}
+	}
+
+	public static void logStackTrace(Exception e, Consumer<String> logMethod) {
+		Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(logMethod);
 	}
 	
 	private static void logNormal(String msg, Consumer<String> method) {
 		method.accept(String.format("%s %s", LOGGER_REGULAR_PREFIX, msg));
 	}
 
-	public static File getModConfigDirectory() {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static File getModConfigDirectory() {
 		File f = new File(configDirectory, ModConsts.MODID);
 		if(!f.isDirectory()) {
+
 			f.mkdir();
 		}
 		return f;

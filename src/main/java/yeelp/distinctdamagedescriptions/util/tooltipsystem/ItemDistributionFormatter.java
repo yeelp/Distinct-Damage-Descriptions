@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Function;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -14,9 +10,11 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
-import yeelp.distinctdamagedescriptions.util.lib.YResources;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * The singleton instance for formatting instances for generic items
@@ -32,7 +30,7 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 		super(KeyTooltip.SHIFT, DDDDamageFormatter.COLOURED, DDDAPI.accessor::getDamageDistribution, "damagedistribution");
 	}
 	
-	protected ItemDistributionFormatter(KeyTooltip keyTooltip, DDDDamageFormatter formatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
+	protected ItemDistributionFormatter(@SuppressWarnings("SameParameterValue") KeyTooltip keyTooltip, @SuppressWarnings("SameParameterValue") DDDDamageFormatter formatter, Function<ItemStack, Optional<IDamageDistribution>> capExtractor, String typeTextKey) {
 		super(keyTooltip, formatter, capExtractor, typeTextKey);
 	}
 
@@ -47,11 +45,6 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 	}
 
 	@Override
-	protected boolean shouldShowDist(ItemStack stack) {
-		return YResources.getRegistryStringWithMetadata(stack).filter(DDDConfigurations.items::configured).isPresent() || ModConfig.client.alwaysShowDamageDistTooltip;
-	}
-
-	@Override
 	protected float getDamageToDistribute(ItemStack stack) {
 		double dmg;
 		if(this.getNumberFormattingStrategy() == DamageDistributionNumberFormat.PLAIN) {
@@ -62,9 +55,9 @@ public class ItemDistributionFormatter extends AbstractDamageDistributionFormatt
 			else {
 				dmg = Minecraft.getMinecraft().player.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
 				Collection<AttributeModifier> mods = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND).get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
-				dmg += mods.stream().filter((m) -> m.getOperation() == 0).mapToDouble((m) -> m.getAmount()).sum();
-				dmg *= mods.stream().filter((m) -> m.getOperation() == 1).mapToDouble((m) -> m.getAmount()).reduce(Double::sum).orElse(1);
-				dmg *= mods.stream().filter((m) -> m.getOperation() == 2).mapToDouble((m) -> m.getAmount()).reduce((d1, d2) -> d1 * d2).orElse(1);
+				dmg += mods.stream().filter((m) -> m.getOperation() == 0).mapToDouble(AttributeModifier::getAmount).sum();
+				dmg *= mods.stream().filter((m) -> m.getOperation() == 1).mapToDouble(AttributeModifier::getAmount).reduce(Double::sum).orElse(1);
+				dmg *= mods.stream().filter((m) -> m.getOperation() == 2).mapToDouble(AttributeModifier::getAmount).reduce((d1, d2) -> d1 * d2).orElse(1);
 				dmg += EnchantmentHelper.getModifierForCreature(stack, EnumCreatureAttribute.UNDEFINED);
 			}
 		}

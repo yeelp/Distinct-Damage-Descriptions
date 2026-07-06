@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.client;
 
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import yeelp.distinctdamagedescriptions.integration.capability.ModUpdatingDamageDistribution;
@@ -11,11 +8,13 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionForma
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
 
+import java.util.Set;
+
 public final class UpdatingDamageDistributionTooltipFormatter extends AbstractModCompatTooltipFormatterWrapper<ItemStack> {
 
 	private static UpdatingDamageDistributionTooltipFormatter instance;
 	private static boolean registered = false;
-	private static Set<Capability<? extends ModUpdatingDamageDistribution>> caps = Sets.newHashSet();
+	private static final Set<Capability<? extends ModUpdatingDamageDistribution>> caps = Sets.newHashSet();
 	
 	private UpdatingDamageDistributionTooltipFormatter() {
 		super(ItemDistributionFormatter.getInstance(), ItemDamageDistributionIconAggregator.getInstance());

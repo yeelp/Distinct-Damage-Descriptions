@@ -1,14 +1,11 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 
 import crafttweaker.annotations.ZenRegister;
-//import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.event.IEventHandle;
 import crafttweaker.util.EventList;
 import crafttweaker.util.IEventHandler;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-//import stanhebben.zenscript.annotations.ZenClass;
-//import stanhebben.zenscript.annotations.ZenMethod;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 
 @ZenClass(CTConsts.CTClasses.EVENTMANAGER)
@@ -41,6 +38,6 @@ public final class CTDDDEventManager {
 	}
 
 	private static <T extends IDDDEvent> EventList<T> newEventList() {
-		return new EventList<T>();
+		return new EventList<>();
 	}
 }

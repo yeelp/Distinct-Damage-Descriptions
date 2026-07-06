@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.thaumcraft;
 
-import java.util.stream.Stream;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -25,6 +22,8 @@ import yeelp.distinctdamagedescriptions.integration.thaumcraft.dist.ThaumcraftFo
 import yeelp.distinctdamagedescriptions.integration.thaumcraft.dist.ThaumcraftPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
+
+import java.util.stream.Stream;
 
 public final class ThaumcraftIntegration extends FermiumBootedModIntegration {
 
@@ -58,6 +57,8 @@ public final class ThaumcraftIntegration extends FermiumBootedModIntegration {
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
 		if(evt.getSide() == Side.CLIENT) {
+			//needed to avoid BootstrapMethodError
+			//noinspection RedundantCast
 			Stream.of((IModCompatTooltipFormatter<ItemStack>) FocusDistributionItemFormatter.getInstance(), FocusItemDamageDistributionFormatter.getInstance()).forEach(TooltipDistributor::registerModCompat);
 		}
 		return super.init(evt);

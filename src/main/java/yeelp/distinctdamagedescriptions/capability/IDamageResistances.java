@@ -19,7 +19,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	/**
 	 * Get resistance for a certain type.
 	 * 
-	 * @param type
+	 * @param type type to get resistance for.
 	 * @return the resistance for that type.
 	 */
 	float getResistance(DDDDamageType type);
@@ -27,7 +27,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	/**
 	 * Get resistance for a certain type before any modifications.
 	 * 
-	 * @param type
+	 * @param type type to get base resistance for.
 	 * @return The base resistance for that type.
 	 */
 	float getBaseResistance(DDDDamageType type);
@@ -38,7 +38,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * resistance via this method will be reset by the next call to
 	 * {@link #update(EntityLivingBase)}.
 	 * 
-	 * @param type
+	 * @param type type to set resistance for.
 	 * @param value the resistance value to set.
 	 */
 	void setResistance(DDDDamageType type, float value);
@@ -50,7 +50,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * be reset to the base resistance once the capability calls
 	 * {@link #update(EntityLivingBase)}.
 	 * 
-	 * @param type
+	 * @param type type to set base resistance for.
 	 * @param value the resistance value to set.
 	 */
 	void setBaseResistance(DDDDamageType type, float value);
@@ -61,7 +61,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * resistance to zero but the mob still technically "has" that resistance,
 	 * whereas this method removes the resistance altogether.
 	 * 
-	 * @param type
+	 * @param type type to remove resistance for.
 	 */
 	void removeResistance(DDDDamageType type);
 
@@ -71,14 +71,15 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * {@link #removeResistance(DDDDamageType)}. However, this applies to base
 	 * resistances, not modified resistances.
 	 * 
-	 * @param type
+	 * @param type type to remove base resistance for.
 	 */
+	@SuppressWarnings("unused")
 	void removeBaseResistance(DDDDamageType type);
 
 	/**
 	 * Get immunity status for a type
 	 * 
-	 * @param type
+	 * @param type type to check immunity for.
 	 * @return true if immune, false otherwise.
 	 */
 	boolean hasImmunity(DDDDamageType type);
@@ -86,7 +87,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	/**
 	 * Get the immunity status for a type before any modifiers.
 	 * 
-	 * @param type
+	 * @param type type to check base immunity for.
 	 * @return true if immune baseline, false if not.
 	 */
 	boolean hasBaseImmunity(DDDDamageType type);
@@ -94,7 +95,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	/**
 	 * Set immunity status for a certain type.
 	 * 
-	 * @param type
+	 * @param type type to set immunity for.
 	 * @param status true if immune, false if susceptible
 	 */
 	void setImmunity(DDDDamageType type, boolean status);
@@ -103,7 +104,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * Set base immunity status for a certain type. Base immunity will not be
 	 * removed with a call to {@link #update(EntityLivingBase)}.
 	 * 
-	 * @param type
+	 * @param type type to set base immunity for.
 	 * @param status true if immune, false if susceptible.
 	 */
 	void setBaseImmunity(DDDDamageType type, boolean status);
@@ -118,6 +119,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * removing all active immunities for this instant, whereas this method removes
 	 * all immunities this capability has before any modifiers.
 	 */
+	@SuppressWarnings("unused")
 	void clearBaseImmunities();
 
 	/**
@@ -128,6 +130,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	/**
 	 * Clear all base resistances; those that exist before modifiers.
 	 */
+	@SuppressWarnings("unused")
 	void clearBaseResistances();
 
 	/**
@@ -163,6 +166,7 @@ public interface IDamageResistances extends ISyncableCapability, DDDUpdatableCap
 	 * 
 	 * @return A copy of all base resistances.
 	 */
+	@SuppressWarnings("unused")
 	default ResistMap getAllBaseResistancesCopy() {
 		ResistMap rMap = DDDMaps.newResistMap();
 		DDDRegistries.damageTypes.getAll().forEach((t) -> rMap.put(t, this.getBaseResistance(t)));

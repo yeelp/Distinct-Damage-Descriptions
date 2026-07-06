@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.capability;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -11,6 +7,10 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 public abstract class ModUpdatingDamageDistribution extends DamageDistribution {
 

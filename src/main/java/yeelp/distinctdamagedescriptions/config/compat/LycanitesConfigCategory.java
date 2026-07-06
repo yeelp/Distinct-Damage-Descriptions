@@ -5,6 +5,7 @@ import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
+@SuppressWarnings("CanBeFinal")
 public final class LycanitesConfigCategory {
 	@Name("Enable Smited Distribution")
 	@Comment("Enable/disable the smited distribution. Burning entities will take radiant damage while Smited")
@@ -75,7 +76,7 @@ public final class LycanitesConfigCategory {
 	public String doomFireDistribution = DefaultValues.DOOMFIRE_DIST;
 	
 	@Name("Hellfire Distribution")
-	@Comment("The distirbution that Hellfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
+	@Comment("The distribution that Hellfire uses if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
 	public String hellFireDistribution = DefaultValues.HELLFIRE_DIST;
 	
 	@Name("Shadowfire Distribution")
@@ -100,7 +101,7 @@ public final class LycanitesConfigCategory {
 	
 	@Name("Ooze Distribution")
 	@Comment("The distribution that Ooze and Rabbitooze use if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
-	public String oozeDistirbution = DefaultValues.OOZE_DIST;
+	public String oozeDistribution = DefaultValues.OOZE_DIST;
 	
 	@Name("Acid Distribution")
 	@Comment("The distribution that Acid and Sharacid use if enabled; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")

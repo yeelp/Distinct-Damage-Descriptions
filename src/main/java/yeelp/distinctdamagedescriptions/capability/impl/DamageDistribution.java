@@ -1,10 +1,5 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -26,6 +21,12 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 public class DamageDistribution extends Distribution implements IDamageDistribution {
 
 	@CapabilityInject(IDamageDistribution.class)
@@ -42,7 +43,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	public DamageDistribution() {
-		this(new Tuple<DDDDamageType, Float>(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
+		this(new Tuple<>(DDDBuiltInDamageType.BLUDGEONING, 1.0f));
 	}
 
 	@SafeVarargs
@@ -61,18 +62,18 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == cap ? cap.<T>cast(this) : null;
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+		return capability == cap ? cap.cast(this) : null;
 	}
 
 	@Override
 	public DamageMap distributeDamage(float dmg) {
-		if(this.distMap.keySet().stream().filter((k) -> !k.isUsable()).count() == 0) {
+		if(this.distMap.keySet().stream().allMatch(DDDDamageType::isUsable)) {
 			return super.distribute(DDDMaps.newDamageMap(), (f) -> f * dmg);
 		}
 		long regularTypes = this.distMap.entrySet().stream().filter((e) -> e.getKey().isUsable()).count();
@@ -130,7 +131,7 @@ public class DamageDistribution extends Distribution implements IDamageDistribut
 	}
 	
 	@Override
-	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	public void setNewWeights(Map<DDDDamageType, Float> map) {
 		if(invariantViolated(map.values())) {
 			throw new InvariantViolationException("Weights are either non positive or do not add to 1!");
 		}

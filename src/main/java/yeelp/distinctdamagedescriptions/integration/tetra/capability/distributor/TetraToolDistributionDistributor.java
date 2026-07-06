@@ -9,11 +9,13 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributi
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.tetra.capability.TetraToolDistribution;
 
+import javax.annotation.Nonnull;
+
 public final class TetraToolDistributionDistributor extends AbstractCapabilityDistributor<ItemStack, IDamageDistribution, IDamageDistribution> {
 
 	private static TetraToolDistributionDistributor instance;
 
-	protected TetraToolDistributionDistributor() {
+	private TetraToolDistributionDistributor() {
 		super(DamageDistributionCapabilityDistributor.ForItem.getInstance());
 	}
 
@@ -23,7 +25,7 @@ public final class TetraToolDistributionDistributor extends AbstractCapabilityDi
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(ItemStack t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull ItemStack t, @Nonnull String key) {
 		if(t.getItem() instanceof ItemSwordModular || t.getItem() instanceof ItemDuplexToolModular) {
 			return new TetraToolDistribution().update(t);
 		}

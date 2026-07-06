@@ -1,14 +1,9 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.client;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
-
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableList;
-
 import c4.conarm.lib.ArmoryRegistry;
 import c4.conarm.lib.materials.ArmorMaterialType;
+import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import slimeknights.mantle.client.book.data.PageData;
 import slimeknights.mantle.client.book.data.element.TextData;
 import slimeknights.tconstruct.library.materials.Material;
@@ -26,9 +21,14 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumb
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+
 public final class ContentConarmMaterialInfluence extends ContentMaterialInfluence {
 
-	public ContentConarmMaterialInfluence() {
+	@SuppressWarnings("unused")
+    public ContentConarmMaterialInfluence() {
 		super();
 	}
 

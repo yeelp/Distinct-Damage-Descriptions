@@ -1,14 +1,7 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,6 +21,13 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
+import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 public final class DDDInstantEffectsDist extends DDDAbstractPredefinedDistribution {
 	private static final Field CLOUD_POTIONS = ObfuscationReflectionHelper.findField(EntityAreaEffectCloud.class, "field_184503_f");
 
@@ -41,7 +41,7 @@ public final class DDDInstantEffectsDist extends DDDAbstractPredefinedDistributi
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return classify(src, target).map(ImmutableSet::of).orElse(ImmutableSet.of());
 	}
 
@@ -51,7 +51,7 @@ public final class DDDInstantEffectsDist extends DDDAbstractPredefinedDistributi
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return classify(src, target).map(DDDDamageType::getBaseDistribution);
 	}
 

@@ -1,21 +1,20 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Comparator;
-import java.util.Iterator;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Iterators;
-
 import net.minecraft.util.Tuple;
 import net.minecraftforge.common.ISpecialArmor.ArmorProperties;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.Iterator;
+
 /**
  * A container for armor values in the order armor, then toughness.
- * 
+ * <p>
  * This class' {@link Iterable} implementation iterates in the order armor, then
  * toughness, and only iterates over the two elements.
- * 
+ * <p>
  * This class' {@link Comparable} implementation compares armor first, then
  * compares toughness if armor is the same.
  * 
@@ -33,7 +32,7 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	}
 
 	public ArmorValues(float armor, float toughness) {
-		setValues(armor, toughness);
+        this.setValues(armor, toughness);
 	}
 
 	public ArmorValues(Tuple<Float, Float> t) {
@@ -75,7 +74,8 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 		return this.setValues(this.armor + armor, this.toughness + toughness);
 	}
 
-	public ArmorValues add(@Nullable ArmorValues av) {
+	@SuppressWarnings("UnusedReturnValue")
+    public ArmorValues add(@Nullable ArmorValues av) {
 		if(av == null) {
 			return this;
 		}
@@ -91,7 +91,7 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	 * getting the absolute value of the armor and toughness and setting this
 	 * ArmorValues' armor and toughness to those results.
 	 * 
-	 * @return
+	 * @return itself with the result for chaining
 	 */
 	public ArmorValues abs() {
 		return this.setValues(Math.abs(this.armor), Math.abs(this.toughness));
@@ -128,6 +128,7 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	 * @return the result of subtracting {@code a2}'s armor and toughness from
 	 *         {@code a1}'s.
 	 */
+	@SuppressWarnings("unused")
 	public static ArmorValues sub(@Nullable ArmorValues a1, @Nullable ArmorValues a2) {
 		if(a1 == null && a2 == null) {
 			return new ArmorValues();
@@ -151,7 +152,7 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	 * armor value first, and then their toughness value.
 	 */
 	@Override
-	public int compareTo(ArmorValues o) {
+	public int compareTo(@Nonnull ArmorValues o) {
 		return ARMOR_VALUES_COMPARATOR.compare(this, o);
 	}
 
@@ -165,6 +166,7 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	 * toughness. It will only have two values.
 	 */
 	@Override
+	@Nonnull
 	public Iterator<Float> iterator() {
 		return Iterators.forArray(this.armor, this.toughness);
 	}
@@ -175,19 +177,14 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	}
 	
 	private static final class ArmorValuesZero extends ArmorValues {
-		
-		private boolean immutable = false;
-		ArmorValuesZero() {
+
+		private ArmorValuesZero() {
 			super();
-			this.immutable = true;
 		}
 		
 		@Override
 		public ArmorValues setValues(float armor, float toughness) {
-			if(this.immutable) {
-				throw new UnsupportedOperationException("Altering ArmorValues.ZERO not allowed!");				
-			}
-			return super.setValues(armor, toughness);
+			throw new UnsupportedOperationException("Altering ArmorValues.ZERO not allowed!");
 		}
 	}
 }

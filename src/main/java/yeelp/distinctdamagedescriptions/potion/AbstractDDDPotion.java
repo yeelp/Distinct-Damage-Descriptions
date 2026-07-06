@@ -9,18 +9,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
+import javax.annotation.Nonnull;
+
 public abstract class AbstractDDDPotion extends Potion {
 
-	private DDDDamageType type;
+	private final DDDDamageType type;
 	private final EffectType effect;
 
 	public enum EffectType {
 		GOOD("buff"),
 		BAD("debuff");
 
-		private String effect;
+		private final String effect;
 
-		private EffectType(String s) {
+		EffectType(String s) {
 			this.effect = s;
 		}
 
@@ -37,26 +39,21 @@ public abstract class AbstractDDDPotion extends Potion {
 		this.setRegistryName(new ResourceLocation(ModConsts.MODID, name));
 		this.setPotionName("effect."+name);
 	}
-	
-	@Override
-	public boolean isInstant() {
-		return false;
-	}
 
-	@Override
+    @Override
 	public boolean hasStatusIcon() {
 		return false;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderInventoryEffect(PotionEffect effect, Gui gui, int x, int y, float z) {
+	public void renderInventoryEffect(@Nonnull PotionEffect effect, @Nonnull Gui gui, int x, int y, float z) {
 		super.renderInventoryEffect(effect, gui, x, y, z);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderHUDEffect(PotionEffect effect, Gui gui, int x, int y, float z, float alpha) {
+	public void renderHUDEffect(@Nonnull PotionEffect effect, @Nonnull Gui gui, int x, int y, float z, float alpha) {
 		super.renderHUDEffect(effect, gui, x, y, z, alpha);
 	}
 	

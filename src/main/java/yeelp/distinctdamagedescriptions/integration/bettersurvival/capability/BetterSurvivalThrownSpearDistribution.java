@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.bettersurvival.capability;
 
-import java.util.Optional;
-
 import com.mujmajnkraft.bettersurvival.entities.projectiles.EntityFlyingSpear;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -14,6 +11,8 @@ import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.capability.ModUpdatingDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import java.util.Optional;
 
 public final class BetterSurvivalThrownSpearDistribution extends ModUpdatingDamageDistribution {
 

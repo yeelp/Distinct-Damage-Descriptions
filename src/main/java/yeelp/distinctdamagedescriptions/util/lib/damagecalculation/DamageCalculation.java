@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Map;
-import java.util.Optional;
-
 import com.google.common.collect.Maps;
-
 import net.minecraft.inventory.EntityEquipmentSlot;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
@@ -12,6 +8,9 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorClassification;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults.ResultsBuilder;
+
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * A damage calculation. Stores all the values relevant to this calculation.
@@ -23,7 +22,7 @@ public final class DamageCalculation {
 	private DDDDamageType type = null;
 	private final CombatContext ctx;
 	private float damage;
-	private ResultsBuilder results = new ResultsBuilder();
+	private final ResultsBuilder results = new ResultsBuilder();
 	private ArmorClassification armorClassification;
 	private ShieldDistribution shieldDist = null;
 	private Map<EntityEquipmentSlot, ArmorValues> armor = null;
@@ -31,6 +30,14 @@ public final class DamageCalculation {
 	private boolean wasDamageClassified = false;
 	private boolean wasArmorModified = false;
 	private boolean completed = false;
+	private CalculationPhase currentPhase = CalculationPhase.START;
+
+	public enum CalculationPhase {
+		START,
+		ATTACK,
+		HURT,
+		DAMAGE
+	}
 
 	/**
 	 * Create a new DamageCalculation based off the supplied {@link CombatContext}.
@@ -76,7 +83,7 @@ public final class DamageCalculation {
 	 * Set the damage reference that DDD uses to determine if the damage context and
 	 * damage map should be updated.
 	 * 
-	 * @param amount the damage reference.
+	 * @param damage the damage reference.
 	 */
 	public void setDamage(float damage) {
 		this.damage = damage;
@@ -91,8 +98,9 @@ public final class DamageCalculation {
 	 * 
 	 * @return An {@link Optional} wrapping the {@link ArmorClassification} or an
 	 *         empty Optional if there was no armor classified or armor
-	 *         classification has no occured yet.
+	 *         classification has not occurred yet.
 	 */
+	@SuppressWarnings("unused")
 	public ArmorClassification getArmorClassification() {
 		return this.armorClassification;
 	}
@@ -171,6 +179,14 @@ public final class DamageCalculation {
 
 	public DamageMap getClassifiedDamage() {
 		return this.incomingDamage;
+	}
+
+	public void progressToPhase(CalculationPhase phase) {
+		this.currentPhase = phase;
+	}
+
+	public boolean canProgressToPhase(CalculationPhase phase) {
+		return this.currentPhase.compareTo(phase) < 0;
 	}
 
 	public void classifyDamage() {

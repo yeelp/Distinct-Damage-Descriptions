@@ -4,6 +4,7 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
+@SuppressWarnings("CanBeFinal")
 public final class ExtraDamageDistsCategory {
 	@Name("Explosion DamageDistribution")
 	@Comment("The damage distribution to use for explosion damage; a list of comma separated tuples [(t, a)] with the same rules as mob or weapon damage")
@@ -22,7 +23,7 @@ public final class ExtraDamageDistsCategory {
 	public boolean enableFallDamage = true;
 
 	@Name("Fly Into Wall Distribution")
-	@Comment("Enable/disable the fly-into-wall damage distribution. This occurs when a player flys into a wall with Elytra. Flying into a wall inflicts bludgeoning damage with this enabled. If disabled, vanilla handles it normally.")
+	@Comment("Enable/disable the fly-into-wall damage distribution. This occurs when a player flies into a wall with Elytra. Flying into a wall inflicts bludgeoning damage with this enabled. If disabled, vanilla handles it normally.")
 	public boolean enableFlyIntoWallDamage = true;
 
 	@Name("Anvil Distribution")
@@ -46,7 +47,7 @@ public final class ExtraDamageDistsCategory {
 	public boolean enablePotionDamage = true;
 
 	@Name("Poison Effect Distribution")
-	@Comment("Enable/diable poison effect distribution. Suffering from the Poison effect will inflict poison damage when enabled. It still can't be blocked by armor, but it can be blocked by resistances")
+	@Comment("Enable/disable poison effect distribution. Suffering from the Poison effect will inflict poison damage when enabled. It still can't be blocked by armor, but it can be blocked by resistances")
 	public boolean enablePoisonEffectDamage = true;
 
 	@Name("Thorns Distribution")
@@ -54,7 +55,7 @@ public final class ExtraDamageDistsCategory {
 	public boolean enableThornsDamage = true;
 
 	@Name("Evoker Fangs Distribution")
-	@Comment("Enable/disable evoker fangs distribution. Evoker fanges will inflict force damage when enabled.")
+	@Comment("Enable/disable evoker fangs distribution. Evoker fangs will inflict force damage when enabled.")
 	public boolean enableEvokerFangsDamage = true;
 
 	@Name("Guardian Beam Distribution")

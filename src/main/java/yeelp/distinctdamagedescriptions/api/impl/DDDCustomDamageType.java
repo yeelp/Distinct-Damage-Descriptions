@@ -9,7 +9,8 @@ public class DDDCustomDamageType extends DDDAbstractDamageType {
 	public DDDCustomDamageType(String name, String displayName, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour) {
 		this(name, displayName, isPhysical, deathAttackerMessage, deathMessage, colour, false, Source.JSON);
 	}
-	
+
+	@SuppressWarnings("unused")
 	public DDDCustomDamageType(String name, String displayName, boolean isPhysical, String deathAttackerMessage, String deathMessage, int colour, boolean hidden) {
 		this(name, displayName, isPhysical, deathAttackerMessage, deathMessage, colour, hidden, Source.JSON);
 	}
@@ -37,6 +38,6 @@ public class DDDCustomDamageType extends DDDAbstractDamageType {
 	
 	@Override
 	protected void initialize() {
-		return;
+		//no initialization needed
 	}
 }

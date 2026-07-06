@@ -1,14 +1,13 @@
 package yeelp.distinctdamagedescriptions.util;
 
-import java.util.HashMap;
-
 import com.google.common.collect.Maps;
-
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentTranslation;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+
+import java.util.HashMap;
 
 public enum Translations {
 	INSTANCE;
@@ -16,7 +15,7 @@ public enum Translations {
 	private final HashMap<String, BasicTranslator> basicCache = Maps.newHashMap();
 	private final HashMap<String, LayeredTranslator> layeredCache = Maps.newHashMap();
 	
-	public abstract class AbstractTranslator {
+	public abstract static class AbstractTranslator {
 		private final String root;
 		
 		protected AbstractTranslator(String root) {
@@ -62,7 +61,7 @@ public enum Translations {
 		}
 	}
 
-	public class BasicTranslator extends AbstractTranslator {
+	public static class BasicTranslator extends AbstractTranslator {
 
 		protected BasicTranslator(String root) {
 			super(root);
@@ -74,9 +73,9 @@ public enum Translations {
 		}
 	}
 	
-	public class LayeredTranslator extends AbstractTranslator {
+	public static class LayeredTranslator extends AbstractTranslator {
 
-		private String subRoot;
+		private final String subRoot;
 		protected LayeredTranslator(String root, String...subRoots) {
 			super(root);
 			this.subRoot = YLib.joinNiceString(false, ".", subRoots);
@@ -92,7 +91,8 @@ public enum Translations {
 	public BasicTranslator getTranslator(String root) {
 		return this.basicCache.compute(root, (r, t) -> t == null ? new BasicTranslator(r) : t);
 	}
-	
+
+	@SuppressWarnings("StatementWithEmptyBody")
 	public LayeredTranslator getLayeredTranslator(String root, String...subRoots) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(root);

@@ -45,7 +45,7 @@ public interface IHasCreationSource {
 		CT {
 			@Override
 			public String toString() {
-				return ModConsts.IntegrationTitles.CRAFTWEAKER_TITLE;
+				return ModConsts.IntegrationTitles.CRAFTTWEAKER_TITLE;
 			}
 		},
 		/**
@@ -54,7 +54,6 @@ public interface IHasCreationSource {
 		CoT {
 			@Override
 			public String toString() {
-				// TODO Auto-generated method stub
 				return ModConsts.IntegrationTitles.CONTENTTWEAKER_TITLE;
 			}
 		},
@@ -65,6 +64,6 @@ public interface IHasCreationSource {
 		/**
 		 * Created by some other source
 		 */
-		OTHER;
+		OTHER
 	}
 }

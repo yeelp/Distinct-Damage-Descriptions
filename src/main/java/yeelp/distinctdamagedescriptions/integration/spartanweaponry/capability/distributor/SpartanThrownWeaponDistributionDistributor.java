@@ -1,13 +1,14 @@
 package yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability.distributor;
 
 import com.oblivioussp.spartanweaponry.entity.projectile.EntityThrownWeapon;
-
 import net.minecraft.entity.IProjectile;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributionCapabilityDistributor;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.spartanweaponry.capability.SpartanThrownWeaponDistribution;
+
+import javax.annotation.Nonnull;
 
 public class SpartanThrownWeaponDistributionDistributor extends AbstractCapabilityDistributor<IProjectile, IDamageDistribution, IDamageDistribution> {
 
@@ -23,7 +24,7 @@ public class SpartanThrownWeaponDistributionDistributor extends AbstractCapabili
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(IProjectile t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull IProjectile t, @Nonnull String key) {
 		return new SpartanThrownWeaponDistribution().update(t);
 	}
 

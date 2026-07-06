@@ -1,16 +1,16 @@
 package yeelp.distinctdamagedescriptions.config;
 
+import net.minecraft.entity.Entity;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.YResources;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import net.minecraft.entity.Entity;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.lib.YResources;
-
 public class DDDProjectileConfiguration extends DDDDistributionConfiguration<IDamageDistribution> implements IDDDProjectileConfiguration {
-	private final Map<String, String> itemProjMap = new HashMap<String, String>();
+	private final Map<String, String> itemProjMap = new HashMap<>();
 
 	DDDProjectileConfiguration(Supplier<IDamageDistribution> defaultDist) {
 		super(defaultDist);
@@ -24,7 +24,7 @@ public class DDDProjectileConfiguration extends DDDDistributionConfiguration<IDa
 	@Override
 	public boolean isProjectilePairRegistered(Entity projectile) {
 		Optional<String> oLoc = YResources.getEntityIDString(projectile);
-		return oLoc.isPresent() ? this.itemProjMap.containsValue(oLoc.get()) : false;
+		return oLoc.isPresent() && this.itemProjMap.containsValue(oLoc.get());
 	}
 
 	@Override

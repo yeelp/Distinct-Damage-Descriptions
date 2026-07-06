@@ -1,18 +1,18 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 
-public abstract interface IDistribution extends DDDUpdatableCapabilityBase<NBTTagCompound> {
+import java.util.Map;
+import java.util.Set;
+
+public interface IDistribution extends DDDUpdatableCapabilityBase<NBTTagCompound> {
 	/**
 	 * Get the weight associated with a certain type
 	 * 
-	 * @param type
+	 * @param type type to get weight for.
 	 * @return the weight of that type in this distribution.
 	 */
 	float getWeight(DDDDamageType type);
@@ -20,7 +20,7 @@ public abstract interface IDistribution extends DDDUpdatableCapabilityBase<NBTTa
 	/**
 	 * Get the base weight associated with a certain type before modifications.
 	 * 
-	 * @param type
+	 * @param type type to get base weight for.
 	 * @return the weight of that type in this distribution.
 	 */
 	float getBaseWeight(DDDDamageType type);
@@ -28,17 +28,18 @@ public abstract interface IDistribution extends DDDUpdatableCapabilityBase<NBTTa
 	/**
 	 * Set new weight
 	 * 
-	 * @param type
-	 * @param amount
+	 * @param type type to set weight for.
+	 * @param amount amount to set.
 	 */
 	void setWeight(DDDDamageType type, float amount);
 
 	/**
 	 * Set the base weight. This persists across calls to {@link #update(ItemStack)}
 	 * 
-	 * @param type
-	 * @param amount
+	 * @param type type to set base weight for.
+	 * @param amount amount to set.
 	 */
+	@SuppressWarnings("unused")
 	void setBaseWeight(DDDDamageType type, float amount);
 
 	/**
@@ -48,7 +49,7 @@ public abstract interface IDistribution extends DDDUpdatableCapabilityBase<NBTTa
 	 * @param map a map containing new weights
 	 * @throws InvariantViolationException if a weight < 0.
 	 */
-	void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException;
+	void setNewWeights(Map<DDDDamageType, Float> map);
 
 	/**
 	 * Set new distribution base weights. Will overwrite existing weights and add
@@ -57,7 +58,8 @@ public abstract interface IDistribution extends DDDUpdatableCapabilityBase<NBTTa
 	 * @param map a map containing new weights
 	 * @throws InvariantViolationException if a weight < 0.
 	 */
-	void setNewBaseWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException;
+	@SuppressWarnings("unused")
+	void setNewBaseWeights(Map<DDDDamageType, Float> map);
 
 	/**
 	 * Get the categories for this distribution.
@@ -83,7 +85,7 @@ public abstract interface IDistribution extends DDDUpdatableCapabilityBase<NBTTa
 	/**
 	 * Update this distribution with respect to it's ItemStack owner.
 	 * 
-	 * @param owner
+	 * @param owner owner of this distribution.
 	 * @return The mutated distribution, updated.
 	 */
 	IDistribution update(ItemStack owner);

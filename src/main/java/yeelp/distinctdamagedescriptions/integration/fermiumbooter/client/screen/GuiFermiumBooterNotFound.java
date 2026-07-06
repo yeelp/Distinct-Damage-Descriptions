@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.fermiumbooter.client.screen;
 
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
@@ -10,6 +8,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
+
+import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
 public final class GuiFermiumBooterNotFound extends GuiScreen {
@@ -25,7 +25,7 @@ public final class GuiFermiumBooterNotFound extends GuiScreen {
 		
 		private final String translationKey;
 		
-		private ButtonId(String translationKey) {
+		ButtonId(String translationKey) {
 			this.translationKey = translationKey;
 		}
 		
@@ -75,7 +75,7 @@ public final class GuiFermiumBooterNotFound extends GuiScreen {
 	
 	@SuppressWarnings("incomplete-switch")
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(@Nonnull GuiButton button) {
 		switch(button.id) {
 			case 0: //Go to title
 				this.mc.displayGuiScreen(this.base);

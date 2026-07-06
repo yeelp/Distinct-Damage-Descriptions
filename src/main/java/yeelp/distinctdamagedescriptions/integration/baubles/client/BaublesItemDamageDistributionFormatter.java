@@ -18,6 +18,6 @@ public final class BaublesItemDamageDistributionFormatter extends AbstractModCom
 	}
 	
 	public static BaublesItemDamageDistributionFormatter getInstance() {
-		return instance == null ? new BaublesItemDamageDistributionFormatter() : instance;
+		return instance == null ? instance = new BaublesItemDamageDistributionFormatter() : instance;
 	}
 }

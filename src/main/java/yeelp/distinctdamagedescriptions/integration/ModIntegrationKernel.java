@@ -1,25 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
 import com.google.common.base.Predicates;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
+import com.google.common.collect.*;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -42,11 +24,20 @@ import yeelp.distinctdamagedescriptions.integration.spartanweaponry.SpartanWeapo
 import yeelp.distinctdamagedescriptions.integration.techguns.TechgunsCompat;
 import yeelp.distinctdamagedescriptions.integration.tetra.TetraIntegration;
 import yeelp.distinctdamagedescriptions.integration.thaumcraft.ThaumcraftIntegration;
-import yeelp.distinctdamagedescriptions.integration.thebewteenlands.TheBetweenlandsCompat;
+import yeelp.distinctdamagedescriptions.integration.thebetweenlands.TheBetweenlandsCompat;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.DDDConarmIntegration;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.DDDTinkersIntegration;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+@SuppressWarnings("Convert2MethodRef")
 public final class ModIntegrationKernel {
 	/**
 	 * Lists of mods that will try to load on DDD startup
@@ -83,18 +74,19 @@ public final class ModIntegrationKernel {
 		getStaticFieldValuesSortedByFieldName(ModConsts.IntegrationTitles.class).forEach((s) -> ID_NAME_CONVERTER.put(ids.next(), s));
 	}
 	
-	public static final String getTitleFromId(String id) {
+	public static String getTitleFromId(String id) {
 		return ID_NAME_CONVERTER.get(id);
 	}
 	
-	public static final String getIdFromTitle(String title) {
+	@SuppressWarnings("unused")
+    public static String getIdFromTitle(String title) {
 		return ID_NAME_CONVERTER.inverse().get(title);
 	}
 
 	/**
 	 * Load
 	 */
-	public static final void load() {
+	public static void load() {
 		integratableMods.entrySet().stream().filter(Predicates.compose(Loader::isModLoaded, Entry::getKey)).forEach((e) -> {
 			String id = e.getKey();
 			DistinctDamageDescriptions.info(String.format("Distinct Damage Descriptions found %s (%s)!", id, getTitleFromId(id)));
@@ -103,20 +95,20 @@ public final class ModIntegrationKernel {
 		});
 	}
 
-	public static final void doPreInit(FMLPreInitializationEvent evt) {
+	public static void doPreInit(FMLPreInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::preInit, evt);
 	}
 	
-	public static final void doInitStart(FMLInitializationEvent evt) {
+	public static void doInitStart(FMLInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::initStart, evt);
 	}
 
-	public static final void doInit(FMLInitializationEvent evt) {
+	public static void doInit(FMLInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::init, evt);
 		loadedMods.stream().map(IModIntegration::getHandlers).forEach((i) -> i.forEach(Handler::register));
 	}
 
-	public static final void doPostInit(FMLPostInitializationEvent evt) {
+	public static void doPostInit(FMLPostInitializationEvent evt) {
 		filterIfUnsuccessful(IModIntegration::postInit, evt);
 		loadedMods.stream().map(IModIntegration::getModID).filter(foundMods::contains).forEach(integrationLoaded::add);
 		if(foundMods.size() == loadedMods.size()) {
@@ -126,24 +118,24 @@ public final class ModIntegrationKernel {
 			DistinctDamageDescriptions.warn("DDD failed to load integrations with the following mods:");
 			YMath.setDifference(foundMods, integrationLoaded).stream().map((s) -> String.format("%s (%s)", getTitleFromId(s), s)).forEach(DistinctDamageDescriptions::warn);
 		}
-		loadedMods.stream().forEach(IModIntegration::registerCrossModCompat);
+		loadedMods.forEach(IModIntegration::registerCrossModCompat);
 	}
 
-	private static final <U> void filterIfUnsuccessful(BiPredicate<IModIntegration, U> p, U u) {
+	private static <U> void filterIfUnsuccessful(BiPredicate<IModIntegration, U> p, U u) {
 		loadedMods.removeIf(partialApplyPredicate(u, p).negate());
 	}
 
-	private static final <T, U> Predicate<T> partialApplyPredicate(U u, BiPredicate<T, U> p) {
+	private static <T, U> Predicate<T> partialApplyPredicate(U u, BiPredicate<T, U> p) {
 		return (t) -> p.test(t, u);
 	}
 	
-	private static final <C> Stream<String> getStaticFieldValuesSortedByFieldName(Class<C> clazz) {
+	private static <C> Stream<String> getStaticFieldValuesSortedByFieldName(Class<C> clazz) {
 		return Arrays.stream(clazz.getFields()).sorted(Comparator.comparing(Field::getName)).map((f) -> {
 			try {
 				return (String) f.get(null);
 			}
 			catch(IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+				DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 				throw new RuntimeException(e);
 			}
 		});

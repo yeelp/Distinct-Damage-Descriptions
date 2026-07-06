@@ -4,6 +4,8 @@ import yeelp.distinctdamagedescriptions.capability.distributors.ShieldDistributi
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 
+import javax.annotation.Nonnull;
+
 public final class DDDShieldClassesConfigReader implements DDDConfigReader {
 
 	@Override
@@ -25,11 +27,11 @@ public final class DDDShieldClassesConfigReader implements DDDConfigReader {
 			}
 			catch(ClassNotFoundException e) {
 				//Class doesn't exist, we don't need to add it. Continue.
-				continue;
 			}
 		}
 	}
 
+	@Nonnull
 	@Override
 	public String getName() {
 		return "DDD Compat: Shield Classes";

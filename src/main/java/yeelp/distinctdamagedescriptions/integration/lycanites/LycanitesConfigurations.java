@@ -5,8 +5,8 @@ import yeelp.distinctdamagedescriptions.config.DDDBaseConfiguration;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.init.DDDLoader;
-import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.init.DDDLoader.Initializer;
+import yeelp.distinctdamagedescriptions.init.DDDLoaderIDs;
 import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesPredefinedDistribution;
 
 @DDDLoader(modid = ModConsts.IntegrationIds.LYCANITES_ID, name = "Lycanites Configurations", requiredLoaders = DDDLoaderIDs.REGISTRIES)
@@ -19,7 +19,7 @@ public abstract class LycanitesConfigurations {
 
 	@Initializer
 	public static void init() {
-		creatureProjectiles = new DDDBaseConfiguration<String>(() -> "");
+		creatureProjectiles = new DDDBaseConfiguration<>(() -> "");
 		DDDConfigLoader.getInstance().enqueue(new LycaniteConfigReader());
 		DDDConfigLoader.getInstance().enqueueAll(LycanitesPredefinedDistribution.getReaders());
 	}

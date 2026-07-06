@@ -26,12 +26,13 @@ public interface IDDDProjectileConfiguration extends IDDDConfiguration<IDamageDi
 	 * @param projectile the Entity to check
 	 * @return true if registered
 	 */
+	@SuppressWarnings("unused")
 	boolean isProjectilePairRegistered(Entity projectile);
 
 	/**
 	 * Check if a projectile pair is registered by its item id.
 	 * 
-	 * @param itemID
+	 * @param itemID item id to check
 	 * @return true if registered
 	 */
 	boolean isProjectilePairRegistered(String itemID);

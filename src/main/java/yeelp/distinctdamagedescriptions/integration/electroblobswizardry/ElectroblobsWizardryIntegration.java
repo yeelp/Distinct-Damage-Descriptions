@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry;
 
-import java.util.stream.Stream;
-
 import com.google.common.collect.ImmutableList;
-
 import electroblob.wizardry.event.SpellCastEvent;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -23,11 +20,7 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.capability.WizardryLinkedDamageDistribution;
-import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client.DDDWizardryBookAddon;
-import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client.SpellCastInfoCallback;
-import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client.SpellDistributionItemFormatter;
-import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client.SpellInfoCallback;
-import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client.SpellcastingItemDamageDistributionFormatter;
+import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client.*;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.dist.UndeathBurningDistribution;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.dist.WizardrySlimeDistribution;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.dist.WizardrySpellDistribution;
@@ -35,6 +28,8 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
+
+import java.util.stream.Stream;
 
 public class ElectroblobsWizardryIntegration implements IModIntegration {
 	
@@ -61,7 +56,7 @@ public class ElectroblobsWizardryIntegration implements IModIntegration {
 	@Override
 	public boolean preInit(FMLPreInitializationEvent evt) {
 		DeveloperModeKernel.registerCallback(LivingAttackEvent.class, new SpellInfoCallback());
-		DeveloperModeKernel.<SpellCastEvent.Post>registerCallback(SpellCastEvent.Post.class, new SpellCastInfoCallback());
+		DeveloperModeKernel.registerCallback(SpellCastEvent.Post.class, new SpellCastInfoCallback());
 		return IModIntegration.super.preInit(evt);
 	}
 	
@@ -70,7 +65,8 @@ public class ElectroblobsWizardryIntegration implements IModIntegration {
 		if(evt.getSide().equals(Side.CLIENT)) {
 			DDDWizardryBookAddon.init();
 			//Much like lycanites integration, the cast here avoids BootstrapMethodError, which is important!
-			Stream.of((IModCompatTooltipFormatter<ItemStack>) SpellDistributionItemFormatter.getInstance(), SpellcastingItemDamageDistributionFormatter.getInstance()).forEach(TooltipDistributor::registerModCompat);
+            //noinspection RedundantCast
+            Stream.of((IModCompatTooltipFormatter<ItemStack>) SpellDistributionItemFormatter.getInstance(), SpellcastingItemDamageDistributionFormatter.getInstance()).forEach(TooltipDistributor::registerModCompat);
 		}
 		DDDRegistries.trackers.register(new UndeathBurningDistribution.UndeathBurningTracker());
 		Stream.of((DDDPredefinedDistribution) new WizardrySlimeDistribution(), new UndeathBurningDistribution()).forEach(DDDRegistries.distributions::register);

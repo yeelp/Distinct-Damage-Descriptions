@@ -1,14 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.enderskills.dist;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -19,11 +11,19 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDSingleDamageDistributionConfigReader;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 public abstract class EnderSkillsPredefinedDistribution extends DDDAbstractPredefinedDistribution {
 
 	protected final class ConfigReader extends DDDSingleDamageDistributionConfigReader {
 
-		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
+		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) {
 			super(name, configSup, fallbackSup);
 		}
 		
@@ -35,10 +35,11 @@ public abstract class EnderSkillsPredefinedDistribution extends DDDAbstractPrede
 		
 	}
 	
-	private static final Collection<EnderSkillsPredefinedDistribution> DISTS = ImmutableSet.of(new EnderSkillsShadowDistribution(), new SimpleEnderSkillsPredefinedDistribution("smash", () -> ModConfig.compat.enderskills.smashDist, () -> DefaultValues.SMASH_DISTRIBUTION), new EnderSkillsSyphonDistribution());
+	@SuppressWarnings("StaticInitializerReferencesSubClass")
+    private static final Collection<EnderSkillsPredefinedDistribution> DISTS = ImmutableSet.of(new EnderSkillsShadowDistribution(), new SimpleEnderSkillsPredefinedDistribution("smash", () -> ModConfig.compat.enderskills.smashDist, () -> DefaultValues.SMASH_DISTRIBUTION), new EnderSkillsSyphonDistribution());
 	
 	private IDamageDistribution dist;
-	private DDDConfigReader reader;
+	private final DDDConfigReader reader;
 	
 	protected EnderSkillsPredefinedDistribution(String name, Supplier<String> configSup, Supplier<String> fallbackSup) {
 		super(name, Source.BUILTIN);
@@ -51,18 +52,18 @@ public abstract class EnderSkillsPredefinedDistribution extends DDDAbstractPrede
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.isApplicable(src, target) ? this.dist.getCategories() : Collections.emptySet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.isApplicable(src, target) ? Optional.of(this.dist) : Optional.empty();
 	}
 	
 	protected abstract boolean isApplicable(DamageSource src, EntityLivingBase target);
 	
-	public static final void update() {
+	public static void update() {
 		DISTS.forEach(EnderSkillsPredefinedDistribution::readFromConfig);
 	}
 	
@@ -70,11 +71,12 @@ public abstract class EnderSkillsPredefinedDistribution extends DDDAbstractPrede
 		this.reader.read();
 	}
 	
-	public static final Iterable<DDDConfigReader> getReaders() {
-		return DISTS.stream().map((espd) -> espd.reader).collect(Collectors.toList());
+	public static Iterable<DDDConfigReader> getReaders() {
+        //noinspection SpellCheckingInspection
+        return DISTS.stream().map((espd) -> espd.reader).collect(Collectors.toList());
 	}
 	
-	public static final Iterable<EnderSkillsPredefinedDistribution> getDists() {
+	public static Iterable<EnderSkillsPredefinedDistribution> getDists() {
 		return DISTS;
 	}
 

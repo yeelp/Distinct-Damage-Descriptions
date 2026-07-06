@@ -1,14 +1,14 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
-import java.util.Optional;
-import java.util.function.Function;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.MobDamageDistributionFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipFormatterUtilities;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * An icon aggregator for mob damage distributions

@@ -1,8 +1,6 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
@@ -13,11 +11,14 @@ import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 public abstract class DDDSingleDamageDistributionConfigReader extends DDDSingleStringConfigReader {
 
 	private DDDConfigReaderException exception;
 	
-	public DDDSingleDamageDistributionConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
+	public DDDSingleDamageDistributionConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) {
 		super(name, configSup, fallbackSup);
 	}
 
@@ -38,7 +39,7 @@ public abstract class DDDSingleDamageDistributionConfigReader extends DDDSingleS
 			}
 		}
 		catch(ConfigParsingException e) {
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::err);
 		}
 	}
 

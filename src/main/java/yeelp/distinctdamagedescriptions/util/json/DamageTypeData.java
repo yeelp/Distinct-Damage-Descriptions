@@ -1,16 +1,17 @@
 package yeelp.distinctdamagedescriptions.util.json;
 
-import java.util.HashSet;
+import com.google.common.collect.Sets;
+
 import java.util.Set;
 
 public final class DamageTypeData {
 	public static final DamageTypeData NORMAL = new DamageTypeData();
-	private Set<String> directSources, indirectSources;
-	private String originalSource;
-	private boolean includeAll;
+	private final Set<String> directSources, indirectSources;
+	private final String originalSource;
+	private final boolean includeAll;
 
 	private DamageTypeData() {
-		this("", new HashSet<String>(), new HashSet<String>(), false);
+		this("", Sets.newHashSet(), Sets.newHashSet(), false);
 	}
 
 	public DamageTypeData(String name, Set<String> directSources, Set<String> indirectSources, boolean includeAll) {

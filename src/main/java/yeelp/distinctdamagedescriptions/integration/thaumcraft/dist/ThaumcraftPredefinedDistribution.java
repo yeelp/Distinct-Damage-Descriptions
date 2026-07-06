@@ -1,14 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.thaumcraft.dist;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import thaumcraft.api.damagesource.DamageSourceThaumcraft;
@@ -20,11 +12,19 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDSingleDamageDistributionConfigReader;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 public final class ThaumcraftPredefinedDistribution extends DDDAbstractPredefinedDistribution {
 
 	private final class ConfigReader extends DDDSingleDamageDistributionConfigReader {
 
-		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
+		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) {
 			super(name, configSup, fallbackSup);
 		}
 		
@@ -47,7 +47,7 @@ public final class ThaumcraftPredefinedDistribution extends DDDAbstractPredefine
 			new ThaumcraftPredefinedDistribution("liquid_death", DamageSourceThaumcraft.dissolve, () -> ModConfig.compat.thaumcraft.useLiquidDeathDist, () -> ModConfig.compat.thaumcraft.dissolveDistribution, () -> DefaultValues.DISSOLVE_DISTRIBUTION));
 	//@formatter:on
 	
-	protected ThaumcraftPredefinedDistribution(String name, DamageSource src, Supplier<Boolean> enabled, Supplier<String> config, Supplier<String> fallback) {
+	private ThaumcraftPredefinedDistribution(String name, DamageSource src, Supplier<Boolean> enabled, Supplier<String> config, Supplier<String> fallback) {
 		super("Thaumcraft: "+name, Source.BUILTIN);
 		this.src = src;
 		this.reader = this.new ConfigReader(this.getName(), config, fallback);
@@ -60,12 +60,12 @@ public final class ThaumcraftPredefinedDistribution extends DDDAbstractPredefine
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return src.equals(this.src) ? this.dist.getCategories() : Collections.emptySet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return src.equals(this.src) ? Optional.of(this.dist) : Optional.empty();
 	}
 	

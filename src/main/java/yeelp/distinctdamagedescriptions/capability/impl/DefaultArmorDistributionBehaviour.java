@@ -1,11 +1,7 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
@@ -15,6 +11,9 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 public enum DefaultArmorDistributionBehaviour implements IDefaultDistribution, IArmorDistribution {
 	NO_EFFECTIVENESS(() -> 0.0f) {
@@ -47,7 +46,8 @@ public enum DefaultArmorDistributionBehaviour implements IDefaultDistribution, I
 
 		@Override
 		public Set<DDDDamageType> getCategories() {
-			return this.types == null ? this.types = DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(DDDDamageType::isInternalType)).collect(ImmutableSet.toImmutableSet()) : this.types;
+            //noinspection UnstableApiUsage
+            return this.types == null ? this.types = DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(DDDDamageType::isInternalType)).collect(ImmutableSet.toImmutableSet()) : this.types;
 		}
 	},
 	ALLOW_BYPASS_DAMAGE_TYPE(() -> 1.0f) {
@@ -62,14 +62,16 @@ public enum DefaultArmorDistributionBehaviour implements IDefaultDistribution, I
 
 		@Override
 		public Set<DDDDamageType> getCategories() {
-			return this.types == null ? DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(DDDDamageType::isUnknownType)).collect(ImmutableSet.toImmutableSet()) : this.types;
+            //noinspection UnstableApiUsage
+            return this.types == null ? this.types = DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(DDDDamageType::isUnknownType)).collect(ImmutableSet.toImmutableSet()) : this.types;
 		}
 	};
 
-	private final DDDBaseMap<Float> dist;
+	@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final DDDBaseMap<Float> dist;
 	
-	private DefaultArmorDistributionBehaviour(Supplier<Float> defaultVal) {
-		this.dist = new DDDBaseMap<Float>(defaultVal);
+	DefaultArmorDistributionBehaviour(Supplier<Float> defaultVal) {
+		this.dist = new DDDBaseMap<>(defaultVal);
 	}
 	
 	@Override

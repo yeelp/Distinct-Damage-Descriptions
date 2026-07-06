@@ -1,18 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
-
 import slimeknights.mantle.client.book.BookTransformer;
 import slimeknights.mantle.client.book.data.BookData;
 import slimeknights.mantle.client.book.data.PageData;
@@ -27,9 +16,15 @@ import slimeknights.tconstruct.library.book.content.ContentListing;
 import slimeknights.tconstruct.library.book.content.ContentPageIconList;
 import slimeknights.tconstruct.library.materials.Material;
 
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 public abstract class DDDBookTransformer extends BookTransformer {
 
-	protected static abstract class BookTarget {
+	public static abstract class BookTarget {
 		private final BookData instance;
 		private final FileRepository repo;
 		private boolean registered = false;
@@ -79,12 +74,12 @@ public abstract class DDDBookTransformer extends BookTransformer {
 	protected abstract void transformBookWithRequestedSections(BookData book, Map<String, SectionData> requestedSections);
 
 	private Map<String, SectionData> getRequestedSections(BookData target) {
-		Map<String, SectionData> map = new HashMap<String, SectionData>();
+		Map<String, SectionData> map = new HashMap<>();
 		for(SectionData section : target.sections) {
 			int index = Arrays.binarySearch(this.requestedSections, section.name);
 			if(index >= 0) {
 				map.put(this.requestedSections[index], section);
-				if(map.values().size() == this.requestedSections.length) {
+				if(map.size() == this.requestedSections.length) {
 					break;
 				}
 			}
@@ -99,7 +94,7 @@ public abstract class DDDBookTransformer extends BookTransformer {
 		}
 		PageData ret = data.pages.get(data.pages.size() - 1);
 		ContentPageIconList overview = iter.next();
-		for(Material m : TinkerRegistry.getAllMaterials().stream().filter(Predicates.<Material>and(ImmutableList.of(Material::hasItems, isValidMaterial::test, Predicates.not(Material::isHidden)))).collect(Collectors.toList())) {
+		for(Material m : TinkerRegistry.getAllMaterials().stream().filter(Predicates.and(ImmutableList.of(Material::hasItems, isValidMaterial::test, Predicates.not(Material::isHidden)))).collect(Collectors.toList())) {
 			PageData page = new PageData(true);
 			page.content = generator.apply(page, m);
 			page.parent = data;
@@ -122,7 +117,7 @@ public abstract class DDDBookTransformer extends BookTransformer {
 		return Optional.of(ret);
 	}
 
-	protected static final void createListingPage(SectionData section, BiConsumer<SectionData, ContentListing> populater) {
+	protected static void createListingPage(SectionData section, BiConsumer<SectionData, ContentListing> populater) {
 		final ContentListing listing = new ContentListing();
 		final PageData listingPage = new PageData(true);
 		listing.title = section.translate(section.name);

@@ -1,13 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry.client;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import electroblob.wizardry.client.gui.handbook.GuiWizardHandbook;
 import electroblob.wizardry.util.MagicDamage.DamageType;
 import net.minecraft.util.text.TextFormatting;
@@ -25,6 +19,11 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public final class DDDWizardryBookAddon {
 
 	private static final Set<String> BASE_DAMAGE_TYPES = Stream.of(DamageType.BLAST, DamageType.FIRE, DamageType.FORCE, DamageType.MAGIC, DamageType.FROST, DamageType.POISON, DamageType.RADIANT, DamageType.SHOCK, DamageType.WITHER).map((t) -> t.toString().toLowerCase()).collect(Collectors.toSet());
@@ -40,7 +39,7 @@ public final class DDDWizardryBookAddon {
 		initDistributionTags();
 	}
 	
-	private static final void initDistributionTags() {
+	private static void initDistributionTags() {
 		WizardryConfigurations.spellTypeDist.forEach((entry) -> {
 			if(BASE_DAMAGE_TYPES.contains(entry.getKey().toLowerCase())) {
 				GuiWizardHandbook.addFormatTag(entry.getKey().toLowerCase()+"_dist", convertDistToGuidebookString(entry.getValue()));				
@@ -59,13 +58,13 @@ public final class DDDWizardryBookAddon {
 		GuiWizardHandbook.addFormatTag("ddd_others", YLib.joinNiceString(false, "\n\n", others.stream()));
 	}
 	
-	private static final String convertDistToGuidebookString(IDamageDistribution dist) {
+	private static String convertDistToGuidebookString(IDamageDistribution dist) {
 		DamageMap map = dist.distributeDamage(1.0f);
 		DDDMaps.adjustHiddenWeightsToUnknown(map);
-		return YLib.joinNiceString(false, "\n", map.entrySet().stream().map((e) -> String.format("- %s %s %s", DDDNumberFormatter.PERCENT.format(e.getValue()), getFormattedTypeName(e.getKey()), TextFormatting.BLACK.toString())));
+		return YLib.joinNiceString(false, "\n", map.entrySet().stream().map((e) -> String.format("- %s %s %s", DDDNumberFormatter.PERCENT.format(e.getValue()), getFormattedTypeName(e.getKey()), TextFormatting.BLACK)));
 	}
 	
-	private static final String getFormattedTypeName(DDDDamageType type) {
+	private static String getFormattedTypeName(DDDDamageType type) {
 		if(type.isCustomDamage() || type.getType().equals(Type.SPECIAL)) {
 			return type.getFormattedDisplayName();
 		}

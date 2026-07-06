@@ -5,6 +5,8 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
+import javax.annotation.Nonnull;
+
 public class EnchantmentSlyStrike extends AbstractDDDEnchantment {
 
 	public static final String NAME = "slystrike";
@@ -34,13 +36,8 @@ public class EnchantmentSlyStrike extends AbstractDDDEnchantment {
 		return true;
 	}
 
-	@Override
-	public int getMaxLevel() {
-		return 1;
-	}
-
-	@Override
-	public boolean canApplyTogether(Enchantment ench) {
+    @Override
+	public boolean canApplyTogether(@Nonnull Enchantment ench) {
 		return super.canApplyTogether(ench) && ench != DDDEnchantments.bruteForce;
 	}
 }

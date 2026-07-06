@@ -14,7 +14,7 @@ public final class EnderSkillsShadowDistribution extends SimpleEnderSkillsPredef
 	}
 
 	@Override
-	protected final boolean isApplicable(DamageSource src, EntityLivingBase target) {
-		return super.isApplicable(src, target) && SkillHelper.isActiveFrom(src.getTrueSource(), ModAbilities.SHADOW);
+	protected boolean isApplicable(DamageSource src, EntityLivingBase target) {
+		return super.isApplicable(src, target) && src.getTrueSource() != null && SkillHelper.isActiveFrom(src.getTrueSource(), ModAbilities.SHADOW);
 	}
 }

@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -14,6 +11,8 @@ import yeelp.distinctdamagedescriptions.capability.IDefaultDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
+import java.util.Set;
+
 public enum DefaultDamageDistributionBehaviour implements IDefaultDistribution, IDamageDistribution{
 	BLUDGEONING(DDDBuiltInDamageType.BLUDGEONING),
 	PIERCING(DDDBuiltInDamageType.PIERCING),
@@ -22,7 +21,7 @@ public enum DefaultDamageDistributionBehaviour implements IDefaultDistribution, 
 
 	private final DDDDamageType type;
 	
-	private DefaultDamageDistributionBehaviour(DDDDamageType type) {
+	DefaultDamageDistributionBehaviour(DDDDamageType type) {
 		this.type = type;
 	}
 	@Override

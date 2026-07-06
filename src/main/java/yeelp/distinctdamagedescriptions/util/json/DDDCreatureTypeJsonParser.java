@@ -1,11 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.json;
 
-import java.util.Set;
-
 import com.google.gson.JsonObject;
-
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.api.impl.CreatureType;
+
+import java.util.Set;
 
 public class DDDCreatureTypeJsonParser extends AbstractJsonParser<Tuple<CreatureType, Iterable<String>>> {
 
@@ -20,8 +19,8 @@ public class DDDCreatureTypeJsonParser extends AbstractJsonParser<Tuple<Creature
 			throw new IllegalArgumentException("unknown is an invalid type name!");
 		}
 		boolean critImmunity = this.getBoolean("critical_hit_immunity");
-		boolean flammable = this.hasKey("flammable") ? this.getBoolean("flammable") : true;
+		boolean flammable = !this.hasKey("flammable") || this.getBoolean("flammable");
 		Set<String> potionImmunities = this.extractStringsFromArray("potion_immunities");
-		return new Tuple<CreatureType, Iterable<String>>(new CreatureType(type, potionImmunities, critImmunity, flammable), this.extractStringsFromArray("mobs"));
+		return new Tuple<>(new CreatureType(type, potionImmunities, critImmunity, flammable), this.extractStringsFromArray("mobs"));
 	}	
 }

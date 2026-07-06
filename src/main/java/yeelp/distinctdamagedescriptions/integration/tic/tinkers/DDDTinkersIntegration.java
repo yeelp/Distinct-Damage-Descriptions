@@ -1,11 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers;
 
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,6 +43,11 @@ import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.Modifi
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.modifiers.ModifierSlyStrike;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
 public class DDDTinkersIntegration extends DDDTiCIntegration {
 	private static final Field TINKER_STENCIL_REGISTRY;
 	private static final Class<?> TINKER_REGISTRY;
@@ -61,7 +61,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 		private final List<MeltingRecipe> recipesToFix;
 
 		private MeltingListener() {
-			this.recipesToFix = new LinkedList<MeltingRecipe>();
+			this.recipesToFix = new LinkedList<>();
 		}
 
 		@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -97,7 +97,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 			throw new RuntimeException(e);
 		}
 		catch(SecurityException e) {
-			DistinctDamageDescriptions.fatal("Some security problem occured initializing Tinker's integration.");
+			DistinctDamageDescriptions.fatal("Some security problem occurred initializing Tinker's integration.");
 			throw new RuntimeException(e);
 		}
 		MeltingListener.getInstance().register();
@@ -126,7 +126,7 @@ public class DDDTinkersIntegration extends DDDTiCIntegration {
 		
 		if(TConstruct.pulseManager.isPulseLoaded(TinkerRangedWeapons.PulseId)) {
 			for(Item i : ImmutableList.of(TinkerRangedWeapons.arrow, TinkerRangedWeapons.bolt, TinkerRangedWeapons.shuriken)) {
-				String s = ForgeRegistries.ITEMS.getKey(i).toString();
+				String s = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(i)).toString();
 				DDDConfigurations.projectiles.registerItemProjectilePair(s, s);
 				DDDConfigurations.projectiles.put(s, new TinkersLinkedProjectileDistribution());
 			}

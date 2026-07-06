@@ -2,7 +2,7 @@ package yeelp.distinctdamagedescriptions.capability;
 
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 
 /**
  * Armor resistances
@@ -14,8 +14,8 @@ public interface IArmorDistribution extends IDistribution {
 	/**
 	 * Distribute armor points into damage categories
 	 * 
-	 * @param armor
-	 * @param toughness
+	 * @param armor armor value
+	 * @param toughness toughness value
 	 * @return an ArmorMap with the distributed armor and toughness
 	 */
 	ArmorMap distributeArmor(float armor, float toughness);

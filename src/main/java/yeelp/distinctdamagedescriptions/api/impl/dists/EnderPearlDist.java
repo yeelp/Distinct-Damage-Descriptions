@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.util.Set;
-import java.util.UUID;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
@@ -16,6 +12,9 @@ import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+
+import java.util.Set;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
 public final class EnderPearlDist extends AbstractSingleTypeDist {

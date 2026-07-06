@@ -1,11 +1,13 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.util.function.Function;
-
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 
+import javax.annotation.Nonnull;
+import java.util.function.Function;
+
+@SuppressWarnings("unused")
 public final class DDDNumericModIDPrependingConfigReader<T extends Number> extends DDDNumericEntryConfigReader<T> {
 
 	private final String modid;
@@ -15,6 +17,7 @@ public final class DDDNumericModIDPrependingConfigReader<T extends Number> exten
 		this.modid = modID;
 	}
 
+	@Nonnull
 	@Override
 	protected Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
 		if(!s.contains(":")) {

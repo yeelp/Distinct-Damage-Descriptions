@@ -1,8 +1,8 @@
 package yeelp.distinctdamagedescriptions.config.readers.exceptions;
 
-import java.util.function.Consumer;
-
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+
+import java.util.function.Consumer;
 
 public abstract class DDDConfigReaderException extends Exception {
 
@@ -13,7 +13,7 @@ public abstract class DDDConfigReaderException extends Exception {
 
 		private final Consumer<String> logger;
 
-		private LogLevel(Consumer<String> logger) {
+		LogLevel(Consumer<String> logger) {
 			this.logger = logger;
 		}
 
@@ -34,7 +34,7 @@ public abstract class DDDConfigReaderException extends Exception {
 		this.level = level;
 	}
 	
-	protected DDDConfigReaderException(Exception cause, LogLevel level) {
+	protected DDDConfigReaderException(Exception cause, @SuppressWarnings("SameParameterValue") LogLevel level) {
 		super(cause.getLocalizedMessage(), cause);
 		this.level = level;
 	}

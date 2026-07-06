@@ -1,10 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.api.entity.IEntityDefinition;
 import crafttweaker.api.minecraft.CraftTweakerMC;
@@ -13,6 +10,8 @@ import yeelp.distinctdamagedescriptions.api.IHasCreationSource.Source;
 import yeelp.distinctdamagedescriptions.api.impl.CreatureType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import java.util.Map;
 
 public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 
@@ -71,7 +70,9 @@ public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 		if(def == null) {
 			CraftTweakerAPI.logError("addEntityToType encountered null IEntityDefinition! Check namespace and id! Will continue execution, but will throw a NullPointerException!");
 		}
-		DDDRegistries.creatureTypes.addTypeToEntity(def.getId(), this.data);
+		//intentional NPE if def == null
+        //noinspection DataFlowIssue
+        DDDRegistries.creatureTypes.addTypeToEntity(def.getId(), this.data);
 		return this;
 	}
 
@@ -81,6 +82,8 @@ public class CTCreatureTypeDefinition implements ICTCreatureTypeDefinition {
 		if(def == null) {
 			CraftTweakerAPI.logError("removeEntityToType encountered null IEntityDefinition! Check namespace and id! Will continue execution, but will throw a NullPointerException!");
 		}
+		//intentional NPE if def == null
+		//noinspection DataFlowIssue
 		DDDRegistries.creatureTypes.removeTypeFromEntity(def.getId(), this.data);
 		return this;
 	}

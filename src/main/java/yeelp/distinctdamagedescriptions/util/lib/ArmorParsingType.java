@@ -1,13 +1,12 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.function.UnaryOperator;
-
 import com.google.common.base.Predicates;
-
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Parsing type for Armor configs

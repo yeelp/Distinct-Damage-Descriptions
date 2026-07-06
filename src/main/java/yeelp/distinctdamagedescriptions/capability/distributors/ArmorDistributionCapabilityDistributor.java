@@ -38,7 +38,7 @@ public final class ArmorDistributionCapabilityDistributor extends AbstractCapabi
 		return configResult;
 	}
 
-	public static final ArmorDistributionCapabilityDistributor getInstance() {
+	public static ArmorDistributionCapabilityDistributor getInstance() {
 		return instance == null ? instance = new ArmorDistributionCapabilityDistributor() : instance;
 	}
 }

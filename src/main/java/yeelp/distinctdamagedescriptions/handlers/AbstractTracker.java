@@ -1,12 +1,12 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
+import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * A skeletal implementation of a tracker, Tracks entities on a
@@ -16,16 +16,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
  */
 public abstract class AbstractTracker extends Handler {
-	private final Set<UUID> tracking = new HashSet<UUID>();
+	private final Set<UUID> tracking = Sets.newHashSet();
 
 	@SubscribeEvent
 	public final void onEntityUpdate(final LivingUpdateEvent evt) {
 		EntityLivingBase entity = evt.getEntityLiving();
 		UUID id = entity.getUniqueID();
-		if(isTracking(id) && shouldStopTracking(entity)) {
+		if(this.isTracking(id) && this.shouldStopTracking(entity)) {
 			this.tracking.remove(id);
 		}
-		else if(shouldStartTracking(entity)) {
+		else if(this.shouldStartTracking(entity)) {
 			this.tracking.add(id);
 		}
 	}
@@ -41,6 +41,6 @@ public abstract class AbstractTracker extends Handler {
 	}
 
 	public final boolean isTracking(EntityLivingBase entity) {
-		return isTracking(entity.getUniqueID());
+		return this.isTracking(entity.getUniqueID());
 	}
 }

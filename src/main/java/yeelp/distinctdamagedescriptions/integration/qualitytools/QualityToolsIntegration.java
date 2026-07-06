@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.qualitytools;
 
-import java.util.Optional;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -25,13 +22,15 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.I
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipDistributor;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter.Armor;
 
+import java.util.Optional;
+
 public final class QualityToolsIntegration implements IModIntegration {
 
-	private static interface QualityToolsConsts {
-		final String QUALITY_TAG = "Quality";
-		final String ATTRIBUTE_MODIFIERS_TAG = "AttributeModifiers";
-		final String ATTRIBUTE_NAME_TAG = "AttributeName";
-		final String AMOUNT_TAG = "Amount";
+	private interface QualityToolsConsts {
+		String QUALITY_TAG = "Quality";
+		String ATTRIBUTE_MODIFIERS_TAG = "AttributeModifiers";
+		String ATTRIBUTE_NAME_TAG = "AttributeName";
+		String AMOUNT_TAG = "Amount";
 	}
 
 	@Override
@@ -134,6 +133,7 @@ public final class QualityToolsIntegration implements IModIntegration {
 	}
 	
 	static boolean hasQuality(ItemStack stack) {
+		//noinspection DataFlowIssue
 		return stack.hasTagCompound() && stack.getTagCompound().hasKey(QualityToolsConsts.QUALITY_TAG);
 	}
 }

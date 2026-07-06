@@ -1,8 +1,8 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
-import java.util.function.Function;
-
 import yeelp.distinctdamagedescriptions.api.IHasCreationSource;
+
+import java.util.function.Function;
 
 public abstract class DDDSourcedRegistry<T extends IHasCreationSource> extends DDDBaseRegistry<T> {
 

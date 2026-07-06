@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import com.google.common.base.Predicates;
+
 import java.util.Comparator;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
-
-import com.google.common.base.Predicates;
 
 public enum ArmorCalculationType {
 	ADD {

@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
@@ -10,114 +9,112 @@ import net.minecraft.nbt.NBTTagString;
 
 public interface ModConsts {
 	
-	final String MODID = "distinctdamagedescriptions";
-	final String MODID_SHORT = "ddd";
-	final String NAME = "Distinct Damage Descriptions";
-	final String VERSION = "@version@";
+	String MODID = "distinctdamagedescriptions";
+	String MODID_SHORT = "ddd";
+	String NAME = "Distinct Damage Descriptions";
+	String VERSION = "@version@";
 	
-	public interface DamageTypeNames {
-		final String UNKNOWN = "unknown";
-		final String NORMAL = "normal";
-		final String SLASHING = "slashing";
-		final String PIERCING = "piercing";
-		final String BLUDGEONING = "bludgeoning";
-		final String ACID = "acid";
-		final String COLD = "cold";
-		final String FIRE = "fire";
-		final String FORCE = "force";
-		final String LIGHTNING = "lightning";
-		final String NECROTIC = "necrotic";
-		final String POISON = "poison";
-		final String PSYCHIC = "psychic";
-		final String RADIANT = "radiant";
-		final String THUNDER = "thunder";
+	interface DamageTypeNames {
+		String UNKNOWN = "unknown";
+		String NORMAL = "normal";
+		String SLASHING = "slashing";
+		String PIERCING = "piercing";
+		String BLUDGEONING = "bludgeoning";
+		String ACID = "acid";
+		String COLD = "cold";
+		String FIRE = "fire";
+		String FORCE = "force";
+		String LIGHTNING = "lightning";
+		String NECROTIC = "necrotic";
+		String POISON = "poison";
+		String PSYCHIC = "psychic";
+		String RADIANT = "radiant";
+		String THUNDER = "thunder";
 	}
 	
-	public interface IntegrationIds {
-		final String CRAFTTWEAKER_ID = "crafttweaker";
-		final String CONTENTTWEAKER_ID = "contenttweaker";
-		final String HWYLA_ID = "waila";
-		final String TCONSTRUCT_ID = "tconstruct";
-		final String CONARM_ID = "conarm";
-		final String TETRA_ID = "tetra";
-		final String LYCANITES_ID = "lycanitesmobs";
-		final String SPARTAN_WEAPONRY_ID = "spartanweaponry";
-		final String BETWEENLANDS_ID = "thebetweenlands";
-		final String FIRST_AID_ID = "firstaid";
-		final String QUALITY_TOOLS_ID = "qualitytools";
-		final String BAUBLES_ID	= "baubles";
-		final String TECHGUNS_ID = "techguns";
-		final String WIZARDRY_ID = "ebwizardry";
-		final String THAUMCRAFT_ID = "thaumcraft";
-		final String FERMIUM_ID = "fermiumbooter";
-		final String BETTER_SURVIVAL_ID = "mujmajnkraftsbettersurvival";
-		final String ENDER_SKILLS_ID = "enderskills";
+	interface IntegrationIds {
+		String CRAFTTWEAKER_ID = "crafttweaker";
+		String CONTENTTWEAKER_ID = "contenttweaker";
+		String HWYLA_ID = "waila";
+		String TCONSTRUCT_ID = "tconstruct";
+		String CONARM_ID = "conarm";
+		String TETRA_ID = "tetra";
+		String LYCANITES_ID = "lycanitesmobs";
+		String SPARTAN_WEAPONRY_ID = "spartanweaponry";
+		String BETWEENLANDS_ID = "thebetweenlands";
+		String FIRST_AID_ID = "firstaid";
+		String QUALITY_TOOLS_ID = "qualitytools";
+		String BAUBLES_ID	= "baubles";
+		String TECHGUNS_ID = "techguns";
+		String WIZARDRY_ID = "ebwizardry";
+		String THAUMCRAFT_ID = "thaumcraft";
+		String FERMIUM_ID = "fermiumbooter";
+		String BETTER_SURVIVAL_ID = "mujmajnkraftsbettersurvival";
+		String ENDER_SKILLS_ID = "enderskills";
 	}
 	
-	public interface IntegrationTitles {
-		final String CRAFTWEAKER_TITLE = "CraftTweaker";
-		final String CONTENTTWEAKER_TITLE = "ContentTweaker";
-		final String HWYLA_TITLE = "HWYLA";
-		final String TCONSTUCT_TITLE = "Tinker's Construct";
-		final String CONARM_TITLE = "Construct's Armory";
-		final String TETRA_TITLE = "Tetra";
-		final String LYCANITES_TITLE = "Lycanite's Mobs";
-		final String SPARTAN_WEAPONRY_TITLE = "Spartan Weaponry";
-		final String BETWEENLANDS_TITLE = "The Betweenlands";
-		final String FIRST_AID_TITLE = "First Aid";
-		final String QUALITY_TOOLS_TITLE = "Quality Tools";
-		final String BAUBLES_TITLE = "Baubles";
-		final String TECHGUNS_TITLE = "Techguns";
-		final String WIZARDRY_NAME = "Electroblob's Wizardry";
-		final String THAUMCRAFT_TITLE = "Thaumcraft";
-		final String FERMIUM_TITLE = "Fermium Booter";
-		final String BETTER_SURVIVAL_TITLE = "Better Survival";
-		final String ENDER_SKILLS_TITLE = "Ender Skills";
+	interface IntegrationTitles {
+		String CRAFTTWEAKER_TITLE = "CraftTweaker";
+		String CONTENTTWEAKER_TITLE = "ContentTweaker";
+		String HWYLA_TITLE = "HWYLA";
+		String TCONSTUCT_TITLE = "Tinker's Construct";
+		String CONARM_TITLE = "Construct's Armory";
+		String TETRA_TITLE = "Tetra";
+		String LYCANITES_TITLE = "Lycanite's Mobs";
+		String SPARTAN_WEAPONRY_TITLE = "Spartan Weaponry";
+		String BETWEENLANDS_TITLE = "The Betweenlands";
+		String FIRST_AID_TITLE = "First Aid";
+		String QUALITY_TOOLS_TITLE = "Quality Tools";
+		String BAUBLES_TITLE = "Baubles";
+		String TECHGUNS_TITLE = "Techguns";
+		String WIZARDRY_NAME = "Electroblob's Wizardry";
+		String THAUMCRAFT_TITLE = "Thaumcraft";
+		String FERMIUM_TITLE = "Fermium Booter";
+		String BETTER_SURVIVAL_TITLE = "Better Survival";
+		String ENDER_SKILLS_TITLE = "Ender Skills";
 	}
 	
-	public interface TooltipConsts {
-		final String CTRL = "ctrl";
-		final String SHIFT = "shift";
-		final String KEYS_ROOT = "keys";
-		final String TOOLTIPS_ROOT = "tooltips";
-		final String NO_RESISTS = "noresists";
-		final String UNCHANGED = "unchanged";
-		final String NO_ICONS = "dddnoicons";
-		final String NO_TOOLTIP = "notooltip";
+	interface TooltipConsts {
+		String CTRL = "ctrl";
+		String SHIFT = "shift";
+		String KEYS_ROOT = "keys";
+		String TOOLTIPS_ROOT = "tooltips";
+		String NO_RESISTS = "noresists";
+		String NO_TOOLTIP = "notooltip";
 		
-		final String DAMAGE = "damage";
-		final String RESISTANCE = "resistance";
-		final String WEAKNESS = "weakness";
-		final String EFFECTIVENESS = "effectiveness";
-		final String ADAPTABILITY_CHANCE = "adaptivechance";
-		final String ADAPTABILITY_AMOUNT = "adaptiveamount";
-		final String IMMUNITIES = "immunities";
+		String DAMAGE = "damage";
+		String RESISTANCE = "resistance";
+		String WEAKNESS = "weakness";
+		String EFFECTIVENESS = "effectiveness";
+		String ADAPTABILITY_CHANCE = "adaptivechance";
+		String ADAPTABILITY_AMOUNT = "adaptiveamount";
+		String IMMUNITIES = "immunities";
 	}
 	
-	public interface CommandConsts {
-		final String COMMANDS_ROOT = "commands";
-		final String NO_TARGETS = "notargets";
-		final String INVALID_TYPE = "invalidtype";
-		final String USAGE = "usage";
-		final String SUCCESS = "success";
+	interface CommandConsts {
+		String COMMANDS_ROOT = "commands";
+		String NO_TARGETS = "notargets";
+		String INVALID_TYPE = "invalidtype";
+		String USAGE = "usage";
+		String SUCCESS = "success";
 	}
 	
-	public interface NBT {
-		final byte COMPOUND_TAG_ID = (new NBTTagCompound()).getId();
-		final byte LIST_TAG_ID = (new NBTTagList()).getId();
-		final byte STRING_TAG_ID = (new NBTTagString()).getId();
-		final byte FLOAT_TAG_ID = (new NBTTagFloat(0)).getId();
-		final String ATTRIBUTE_MODIFIERS_KEY = "AttributeModifiers";
-		final String NAME_KEY = "Name";
-		final String ATTRIBUTE_NAME_KEY = "AttributeName";
+	interface NBT {
+		byte COMPOUND_TAG_ID = (new NBTTagCompound()).getId();
+		byte LIST_TAG_ID = (new NBTTagList()).getId();
+		byte STRING_TAG_ID = (new NBTTagString()).getId();
+		@SuppressWarnings("unused")
+		byte FLOAT_TAG_ID = (new NBTTagFloat(0)).getId();
+		String ATTRIBUTE_MODIFIERS_KEY = "AttributeModifiers";
+		String NAME_KEY = "Name";
 	}
 
-	final EntityEquipmentSlot[] ARMOR_SLOTS = {
+	EntityEquipmentSlot[] ARMOR_SLOTS = {
 			EntityEquipmentSlot.CHEST,
 			EntityEquipmentSlot.FEET,
 			EntityEquipmentSlot.HEAD,
 			EntityEquipmentSlot.LEGS};
-	final Iterable<EntityEquipmentSlot> ARMOR_SLOTS_ITERABLE = ImmutableList.copyOf(ARMOR_SLOTS);
+	Iterable<EntityEquipmentSlot> ARMOR_SLOTS_ITERABLE = ImmutableList.copyOf(ARMOR_SLOTS);
 	
-	final String BUILT_IN = "Built-in";
+	String BUILT_IN = "Built-in";
 }

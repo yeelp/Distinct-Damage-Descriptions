@@ -1,11 +1,5 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -15,6 +9,8 @@ import yeelp.distinctdamagedescriptions.capability.IDamageResistances;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullSet;
+
+import java.util.*;
 
 /**
  * Base capability for damage resistance capabilities
@@ -37,8 +33,8 @@ public abstract class DamageResistances extends AbstractUpdatableCapability<NBTT
 	DamageResistances(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities) {
 		this.resistances = resistances.keySet().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, resistances::get));
 		this.immunities = NonNullSet.newNonNullSetRemoveNulls(immunities);
-		(this.originalResistances = new DDDBaseMap<Float>(() -> 0.0f)).putAll(this.resistances);
-		this.originalImmunities = new NonNullSet<DDDDamageType>(this.immunities);
+		(this.originalResistances = new DDDBaseMap<>(() -> 0.0f)).putAll(this.resistances);
+		this.originalImmunities = NonNullSet.newNonNullSet(this.immunities);
 	}
 
 	@Override
@@ -148,7 +144,7 @@ public abstract class DamageResistances extends AbstractUpdatableCapability<NBTT
 	}
 
 	protected Set<DDDDamageType> copyImmunities() {
-		return new HashSet<DDDDamageType>(this.immunities);
+		return new HashSet<>(this.immunities);
 	}
 
 	protected DDDBaseMap<Float> copyMap() {

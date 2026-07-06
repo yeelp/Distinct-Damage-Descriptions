@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.network;
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +8,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class MobResistancesMessage extends AbstractCapabilityMessage<NBTBase> {
 	public MobResistancesMessage(IMobResistances mobResists) {
@@ -23,7 +24,7 @@ public class MobResistancesMessage extends AbstractCapabilityMessage<NBTBase> {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		try {
-			this.deserializeNBT(new PacketBuffer(buf).readCompoundTag());
+			this.deserializeNBT(Objects.requireNonNull(new PacketBuffer(buf).readCompoundTag()));
 		}
 		catch(IOException e) {
 			throw new RuntimeException("Was unable to read NBTTagCompound", e);
@@ -37,7 +38,8 @@ public class MobResistancesMessage extends AbstractCapabilityMessage<NBTBase> {
 
 	@Override
 	public IMessageHandler<AbstractCapabilityMessage<NBTBase>, IMessage> getMessageHandler() {
-		return new CapabilityMessageHandler<NBTBase>((msg, plyer) -> DDDAPI.accessor.getMobResistances(plyer).get().deserializeNBT(msg.serializeNBT()));
+		//noinspection OptionalGetWithoutIsPresent
+		return new CapabilityMessageHandler<>((msg, player) -> DDDAPI.accessor.getMobResistances(player).get().deserializeNBT(msg.serializeNBT()));
 	}
 
 }

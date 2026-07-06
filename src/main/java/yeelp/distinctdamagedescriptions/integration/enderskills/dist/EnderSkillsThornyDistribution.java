@@ -31,11 +31,8 @@ public final class EnderSkillsThornyDistribution extends AbstractSingleTypeDist 
 		if(!((EntityDamageSource) source).getIsThornsDamage() && !source.damageType.equals(DamageSource.CACTUS.damageType)) {
 			return false;				
 		}
-		if(!SkillHelper.isActive(attacker, ModAbilities.THORNY)) {
-			return false;
-		}
-		return true;
-	}
+        return SkillHelper.isActive(attacker, ModAbilities.THORNY);
+    }
 	
 	@Override
 	public int priority() {

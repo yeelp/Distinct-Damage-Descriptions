@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import com.google.common.collect.Sets;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 
 /**
  * A simple container for storing resistances
@@ -14,18 +14,18 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
  *
  */
 public abstract class ResistanceCategories {
-	private DDDBaseMap<Float> resistMap;
-	private Set<DDDDamageType> dmgImmunities;
+	private final DDDBaseMap<Float> resistMap;
+	private final Set<DDDDamageType> dmgImmunities;
 
 	protected ResistanceCategories(Map<DDDDamageType, Float> resistances, Collection<DDDDamageType> immunities) {
 		this.resistMap = resistances.keySet().stream().collect(DDDBaseMap.typesToDDDBaseMap(() -> 0.0f, resistances::get));
-		this.dmgImmunities = new HashSet<DDDDamageType>(immunities);
+		this.dmgImmunities = Sets.newHashSet(immunities);
 	}
 
 	/**
 	 * Get resistance for a certain damage type.
 	 * 
-	 * @param type
+	 * @param type damage type to get resistance for.
 	 * @return resistance to that damage type.
 	 */
 	public float getResistance(DDDDamageType type) {
@@ -35,7 +35,7 @@ public abstract class ResistanceCategories {
 	/**
 	 * Check if immunity to this damage type exists
 	 * 
-	 * @param type
+	 * @param type damage type to check for immunity.
 	 * @return true if immune, false if not.
 	 */
 	public boolean hasImmunity(DDDDamageType type) {

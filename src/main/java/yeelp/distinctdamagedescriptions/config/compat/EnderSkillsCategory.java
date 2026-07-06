@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 
+@SuppressWarnings("ALL")
 public final class EnderSkillsCategory {
 
 	@Name("Use Thorny Distribution")
@@ -17,7 +18,7 @@ public final class EnderSkillsCategory {
 
 	@Name("Skill Distribution")
 	@Comment({
-			"Set what Ender Skills do what kind of damage. If the skill is inflicting damage over time effects, those effects should be defined in Skill DOT Distirbution, not here.",
+			"Set what Ender Skills do what kind of damage. If the skill is inflicting damage over time effects, those effects should be defined in Skill DOT Distribution, not here.",
 			"Some skills do damage via fire or explosions; these methods of damage are accounted for already with DDD's fire and explosion distributions. As such, skills that only do damage in that way don't need to be included in this list.",
 			"If they are included, they take precedence over DDD's fire and explosion distributions. The default values include all skills that require a distribution to be set to 'work'.",
 			"Format is id;[(t,a)] where:",

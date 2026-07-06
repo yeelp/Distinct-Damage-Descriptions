@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.function.Supplier;
-
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.api.IDDDCapModifier;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import java.util.function.Supplier;
 
 /**
  * A skeletal implementation of an {@link IDDDCapModifier}.
@@ -13,7 +13,7 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
  */
 public abstract class AbstractDDDCapModifier<T extends ICapabilityProvider> extends DDDBaseMap<Float> implements IDDDCapModifier<T> {
 
-	private Source src;
+	private final Source src;
 	private final boolean shouldReallocate;
 	
 	protected AbstractDDDCapModifier(Supplier<Float> defaultVal, Source src, boolean shouldReallocate) {

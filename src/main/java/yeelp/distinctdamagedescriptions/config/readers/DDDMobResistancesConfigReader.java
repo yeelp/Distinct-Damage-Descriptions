@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
@@ -12,15 +9,20 @@ import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.MobResistanceCategories;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Set;
+
 public final class DDDMobResistancesConfigReader extends DDDBasicConfigReader<MobResistanceCategories> {
 
 	private static final String IMMUNITY_REGEX = ConfigReaderUtilities.buildListRegex(ConfigReaderUtilities.DAMAGE_TYPE_SUBREGEX, true);
 	private static final String RESIST_REGEX = ConfigReaderUtilities.buildListRegex(ConfigReaderUtilities.ALLOW_NEGATIVE_ENTRY_TUPLE_SUBREGEX, true);
 
-	public DDDMobResistancesConfigReader(String[] configList) throws NoSuchMethodException, SecurityException {
+	public DDDMobResistancesConfigReader(String[] configList) throws NoSuchMethodException {
 		super("Mob Resistances", configList, DDDConfigurations.mobResists, MobResistanceCategories.class.getConstructor(NonNullMap.class, Collection.class, float.class, float.class), 0.0f);
 	}
 
+	@Nonnull
 	@Override
 	protected MobResistanceCategories parseMapping(String entry, String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
 		if(key.equals("player") && additionalInfo.length == 2) {
@@ -43,7 +45,7 @@ public final class DDDMobResistancesConfigReader extends DDDBasicConfigReader<Mo
 	}
 
 	private Collection<DDDDamageType> parseImmunities(final String entry, String immunities) throws ConfigParsingException {
-		Set<DDDDamageType> result = new HashSet<DDDDamageType>();
+		Set<DDDDamageType> result = Sets.newHashSet();
 		if(immunities.equals("[]")) {
 			return result;
 		}

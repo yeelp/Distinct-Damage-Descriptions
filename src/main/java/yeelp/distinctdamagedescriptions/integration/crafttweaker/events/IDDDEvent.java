@@ -12,20 +12,20 @@ import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 
-@ZenClass(CTConsts.CTClasses.EVENT)
-@ZenRegister
 /**
  * Base CraftTweaker DistinctDamageDescription Event <br>
  * This event extends IEntityEvent. Use IEntityEvent's getEntity() to get the
  * attacking Entity
- * 
+ *
  * @author Yeelp
  *
  */
+@ZenClass(CTConsts.CTClasses.EVENT)
+@ZenRegister
 public interface IDDDEvent extends IEntityEvent {
 	/**
 	 * Get the defender
-	 * 
+	 *
 	 * @return the IEntityLivingBase for the defending entity
 	 */
 	@ZenGetter("defender")
@@ -35,7 +35,7 @@ public interface IDDDEvent extends IEntityEvent {
 	 * Get the attacker. Merely syntactic sugar for those who want more readable
 	 * scripts and wish to distinguish attacker and defender as such. Merely calls
 	 * {@link IEntityEvent#getEntity()}
-	 * 
+	 *
 	 * @return The IEntity attacker
 	 */
 	@ZenGetter("attacker")
@@ -45,7 +45,7 @@ public interface IDDDEvent extends IEntityEvent {
 
 	/**
 	 * Gets the true attacker. The shulker, not the bullet.
-	 * 
+	 *
 	 * @return The true attacker. May be null.
 	 */
 	@ZenGetter("trueAttacker")
@@ -53,7 +53,7 @@ public interface IDDDEvent extends IEntityEvent {
 
 	/**
 	 * Get the original damage source the defender was hit by.
-	 * 
+	 *
 	 * @return the original damage source
 	 */
 	@ZenGetter("originalSource")
@@ -62,7 +62,7 @@ public interface IDDDEvent extends IEntityEvent {
 	/**
 	 * Check if this event is {@link Cancelable}. Trying to cancel events that can't
 	 * be canceled will throw an exception.
-	 * 
+	 *
 	 * @return True if the event can be canceled, false otherwise.
 	 */
 	@ZenGetter("cancelable")
@@ -73,7 +73,7 @@ public interface IDDDEvent extends IEntityEvent {
 	/**
 	 * Set the canceled status of this event. Further ZenScript listeners will not
 	 * be able to react to the event.
-	 * 
+	 *
 	 * @param status The cancellation status
 	 */
 	@ZenMethod("setCanceled")
@@ -81,3 +81,5 @@ public interface IDDDEvent extends IEntityEvent {
 		throw new ZenRuntimeException("Can't attempt to cancel event of type: " + this.getClass().getSimpleName());
 	}
 }
+
+

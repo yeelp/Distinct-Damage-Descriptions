@@ -1,15 +1,15 @@
 package yeelp.distinctdamagedescriptions.registries;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.Optional;
 
 public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	/**
@@ -19,7 +19,7 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	 * @return the display name
 	 */
 	default String getDisplayName(String name) {
-		return get(name).getDisplayName();
+		return Objects.requireNonNull(this.get(name)).getDisplayName();
 	}
 
 	/**
@@ -46,11 +46,11 @@ public interface IDDDDamageTypeRegistry extends IDDDRegistry<DDDDamageType> {
 	}
 
 	/**
-	 * Get a count of usuable types. This count is not merely calling
+	 * Get a count of usable types. This count is not merely calling
 	 * {@link DDDDamageType#isUsable()} on each registered type. This is a count of
 	 * all types that are NOT hidden and NOT an internal type.
 	 * 
-	 * @return a count of all non hidden, non internal types.
+	 * @return a count of all non-hidden, non-internal types.
 	 */
 	int getUsableTypeCount();
 }

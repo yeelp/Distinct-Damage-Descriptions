@@ -1,14 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.dists;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -16,13 +8,22 @@ import yeelp.distinctdamagedescriptions.api.impl.dists.DDDAbstractPredefinedDist
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.DDDSingleDamageDistributionConfigReader;
+import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesFireDistribution.LycanitesColdFireDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefinedDistribution {
 
 	private final class ConfigReader extends DDDSingleDamageDistributionConfigReader {
 
-		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) throws IllegalArgumentException {
+		public ConfigReader(String name, Supplier<String> configSup, Supplier<String> fallbackSup) {
 			super(name, configSup, fallbackSup);
 		}
 		
@@ -35,7 +36,8 @@ public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefi
 
 	}
 	
-	private static final Collection<LycanitesPredefinedDistribution> DISTS = ImmutableSet.of(LycanitesFireDistribution.DOOMFIRE, LycanitesFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE, new LycanitesBleedDistribution());
+	@SuppressWarnings("StaticInitializerReferencesSubClass")
+    private static final Collection<LycanitesPredefinedDistribution> DISTS = ImmutableSet.of(LycanitesFireDistribution.DOOMFIRE, LycanitesColdFireDistribution.FROSTFIRE, LycanitesFireDistribution.HELLFIRE, LycanitesColdFireDistribution.ICEFIRE, LycanitesFireDistribution.PRIMEFIRE, LycanitesFireDistribution.SCORCHFIRE, LycanitesFireDistribution.SHADOWFIRE, LycanitesFireDistribution.SMITEFIRE, LycanitesFluidDistribution.ACID, LycanitesFluidDistribution.OOZE, new LycanitesBleedDistribution());
 	
 	private IDamageDistribution dist;
 	private final Supplier<Boolean> config;
@@ -54,12 +56,12 @@ public abstract class LycanitesPredefinedDistribution extends DDDAbstractPredefi
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.isApplicable(src, target) ? this.getDamageDistribution().getCategories() : Collections.emptySet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.isApplicable(src, target) ? Optional.of(this.getDamageDistribution()) : Optional.empty();
 	}
 	

@@ -12,6 +12,7 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
 import yeelp.distinctdamagedescriptions.util.lib.NegativeArmorHandling;
 import yeelp.distinctdamagedescriptions.util.lib.ShieldFireRule;
 
+@SuppressWarnings("CanBeFinal")
 public final class ResistanceCategory {
 	@Name("Mob Base Resistance/Weakness")
 	@Comment({
@@ -34,7 +35,7 @@ public final class ResistanceCategory {
 	@Comment({
 			"Set the base resistance values for the player",
 			"This is likely only applicable to new worlds! Old worlds may not reflect this change!",
-			"The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part and adaptability chance. All properties are usuable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
+			"The format for this is the same as Mob Base Resistance/Weakness, minus the leading id part and adaptability chance. All properties are usable (immunities, adaptability), except adaptability chance, which will be set to 1 if adaptability amount is set to a non zero value"})
 	@RequiresMcRestart
 	public String playerResists = DefaultValues.PLAYER_BASE_RESISTS;
 
@@ -97,15 +98,15 @@ public final class ResistanceCategory {
 	@Comment({
 			"Define the rule DDD will use when parsing the armorResist config.",
 			"    LITERAL: DDD will parse the config exactly as it is written. Only the types written in an item's armor distribution will be used.",
-			"    IMPLIED: DDD will add in armor effectiveness for types not mentioned in an armor distribution. For example, an armor distribution of [(s, 0.8), (p, 0.5)] will have all the other registered DDD types added to its distribution. The effectiveness these types get is defined by impliedArmorEffectivess."})
+			"    IMPLIED: DDD will add in armor effectiveness for types not mentioned in an armor distribution. For example, an armor distribution of [(s, 0.8), (p, 0.5)] will have all the other registered DDD types added to its distribution. The effectiveness these types get is defined by impliedArmorEffectiveness."})
 	@RequiresMcRestart
 	public ArmorParsingType armorParseRule = ArmorParsingType.LITERAL;
 
 	@Name("Negative Armor Handling")
 	@Comment({
 			"Change how DDD handles negative armor and toughness.",
-			"    DEFAULT: DDD's default behaviour, which is to do nothing different. When DDD computes armor modifications, it computes it relative to the original negative armor/toughness value, which results in a positive armor modification value if the effectiveness is less than 100% and a negative armor modification value if the effectivenss if over 100%.",
-			"    ABS: DDD will convert negative armor/toughness to their absolute value when computing armor modifications relative to their original armor/toughness values. This results in larger negative armor/toughness values for armor with effectivness below 100%, and smaller negative armor/toughness values for armor with effectiveness above 100%."})
+			"    DEFAULT: DDD's default behaviour, which is to do nothing different. When DDD computes armor modifications, it computes it relative to the original negative armor/toughness value, which results in a positive armor modification value if the effectiveness is less than 100% and a negative armor modification value if the effectiveness if over 100%.",
+			"    ABS: DDD will convert negative armor/toughness to their absolute value when computing armor modifications relative to their original armor/toughness values. This results in larger negative armor/toughness values for armor with effectiveness below 100%, and smaller negative armor/toughness values for armor with effectiveness above 100%."})
 	public NegativeArmorHandling negativeRule = NegativeArmorHandling.DEFAULT;
 	
 	@Name("Shield Fire Rule")

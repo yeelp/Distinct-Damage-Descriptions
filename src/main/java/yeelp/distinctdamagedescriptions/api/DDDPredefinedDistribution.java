@@ -1,14 +1,13 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.IPriority;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Interface for implementing custom damage distributions.
@@ -49,7 +48,7 @@ public interface DDDPredefinedDistribution extends IPriority, IHasCreationSource
 	 * 
 	 * @param src    The damage source
 	 * @param target the target
-	 * @return a non null IDamageDistribution reflecting the damage context, or an
+	 * @return a non-null IDamageDistribution reflecting the damage context, or an
 	 *         empty Optional
 	 */
 	Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target);

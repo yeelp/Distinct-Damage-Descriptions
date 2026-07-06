@@ -1,13 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation;
 
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -18,6 +10,14 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorParsingType;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumberFormat;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An icon aggregator for IArmorDistributions
@@ -117,15 +117,11 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 		};
 		
 		private final EnumSet<ArmorDistributionNumberFormat> formats;
-		private IconAggregatingType(ArmorDistributionNumberFormat format) {
+		IconAggregatingType(ArmorDistributionNumberFormat format) {
 			this.formats = EnumSet.of(format);
 		}
 		
-		private IconAggregatingType(IconAggregatingType type) {
-			this.formats = EnumSet.complementOf(type.formats);
-		}
-		
-		private IconAggregatingType() {
+		IconAggregatingType() {
 			this.formats = EnumSet.noneOf(ArmorDistributionNumberFormat.class);
 		}
 		
@@ -193,7 +189,7 @@ public class ArmorDistributionIconAggregator extends DistributionIconAggregator<
 		return true;
 	}
 	
-	@SuppressWarnings("static-method")
+	@SuppressWarnings({"static-method", "SameReturnValue"})
 	protected IconAggregatingType getDefaultAggregatingType() {
 		return IconAggregatingType.PERCENT;
 	}

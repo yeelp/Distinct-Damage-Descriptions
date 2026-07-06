@@ -6,7 +6,7 @@ import yeelp.distinctdamagedescriptions.registries.IDDDDamageTypeRegistry;
 
 public final class DDDDamageTypes extends DDDSourcedRegistry<DDDDamageType> implements IDDDDamageTypeRegistry {
 	public DDDDamageTypes() {
-		super(d -> d.getTypeName(), "Damage Type");
+		super(DDDDamageType::getTypeName, "Damage Type");
 	}
 
 	@Override

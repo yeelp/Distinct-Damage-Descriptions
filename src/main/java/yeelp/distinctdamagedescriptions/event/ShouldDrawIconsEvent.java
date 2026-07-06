@@ -6,8 +6,8 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 
 /**
  * An event DDD fires client side to determine if it should draw damage type icons.
- * Mainly used for mod integration for when icons should never been drawn (no reason for icons, icons can't be drawn due to incorrect information, etc), even if enabled in the config.
- * 
+ * Mainly used for mod integration for when icons should never have been drawn (no reason for icons, icons can't be drawn due to incorrect information, etc.), even if enabled in the config.
+ * <p>
  * This event is not {@link Cancelable}.
  * This event has a {@link Result} {@link HasResult}:
  * <br>

@@ -1,12 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+
+import java.io.*;
 
 public final class FileHelper {
 	private static final String NEW_LINE = System.lineSeparator();
@@ -26,14 +22,16 @@ public final class FileHelper {
 	public static boolean copyFile(BufferedReader reader, File dest, boolean overwrite) throws IOException {
 		if(dest.exists()) {
 			if(overwrite) {
-				dest.delete();
+                //noinspection ResultOfMethodCallIgnored
+                dest.delete();
 			}
 			else {
 				return false;
 			}
 		}
 		else {
-			dest.createNewFile();
+            //noinspection ResultOfMethodCallIgnored
+            dest.createNewFile();
 		}
 
 		try(FileWriter output = new FileWriter(dest)) {
@@ -42,7 +40,7 @@ public final class FileHelper {
 					output.write(s + NEW_LINE);
 				}
 				catch(IOException e) {
-					e.printStackTrace();
+					DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::err);
 				}
 			});
 		}

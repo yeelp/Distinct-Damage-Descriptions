@@ -1,13 +1,13 @@
 package yeelp.distinctdamagedescriptions.integration.capability;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractBiasedDamageDistribution extends ModUpdatingDamageDistribution {
 
@@ -30,7 +30,7 @@ public abstract class AbstractBiasedDamageDistribution extends ModUpdatingDamage
 		Set<DDDBaseMap<Float>> maps = this.computeBiasedMaps(owner);
 		int size = maps.size();
 		if(size != 0) {
-			DDDBaseMap<Float> newWeights = new DDDBaseMap<Float>(() -> 0.0f);
+			DDDBaseMap<Float> newWeights = new DDDBaseMap<>(() -> 0.0f);
 			maps.forEach((m) -> m.forEach((k, v) -> newWeights.merge(k, v / size, Float::sum)));
 			return Optional.of(newWeights);
 		}

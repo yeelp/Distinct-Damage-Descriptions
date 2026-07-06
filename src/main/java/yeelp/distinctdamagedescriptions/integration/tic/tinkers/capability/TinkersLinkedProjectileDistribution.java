@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability;
 
-import java.util.Optional;
-
 import net.minecraft.entity.IProjectile;
 import slimeknights.tconstruct.library.capability.projectile.TinkerProjectileHandler;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
@@ -9,6 +7,8 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.capability.LinkedDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
+
+import java.util.Optional;
 
 public final class TinkersLinkedProjectileDistribution extends LinkedDamageDistribution {
 

@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.bettersurvival.capability.distributor;
 
 import com.mujmajnkraft.bettersurvival.entities.projectiles.EntityFlyingSpear;
-
 import net.minecraft.entity.IProjectile;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.distributors.AbstractCapabilityDistributor;
@@ -9,9 +8,11 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributi
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.bettersurvival.capability.BetterSurvivalThrownSpearDistribution;
 
+import javax.annotation.Nonnull;
+
 public final class BetterSurvivalThrownSpearDistributionDistributor extends AbstractCapabilityDistributor<IProjectile, IDamageDistribution, IDamageDistribution> {
 
-	protected BetterSurvivalThrownSpearDistributionDistributor() {
+	private BetterSurvivalThrownSpearDistributionDistributor() {
 		super(DamageDistributionCapabilityDistributor.ForProjectile.getInstance());
 	}
 	
@@ -23,13 +24,12 @@ public final class BetterSurvivalThrownSpearDistributionDistributor extends Abst
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(IProjectile t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull IProjectile t, @Nonnull String key) {
 		return new BetterSurvivalThrownSpearDistribution().update(t);
 	}
 
 	@Override
 	protected IDDDConfiguration<IDamageDistribution> getConfig() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

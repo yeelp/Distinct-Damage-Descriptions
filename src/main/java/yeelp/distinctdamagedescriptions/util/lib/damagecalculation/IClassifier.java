@@ -7,7 +7,7 @@ interface IClassifier<Output> extends Function<CombatContext, Optional<Output>> 
 
 	@Override
 	default Optional<Output> apply(CombatContext t) {
-		return classify(t);
+		return this.classify(t);
 	}
 
 	Optional<Output> classify(CombatContext context);

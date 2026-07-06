@@ -1,15 +1,14 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Iterator;
-import java.util.Queue;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
+import java.util.Queue;
 
 /**
  * Library of Armor utilities

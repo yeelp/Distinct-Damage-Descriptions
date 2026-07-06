@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.command;
 
-import java.util.Optional;
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -16,6 +12,11 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
 import yeelp.distinctdamagedescriptions.util.Translations;
 
+import javax.annotation.Nonnull;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
+
 public abstract class DDDStatCommand extends AbstractDDDCommand {
 
 	private static final String USAGE = Translations.INSTANCE.getLayeredTranslator(CommandConsts.COMMANDS_ROOT, "stat").getKey(CommandConsts.USAGE);
@@ -24,15 +25,16 @@ public abstract class DDDStatCommand extends AbstractDDDCommand {
 		this.addSubcommand(new DDDImmunitySubCommand());
 	}
 
+	@Nonnull
 	@Override
-	public String getUsage(ICommandSender sender) {
+	public String getUsage(@Nonnull ICommandSender sender) {
 		return USAGE;
 	}
 	
 	public static abstract class DDDStatSubCommand extends DDDDamageTypeCommand {
 
 		@FunctionalInterface
-		interface CommandConstructor<T, U, V, R> {
+		protected interface CommandConstructor<T, U, V, R> {
 			R apply(T t, U u, V v);
 		}
 		
@@ -40,7 +42,7 @@ public abstract class DDDStatCommand extends AbstractDDDCommand {
 			super(3, name);
 		}
 		
-		public <T> void addSubcommand(Operation name, T t, CommandConstructor<String, String, T, DDDCommandBase> command) {
+		protected <T> void addSubcommand(Operation name, T t, CommandConstructor<String, String, T, DDDCommandBase> command) {
 			super.addSubcommand(command.apply(name.toString(), this.getName(), t));
 		}
 		
@@ -73,13 +75,13 @@ public abstract class DDDStatCommand extends AbstractDDDCommand {
 
 			private final BinaryOperator<Float> op;
 
-			protected DDDResistanceSubSubCommand(String name, String parent, BinaryOperator<Float> op) {
+			private DDDResistanceSubSubCommand(String name, String parent, BinaryOperator<Float> op) {
 				super(name, parent);
 				this.op = op;
 			}
 
 			@Override
-			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+			public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 				if(args.length != 3) {
 					throw new WrongUsageException(this.getUsage(sender));
 				}
@@ -121,14 +123,14 @@ public abstract class DDDStatCommand extends AbstractDDDCommand {
 		public static final class DDDImmunitySubSubCommand extends DDDCommandBase {
 
 			private final UnaryOperator<Boolean> op;
-			protected DDDImmunitySubSubCommand(String name, String parent, UnaryOperator<Boolean> op) {
+			private DDDImmunitySubSubCommand(String name, String parent, UnaryOperator<Boolean> op) {
 				super(name, parent);
 				this.op = op;
 			}
 
 
 			@Override
-			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+			public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 				if(args.length != 2) {
 					throw new WrongUsageException(this.getUsage(sender));
 				}

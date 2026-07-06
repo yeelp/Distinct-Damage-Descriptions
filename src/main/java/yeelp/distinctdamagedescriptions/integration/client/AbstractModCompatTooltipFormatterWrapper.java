@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.integration.client;
 
-import java.util.List;
-
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
+
+import java.util.List;
 
 public abstract class AbstractModCompatTooltipFormatterWrapper<T> implements IModCompatTooltipFormatter<T> {
 
@@ -24,7 +24,7 @@ public abstract class AbstractModCompatTooltipFormatterWrapper<T> implements IMo
 
 	@Override
 	public void setDamageFormatter(DDDDamageFormatter f) {
-		return;
+		//nothing to set, just uses wrapped one.
 	}
 
 	@Override

@@ -1,15 +1,14 @@
 package yeelp.distinctdamagedescriptions.event.classification;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
 /**
  * Event that gets fired when DDD classifies damage. This is where damage values
@@ -32,7 +31,7 @@ public final class DetermineDamageEvent extends DDDClassificationEvent {
 	/**
 	 * Get the damage inflicted of a certain type
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return The damage inflicted of that type.
 	 */
 	public float getDamage(DDDDamageType type) {
@@ -42,7 +41,7 @@ public final class DetermineDamageEvent extends DDDClassificationEvent {
 	/**
 	 * Set the damage to inflict of a certain type.
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @param amount The amount of damage to inflict. Must be non-negative.
 	 * @throws IllegalArgumentException If {@code amount < 0}.
 	 */

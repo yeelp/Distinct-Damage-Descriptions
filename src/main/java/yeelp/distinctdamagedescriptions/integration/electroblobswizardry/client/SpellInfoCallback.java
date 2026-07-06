@@ -18,7 +18,7 @@ public final class SpellInfoCallback extends AbstractLivingEventDeveloperModeInf
 
 	@Override
 	protected StringBuilder getInfo(LivingAttackEvent evt, StringBuilder sb) {
-		return sb.append("SPELL DAMAGE TYPE: "+((IElementalDamage) evt.getSource()).getType().toString());
+		return sb.append("SPELL DAMAGE TYPE: ").append(((IElementalDamage) evt.getSource()).getType().toString());
 	}
 
 }

@@ -47,7 +47,7 @@ public interface IUpdateAdaptiveResistances extends IDDDCalculationEvent {
 	
 	/**
 	 * Get the adaptive amount for this entity being used for this calculation only.
-	 * @return The adaptive amount for this entity. Non adaptive entities return 0.0f.
+	 * @return The adaptive amount for this entity. Non-adaptive entities return 0.0f.
 	 */
 	@ZenGetter("adaptiveAmount")
 	float getAdaptiveAmount();

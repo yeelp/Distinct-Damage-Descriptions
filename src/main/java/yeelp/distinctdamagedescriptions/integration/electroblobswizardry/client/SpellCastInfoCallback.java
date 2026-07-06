@@ -6,6 +6,8 @@ import net.minecraft.world.World;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.development.AbstractDeveloperModeInfo;
 
+import java.util.Objects;
+
 public final class SpellCastInfoCallback extends AbstractDeveloperModeInfo<Post> {
 
 	public SpellCastInfoCallback() {
@@ -19,13 +21,13 @@ public final class SpellCastInfoCallback extends AbstractDeveloperModeInfo<Post>
 
 	@Override
 	public World getWorld(Post evt) {
-		return evt.getCaster().world;
+		return Objects.requireNonNull(evt.getCaster()).world;
 	}
 
 	@Override
 	protected StringBuilder getInfo(Post evt, StringBuilder sb) {
 		Spell spell = evt.getSpell();
-		return sb.append(String.format("SPELL CAST: Spell Name: %s (%s)", spell.getDisplayName(), spell.getRegistryName().toString()));
+		return sb.append(String.format("SPELL CAST: Spell Name: %s (%s)", spell.getDisplayName(), Objects.requireNonNull(spell.getRegistryName())));
 	}
 
 }

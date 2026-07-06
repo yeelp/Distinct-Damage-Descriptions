@@ -5,6 +5,8 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import yeelp.distinctdamagedescriptions.items.DDDDiscItem;
 
+import java.util.Objects;
+
 public class DDDItems {
 
 	public static DDDDiscItem disc;
@@ -15,6 +17,6 @@ public class DDDItems {
 	}
 
 	public static void initRenders() {
-		ModelLoader.setCustomModelResourceLocation(disc, 0, new ModelResourceLocation(disc.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(disc, 0, new ModelResourceLocation(Objects.requireNonNull(disc.getRegistryName()), "inventory"));
 	}
 }

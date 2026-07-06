@@ -8,10 +8,10 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDam
 
 /**
  * Event fired when DDD tries to determine damage distributions.
- * 
+ * <p>
  * Listeners can add additional damage here. This added damage won't be
  * reflected in tooltips, it's just present for this calculation.
- * 
+ * <p>
  * Basically, use this event to give conditional damage bonuses.
  * 
  * @author Yeelp

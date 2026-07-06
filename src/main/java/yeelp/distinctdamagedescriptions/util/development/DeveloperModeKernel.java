@@ -1,18 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.development;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +17,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
@@ -35,6 +27,8 @@ import yeelp.distinctdamagedescriptions.event.calculation.ShieldBlockEvent;
 import yeelp.distinctdamagedescriptions.event.calculation.UpdateAdaptiveResistanceEvent;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
 import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent;
+
+import java.util.Arrays;
 
 /**
  * A kernel for collecting all the info callbacks in DDD's Developer Mode. This
@@ -63,7 +57,7 @@ import yeelp.distinctdamagedescriptions.event.classification.GatherDefensesEvent
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
 public final class DeveloperModeKernel {
 
-	protected static enum DifficultyScaling {
+	protected enum DifficultyScaling {
 		PEACEFUL(EnumDifficulty.PEACEFUL) {
 			@Override
 			protected float scaleDamage(float dmg) {
@@ -102,7 +96,7 @@ public final class DeveloperModeKernel {
 			return "";
 		}
 
-		private DifficultyScaling(EnumDifficulty diff) {
+		DifficultyScaling(EnumDifficulty diff) {
 			this.diff = diff;
 		}
 
@@ -121,10 +115,11 @@ public final class DeveloperModeKernel {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static DeveloperStatus currMode = DeveloperStatus.DISABLED;
 
-	private static final Multimap<Class<? extends Event>, IDeveloperModeInfoCallback<? extends Event>> INFOS = MultimapBuilder.hashKeys().arrayListValues().build();
+	@SuppressWarnings("UnstableApiUsage")
+    private static final Multimap<Class<? extends Event>, IDeveloperModeInfoCallback<? extends Event>> INFOS = MultimapBuilder.hashKeys().arrayListValues().build();
 
 	public static void log(String msg, boolean inChat, Iterable<? extends EntityPlayer> players) {
-		LOGGER.info("[DISTINCT DAMAGE DESCRIPTIONS (DEVELOPER)]: " + msg);
+        LOGGER.info("[DISTINCT DAMAGE DESCRIPTIONS (DEVELOPER)]: {}", msg);
 		if(inChat) {
 			players.forEach((p) -> {
 				if(p.world.isRemote) {
@@ -145,18 +140,6 @@ public final class DeveloperModeKernel {
 		log(msg, currMode.sendInfoToChat(), players);
 	}
 
-	public static void log(String msg, EntityPlayer player) {
-		log(msg, ImmutableList.of(player));
-	}
-
-	@Nonnull
-	private static final <T, U> U mapIfNonNullElseGetDefault(T t, @Nonnull Function<T, U> f, @Nonnull U backup) {
-		if(t != null) {
-			return Objects.requireNonNull(f, "Function to apply can't be null!").apply(t);
-		}
-		return Objects.requireNonNull(backup, "backup can't be null!");
-	}
-
 	public static void initialize() {
 		registerCallback(LivingAttackEvent.class, new LivingAttackEventInfo());
 		registerCallback(LivingHurtEvent.class, new LivingHurtEventInfo());
@@ -167,6 +150,7 @@ public final class DeveloperModeKernel {
 		registerCallback(UpdateAdaptiveResistanceEvent.class, new UpdateAdaptiveResistanceEventInfo());
 	}
 
+	@SuppressWarnings("unused")
 	public static <E extends Event> boolean hasCallbacksForEvent(Class<E> clazz) {
 		return INFOS.containsKey(clazz);
 	}
@@ -195,7 +179,7 @@ public final class DeveloperModeKernel {
 	}
 
 	@SubscribeEvent
-	public static final void onPlayerJoin(PlayerLoggedInEvent evt) {
+	public static void onPlayerJoin(PlayerLoggedInEvent evt) {
 		logIfEnabled("DDD has loaded in Developer Mode! This is to assist in debugging information about damage calculations and custom damage types etc. Depending on your settings, your chat log and console log may be filled with lots of messages. It is recommended you use Developer Mode in blank void worlds to minimize chat spam!", true, ImmutableList.of(evt.player));
 		if(ModConfig.dev.showConfigErrors) {
 			Iterable<EntityPlayer> player = ImmutableList.of(evt.player);

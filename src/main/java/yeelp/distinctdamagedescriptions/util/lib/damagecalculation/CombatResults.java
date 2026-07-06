@@ -1,8 +1,8 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.OptionalDouble;
-
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+
+import java.util.OptionalDouble;
 
 public final class CombatResults {
 	public static final CombatResults NO_RESULTS = new CombatResults();
@@ -58,7 +58,8 @@ public final class CombatResults {
 		return Float.isNaN(this.shieldRatio) ? OptionalDouble.empty() : OptionalDouble.of(this.shieldRatio);
 	}
 
-	public static final class ResultsBuilder {
+	@SuppressWarnings("UnusedReturnValue")
+    public static final class ResultsBuilder {
 		private boolean shield, weakness, resistance, adaptive, immunity;
 		private float startingAmount, shieldBlockDmg;
 		private float amount = Float.NaN;

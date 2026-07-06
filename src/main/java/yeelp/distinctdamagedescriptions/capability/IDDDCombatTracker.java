@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Optional;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -12,6 +10,8 @@ import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation;
+
+import java.util.Optional;
 
 /**
  * A combat tracker capability for handling Entity specific damage calculations.

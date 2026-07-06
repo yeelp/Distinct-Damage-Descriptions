@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 import yeelp.distinctdamagedescriptions.util.lib.FilterListType;
 
+@SuppressWarnings("CanBeFinal")
 public final class GeneralCategory {
 	@Name("Enable Distinct Disc Drop")
 	@Comment({
@@ -54,7 +55,7 @@ public final class GeneralCategory {
 	@Name("Use Creature Types From JSON")
 	@Comment({
 			"If true, DistinctDamageDescriptions will load custom creature types from JSON located in config/distinctdamagedescriptions/creatureTypes.",
-			"These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usuable in CraftTweaker."})
+			"These JSON files can be used to apply potion/critical hit immunities to large swaths of mobs at once. Also usable in CraftTweaker."})
 	@RequiresMcRestart
 	public boolean useCreatureTypesFromJSON = false;
 

@@ -1,14 +1,8 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -19,25 +13,20 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsAccessor;
 import yeelp.distinctdamagedescriptions.api.IDistinctDamageDescriptionsMutator;
-import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
-import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.IDDDCombatTracker;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.IMobCreatureType;
-import yeelp.distinctdamagedescriptions.capability.IMobResistances;
-import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DDDCombatTracker;
-import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
-import yeelp.distinctdamagedescriptions.capability.impl.DefaultResistances;
-import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
-import yeelp.distinctdamagedescriptions.capability.impl.MobResistances;
-import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+import yeelp.distinctdamagedescriptions.capability.*;
+import yeelp.distinctdamagedescriptions.capability.impl.*;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Optional;
 
 public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescriptionsAccessor, IDistinctDamageDescriptionsMutator {
 	INSTANCE;
 
-	private DistinctDamageDescriptionsAPIImpl() {
+	@SuppressWarnings("UnstableApiUsage")
+    DistinctDamageDescriptionsAPIImpl() {
 		DDDAPI.accessor = this;
 		DDDAPI.mutator = this;
 		for(String s : new String[] {
@@ -52,9 +41,9 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 	private static final String ITEM = "item", ENTITY = "entity", PROJECTILE = "proj";
 	private final Map<String, Multimap<Class<? extends DDDCapabilityBase<? extends NBTBase>>, Capability<? extends DDDCapabilityBase<? extends NBTBase>>>> caps = Maps.newHashMap();
 
-	/************
+	/*------------
 	 * ACCESSOR *
-	 ************/
+	 -----------*/
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(@Nullable ItemStack stack) {
@@ -68,7 +57,7 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	@Override
 	public Optional<IDamageDistribution> getDamageDistribution(@Nullable IProjectile projectile) {
-		if(projectile != null && projectile instanceof Entity) {
+		if(projectile instanceof Entity) {
 			return Optional.of(this.findCaps(PROJECTILE, (Entity) projectile, IDamageDistribution.class, DamageDistribution.cap).map((c) -> ((IDamageDistribution) c).update(projectile)).orElse(ModConfig.dmg.defaultProjectileDamage));
 		}
 		return Optional.empty();
@@ -111,31 +100,31 @@ public enum DistinctDamageDescriptionsAPIImpl implements IDistinctDamageDescript
 
 	private static <Cap extends DDDCapabilityBase<? extends NBTBase>> Optional<Cap> getDDDCap(Capability<Cap> cap, ICapabilityProvider thing) {
 		if(thing == null) {
-			return null;
+			return Optional.empty();
 		}
 		return Optional.ofNullable(thing.getCapability(cap, null));
 	}
 
-	/***********
+	/*----------
 	 * MUTATOR *
-	 ***********/	
+	 ----------*/
 
 	@Override
-	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerItemCap(Class<T> clazz, Capability<? extends T> cap) {
+	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerItemCap(@Nonnull Class<T> clazz, @Nonnull Capability<? extends T> cap) {
 		this.registerCap(ITEM, clazz, cap);
 	}
 
 	@Override
-	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerProjectileCap(Class<T> clazz, Capability<? extends T> cap) {
+	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerProjectileCap(@Nonnull Class<T> clazz, @Nonnull Capability<? extends T> cap) {
 		this.registerCap(PROJECTILE, clazz, cap);
 	}
 
 	@Override
-	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerEntityCap(Class<T> clazz, Capability<? extends T> cap) {
+	public <T extends DDDCapabilityBase<? extends NBTBase>> void registerEntityCap(@Nonnull Class<T> clazz, @Nonnull Capability<? extends T> cap) {
 		this.registerCap(ENTITY, clazz, cap);
 	}
 
-	private final <T extends DDDCapabilityBase<? extends NBTBase>> void registerCap(String key, Class<T> clazz, Capability<? extends T> cap) {
+	private <T extends DDDCapabilityBase<? extends NBTBase>> void registerCap(@Nonnull String key, @Nonnull Class<T> clazz, @Nonnull Capability<? extends T> cap) {
 		this.caps.get(key).put(clazz, cap);
 	}
 }

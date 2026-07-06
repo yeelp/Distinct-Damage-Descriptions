@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.distributors;
 
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +10,8 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
+
+import java.util.Set;
 
 public final class ShieldDistributionCapabilityDistributor extends AbstractCapabilityDistributorGeneratable<ItemStack, ShieldDistribution, ShieldDistribution> {
 	public static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "shieldEffectiveness");
@@ -27,7 +26,7 @@ public final class ShieldDistributionCapabilityDistributor extends AbstractCapab
 
 	@Override
 	protected ShieldDistribution generateCapability(ItemStack t, ResourceLocation key) {
-		return ConfigGenerator.getOrGenerateShieldDistribution(t.getItem(), t);
+		return ConfigGenerator.getOrGenerateShieldDistribution(t.getItem());
 	}
 
 	@Override
@@ -53,15 +52,15 @@ public final class ShieldDistributionCapabilityDistributor extends AbstractCapab
 		return configResult;
 	}
 
-	public static final ShieldDistributionCapabilityDistributor getInstance() {
+	public static ShieldDistributionCapabilityDistributor getInstance() {
 		return instance == null ? instance = new ShieldDistributionCapabilityDistributor() : instance;
 	}
 	
-	public static final void addSimpleClassNameAsShield(String s) {
+	public static void addSimpleClassNameAsShield(String s) {
 		SIMPLE_CLASSES.add(s);
 	}
 	
-	public static final void addFullyQualifiedClassNameAsShield(String s) {
+	public static void addFullyQualifiedClassNameAsShield(String s) {
 		QUALIFIED_CLASSES.add(s);
 	}
 }

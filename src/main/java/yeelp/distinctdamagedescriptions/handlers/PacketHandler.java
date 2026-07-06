@@ -11,7 +11,7 @@ public class PacketHandler {
 	public static final SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(ModConsts.MODID_SHORT);
 	public static int id = 0;
 
-	public static final void init() {
+	public static void init() {
 		// create dummy message to get their handlers.
 		MobResistancesMessage mobMsg = new MobResistancesMessage();
 		INSTANCE.registerMessage(mobMsg.getMessageHandler(), MobResistancesMessage.class, id++, Side.CLIENT);

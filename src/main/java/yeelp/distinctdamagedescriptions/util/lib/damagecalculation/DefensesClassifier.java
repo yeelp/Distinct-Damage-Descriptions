@@ -1,14 +1,14 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 final class DefensesClassifier implements IClassifier<MobDefenses> {
 

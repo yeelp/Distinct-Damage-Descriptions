@@ -1,11 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.client;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import net.minecraft.util.Tuple;
 import slimeknights.tconstruct.library.tools.ToolCore;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -13,55 +7,62 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 enum DistributionPreference implements IEnumTranslation {
 	ONLY {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, toolName, strongType.getDisplayName());
+			return new EnumBookString<>(this, toolName, strongType.getDisplayName());
 		}
 	},
 	STRONGLY {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, toolName, strongType.getDisplayName());
+			return new EnumBookString<>(this, toolName, strongType.getDisplayName());
 		}
 	},
 	MODERATELY {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, toolName, strongType.getDisplayName());
+			return new EnumBookString<>(this, toolName, strongType.getDisplayName());
 		}
 	},
 	BARELY {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, barelyType.getDisplayName());
+			return new EnumBookString<>(this, barelyType.getDisplayName());
 		}
 	},
 	BARELY_TWO {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, moderateType.getDisplayName(), barelyType.getDisplayName());
+			return new EnumBookString<>(this, moderateType.getDisplayName(), barelyType.getDisplayName());
 		}
 	},
 	BALANCED {
 		@Override
 		protected IBookString convertToBookString(String toolName, DDDDamageType strongType, DDDDamageType moderateType, DDDDamageType barelyType) {
-			return new EnumBookString<DistributionPreference>(this, toolName, strongType.getDisplayName(), moderateType.getDisplayName());
+			return new EnumBookString<>(this, toolName, strongType.getDisplayName(), moderateType.getDisplayName());
 		}
 	};
 
-	@SuppressWarnings("incomplete-switch")
-	static Tuple<IBookString, Optional<IBookString>> determinePreferences(ToolCore tool, IDamageDistribution dist) {
+	@SuppressWarnings({"OptionalGetWithoutIsPresent", "incomplete-switch"})
+    static Tuple<IBookString, Optional<IBookString>> determinePreferences(ToolCore tool, IDamageDistribution dist) {
 		// sort on distribution weight reversed, which will give the highest weighted
 		// type as the first element
 		DamageMap map = dist.distributeDamage(1.0f);
 		DDDMaps.adjustHiddenWeightsToUnknown(map);
-		List<DDDDamageType> topThreeTypes = map.keySet().stream().sequential().sorted(Comparator.comparingDouble(map::get).reversed()).limit(3).collect(Collectors.toList());
+		@SuppressWarnings("SuspiciousMethodCalls")
+		List<DDDDamageType> topThreeTypes = map.keySet().stream().sorted(Comparator.comparingDouble(map::get).reversed()).limit(3).collect(Collectors.toList());
 		DistributionPreference first, second = null;
 		String toolName = tool.getLocalizedToolName();
-		DDDDamageType firstType = getFromListIfInBounds(topThreeTypes, 0).get(); // this is safe, distribution must
-																					// have at least one type.
+		// this is safe, distribution must have at least one type.
+		DDDDamageType firstType = getFromListIfInBounds(topThreeTypes, 0).get();
 		Optional<DDDDamageType> secondType = getFromListIfInBounds(topThreeTypes, 1);
 		Optional<DDDDamageType> thirdType = getFromListIfInBounds(topThreeTypes, 2);
 		if(secondType.isPresent()) {
@@ -102,7 +103,7 @@ enum DistributionPreference implements IEnumTranslation {
 				secondString = Optional.of(second).map((d) -> d.convertToBookString(toolName, firstType, extraType1, extraType2));
 				break;
 		}
-		return new Tuple<IBookString, Optional<IBookString>>(Objects.requireNonNull(firstString), secondString);
+		return new Tuple<>(Objects.requireNonNull(firstString), secondString);
 	}
 
 	private static <T> Optional<T> getFromListIfInBounds(List<T> lst, int index) {

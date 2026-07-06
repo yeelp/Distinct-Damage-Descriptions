@@ -17,6 +17,6 @@ public final class SpellcastingItemDamageDistributionFormatter extends AbstractM
 	}
 
 	public static SpellcastingItemDamageDistributionFormatter getInstance() {
-		return instance == null ? new SpellcastingItemDamageDistributionFormatter() : instance;
+		return instance == null ? instance = new SpellcastingItemDamageDistributionFormatter() : instance;
 	}
 }

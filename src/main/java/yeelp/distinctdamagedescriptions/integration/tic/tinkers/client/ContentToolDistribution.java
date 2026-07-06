@@ -1,11 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.client;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.stream.Collectors;
-
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,18 +16,26 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.stream.Collectors;
 
 @SideOnly(Side.CLIENT)
 public class ContentToolDistribution extends ContentTool {
 
-	public static final transient String ID = "toolDist";
+	@SuppressWarnings({"UnnecessaryModifier", "unused"})
+    public static final transient String ID = "toolDist";
 	private final transient IDamageDistribution dist;
 	private final transient float variability;
 
-	public ContentToolDistribution() {
+	@SuppressWarnings("unused")
+    public ContentToolDistribution() {
 		super();
 		this.dist = null;
 		this.variability = 0;
@@ -45,7 +47,7 @@ public class ContentToolDistribution extends ContentTool {
 		String key = YResources.getRegistryString(tool).orElse("");
 		this.dist = DDDConfigurations.items.getOrFallbackToDefault(key).copy();
 		this.variability = TiCConfigurations.toolBiasResistance.getOrFallbackToDefault(key);
-		this.text = generateTextData(tool);
+		this.text = this.generateTextData(tool);
 		DamageMap map = this.dist.distributeDamage(1.0f);
 		DDDMaps.adjustHiddenWeightsToUnknown(map);
 		this.properties = map.keySet().stream().sorted().map((t) -> TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.entry", (int) (map.get(t) * 100), TiCUtil.getDDDDamageTypeNameColoured(t)).getFormattedText()).collect(Collectors.toList()).toArray(this.properties);
@@ -53,14 +55,14 @@ public class ContentToolDistribution extends ContentTool {
 	}
 
 	private TextData[] generateTextData(ToolCore tool) {
-		Queue<TextData> q = new LinkedList<TextData>();
+		Queue<TextData> q = new LinkedList<>();
 		Tuple<IBookString, Optional<IBookString>> distPreferences = DistributionPreference.determinePreferences(tool, this.dist);
 		q.add(new TextData(Flexibility.determineFlexibility(this.variability).toBookString()));
 		q.add(TextData.LINEBREAK);
 		q.add(new TextData(distPreferences.getFirst().toBookString() + distPreferences.getSecond().map((b) -> " " + b.toBookString()).orElse("")));
 		q.add(TextData.LINEBREAK);
 		q.add(new TextData(TextFormatting.BOLD + TiCBookTranslator.TINKERS.getTranslator().getComponent("flexibility.measure", TextFormatting.RESET.toString() + this.variability).getFormattedText()));
-		return q.toArray(new TextData[q.size()]);
+		return q.toArray(new TextData[0]);
 	}
 
 	@Override
@@ -76,9 +78,6 @@ public class ContentToolDistribution extends ContentTool {
 					TextData data = new TextData(TiCBookTranslator.TINKERS.getTranslator().getComponent("distributions.start").getFormattedText());
 					data.underlined = true;
 					list.set(i, new ElementText(text.x, text.y, text.width, text.height, data));
-					// Arrays.stream(((ElementText) list.get(++i)).text).filter(Predicates.and((td)
-					// -> td != TextData.LINEBREAK, (td) -> !td.text.equals("\u25CF
-					// "))).forEach((td) -> td.bold = true);
 					break;
 				}
 			}

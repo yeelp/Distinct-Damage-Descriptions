@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -14,20 +10,24 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import yeelp.distinctdamagedescriptions.util.IPriority;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+
 public interface IDDDCalculationInjector extends IPriority {
 	
 	@FunctionalInterface
-	public interface IArmorValuesInjector extends IDDDCalculationInjector, BiFunction<ItemStack, EntityEquipmentSlot, ArmorValues> {
+	interface IArmorValuesInjector extends IDDDCalculationInjector, BiFunction<ItemStack, EntityEquipmentSlot, ArmorValues> {
 		//empty
 	}
 	
 	@FunctionalInterface
-	public interface IValidArmorSlotInjector extends IDDDCalculationInjector {
+	interface IValidArmorSlotInjector extends IDDDCalculationInjector {
 		void accept(EntityLivingBase defender, DamageSource src, Set<EntityEquipmentSlot> currSlots);
 	}
 	
 	@FunctionalInterface
-	public interface IArmorModifierInjector extends IDDDCalculationInjector {
+    interface IArmorModifierInjector extends IDDDCalculationInjector {
 		/**
 		 * Modify the armor values that will be applied
 		 * @param willModsBeApplied if the mods will actually be applied
@@ -46,22 +46,25 @@ public interface IDDDCalculationInjector extends IPriority {
 	}
 	
 	@FunctionalInterface
-	public interface ICancelCalculationInjector extends IDDDCalculationInjector {
+    interface ICancelCalculationInjector extends IDDDCalculationInjector {
 		enum Phase {
 			ATTACK,
 			HURT,
 			DAMAGE
 		}
 		
-		static Phase determinePhase(@SuppressWarnings("unused") LivingAttackEvent evt) {
+		@SuppressWarnings("SameReturnValue")
+        static Phase determinePhase(@SuppressWarnings("unused") LivingAttackEvent evt) {
 			return Phase.ATTACK;
 		}
 		
-		static Phase determinePhase(@SuppressWarnings("unused") LivingHurtEvent evt) {
+		@SuppressWarnings("SameReturnValue")
+        static Phase determinePhase(@SuppressWarnings("unused") LivingHurtEvent evt) {
 			return Phase.HURT;
 		}
 		
-		static Phase determinePhase(@SuppressWarnings("unused") LivingDamageEvent evt) {
+		@SuppressWarnings("SameReturnValue")
+        static Phase determinePhase(@SuppressWarnings("unused") LivingDamageEvent evt) {
 			return Phase.DAMAGE;
 		}
 		

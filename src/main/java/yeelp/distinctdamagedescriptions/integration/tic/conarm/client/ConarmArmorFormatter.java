@@ -1,11 +1,8 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.client;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import c4.conarm.common.armor.utils.ArmorHelper;
 import c4.conarm.lib.tinkering.TinkersArmor;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
@@ -16,6 +13,11 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Armor
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public final class ConarmArmorFormatter extends ArmorDistributionFormatter implements IModCompatTooltipFormatter<ItemStack> {
 
@@ -29,9 +31,9 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 	}
 
 	@Override
-	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IArmorDistribution cap) {
+	protected Optional<List<String>> formatCapabilityFor(@Nonnull ItemStack stack, @Nonnull IArmorDistribution cap) {
 		if(this.getNumberFormattingStrategy() == ArmorDistributionNumberFormat.PLAIN) {
-			int slot = ((TinkersArmor) stack.getItem()).armorType.getIndex();
+			int slot = ((ItemArmor) stack.getItem()).armorType.getIndex();
 			return this.getArmorTooltip(stack, cap, ArmorHelper.getArmor(stack, slot), ArmorHelper.getToughness(stack));
 		}
 		return super.formatCapabilityFor(stack, cap);
@@ -60,7 +62,7 @@ public final class ConarmArmorFormatter extends ArmorDistributionFormatter imple
 
 		@Override
 		public List<Icon> getIconsToDraw(ItemStack stack, int x, int y, List<String> tooltips) {
-			List<Icon> icons = new ArrayList<Icon>();
+			List<Icon> icons = new ArrayList<>();
 			icons.addAll(ItemDamageDistributionIconAggregator.getInstance().getIconsToDraw(stack, x, y, tooltips));
 			icons.addAll(super.getIconsToDraw(stack, x, y, tooltips));
 			return icons;

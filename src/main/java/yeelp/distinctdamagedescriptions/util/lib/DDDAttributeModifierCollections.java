@@ -1,17 +1,16 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
 
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface DDDAttributeModifierCollections {
 	
@@ -40,7 +39,8 @@ public interface DDDAttributeModifierCollections {
 		default void removeModifier(EntityLivingBase target) {
 			target.getEntityAttribute(this.getAttribute()).removeModifier(this.getUUID());
 		}
-		
+
+		@SuppressWarnings("unused")
 		@Nullable
 		default AttributeModifier getModifier(EntityLivingBase target) {
 			return target.getEntityAttribute(this.getAttribute()).getModifier(this.getUUID());
@@ -65,7 +65,7 @@ public interface DDDAttributeModifierCollections {
 		private final String name;
 		private final IAttribute attribute;
 		
-		private ArmorModifiers(UUID uuid, String name, IAttribute attribute) {
+		ArmorModifiers(UUID uuid, String name, IAttribute attribute) {
 			this.uuid = uuid;
 			this.name = name;
 			this.attribute = attribute;

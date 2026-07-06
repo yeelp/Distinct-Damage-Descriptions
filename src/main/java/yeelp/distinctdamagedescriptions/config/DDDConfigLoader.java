@@ -1,25 +1,23 @@
 package yeelp.distinctdamagedescriptions.config;
 
+import com.google.common.collect.Lists;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
+import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigWrappedException;
+import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.Lists;
-
-import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
-import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigWrappedException;
-import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
-
 public final class DDDConfigLoader {
 	private final Queue<DDDConfigReader> readers;
 	private static DDDConfigLoader instance;
 
 	private DDDConfigLoader() {
-		this.readers = new LinkedList<DDDConfigReader>();
+		this.readers = new LinkedList<>();
 	}
 
 	public void enqueue(DDDConfigReader reader) {
@@ -27,9 +25,7 @@ public final class DDDConfigLoader {
 	}
 
 	public void enqueueAll(DDDConfigReader... readers) {
-		for(DDDConfigReader reader : readers) {
-			this.readers.add(reader);
-		}
+        this.readers.addAll(Arrays.asList(readers));
 	}
 	
 	public void enqueueAll(Iterable<DDDConfigReader> readers) {
@@ -48,7 +44,7 @@ public final class DDDConfigLoader {
 				thread.join();
 			}
 			catch(InterruptedException e) {
-				e.printStackTrace();
+				DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			}
 		}
 		getInstance().readers.stream().filter(DDDConfigReader::doesSelfReportErrors).map(DDDConfigReader::getSelfReportedErrors).reduce((c1, c2) -> {
@@ -59,7 +55,7 @@ public final class DDDConfigLoader {
 			errors.forEach((e) -> {
 				e.log();
 				if(e instanceof ConfigWrappedException) {
-					Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(DistinctDamageDescriptions::fatal);
+					DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 				}
 			});
 		});
@@ -68,7 +64,7 @@ public final class DDDConfigLoader {
 	public static Iterable<String> getErrorMessages() {
 		List<String> msgs = Lists.newArrayList();
 		msgs.addAll(getInstance().readers.stream().filter(DDDConfigReader::doesSelfReportErrors).flatMap((r) -> r.getSelfReportedErrors().stream().map(DDDConfigReaderException::getLocalizedMessage)).collect(Collectors.toSet()));
-		if(msgs.size() > 0) {
+		if(!msgs.isEmpty()) {
 			msgs.add(0, "DDD has some errors reading the config. You may need to check the log for more details.");
 		}
 		return msgs;

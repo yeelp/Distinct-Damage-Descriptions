@@ -1,18 +1,9 @@
 package yeelp.distinctdamagedescriptions.integration.thaumcraft;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.RayTraceResult;
@@ -21,6 +12,14 @@ import thaumcraft.api.casters.FocusPackage;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 public final class ThaumcraftFocusTracker {
 
@@ -50,8 +49,9 @@ public final class ThaumcraftFocusTracker {
 		}
 	}
 	
-	private Multimap<UUID, Aspect> castedAspects = MultimapBuilder.hashKeys().hashSetValues().build();
-	private Map<UUID, FocusPackageTimestamp> hitByPackageMap = Maps.newHashMap();
+	@SuppressWarnings("UnstableApiUsage")
+    private final Multimap<UUID, Aspect> castedAspects = MultimapBuilder.hashKeys().hashSetValues().build();
+	private final Map<UUID, FocusPackageTimestamp> hitByPackageMap = Maps.newHashMap();
 	
 	public synchronized void trackAspects(FocusPackage focusPackage, RayTraceResult[] targets, Iterable<Aspect> aspects) {
 		UUID packageUUID = focusPackage.getUniqueID();

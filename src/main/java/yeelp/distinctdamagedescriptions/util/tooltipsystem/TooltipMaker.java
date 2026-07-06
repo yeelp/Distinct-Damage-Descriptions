@@ -1,13 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import com.google.common.base.Functions;
-
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
@@ -17,14 +10,13 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ArmorDistributionIconAggregator;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.MobDamageDistributionIconAggregator;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.MobResistanceIconAggregator;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ProjectileDamageDistributionIconAggregator;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ShieldDistributionIconAggregator;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.*;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Collected formatters and icon aggregators into single instance for tooltip
@@ -73,14 +65,14 @@ public enum TooltipMaker {
 		}
 	};
 
-	private TooltipFormatter<ItemStack> formatter;
-	private IconAggregator aggregator;
+	private final TooltipFormatter<ItemStack> formatter;
+	private final IconAggregator aggregator;
 
-	private TooltipMaker() {
+	TooltipMaker() {
 		this(null, null);
 	}
 
-	private TooltipMaker(TooltipFormatter<ItemStack> formatter, IconAggregator aggregator) {
+	TooltipMaker(TooltipFormatter<ItemStack> formatter, IconAggregator aggregator) {
 		this.formatter = formatter;
 		this.aggregator = aggregator;
 	}
@@ -94,7 +86,7 @@ public enum TooltipMaker {
 	 *         eggs.
 	 */
 	public static List<String> makeTooltipStrings(ItemStack stack) {
-		return getApplicableMakers(stack).map((m) -> m.formatter).<List<String>>collect(LinkedList<String>::new, (l, f) -> l.addAll(f.format(stack)), List<String>::addAll);
+		return getApplicableMakers(stack).map((m) -> m.formatter).<List<String>>collect(LinkedList::new, (l, f) -> l.addAll(f.format(stack)), List::addAll);
 	}
 
 	/**
@@ -107,7 +99,7 @@ public enum TooltipMaker {
 	 * @return a List of icons to draw
 	 */
 	public static List<Icon> getIconsFor(ItemStack stack, int x, int y, List<String> tooltips) {
-		return getApplicableMakers(stack).map((m) -> m.aggregator).<List<Icon>>collect(LinkedList<Icon>::new, (l, a) -> l.addAll(a.getIconsToDraw(stack, x, y, tooltips)), List<Icon>::addAll);
+		return getApplicableMakers(stack).map((m) -> m.aggregator).<List<Icon>>collect(LinkedList::new, (l, a) -> l.addAll(a.getIconsToDraw(stack, x, y, tooltips)), List::addAll);
 	}
 
 	private static Stream<TooltipMaker> getApplicableMakers(ItemStack stack) {

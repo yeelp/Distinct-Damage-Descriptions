@@ -1,12 +1,5 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +18,14 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class MobResistances extends DamageResistances implements IMobResistances {
 
 	@CapabilityInject(IMobResistances.class)
@@ -41,7 +42,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	private static final String ADAPTABILITY_STATUS = "adaptabilityStatus";
 
 	public MobResistances() {
-		this(new DDDBaseMap<Float>(() -> 0.0f), new HashSet<DDDDamageType>(), false, 0.0f);
+		this(new DDDBaseMap<>(() -> 0.0f), new HashSet<>(), false, 0.0f);
 	}
 
 	public MobResistances(DDDBaseMap<Float> resistances, Collection<DDDDamageType> immunities, boolean adaptability, float adaptiveAmount) {
@@ -51,17 +52,17 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		this.adaptiveAmount = adaptiveAmount;
 		this.adaptiveAmountModified = adaptiveAmount;
 		this.adaptiveAmountOriginal = adaptiveAmount;
-		this.adaptiveTo = new HashSet<DDDDamageType>();
+		this.adaptiveTo = new HashSet<>();
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == cap ? cap.<T>cast(this) : null;
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+		return capability == cap ? cap.cast(this) : null;
 	}
 
 	@Override
@@ -124,9 +125,9 @@ public class MobResistances extends DamageResistances implements IMobResistances
 
 	@Override
 	public boolean updateAdaptiveResistance(DamageMap dmgMap) {
-		boolean sameKeys = this.adaptiveTo.stream().allMatch(dmgMap::containsKey) && dmgMap.keySet().stream().allMatch(this.adaptiveTo::contains);
+		boolean sameKeys = this.adaptiveTo.stream().allMatch(dmgMap::containsKey) && this.adaptiveTo.containsAll(dmgMap.keySet());
 		if(!sameKeys) {
-			this.adaptiveTo = new HashSet<DDDDamageType>(dmgMap.keySet());
+			this.adaptiveTo = new HashSet<>(dmgMap.keySet());
 			if(ModConfig.core.enableAdaptiveWeakness) {
 				float total = (float) YMath.sum(dmgMap.values());
 				Map<DDDDamageType, Float> weightMap = dmgMap.entrySet().stream().collect(Collectors.toMap(Entry::getKey, (e) -> e.getValue() / total));
@@ -169,7 +170,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 	@Override
 	public IMobResistances copy() {
 		MobResistances copy = new MobResistances(super.copyMap(), super.copyImmunities(), this.adaptive, this.adaptiveAmount);
-		copy.adaptiveTo = new HashSet<DDDDamageType>(this.adaptiveTo);
+		copy.adaptiveTo = new HashSet<>(this.adaptiveTo);
 		return copy;
 	}
 
@@ -201,7 +202,8 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		return NBTTagCompound.class;
 	}
 	
-	private float computeAndSetAdaptiveWeakness(float avgWeakness) {
+	@SuppressWarnings("UnusedReturnValue")
+    private float computeAndSetAdaptiveWeakness(float avgWeakness) {
 		return this.adaptiveAmountModified = (float) Math.exp(avgWeakness) * this.adaptiveAmount;
 	}
 	
@@ -214,7 +216,9 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		if(compound.hasKey(ADAPTIVE_AMOUNT_ORIGINAL_KEY)) {
 			this.adaptiveOriginally = compound.getBoolean(ADAPTIVE_ORIGINAL_KEY);			
 		}
-		this.adaptiveOriginally = this.adaptive;
+		else {
+			this.adaptiveOriginally = this.adaptive;
+		}
 		this.adaptiveAmount = compound.getFloat(ADAPTIVE_AMOUNT_KEY);
 		this.adaptiveAmountModified = compound.getFloat(ADAPTIVE_AMOUNT_MODIFIED_KEY);
 		this.adaptiveAmountOriginal = compound.getFloat(ADAPTIVE_AMOUNT_ORIGINAL_KEY);
@@ -224,7 +228,7 @@ public class MobResistances extends DamageResistances implements IMobResistances
 		if(this.adaptiveAmountOriginal == 0) {
 			this.adaptiveAmountOriginal = this.adaptiveAmount;
 		}
-		this.adaptiveTo = new HashSet<DDDDamageType>();
+		this.adaptiveTo = new HashSet<>();
 		for(NBTBase nbt : compound.getTagList(ADAPTABILITY_STATUS, new NBTTagString().getId())) {
 			this.adaptiveTo.add(DDDRegistries.damageTypes.get(((NBTTagString) nbt).getString()));
 		}

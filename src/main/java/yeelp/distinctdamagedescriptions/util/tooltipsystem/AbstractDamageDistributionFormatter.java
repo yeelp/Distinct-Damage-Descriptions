@@ -1,17 +1,18 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
+import net.minecraft.item.ItemStack;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+
+import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
-
-import net.minecraft.item.ItemStack;
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 
 /**
  * A capability formatter specifically for {@link IDamageDistribution}
@@ -31,28 +32,17 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	}
 
 	@Override
-	protected Optional<List<String>> formatCapabilityFor(ItemStack stack, IDamageDistribution cap) {
+	protected Optional<List<String>> formatCapabilityFor(@Nonnull ItemStack stack, @Nonnull IDamageDistribution cap) {
 		final DamageMap vals = this.getVals(stack, cap);
 		DDDMaps.adjustHiddenWeightsToUnknown(vals);
-		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList<String>::new, (l, d) -> l.add(TooltipTypeFormatter.DEFAULT_DAMAGE.format(d.getKey(), vals.get(d.getKey()), this)), LinkedList<String>::addAll);
+		List<String> lst = vals.entrySet().stream().sorted(Comparator.comparing(Entry<DDDDamageType, Float>::getKey).thenComparing(Entry::getValue)).collect(LinkedList::new, (l, d) -> l.add(TooltipTypeFormatter.DEFAULT_DAMAGE.format(d.getKey(), vals.get(d.getKey()), this)), LinkedList::addAll);
 		return Optional.of(lst);
 	}
 
 	/**
-	 * Should this distribution be shown? This differs from
-	 * {@link AbstractKeyTooltipFormatter#shouldShow()} in that this determines if
-	 * there is content to show and if said content should be shown, regardless if
-	 * the conditions to show that content is met are met.
-	 * 
-	 * @param stack
-	 * @return
-	 */
-	protected abstract boolean shouldShowDist(ItemStack stack);
-
-	/**
 	 * Get the amount of damage to distribute for this ItemStack
 	 * 
-	 * @param stack
+	 * @param stack the stack to get the damage from.
 	 * @return The amount of damage this ItemStack does
 	 */
 	protected abstract float getDamageToDistribute(ItemStack stack);
@@ -65,7 +55,7 @@ public abstract class AbstractDamageDistributionFormatter extends AbstractCapabi
 	 * 
 	 * @param stack the stack context
 	 * @param cap   the capability instance
-	 * @return an Map mapping types to weights or the distributed damage values.
+	 * @return a Map mapping types to weights or the distributed damage values.
 	 */
 	protected DamageMap getVals(ItemStack stack, IDamageDistribution cap) {
 		return cap.distributeDamage(this.getDamageToDistribute(stack));

@@ -1,7 +1,6 @@
-package yeelp.distinctdamagedescriptions.integration.thebewteenlands;
+package yeelp.distinctdamagedescriptions.integration.thebetweenlands;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
@@ -48,7 +47,7 @@ public final class TheBetweenlandsCompat implements IModIntegration {
 		}
 		catch(ClassNotFoundException e) {
 			DistinctDamageDescriptions.fatal("Could not hook into ItemBLShield for Betweenlands! Integration will halt!");
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			return false;
 		}
 		try {
@@ -56,7 +55,7 @@ public final class TheBetweenlandsCompat implements IModIntegration {
 		}
 		catch(NoSuchFieldException | SecurityException | IllegalAccessException | NoSuchMethodException e) {
 			DistinctDamageDescriptions.fatal("Could not initialize Betweenlands Shield Handler!");
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			return false;
 		}
 		return IModIntegration.super.preInit(evt);

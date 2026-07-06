@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.tetra;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import yeelp.distinctdamagedescriptions.ModConsts;

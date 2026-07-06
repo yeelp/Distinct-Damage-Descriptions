@@ -1,14 +1,8 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.damage.IDamageSource;
 import crafttweaker.api.entity.IEntityLivingBase;
@@ -23,11 +17,17 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+@SuppressWarnings("CanBeFinal")
 @ZenClass(CTConsts.CTClasses.COTDISTBUILDER)
 @ZenRegister
 public final class CoTDDDDistributionBuilder {
 	
-	private static final Collection<CoTDDDDistributionBuilder> BUILDERS = new ArrayList<CoTDDDDistributionBuilder>();
+	private static final Collection<CoTDDDDistributionBuilder> BUILDERS = Lists.newArrayList();
 	private static final Set<String> USED_NAMES = Sets.newHashSet();
 
 	@ZenClass("mods.ddd.distributions.IsContextApplicable")
@@ -56,7 +56,7 @@ public final class CoTDDDDistributionBuilder {
 	
 	public CoTDDDDistributionBuilder(String name) {
 		this.name = name;
-		this.weights = new DDDBaseMap<Float>(() -> 0.0f);
+		this.weights = new DDDBaseMap<>(() -> 0.0f);
 		this.stringWeights = Maps.newHashMap();
 	}
 	
@@ -111,7 +111,8 @@ public final class CoTDDDDistributionBuilder {
 	public static void registerDists() {
 		BUILDERS.forEach((b) -> {
 			if(DDDRegistries.distributions.get(b.name) != null) {
-				throw new ZenRuntimeException(String.format("%s is a distribution name already registered! Original registration source: %s", b.name, DDDRegistries.distributions.get(b.name).getCreationSourceString()));
+                //noinspection DataFlowIssue
+                throw new ZenRuntimeException(String.format("%s is a distribution name already registered! Original registration source: %s", b.name, DDDRegistries.distributions.get(b.name).getCreationSourceString()));
 			}
 			//@formatter:off
 			Optional<RuntimeException> e = b.stringWeights.keySet().stream()

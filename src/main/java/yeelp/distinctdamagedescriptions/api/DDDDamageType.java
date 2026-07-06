@@ -1,12 +1,11 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Arrays;
-
-import javax.annotation.Nullable;
-
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.util.DDDFontColour;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
 
 /**
  * Basic skeleton of a DDD damage type.
@@ -16,12 +15,12 @@ import yeelp.distinctdamagedescriptions.util.DDDFontColour;
  */
 public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSource {
 	/**
-	 * The Type of a DDDDamage type. Physical or Special
+	 * The {@code Type} of a DDDDamage type. Physical or Special
 	 * 
 	 * @author Yeelp
 	 *
 	 */
-	public enum Type {
+	enum Type {
 		PHYSICAL,
 		SPECIAL;
 
@@ -41,7 +40,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	/**
 	 * A prefix that DDD uses to recognize types it adds.
 	 */
-	static String DDD_PREFIX = "ddd_";
+	String DDD_PREFIX = "ddd_";
 
 	/**
 	 * Get the name of this type, with the "ddd_" prefix
@@ -64,7 +63,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	 * @return the formatted display name
 	 */
 	default String getFormattedDisplayName() {
-		return DDDFontColour.encodeColour(getColour()) + getDisplayName().replaceAll(" ", String.valueOf(DDDFontColour.Marker.SPACE.getC())) + DDDFontColour.Marker.END.getC();
+		return DDDFontColour.encodeColour(this.getColour()) + this.getDisplayName().replaceAll(" ", String.valueOf(DDDFontColour.Marker.SPACE.getC())) + DDDFontColour.Marker.END.getC();
 	}
 
 	/**
@@ -137,7 +136,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 
 	/**
 	 * Add the DDD prefix to a damage type, or really to any string, but only if the prefix doesn't exist.
-	 * @param s
+	 * @param s The damage type name
 	 * @return a String with {@link #DDD_PREFIX} added to the front if it isn't present.
 	 */
 	static String addDDDPrefixIfNeeded(String s) {
@@ -146,7 +145,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	
 	/**
 	 * Remove the DDD prefix from a damage type string, or really any string, but only if it is present to begin with. 
-	 * @param s
+	 * @param s The damage type name
 	 * @return a String with {@link #DDD_PREFIX} removed from the front if it is present.
 	 */
 	static String removeDDDPrefixIfPresent(String s) {
@@ -155,7 +154,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	
 	/**
 	 * Is the type an internal type? Internal types are used by DDD and should not be used by external sources.
-	 * @param type
+	 * @param type The damage type
 	 * @return True if {@code type} is an internal type.
 	 */
 	static boolean isInternalType(DDDDamageType type) {
@@ -164,7 +163,7 @@ public interface DDDDamageType extends Comparable<DDDDamageType>, IHasCreationSo
 	
 	/**
 	 * Is this type the unknown damage type?
-	 * @param type
+	 * @param type The damage type
 	 * @return true if it is {@link DDDBuiltInDamageType#UNKNOWN}
 	 */
 	static boolean isUnknownType(DDDDamageType type) {

@@ -1,17 +1,15 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import com.google.common.base.Functions;
+import com.google.common.collect.Sets;
+import yeelp.distinctdamagedescriptions.api.DDDDamageType;
+import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
+
 import java.util.Set;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import com.google.common.base.Functions;
-import com.google.common.collect.Sets;
-
-import yeelp.distinctdamagedescriptions.api.DDDDamageType;
-import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 
 public final class DDDMaps {
 
@@ -46,7 +44,8 @@ public final class DDDMaps {
 		DamageMap() {
 			super(() -> 0.0f);
 		}
-		
+
+		@SuppressWarnings("unused")
 		public static Collector<DDDDamageType, ?, DamageMap> typesToDamageMap(Function<DDDDamageType, Float> valueMapper) {
 			return DDDMaps.typesToMap(valueMapper, DDDMaps::newDamageMap);
 		}
@@ -67,7 +66,7 @@ public final class DDDMaps {
 		private static final long serialVersionUID = -7103973048532333006L;
 
 		ArmorMap() {
-			super(() -> new ArmorValues());
+			super(ArmorValues::new);
 		}
 		
 		public static Collector<DDDDamageType, ?, ArmorMap> typesToArmorMap(Function<DDDDamageType, ArmorValues> valueMapper) {
@@ -81,14 +80,15 @@ public final class DDDMaps {
 		ResistMap() {
 			super(() -> 0.0f);
 		}
-		
+
+		@SuppressWarnings("unused")
 		public static Collector<DDDDamageType, ?, ResistMap> typesToResistMap(Function<DDDDamageType, Float> valueMapper) {
 			return DDDMaps.typesToMap(valueMapper, DDDMaps::newResistMap);
 		}
 	}
 	
 	static <U, M extends DDDBaseMap<U>> Collector<DDDDamageType, ?, M> typesToMap(Function<DDDDamageType, U> valueMapper, Supplier<M> mapSup) {
-		return Collectors.toMap(Functions.identity(), valueMapper, (BinaryOperator<U>) (u1, u2) -> {
+		return Collectors.toMap(Functions.identity(), valueMapper, (u1, u2) -> {
 			throw new IllegalArgumentException("Can't collect on duplicate keys!");
 		}, mapSup);
 	}

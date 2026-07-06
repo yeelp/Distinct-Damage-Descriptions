@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.hwyla;
 
-import java.util.Collections;
-
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -9,6 +7,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
+
+import java.util.Collections;
 
 public final class Hwyla implements IModIntegration {
 	
@@ -30,7 +30,9 @@ public final class Hwyla implements IModIntegration {
 		return FMLInterModComms.sendMessage(ModConsts.IntegrationIds.HWYLA_ID, HwylaConsts.REGISTER_MESSAGE, HwylaConsts.REGISTER_METHOD);
 	}
 
-	public static void registerHwyla(IWailaRegistrar registrar) {
+	//found by HWYLA and used
+	@SuppressWarnings("unused")
+    public static void registerHwyla(IWailaRegistrar registrar) {
 		EntityHandler handler = new EntityHandler();
 		registrar.registerBodyProvider(handler, Entity.class);
 		registrar.registerNBTProvider(handler, Entity.class);

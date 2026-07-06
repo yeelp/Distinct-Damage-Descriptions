@@ -1,17 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.client;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import slimeknights.tconstruct.library.materials.MaterialTypes;
+import slimeknights.tconstruct.library.tools.IToolPart;
 import slimeknights.tconstruct.library.tools.ToolPart;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
@@ -20,18 +13,20 @@ import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractTooltipFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.*;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.AbstractCapabilityIconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.Icon;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<DistributionBias, ItemStack> implements IModCompatTooltipFormatter<ItemStack> {
 
@@ -54,7 +49,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 	}
 
 	@Override
-	protected Optional<List<String>> formatCapabilityFor(ItemStack t, DistributionBias cap) {
+	protected Optional<List<String>> formatCapabilityFor(@Nullable ItemStack t, @Nullable DistributionBias cap) {
 		if(t == null || cap == null) {
 			return Optional.empty();
 		}
@@ -100,10 +95,10 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 		}
 	}
 
-	private final class BiasIconAggregator extends AbstractCapabilityIconAggregator implements IconAggregator {
+	private static final class BiasIconAggregator extends AbstractCapabilityIconAggregator implements IconAggregator {
 
 		BiasIconAggregator(String regex) {
-			super(TextFormatting.GRAY.toString() + " " + regex, () -> TinkerToolPartFormatter.getInstance().shouldShow());
+			super(TextFormatting.GRAY + " " + regex, () -> TinkerToolPartFormatter.getInstance().shouldShow());
 		}
 
 		@Override
@@ -113,7 +108,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 
 		@Override
 		public List<Icon> getIconsToDraw(ItemStack stack, int x, int y, List<String> tooltips) {
-			List<Icon> lst = new ArrayList<Icon>();
+			List<Icon> lst = new ArrayList<>();
 			lst.addAll(ItemDamageDistributionIconAggregator.getInstance().getIconsToDraw(stack, x, y, tooltips));
 			lst.addAll(super.getIconsToDraw(stack, x, y, tooltips));
 			return lst;
@@ -122,7 +117,7 @@ public class TinkerToolPartFormatter extends AbstractCapabilityTooltipFormatter<
 
 	@Override
 	public boolean applicable(ItemStack t) {
-		return t.getItem() instanceof ToolPart && ((ToolPart) t.getItem()).hasUseForStat(MaterialTypes.HEAD);
+		return t.getItem() instanceof ToolPart && ((IToolPart) t.getItem()).hasUseForStat(MaterialTypes.HEAD);
 	}
 
 	@Override

@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.util.json;
 
-import java.util.Set;
-
 import com.google.gson.JsonObject;
-
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -11,9 +8,11 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDCustomDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
 
+import java.util.Set;
+
 public final class DDDDamageTypeJsonParser extends AbstractJsonParser<Tuple<DDDDamageType, DamageTypeData[]>> {
 
-	protected DDDDamageTypeJsonParser(JsonObject root) {
+	public DDDDamageTypeJsonParser(JsonObject root) {
 		super(root);
 	}
 
@@ -30,9 +29,7 @@ public final class DDDDamageTypeJsonParser extends AbstractJsonParser<Tuple<DDDD
 		}
 		name = name.toLowerCase();
 		String colourFromJson = this.getString("displayColour");
-		if(!colourFromJson.matches(HEX_REGEX)) {
-			throw new SyntaxException("displayColour is an invalid hex string!");
-		}
+		validateNumber(colourFromJson, HEX_REGEX, () -> new SyntaxException("displayColour is an invalid hex string!"));
 		colour = Integer.parseInt(colourFromJson, 16);
 		String entityMsg = this.getString("deathMessages.deathHasAttacker");
 		String otherMsg = this.getString("deathMessages.deathHasNoAttacker");
@@ -45,12 +42,12 @@ public final class DDDDamageTypeJsonParser extends AbstractJsonParser<Tuple<DDDD
 		else {
 			DistinctDamageDescriptions.info(String.format("ddd_%s is already registered with display name %s; will use this instead...", name, type.getDisplayName()));
 		}
-		return new Tuple<DDDDamageType, DamageTypeData[]>(type, datas.stream().map(AbstractJsonParser<DamageTypeData>::parseJson).toArray(DamageTypeData[]::new));
+		return new Tuple<>(type, datas.stream().map(AbstractJsonParser::parseJson).toArray(DamageTypeData[]::new));
 	}
 
 	private static final class DamageTypeDataJsonParser extends AbstractJsonParser<DamageTypeData> {
 
-		protected DamageTypeDataJsonParser(JsonObject root) {
+		public DamageTypeDataJsonParser(JsonObject root) {
 			super(root);
 		}
 

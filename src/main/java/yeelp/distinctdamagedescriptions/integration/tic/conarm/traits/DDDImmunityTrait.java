@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.traits;
 
-import java.util.Iterator;
-
 import c4.conarm.lib.tinkering.TinkersArmor;
 import c4.conarm.lib.traits.AbstractArmorTrait;
 import net.minecraft.item.ItemStack;
@@ -37,18 +35,17 @@ public class DDDImmunityTrait extends AbstractArmorTrait {
 
 		@SuppressWarnings("static-method")
 		@SubscribeEvent(priority = EventPriority.HIGHEST)
-		public final void onGatherImmunities(GatherDefensesEvent evt) {
+		public void onGatherImmunities(GatherDefensesEvent evt) {
 			for(ItemStack stack : evt.getDefender().getArmorInventoryList()) {
 				if(stack.getItem() instanceof TinkersArmor && !ToolHelper.isBroken(stack)) {
-					Iterator<NBTBase> it = TagUtil.getTraitsTagList(stack).iterator();
-					while(it.hasNext()) {
-						ITrait trait = TinkerRegistry.getTrait(((NBTTagString) it.next()).getString());
-						if(trait instanceof DDDImmunityTrait) {
-							DDDImmunityTrait immunity = (DDDImmunityTrait) trait;
-							evt.addImmunity(immunity.getType());
-							ToolHelper.damageTool(stack, 1, evt.getDefender());
-						}
-					}
+                    for(NBTBase nbtBase : TagUtil.getTraitsTagList(stack)) {
+                        ITrait trait = TinkerRegistry.getTrait(((NBTTagString) nbtBase).getString());
+                        if(trait instanceof DDDImmunityTrait) {
+                            DDDImmunityTrait immunity = (DDDImmunityTrait) trait;
+                            evt.addImmunity(immunity.getType());
+                            ToolHelper.damageTool(stack, 1, evt.getDefender());
+                        }
+                    }
 				}
 			}
 		}

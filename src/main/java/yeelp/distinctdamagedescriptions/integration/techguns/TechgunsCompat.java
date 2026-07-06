@@ -1,11 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.techguns;
 
-import java.util.Arrays;
-
-import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableList;
-
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -22,17 +17,14 @@ import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.integration.IModIntegration;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
-import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.ICancelCalculationInjector;
 
 public final class TechgunsCompat implements IModIntegration {
 	
 	interface TechgunsConsts {
-		final String TG_DAMAGESOURCE_CLASS = "techguns.damagesystem.TGDamageSource";
-		final String INPCTG_DAMAGESYSTEM_CLASS = "techguns.api.npc.INpcTGDamageSystem";
-		final String DAMAGESYSTEM_CLASS = "techguns.damagesystem.DamageSystem";
-		
-		final String TG_KNOCKBACK = "tg_knockback";
-		final float DUMMY_KNOCKBACK_THRESHOLD = 0.01f;
+		String TG_DAMAGESOURCE_CLASS = "techguns.damagesystem.TGDamageSource";
+		String INPCTG_DAMAGESYSTEM_CLASS = "techguns.api.npc.INpcTGDamageSystem";
+		String TG_KNOCKBACK = "tg_knockback";
+		float DUMMY_KNOCKBACK_THRESHOLD = 0.01f;
 	}
 
 	private Handler handlerToRegister = null;
@@ -59,14 +51,14 @@ public final class TechgunsCompat implements IModIntegration {
 			this.handlerToRegister = new TechgunsCacluationHandler();
 			return IModIntegration.super.initStart(evt);
 		}
-		catch(ClassNotFoundException | NoSuchMethodException | SecurityException e) {
+		catch(ClassNotFoundException | SecurityException e) {
 			//@formatter:off
 			ImmutableList.of("DDD was unable to hook into Techguns for compat.",
 					"DDD will continue loading as normal, but it is encouraged to report this error! DDD will inform on world load as well! See error below!",
 					e.getClass().getSimpleName(),
 					e.getLocalizedMessage()).forEach(DistinctDamageDescriptions::fatal);
 			//@formatter:on
-			Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(DistinctDamageDescriptions::fatal);
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			this.handlerToRegister = new Handler() {
 				@SubscribeEvent
 				public void onJoinWorld(PlayerLoggedInEvent evt) {
@@ -82,16 +74,11 @@ public final class TechgunsCompat implements IModIntegration {
 	
 	@Override
 	public boolean init(FMLInitializationEvent evt) {
-		DDDCombatCalculations.registerCancelCalculationInjector(new ICancelCalculationInjector() {
-			@Override
-			public boolean shouldCancel(boolean currentlyCanceled, Phase phase, EntityLivingBase defender, DamageSource src, float amount) {
-				return isDummyDamage(src, amount);
-			}
-		});
+		DDDCombatCalculations.registerCancelCalculationInjector((currentlyCanceled, phase, defender, src, amount) -> isDummyDamage(src, amount));
 		return IModIntegration.super.init(evt);
 	}
 	
-	protected static boolean isDummyDamage(DamageSource src, float amount) {
+	static boolean isDummyDamage(DamageSource src, float amount) {
 		return src.damageType.equals(TechgunsConsts.TG_KNOCKBACK) && amount <= TechgunsConsts.DUMMY_KNOCKBACK_THRESHOLD;
 	}
 	

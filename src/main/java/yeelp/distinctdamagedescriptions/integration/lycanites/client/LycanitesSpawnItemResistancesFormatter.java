@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.client;
 
 import com.lycanitesmobs.core.item.ItemCustomSpawnEgg;
-
 import net.minecraft.item.ItemStack;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;

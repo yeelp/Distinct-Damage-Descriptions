@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -13,6 +9,11 @@ import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.CoTDDDDistributionBuilder.IsContextApplicable;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDCustomDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
+
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 public class CTDDDCustomDistribution extends CTDamageDistribution implements ICTDDDCustomDistribution {
 
@@ -33,12 +34,12 @@ public class CTDDDCustomDistribution extends CTDamageDistribution implements ICT
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.valid(src, target) ? this.getDist().getCategories() : Collections.emptySet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.valid(src, target) ? Optional.of((IDamageDistribution) this.getDist()) : Optional.empty();
 	}
 

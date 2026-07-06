@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.event;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -19,6 +15,9 @@ import yeelp.distinctdamagedescriptions.util.development.DeveloperModeKernel;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 
+import javax.annotation.Nonnull;
+import java.util.Set;
+
 public final class DDDHooks {
 
 	private static <E extends Event> E fire(E evt) {
@@ -31,10 +30,12 @@ public final class DDDHooks {
 		return fire(new ShieldBlockEvent(directAttacker, indirectAttacker, defender, src, map, shield));
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	public static DetermineDamageEvent fireDetermineDamage(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull DamageMap map) {
 		return fire(new DetermineDamageEvent(directAttacker, indirectAttacker, defender, src, map));
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	public static GatherDefensesEvent fireGatherDefenses(Entity directAttacker, Entity indirectAttacker, @Nonnull EntityLivingBase defender, @Nonnull DamageSource src, @Nonnull ResistMap map, @Nonnull Set<DDDDamageType> immunities) {
 		return fire(new GatherDefensesEvent(directAttacker, indirectAttacker, defender, src, map, immunities));
 	}

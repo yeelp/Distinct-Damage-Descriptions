@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import crafttweaker.annotations.ZenRegister;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
@@ -11,6 +8,9 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTDDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ZenClass(CTConsts.CTClasses.CTDAMAGETYPE)
 @ZenRegister

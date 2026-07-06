@@ -1,14 +1,8 @@
 package yeelp.distinctdamagedescriptions.capability.distributors;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
@@ -16,6 +10,8 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.ConfigGenerator;
+
+import java.util.function.Supplier;
 
 public abstract class DamageDistributionCapabilityDistributor<T> extends AbstractCapabilityDistributorGeneratable<T, IDamageDistribution, IDamageDistribution> {
 	static final ResourceLocation LOC = new ResourceLocation(ModConsts.MODID, "dmgDistribution");
@@ -56,7 +52,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 			return ConfigGenerator.getOrGenerateMobDamage(t, key);
 		}
 
-		public static final ForEntity getInstance() {
+		public static ForEntity getInstance() {
 			return instance == null ? instance = new ForEntity() : instance;
 		}
 	}
@@ -91,7 +87,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 			return DDDConfigurations.items;
 		}
 
-		public static final ForItem getInstance() {
+		public static ForItem getInstance() {
 			return instance == null ? instance = new ForItem() : instance;
 		}
 	}
@@ -115,7 +111,7 @@ public abstract class DamageDistributionCapabilityDistributor<T> extends Abstrac
 			return DDDConfigurations.projectiles;
 		}
 
-		public static final ForProjectile getInstance() {
+		public static ForProjectile getInstance() {
 			return instance == null ? instance = new ForProjectile() : instance;
 		}
 	}

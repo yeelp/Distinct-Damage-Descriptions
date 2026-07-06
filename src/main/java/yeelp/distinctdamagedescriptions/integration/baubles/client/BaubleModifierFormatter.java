@@ -1,12 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.baubles.client;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map.Entry;
-
-import com.google.common.collect.Lists;
-
 import baubles.api.cap.BaublesCapabilities;
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
@@ -24,12 +19,12 @@ import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 import yeelp.distinctdamagedescriptions.util.Translations.LayeredTranslator;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractKeyTooltipFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.*;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
 
 public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<ItemStack> implements IModCompatTooltipFormatter<ItemStack> {
 
@@ -105,17 +100,15 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 	private String formatEntry(BaubleModifierType baubleType, DDDDamageType type, float weight) {
 		switch(baubleType) {
 			case BRUTE_FORCE:
-				return String.format("   %s %s%s %s %s", BRUTE_FORCE_TEXT.getFormattedText(), TextFormatting.GRAY.toString(), this.getNumberFormattingStrategy().format(weight), this.getDamageFormatter().format(type), RESISTANCE_TEXT.getFormattedText());
+				return String.format("   %s %s%s %s %s", BRUTE_FORCE_TEXT.getFormattedText(), TextFormatting.GRAY, this.getNumberFormattingStrategy().format(weight), this.getDamageFormatter().format(type), RESISTANCE_TEXT.getFormattedText());
 			case DAMAGE_MOD:
-				return this.formatDamageOrResistance(baubleType, type, weight);
+            case RESISTANCE_MOD:
+                return this.formatDamageOrResistance(baubleType, type, weight);
 			case IMMUNITY:
-				return this.formatImmunityOrSlyStrike(baubleType, type, weight);
-			case RESISTANCE_MOD:
-				return this.formatDamageOrResistance(baubleType, type, weight);
-			case SLY_STRIKE:
-				return this.formatImmunityOrSlyStrike(baubleType, type, weight);
-		}
-		DistinctDamageDescriptions.warn("Invalid Bauble Modifier Type found! " + baubleType.toString());
+            case SLY_STRIKE:
+                return this.formatImmunityOrSlyStrike(baubleType, type, weight);
+        }
+		DistinctDamageDescriptions.warn("Invalid Bauble Modifier Type found! " + baubleType);
 		return "";
 	}
 	
@@ -129,7 +122,7 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 	}
 	
 	public static BaubleModifierFormatter getInstance() {
-		return instance == null ? new BaubleModifierFormatter() : instance;
+		return instance == null ? instance = new BaubleModifierFormatter() : instance;
 	}
 	
 	private String formatDamageOrResistance(BaubleModifierType baubleType, DDDDamageType type, float weight) {
@@ -149,7 +142,7 @@ public final class BaubleModifierFormatter extends AbstractKeyTooltipFormatter<I
 			text1 = SLY_STRIKE_TEXT.getFormattedText();
 			text2 = damageTypeText;
 		}
-		return "   " + String.format("%s %s %s%s", text1, text2, TextFormatting.GRAY.toString(), chance).trim();
+		return "   " + String.format("%s %s %s%s", text1, text2, TextFormatting.GRAY, chance).trim();
 	}
 
 }

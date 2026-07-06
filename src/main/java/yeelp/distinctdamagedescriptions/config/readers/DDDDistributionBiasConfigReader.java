@@ -7,12 +7,15 @@ import yeelp.distinctdamagedescriptions.integration.util.DistributionBias;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
+import javax.annotation.Nonnull;
+
 public class DDDDistributionBiasConfigReader extends DDDBasicConfigReader<DistributionBias> {
 
-	public DDDDistributionBiasConfigReader(String name, String[] configList, IDDDConfiguration<DistributionBias> config) throws NoSuchMethodException, SecurityException {
+	public DDDDistributionBiasConfigReader(String name, String[] configList, IDDDConfiguration<DistributionBias> config) throws NoSuchMethodException {
 		super(name, configList, config, DistributionBias.class.getConstructor(NonNullMap.class, float.class), 0.0f);
 	}
 
+	@Nonnull
 	@Override
 	protected DistributionBias parseMapping(String entry, String key, String map, String[] additionalInfo) throws ConfigInvalidException, ConfigParsingException {
 		if(additionalInfo.length > 1 || !additionalInfo[0].matches(ConfigReaderUtilities.DECIMAL_REGEX)) {

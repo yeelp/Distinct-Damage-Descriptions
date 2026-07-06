@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -20,13 +17,17 @@ import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Set;
+
 public class ShieldDistribution extends Distribution implements IDistribution {
 
 	@CapabilityInject(ShieldDistribution.class)
 	public static Capability<ShieldDistribution> cap;
 
 	public ShieldDistribution() {
-		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f));
+		this(new NonNullMap<>(() -> 0.0f));
 	}
 
 	public ShieldDistribution(Map<DDDDamageType, Float> blockMap) {
@@ -43,9 +44,7 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 			float f = blockDamage(v, this.getWeight(k));
 			return f <= 0 ? null : f;
 		}));
-		DebugLib.doDebug(() -> {
-			DistinctDamageDescriptions.debug(String.format("After blocking: %s", DebugLib.entriesToString(fullDamage)));
-		});
+		DebugLib.doDebug(() -> DistinctDamageDescriptions.debug(String.format("After blocking: %s", DebugLib.entriesToString(fullDamage))));
 		return fullDamage;
 	}
 
@@ -54,13 +53,13 @@ public class ShieldDistribution extends Distribution implements IDistribution {
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == cap ? cap.<T>cast(this) : null;
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+		return capability == cap ? cap.cast(this) : null;
 	}
 
 	@Override

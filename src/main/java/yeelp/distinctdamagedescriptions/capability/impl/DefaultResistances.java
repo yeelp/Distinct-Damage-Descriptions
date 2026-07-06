@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Collections;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -15,6 +11,10 @@ import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Set;
+
 public final class DefaultResistances extends DamageResistances implements IMobResistances {
 
 	private static DefaultResistances instance;
@@ -24,7 +24,7 @@ public final class DefaultResistances extends DamageResistances implements IMobR
 	}
 	
 	private DefaultResistances() {
-		super(new NonNullMap<DDDDamageType, Float>(() -> 0.0f), Collections.emptySet());
+		super(new NonNullMap<>(() -> 0.0f), Collections.emptySet());
 	}
 
 	@Override
@@ -33,12 +33,12 @@ public final class DefaultResistances extends DamageResistances implements IMobR
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return false;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return null;
 	}
 

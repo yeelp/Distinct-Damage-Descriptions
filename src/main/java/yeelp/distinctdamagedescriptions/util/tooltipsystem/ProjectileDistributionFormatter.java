@@ -20,18 +20,13 @@ public class ProjectileDistributionFormatter extends AbstractDamageDistributionF
 
 	/**
 	 * Get the singleton instance of this ProjectileDistributionFormatter if it
-	 * exists. If it doesn't exists, a new instance is created and stored, and that
+	 * exists. If it doesn't exist, a new instance is created and stored, and that
 	 * instance is returned.
 	 * 
 	 * @return The singleton instance, or a new one if it doesn't exist yet.
 	 */
 	public static ProjectileDistributionFormatter getInstance() {
 		return instance == null ? instance = new ProjectileDistributionFormatter() : instance;
-	}
-
-	@Override
-	protected boolean shouldShowDist(ItemStack stack) {
-		return true;
 	}
 
 	@Override

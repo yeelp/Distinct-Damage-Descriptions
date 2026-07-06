@@ -1,11 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.lib.damagecalculation;
 
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -16,24 +10,29 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.event.DDDHooks;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
-import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+
+import javax.annotation.Nullable;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 final class DamageClassifier implements IClassifier<DamageMap> {
 
-	@Override
+    @Override
 	public Optional<DamageMap> classify(CombatContext context) {
 		Entity source = context.getImmediateAttacker();
 		Entity trueSource = context.getTrueAttacker();
 		return DDDRegistries.distributions.getDamageDistribution(context.getSource(), context.getDefender()).map(Optional::of).orElseGet(() -> {
-			if(source != null && source instanceof IProjectile) {
+			if(source instanceof IProjectile) {
 				return DDDAPI.accessor.getDamageDistribution((IProjectile) context.getImmediateAttacker());
 			}
 			EntityLivingBase entityAttacker = null;
 			if(source == null && trueSource instanceof EntityPlayer) {
 				entityAttacker = (EntityLivingBase) trueSource;
 			}
-			else if(source != null && source instanceof EntityLivingBase) {
+			else if(source instanceof EntityLivingBase) {
 				entityAttacker = (EntityLivingBase) source;
 			}
 			return getDistForLivingEntity(entityAttacker);

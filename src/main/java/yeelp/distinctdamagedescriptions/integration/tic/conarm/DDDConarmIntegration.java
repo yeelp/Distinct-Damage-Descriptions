@@ -1,23 +1,14 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import com.google.common.base.Functions;
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 import c4.conarm.common.ConstructsRegistry;
 import c4.conarm.common.armor.utils.ArmorHelper;
 import c4.conarm.lib.materials.ArmorMaterialType;
 import c4.conarm.lib.materials.ArmorMaterials;
 import c4.conarm.lib.tinkering.TinkersArmor;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import com.google.common.base.Functions;
+import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -33,6 +24,7 @@ import yeelp.distinctdamagedescriptions.capability.impl.ArmorDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigLoader;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+import yeelp.distinctdamagedescriptions.config.compat.ConarmCategory.TraitLocation;
 import yeelp.distinctdamagedescriptions.config.readers.DDDConfigReader;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
@@ -51,7 +43,15 @@ import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
-import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.IDDDCalculationInjector.IArmorValuesInjector;
+
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class DDDConarmIntegration extends DDDTiCIntegration {
 
@@ -81,7 +81,7 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 	public static final class ConfigReader implements DDDConfigReader {
 
 		private static final String REGEX = "\\w+;" + ConfigReaderUtilities.DDD_TYPE_REGEX + "(,(\\s)?" + ConfigReaderUtilities.DDD_TYPE_REGEX + ")*";
-		private static Collection<DDDConfigReaderException> errors = Lists.newArrayList();
+		private static final Collection<DDDConfigReaderException> errors = Lists.newArrayList();
 
 		@Override
 		public void read() {
@@ -95,7 +95,8 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 			}).filter(Predicates.notNull()).collect(Collectors.toList());
 		}
 
-		@Override
+		@Nonnull
+        @Override
 		public String getName() {
 			return "Conarm Immunity Traits";
 		}
@@ -110,6 +111,7 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 			return true;
 		}
 
+		@Nonnull
 		@Override
 		public Collection<DDDConfigReaderException> getSelfReportedErrors() {
 			return errors;
@@ -127,15 +129,7 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 
 	@Override
 	public boolean doSpecificInit(FMLInitializationEvent evt) {
-		String location;
-		switch(ModConfig.compat.conarm.traitLocation) {
-			case CORE:
-				location = ArmorMaterialType.CORE;
-				break;
-			default:
-				location = ArmorMaterialType.PLATES;
-				break;
-		}
+		String location = Objects.requireNonNull(ModConfig.compat.conarm.traitLocation) == TraitLocation.CORE ? ArmorMaterialType.CORE : ArmorMaterialType.PLATES;
 		Stream.Builder<DDDDamageType> builder = Stream.builder();
 		DDDRegistries.damageTypes.iterator().forEachRemaining(builder::add);
 		Map<String, DDDImmunityTrait> traits = builder.build().map(DDDImmunityTrait::new).collect(Collectors.toMap(Functions.compose(DDDDamageType::getTypeName, DDDImmunityTrait::getType), Function.identity()));
@@ -152,21 +146,18 @@ public final class DDDConarmIntegration extends DDDTiCIntegration {
 		});
 		// Must register an armor values injector to correct the way conarm deals with
 		// armor properties.
-		DDDCombatCalculations.registerArmorValuesInjector(new IArmorValuesInjector() {
-			@Override
-			public ArmorValues apply(ItemStack t, EntityEquipmentSlot u) {
-				if(t.getItem() instanceof TinkersArmor) {
-					return new ArmorValues(ArmorHelper.getArmor(t, u.getIndex()), ArmorHelper.getToughness(t));
-				}
-				return new ArmorValues();
-			}
-		});
+		DDDCombatCalculations.registerArmorValuesInjector((t, u) -> {
+            if(t.getItem() instanceof TinkersArmor) {
+                return new ArmorValues(ArmorHelper.getArmor(t, u.getIndex()), ArmorHelper.getToughness(t));
+            }
+            return new ArmorValues();
+        });
 		return true;
 	}
 
 	@Override
 	public boolean postInit(FMLPostInitializationEvent evt) {
-		ImmutableList.of(ConstructsRegistry.helmet, ConstructsRegistry.chestplate, ConstructsRegistry.leggings, ConstructsRegistry.boots).forEach((armor) -> DDDConfigurations.armors.put(ForgeRegistries.ITEMS.getKey(armor).toString(), new ArmorDistribution()));
+		ImmutableList.of(ConstructsRegistry.helmet, ConstructsRegistry.chestplate, ConstructsRegistry.leggings, ConstructsRegistry.boots).forEach((armor) -> DDDConfigurations.armors.put(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(armor)).toString(), new ArmorDistribution()));
 		return super.postInit(evt);
 	}
 

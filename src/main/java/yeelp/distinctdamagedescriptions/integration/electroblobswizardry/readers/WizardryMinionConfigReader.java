@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.integration.electroblobswizardry.readers;
 
-import java.util.Optional;
-
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.GenericConfigReaderException;
 import yeelp.distinctdamagedescriptions.integration.electroblobswizardry.WizardryConfigurations;
+
+import java.util.Optional;
 
 public final class WizardryMinionConfigReader extends AbstractWizardryConfigReader {
 

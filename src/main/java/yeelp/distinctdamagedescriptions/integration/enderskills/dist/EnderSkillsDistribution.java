@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.enderskills.dist;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-
 import arekkuusu.enderskills.api.event.SkillDamageSource;
 import arekkuusu.enderskills.common.skill.ability.BaseAbility;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,6 +12,11 @@ import yeelp.distinctdamagedescriptions.integration.enderskills.EnderSkillsConfi
 import yeelp.distinctdamagedescriptions.integration.enderskills.handler.EnderSkillsHandler;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
 
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
 public final class EnderSkillsDistribution extends DDDAbstractPredefinedDistribution {
 	private enum SkillType {
 		DIRECT(BaseAbility.DAMAGE_HIT_TYPE, EnderSkillsConfigurations.skillDist),
@@ -24,7 +25,7 @@ public final class EnderSkillsDistribution extends DDDAbstractPredefinedDistribu
 		private final String type;
 		private final IDDDConfiguration<IDamageDistribution> config;
 		
-		private SkillType(String type, IDDDConfiguration<IDamageDistribution> config) {
+		SkillType(String type, IDDDConfiguration<IDamageDistribution> config) {
 			this.type = type;
 			this.config = config;
 		}
@@ -57,12 +58,12 @@ public final class EnderSkillsDistribution extends DDDAbstractPredefinedDistribu
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return this.getDamageDistribution(src, target).map(IDamageDistribution::getCategories).orElse(Collections.emptySet());
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		SkillType type = SkillType.getSkillType(src);
 		EntityLivingBase owner = (EntityLivingBase) src.getTrueSource();
 		if(type == null || owner == null) {

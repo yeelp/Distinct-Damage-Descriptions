@@ -1,8 +1,9 @@
 package yeelp.distinctdamagedescriptions.config;
 
-import java.util.function.Supplier;
-
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
+
+import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 public class DDDDistributionConfiguration<T extends IDistribution> extends DDDBaseConfiguration<T> {
 
@@ -12,9 +13,10 @@ public class DDDDistributionConfiguration<T extends IDistribution> extends DDDBa
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T get(String key) {
+	public T get(@Nonnull String key) {
 		if(this.configured(key)) {
-			return (T) super.get(key).copy();
+            //noinspection DataFlowIssue
+            return (T) super.get(key).copy();
 		}
 		return null;
 	}

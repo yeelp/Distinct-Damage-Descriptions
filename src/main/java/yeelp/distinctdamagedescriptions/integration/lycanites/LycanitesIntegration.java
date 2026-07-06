@@ -2,7 +2,6 @@ package yeelp.distinctdamagedescriptions.integration.lycanites;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,8 +18,8 @@ import yeelp.distinctdamagedescriptions.integration.lycanites.capability.Lycanit
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.LycanitesProjectileDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.distributors.LycanitesDamageDistributionDistributor;
 import yeelp.distinctdamagedescriptions.integration.lycanites.capability.distributors.LycanitesProjectileDistributionDistributor;
+import yeelp.distinctdamagedescriptions.integration.lycanites.client.LycanitesCreatureSpawnItemDamageFormatter;
 import yeelp.distinctdamagedescriptions.integration.lycanites.client.LycanitesSpawnItemResistancesFormatter;
-import yeelp.distinctdamagedescriptions.integration.lycanites.client.LycantiesCreatureSpawnItemDamageFormatter;
 import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesMinionDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.dists.LycanitesPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.integration.lycanites.dists.SmitedDistribution;
@@ -63,7 +62,7 @@ public class LycanitesIntegration implements IModIntegration {
 		// Iterator<AbstractCapabilityTooltipFormatter> which is incompatible with
 		// TooltipDistributor::registerModCompat
 		if(evt.getSide() == Side.CLIENT) {
-			Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycantiesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);
+			Iterators.forArray((IModCompatTooltipFormatter<ItemStack>) LycanitesSpawnItemResistancesFormatter.getInstance(), LycanitesCreatureSpawnItemDamageFormatter.getInstance()).forEachRemaining(TooltipDistributor::registerModCompat);
 			UpdatingDamageDistributionTooltipFormatter.registerModCompatTooltipFormatting(LycanitesEquipmentDistribution.cap);
 		}
 		DDDRegistries.distributions.registerAll(new SmitedDistribution(), new LycanitesMinionDistribution());

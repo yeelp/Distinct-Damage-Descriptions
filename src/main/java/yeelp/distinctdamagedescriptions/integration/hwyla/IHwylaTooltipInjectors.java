@@ -6,7 +6,7 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter.
 
 public interface IHwylaTooltipInjectors {
 	
-	public interface IHwylaArmorTooltipInjector extends IArmorTooltipInjector {
+	interface IHwylaArmorTooltipInjector extends IArmorTooltipInjector {
 		@Override
 		default Armor getFormatterToUse() {
 			return null;

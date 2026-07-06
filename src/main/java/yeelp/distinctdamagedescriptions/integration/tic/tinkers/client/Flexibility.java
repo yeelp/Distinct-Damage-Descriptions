@@ -21,6 +21,6 @@ enum Flexibility implements IEnumTranslation {
 		else {
 			flexibility = FLEXIBLE;
 		}
-		return new EnumBookString<Flexibility>(flexibility);
+		return new EnumBookString<>(flexibility);
 	}
 }

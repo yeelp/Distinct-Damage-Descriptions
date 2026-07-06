@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.development;
 
-import java.util.function.Supplier;
-
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
+
+import java.util.function.Supplier;
 
 /**
  * The callback fired from the {@link DeveloperModeKernel} when DDD's Developer
@@ -28,7 +28,7 @@ public interface IDeveloperModeInfoCallback<E extends Event> {
 
 	/**
 	 * The current status of this callback; whether it should display in console,
-	 * chat and conse, or not at all. While you can just return the config option
+	 * chat and console, or not at all. While you can just return the config option
 	 * you've set to this callback, it is recommended to use a {@link Supplier} in
 	 * case the option is updated. A Supplier will always get the currently set
 	 * value.

@@ -9,11 +9,13 @@ import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerDamageDistribution;
 
+import javax.annotation.Nonnull;
+
 public final class TinkerToolCapabilityDistributor extends AbstractCapabilityDistributor<ItemStack, IDamageDistribution, IDamageDistribution> {
 
 	private static TinkerToolCapabilityDistributor instance;
 
-	protected TinkerToolCapabilityDistributor() {
+	private TinkerToolCapabilityDistributor() {
 		super(DamageDistributionCapabilityDistributor.ForItem.getInstance());
 	}
 
@@ -23,7 +25,7 @@ public final class TinkerToolCapabilityDistributor extends AbstractCapabilityDis
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(ItemStack t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull ItemStack t, @Nonnull String key) {
 		return new TinkerDamageDistribution(this.getConfig().getOrFallbackToDefault(key)).update(t);
 	}
 

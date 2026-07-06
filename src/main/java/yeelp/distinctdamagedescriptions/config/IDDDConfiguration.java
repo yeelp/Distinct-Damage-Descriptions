@@ -1,12 +1,13 @@
 package yeelp.distinctdamagedescriptions.config;
 
-import java.util.Optional;
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.util.Tuple;
+import yeelp.distinctdamagedescriptions.config.IDDDConfiguration.ConfigEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.util.Tuple;
-import yeelp.distinctdamagedescriptions.config.IDDDConfiguration.ConfigEntry;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Optional;
 
 /**
  * Stores values from config on startup for easy access.
@@ -19,38 +20,39 @@ public interface IDDDConfiguration<T> extends Iterable<ConfigEntry<T>> {
 	/**
 	 * Get a configuration entry
 	 * 
-	 * @param key
-	 * @return the capability
+	 * @param key key in the config
+	 * @return the config entry
 	 */
 	@Nullable
-	T get(String key);
+	T get(@Nonnull String key);
 
 	/**
 	 * Get the default configuration
 	 * 
 	 * @return the default configuration
 	 */
+	@Nonnull
 	T getDefaultValue();
 
 	/**
 	 * Add a configuration entry
 	 * 
-	 * @param key
-	 * @param val
+	 * @param key key in the config
+	 * @param val the value to associate with the key
 	 * @return true if the entry was overwritten, false if just added.
 	 */
-	boolean put(String key, T val);
+	boolean put(@Nonnull String key, @Nonnull T val);
 
 	/**
 	 * Is a key configured?
 	 * 
-	 * @param key
+	 * @param key key in the config
 	 * @return true if configured, false if not
 	 */
 	boolean configured(String key);
 
 	/**
-	 * A fall back approach to {@link #get(String)}, where
+	 * A fallback approach to {@link #get(String)}, where
 	 * {@link #getDefaultValue()} is returned if and only if
 	 * {@link #configured(String)} is false. Otherwise, returns the configured entry
 	 * like {@link #get(String)}.
@@ -63,7 +65,9 @@ public interface IDDDConfiguration<T> extends Iterable<ConfigEntry<T>> {
 	@Nonnull
 	default T getOrFallbackToDefault(String key) {
 		if(this.configured(key)) {
-			return this.get(key);
+			//configured => this#get not null
+            //noinspection DataFlowIssue
+            return this.get(key);
 		}
 		return this.getDefaultValue();
 	}
@@ -79,7 +83,7 @@ public interface IDDDConfiguration<T> extends Iterable<ConfigEntry<T>> {
 	 * 
 	 * @see #getOrFallbackToDefault(String)
 	 */
-	default Optional<T> getSafe(String key) {
+	default Optional<T> getSafe(@Nonnull String key) {
 		return Optional.ofNullable(this.get(key));
 	}
 	
@@ -89,6 +93,8 @@ public interface IDDDConfiguration<T> extends Iterable<ConfigEntry<T>> {
 	 *
 	 * @param <T> The value this config entry stores
 	 */
+	@MethodsReturnNonnullByDefault
+	@ParametersAreNonnullByDefault
 	final class ConfigEntry<T> extends Tuple<String, T> {
 		
 		ConfigEntry(String key, T value) {

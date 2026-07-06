@@ -1,14 +1,14 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.client;
 
-import java.util.Map;
-import java.util.Objects;
-
 import c4.conarm.lib.book.ArmoryBook;
 import c4.conarm.lib.materials.ArmorMaterialType;
 import slimeknights.mantle.client.book.data.BookData;
 import slimeknights.mantle.client.book.data.SectionData;
 import yeelp.distinctdamagedescriptions.integration.tic.DDDBookTransformer;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCBookTranslator;
+
+import java.util.Map;
+import java.util.Objects;
 
 public class DDDConarmBookTransformer extends DDDBookTransformer {
 
@@ -28,8 +28,8 @@ public class DDDConarmBookTransformer extends DDDBookTransformer {
 	protected void transformBookWithRequestedSections(BookData book, Map<String, SectionData> requestedSections) {
 		if(requestedSections.containsKey(DDD_ABOUT)) {
 			SectionData dddSection = Objects.requireNonNull(requestedSections.get(DDD_ABOUT));
-			createListingPage(dddSection, (section, listing) -> addInfluenceListing(section, ContentConarmMaterialInfluence::new, (m) -> m.hasStats(ArmorMaterialType.PLATES)).ifPresent((p) -> listing.addEntry(this.getTranslator().getTranslator().translate("materialListingTitle"), p)));
-			book.sections.remove(book.sections.indexOf(dddSection));
+			createListingPage(dddSection, (section, listing) -> this.addInfluenceListing(section, ContentConarmMaterialInfluence::new, (m) -> m.hasStats(ArmorMaterialType.PLATES)).ifPresent((p) -> listing.addEntry(this.getTranslator().getTranslator().translate("materialListingTitle"), p)));
+			book.sections.remove(dddSection);
 			book.sections.add(dddSection);
 		}
 	}

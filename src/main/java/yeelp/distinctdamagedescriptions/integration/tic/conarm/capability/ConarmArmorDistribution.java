@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic.conarm.capability;
 
-import java.util.Collection;
-import java.util.Map;
-
 import c4.conarm.lib.materials.ArmorMaterialType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +14,10 @@ import yeelp.distinctdamagedescriptions.integration.tic.TiCConfigurations;
 import yeelp.distinctdamagedescriptions.integration.tic.TiCUtil;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Map;
+
 public class ConarmArmorDistribution extends ArmorDistribution {
 
 	@CapabilityInject(ConarmArmorDistribution.class)
@@ -25,12 +26,12 @@ public class ConarmArmorDistribution extends ArmorDistribution {
 	private Collection<String> cachedMats;
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return this.hasCapability(capability, facing) ? cap.cast(this) : null;
 	}
 
@@ -38,7 +39,7 @@ public class ConarmArmorDistribution extends ArmorDistribution {
 	public IArmorDistribution update(ItemStack owner) {
 		Collection<String> mats = TiCUtil.getKeyMaterialIdentifiers(owner, ArmorMaterialType.PLATES);
 		if(this.cachedMats == null || !this.cachedMats.containsAll(mats)) {
-			Map<DDDDamageType, Float> map = new DDDBaseMap<Float>(() -> 0.0f);
+			Map<DDDDamageType, Float> map = new DDDBaseMap<>(() -> 0.0f);
 			mats.forEach((mat) -> {
 				IArmorDistribution dist = TiCConfigurations.armorMaterialDist.getOrFallbackToDefault(mat);
 				dist.getCategories().forEach((t) -> map.merge(t, dist.getWeight(t) / mats.size(), Float::sum));

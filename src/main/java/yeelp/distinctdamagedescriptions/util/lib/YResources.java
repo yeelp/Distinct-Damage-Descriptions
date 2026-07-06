@@ -1,18 +1,14 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Functions;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * A collection of useful methods for dealing with ResourceLocations. Mainly to
@@ -43,7 +39,7 @@ public final class YResources {
 	}
 
 	public static Optional<String> getRegistryString(Item item) {
-		return Optional.ofNullable(item.getRegistryName().toString());
+		return getRegistryName(item).map(Functions.toStringFunction());
 	}
 
 	public static Optional<ResourceLocation> getEntityID(@Nullable Entity entity) {
@@ -52,10 +48,6 @@ public final class YResources {
 
 	public static Optional<String> getEntityIDString(@Nullable Entity entity) {
 		return getEntityID(entity).map(Functions.toStringFunction());
-	}
-
-	public static String[] getOreDictEntries(ItemStack stack) {
-		return Arrays.stream(OreDictionary.getOreIDs(stack)).mapToObj(OreDictionary::getOreName).toArray(String[]::new);
 	}
 	
 	public static String stripMetadataInfo(String s) {

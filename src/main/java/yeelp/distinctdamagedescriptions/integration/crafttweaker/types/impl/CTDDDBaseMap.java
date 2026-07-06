@@ -8,7 +8,7 @@ import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 public final class CTDDDBaseMap extends NonNullMap<ICTDDDDamageType, Float> implements ICTDDDBaseMap {
 	
 	public CTDDDBaseMap(DDDBaseMap<Float> map) {
-		super(() -> map.getDefaultValue());
+		super(map::getDefaultValue);
 		map.forEach((type, value) -> super.put(CTDDDDamageType.getFromDamageType(type), value));
 	}
 

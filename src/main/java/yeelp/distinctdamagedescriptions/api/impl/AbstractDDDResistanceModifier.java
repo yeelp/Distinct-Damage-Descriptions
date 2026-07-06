@@ -1,29 +1,30 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import net.minecraft.entity.EntityLivingBase;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDDDResistanceModifier;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullSet;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+
 public abstract class AbstractDDDResistanceModifier extends AbstractDDDCapModifier<EntityLivingBase> implements IDDDResistanceModifier {
 
 	private float adaptabilityMod;
-	private Optional<Boolean> adaptabilityToggle;
-	private final Set<DDDDamageType> addedImmunities = new NonNullSet<DDDDamageType>(), removedImmunities = new NonNullSet<DDDDamageType>();
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<Boolean> adaptabilityToggle;
+	private final Set<DDDDamageType> addedImmunities = NonNullSet.newNonNullSet(), removedImmunities = NonNullSet.newNonNullSet();
 	
 	protected AbstractDDDResistanceModifier(Supplier<Float> defaultVal, Source src, boolean shouldReallocate, float adaptabilityMod) {
 		this(defaultVal, src, shouldReallocate, adaptabilityMod, Optional.empty());
 	}
 	
-	protected AbstractDDDResistanceModifier(Supplier<Float> defaultVal, Source src, boolean shouldReallocate, float adaptabilityMod, boolean adaptabilityToggle) {
+	protected AbstractDDDResistanceModifier(Supplier<Float> defaultVal, @SuppressWarnings("SameParameterValue") Source src, boolean shouldReallocate, float adaptabilityMod, boolean adaptabilityToggle) {
 		this(defaultVal, src, shouldReallocate, adaptabilityMod, Optional.of(adaptabilityToggle));
 	}
 	
-	private AbstractDDDResistanceModifier(Supplier<Float> defaultVal, Source src, boolean shouldReallocate, float adaptabilityMod, Optional<Boolean> adaptabilityToggle) {
+	private AbstractDDDResistanceModifier(Supplier<Float> defaultVal, Source src, boolean shouldReallocate, float adaptabilityMod, @SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<Boolean> adaptabilityToggle) {
 		super(defaultVal, src, shouldReallocate);
 		this.adaptabilityMod = adaptabilityMod;
 		this.adaptabilityToggle = adaptabilityToggle;

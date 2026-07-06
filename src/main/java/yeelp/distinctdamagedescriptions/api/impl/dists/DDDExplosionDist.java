@@ -1,12 +1,8 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
@@ -17,6 +13,12 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingE
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 
@@ -46,7 +48,7 @@ public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 			catch(ConfigParsingException e) {
 				// If we get here, something went really badly. The default fallback should
 				// always work
-				e.printStackTrace();
+				DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			}
 		}
 		
@@ -70,12 +72,12 @@ public final class DDDExplosionDist extends DDDAbstractPredefinedDistribution {
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource source, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource source, @Nonnull EntityLivingBase target) {
 		return source.isExplosion() ? dist.getCategories() : Collections.emptySet();
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return Optional.ofNullable(src.isExplosion() ? dist : null);
 	}
 

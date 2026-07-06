@@ -1,8 +1,4 @@
-package yeelp.distinctdamagedescriptions.integration.thebewteenlands;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+package yeelp.distinctdamagedescriptions.integration.thebetweenlands;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -11,7 +7,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.handlers.Handler;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public final class BetweenlandsShieldHandler extends Handler {
 	private final Field ignoreEvent;
@@ -21,11 +22,11 @@ public final class BetweenlandsShieldHandler extends Handler {
 	
 	private static BetweenlandsShieldHandler instance;
 	
-	public static BetweenlandsShieldHandler getInstance() throws NoSuchFieldException, SecurityException, IllegalAccessException, NoSuchMethodException {
+	public static BetweenlandsShieldHandler getInstance() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException {
 		return instance == null ? instance = new BetweenlandsShieldHandler() : instance;
 	}
 	
-	private BetweenlandsShieldHandler() throws NoSuchFieldException, SecurityException, IllegalAccessException, NoSuchMethodException {
+	private BetweenlandsShieldHandler() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException {
 		Field instanceField = TheBetweenlandsCompat.getBLShieldHandlerClass().getDeclaredField("INSTANCE");
 		instanceField.setAccessible(true);
 		(this.ignoreEvent = TheBetweenlandsCompat.getBLShieldHandlerClass().getDeclaredField("ignoreEvent")).setAccessible(true);
@@ -34,7 +35,7 @@ public final class BetweenlandsShieldHandler extends Handler {
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public final void onAttackFirst(LivingAttackEvent evt) {
+	public void onAttackFirst(LivingAttackEvent evt) {
 		try {
 			if(this.ignoreEvent.getBoolean(this.blHandlerInstance)) {
 				return;
@@ -56,7 +57,7 @@ public final class BetweenlandsShieldHandler extends Handler {
 				}
 				//this shouldn't happen
 				catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					e.printStackTrace();
+					DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 				}
 			}
 		}

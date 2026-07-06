@@ -15,11 +15,11 @@ import yeelp.distinctdamagedescriptions.registries.impl.DDDDistributionModifierR
 public enum DDDModifierRegistries implements IDDDModifierRegistries {
 	INSTANCE;
 	
-	private final IDDDModifierRegistry<ItemStack, IDamageDistribution, IDDDCapModifier<ItemStack>> itemDamage = new DDDDamageDistributionModifierRegistry<ItemStack>("Item Damage");
-	private final IDDDModifierRegistry<ItemStack, IArmorDistribution, IDDDCapModifier<ItemStack>> armors = new DDDDistributionModifierRegistry<ItemStack, IArmorDistribution>(() -> 0.0f, "Armor");
-	private final IDDDModifierRegistry<ItemStack, ShieldDistribution, IDDDCapModifier<ItemStack>> shields = new DDDDistributionModifierRegistry<ItemStack, ShieldDistribution>(() -> 0.0f, "Shield");
-	private final IDDDModifierRegistry<EntityLivingBase, IDamageDistribution, IDDDCapModifier<EntityLivingBase>> mobDamage = new DDDDamageDistributionModifierRegistry<EntityLivingBase>("Mob Damage");
-	private final IDDDModifierRegistry<Entity, IDamageDistribution, IDDDCapModifier<Entity>> projDamage = new DDDDamageDistributionModifierRegistry<Entity>("Projectile Damage");
+	private final IDDDModifierRegistry<ItemStack, IDamageDistribution, IDDDCapModifier<ItemStack>> itemDamage = new DDDDamageDistributionModifierRegistry<>("Item Damage");
+	private final IDDDModifierRegistry<ItemStack, IArmorDistribution, IDDDCapModifier<ItemStack>> armors = new DDDDistributionModifierRegistry<>(() -> 0.0f, "Armor");
+	private final IDDDModifierRegistry<ItemStack, ShieldDistribution, IDDDCapModifier<ItemStack>> shields = new DDDDistributionModifierRegistry<>(() -> 0.0f, "Shield");
+	private final IDDDModifierRegistry<EntityLivingBase, IDamageDistribution, IDDDCapModifier<EntityLivingBase>> mobDamage = new DDDDamageDistributionModifierRegistry<>("Mob Damage");
+	private final IDDDModifierRegistry<Entity, IDamageDistribution, IDDDCapModifier<Entity>> projDamage = new DDDDamageDistributionModifierRegistry<>("Projectile Damage");
 	private final IDDDModifierRegistry<EntityLivingBase, IMobResistances, IDDDResistanceModifier> mobResists = new DDDResistancesModifierRegistry();
 	
 	@Override

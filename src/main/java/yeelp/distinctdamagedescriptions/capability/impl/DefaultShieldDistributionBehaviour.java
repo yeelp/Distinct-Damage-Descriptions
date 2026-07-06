@@ -1,11 +1,6 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
-
 import com.google.common.base.Predicates;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +10,11 @@ import yeelp.distinctdamagedescriptions.capability.IDefaultDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
-import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 public enum DefaultShieldDistributionBehaviour {
 	NO_EFFECTIVENESS {
@@ -37,11 +36,11 @@ public enum DefaultShieldDistributionBehaviour {
 	private ShieldDistribution dist;
 	private final Predicate<DDDDamageType> p;
 	
-	private DefaultShieldDistributionBehaviour() {
+	DefaultShieldDistributionBehaviour() {
 		this(Predicates.alwaysTrue());
 	}
 	
-	private DefaultShieldDistributionBehaviour(Predicate<DDDDamageType> p) {
+	DefaultShieldDistributionBehaviour(Predicate<DDDDamageType> p) {
 		this.p = p;
 	}
 	
@@ -64,12 +63,12 @@ public enum DefaultShieldDistributionBehaviour {
 		}
 		
 		@Override
-		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 			return false;
 		}
 
 		@Override
-		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 			return null;
 		}
 
@@ -99,7 +98,7 @@ public enum DefaultShieldDistributionBehaviour {
 		}
 
 		@Override
-		public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+		public void setNewWeights(Map<DDDDamageType, Float> map) {
 			throw new UnsupportedOperationException("Can not set new weights in default shield distribution.");
 		}
 	}

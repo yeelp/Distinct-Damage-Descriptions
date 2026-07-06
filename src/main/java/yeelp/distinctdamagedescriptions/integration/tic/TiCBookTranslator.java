@@ -1,6 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
-import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 
 public enum TiCBookTranslator {
@@ -9,7 +8,7 @@ public enum TiCBookTranslator {
 
 	private final BasicTranslator translator;
 
-	private TiCBookTranslator(String root) {
+	TiCBookTranslator(String root) {
 		this.translator = new TiCTranslator(root);
 	}
 
@@ -17,12 +16,12 @@ public enum TiCBookTranslator {
 		return this.translator;
 	}
 
-	private final class TiCTranslator extends BasicTranslator {
+	private static final class TiCTranslator extends BasicTranslator {
 
 		private final String key;
 
-		protected TiCTranslator(String root) {
-			Translations.INSTANCE.super("");
+		private TiCTranslator(String root) {
+			super("");
 			this.key = root.concat(".book");
 		}
 

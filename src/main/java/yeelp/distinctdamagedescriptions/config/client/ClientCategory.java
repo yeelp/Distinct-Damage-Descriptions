@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.config.client;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
-
 import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
@@ -12,24 +9,27 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.ArmorDistributionNumb
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DamageDistributionNumberFormat;
 
+import java.util.Map;
+
+@SuppressWarnings("CanBeFinal")
 public final class ClientCategory {
 	@Name("Show Damage Distribution Tooltip for all items")
 	@Comment("If true, the Damage Distribution tooltip appears for all items. If false, it only appears for items with a damage distribution manually set.")
 	public boolean alwaysShowDamageDistTooltip = true;
 
 	@Name("Never Hide Info")
-	@Comment("If true, All Distint Damage Descriptions related tooltip information will always be shown (Basically, SHIFT or CTRL never need to be held on tooltips).")
+	@Comment("If true, All Distinct Damage Descriptions related tooltip information will always be shown (Basically, SHIFT or CTRL never need to be held on tooltips).")
 	public boolean neverHideInfo = false;
 
 	@Name("Use Damage Type Icons")
 	@Comment({
 			"If true, Distinct Damage Descriptions will use icons for built in damage types (slashing, piercing, bludgeoning).",
-			"These icons will appear in place of those names everwhere except under the \"Starting Immunities\" in spawn egg tooltips."})
+			"These icons will appear in place of those names everywhere except under the \"Starting Immunities\" in spawn egg tooltips."})
 	public boolean useIcons = false;
 
 	@Name("Show Mob Damage On Spawn Items")
 	@Comment({
-			"If true, Distinct Dasmage Descriptions will show mob damage in spawn egg tooltips when holding <SHIFT>.",
+			"If true, Distinct Damage Descriptions will show mob damage in spawn egg tooltips when holding <SHIFT>.",
 			"Regular item damage distribution information will not be shown so long as the spawn eggs are not configured to have a particular distribution.",
 			"It is recommended to not set a distribution for spawn eggs if this is set to true, as this will make the tooltip cleaner."})
 	public boolean showMobDamage = false;
@@ -85,12 +85,14 @@ public final class ClientCategory {
 	@Comment("Enable/disable DDD's sound effects for resistance/weakness/immunity.")
 	public boolean enableSfx = true;
 	
-	@Name("Built-In Damage Type Colours")
+	@SuppressWarnings("SpellCheckingInspection")
+    @Name("Built-In Damage Type Colours")
 	@Comment("The colours used in tooltips for built in damage types. The colour needs to be a valid HEX colour (rrggbb)")
 	@RequiresMcRestart
 	public Map<String, String> damageTypeColours = Maps.newHashMap();
 	
-	public ClientCategory() {
+	@SuppressWarnings("SpellCheckingInspection")
+    public ClientCategory() {
 		this.damageTypeColours.put(DamageTypeNames.UNKNOWN, "aaaaaa");
 		this.damageTypeColours.put(DamageTypeNames.NORMAL, "000000");
 		this.damageTypeColours.put(DamageTypeNames.SLASHING, "ffffff");

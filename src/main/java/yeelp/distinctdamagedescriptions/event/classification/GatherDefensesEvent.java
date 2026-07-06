@@ -1,10 +1,5 @@
 package yeelp.distinctdamagedescriptions.event.classification;
 
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -12,6 +7,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
+
+import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * This event is fired when DDD gathers creature defenses (resistances and
@@ -47,7 +46,7 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	/**
 	 * Get resistance
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return the defender's current resistance to that type.
 	 */
 	public float getResistance(DDDDamageType type) {
@@ -57,7 +56,7 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	/**
 	 * Is the defender currently immune to this damage type?
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return true if immune, false if not.
 	 */
 	public boolean hasImmunity(DDDDamageType type) {
@@ -67,7 +66,7 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	/**
 	 * Does the defending entity have a resistance against this damage type?
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return true if the defending entity's resistance map includes this type and
 	 *         is larger than 0.
 	 */
@@ -78,7 +77,7 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	/**
 	 * Does the defending entity have a weakness to this type?
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return True if the entity's resistance map includes this type and the value
 	 *         is negative.
 	 */
@@ -91,8 +90,8 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	 * calculation. Can set weaknesses with this too by passing an {@code amount}
 	 * that's negative.
 	 * 
-	 * @param type
-	 * @param amount
+	 * @param type damage type
+	 * @param amount amount of resistance to set
 	 */
 	public void setResistance(DDDDamageType type, float amount) {
 		this.map.put(type, amount);
@@ -101,7 +100,7 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	/**
 	 * Add {@code type} as a type the defender is immune to for this calculation
 	 * 
-	 * @param type
+	 * @param type damage type
 	 */
 	public void addImmunity(DDDDamageType type) {
 		this.immunities.add(type);
@@ -110,7 +109,7 @@ public final class GatherDefensesEvent extends DDDClassificationEvent {
 	/**
 	 * Remove {@code type} as a type the defender is immune to for this calculation
 	 * 
-	 * @param type
+	 * @param type damage type
 	 */
 	public void removeImmunity(DDDDamageType type) {
 		this.immunities.remove(type);

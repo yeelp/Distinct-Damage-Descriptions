@@ -1,9 +1,9 @@
 package yeelp.distinctdamagedescriptions.api;
 
+import net.minecraft.entity.EntityLivingBase;
+
 import java.util.Optional;
 import java.util.Set;
-
-import net.minecraft.entity.EntityLivingBase;
 
 public interface IDDDResistanceModifier extends IDDDCapModifier<EntityLivingBase> {
 
@@ -23,7 +23,7 @@ public interface IDDDResistanceModifier extends IDDDCapModifier<EntityLivingBase
 	void setAdaptabilityMod(float amount);
 
 	/**
-	 * Get if the adatability status should be toggled either on or off. A return
+	 * Get if the adaptability status should be toggled either on or off. A return
 	 * value of {@link Optional#empty()} indicates the adaptability status should
 	 * not be altered.
 	 * 
@@ -69,6 +69,7 @@ public interface IDDDResistanceModifier extends IDDDCapModifier<EntityLivingBase
 	 * 
 	 * @see #removeImmunity(DDDDamageType)
 	 */
+	@SuppressWarnings("unused")
 	void removeAddedImmunity(DDDDamageType type);
 
 	/**
@@ -87,5 +88,6 @@ public interface IDDDResistanceModifier extends IDDDCapModifier<EntityLivingBase
 	 * 
 	 * @see #removeImmunity(DDDDamageType)
 	 */
+	@SuppressWarnings("unused")
 	void removeRemovedImmunity(DDDDamageType type);
 }

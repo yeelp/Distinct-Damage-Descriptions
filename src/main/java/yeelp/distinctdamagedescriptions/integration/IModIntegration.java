@@ -89,36 +89,6 @@ public interface IModIntegration {
 	 * integration was successful.
 	 */
 	default void registerCrossModCompat() {
-		return;
-	}
-
-	/**
-	 * Mod Integration Metadata. Every Mod Integration needs one of these.
-	 * 
-	 * @author Yeelp
-	 *
-	 */
-	public final class ModIntegrationMetadata {
-		private final String id, name;
-
-		public ModIntegrationMetadata(String id, String name) {
-			this.id = id;
-			this.name = name;
-		}
-
-		/**
-		 * @return the id
-		 */
-		String getId() {
-			return this.id;
-		}
-
-		/**
-		 * @return the name
-		 */
-		String getName() {
-			return this.name;
-		}
-
+		//default nothing
 	}
 }

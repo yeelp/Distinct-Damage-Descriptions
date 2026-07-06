@@ -4,6 +4,7 @@ import net.minecraftforge.common.config.Config.Comment;
 import net.minecraftforge.common.config.Config.Name;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DamageDistributionNumberFormat;
 
+@SuppressWarnings("CanBeFinal")
 public final class HwylaCategory {
 	@Name("HWYLA Damage Format")
 	@Comment({
@@ -18,7 +19,7 @@ public final class HwylaCategory {
 	public boolean showMobDamage = true;
 	
 	@Name("Show Mob Armor")
-	@Comment("Shows how the mob's armor affects their resistances. Must have showMobReists set to true")
+	@Comment("Shows how the mob's armor affects their resistances. Must have showMobResists set to true")
 	public boolean showMobArmor = true;
 	
 	@Name("Show Mob Resists")

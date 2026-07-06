@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.integration.enderskills.dist;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.util.lib.YLib;
+
+import java.util.function.Supplier;
 
 public class SimpleEnderSkillsPredefinedDistribution extends EnderSkillsPredefinedDistribution {
 

@@ -5,13 +5,14 @@ import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
+@SuppressWarnings("CanBeFinal")
 public final class ConarmCategory {
 	@Name("Armor Material Distribution")
 	@Comment({
 			"Determine the armor distribution for materials' plates pieces. Note this is affected by the armor parsing rule defined in the resists category.",
 			"Each entry is the same as a regular armor distribution entry, that is, of the form material;[(t,a)] where:",
 			"   material is the registration name of the Tinker's material. Pretty much always lowercase",
-			"   [(t,a}] is a comma sepatated list of tuples, (t,a), where:",
+			"   [(t,a}] is a comma separated list of tuples, (t,a), where:",
 			"      t is the type. requires the 'ddd_' prefix, but can use s, p, b as shorthand for slashing, piercing and bludgeoning",
 			"      a is the effectiveness this material has against that damage type."})
 	@RequiresMcRestart
@@ -27,7 +28,7 @@ public final class ConarmCategory {
 
 	@Name("Armor Immunity Trait Location")
 	@Comment({
-			"This dictates where DDD puts armor immunity traits, on the platers or on the core.",
+			"This dictates where DDD puts armor immunity traits, on the plates or on the core.",
 			"Only applies to new pieces made. Will not overwrite or change existing armor pieces.",
 			"No Trim option, as that's a little OP."})
 	@RequiresMcRestart
@@ -43,6 +44,6 @@ public final class ConarmCategory {
 	 */
 	public enum TraitLocation {
 		CORE,
-		PLATES;
+		PLATES
 	}
 }

@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl;
 
-import java.util.Map;
-
 import com.google.common.collect.Maps;
-
 import crafttweaker.CraftTweakerAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
@@ -11,13 +8,16 @@ import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDam
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDamageDistribution;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
+import java.util.Map;
+
 public final class CTDDDDamageType implements ICTDDDDamageType {
 
 	private final DDDDamageType type;
 	
 	private static final Map<DDDDamageType, ICTDDDDamageType> POOL = Maps.newHashMap();
-	
-	public static final ICTDDDDamageType getFromString(String identifier) {
+
+	@SuppressWarnings("unused")
+	public static ICTDDDDamageType getFromString(String identifier) {
 		DDDDamageType type = DDDRegistries.damageTypes.get("ddd_"+identifier);
 		if(type == null || type == DDDBuiltInDamageType.UNKNOWN) {
 			CraftTweakerAPI.logError("Can not identify Damage Type: <dddtype:"+identifier+">");
@@ -25,7 +25,7 @@ public final class CTDDDDamageType implements ICTDDDDamageType {
 		return getFromDamageType(type);
 	}
 	
-	public static final ICTDDDDamageType getFromDamageType(DDDDamageType type) {
+	public static ICTDDDDamageType getFromDamageType(DDDDamageType type) {
 		return POOL.computeIfAbsent(type, CTDDDDamageType::new);
 	}
 	

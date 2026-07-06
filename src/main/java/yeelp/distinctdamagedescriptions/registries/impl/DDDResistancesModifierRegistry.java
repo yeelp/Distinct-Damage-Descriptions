@@ -1,12 +1,7 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDDDResistanceModifier;
@@ -14,6 +9,10 @@ import yeelp.distinctdamagedescriptions.api.impl.AbstractDDDResistanceModifier;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
+
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Set;
 
 public class DDDResistancesModifierRegistry extends DDDModifierRegistry<EntityLivingBase, IMobResistances, IDDDResistanceModifier> {
 
@@ -52,25 +51,18 @@ public class DDDResistancesModifierRegistry extends DDDModifierRegistry<EntityLi
 			}
 		});
 		Iterator<Set<DDDDamageType>> immunitiesSets = Lists.newArrayList(immunitiesToAdd, immunitiesToRemove).iterator();
-		Iterator<Boolean> status = Lists.newArrayList(true, false).iterator();
-		while(status.hasNext()) {
-			Set<DDDDamageType> immunities = immunitiesSets.next();
-			boolean b = status.next();
-			immunities.forEach((type) -> {
-				cap.setImmunity(type, b);
-			});
-		}
+        for(boolean b : Lists.newArrayList(true, false)) {
+			immunitiesSets.next().forEach((type) -> cap.setImmunity(type, b));
+        }
 		if(adaptiveAmount != 0) {
 			cap.setAdaptiveAmount(cap.getAdaptiveAmount() + adaptiveAmount);
 		}
-		adaptability.ifPresent((b) -> {
-			cap.setAdaptiveResistance(b, false);
-		});
+		adaptability.ifPresent((b) -> cap.setAdaptiveResistance(b, false));
 	}
 	
 	private final class PooledResistanceModifier extends AbstractDDDResistanceModifier {
 
-		protected PooledResistanceModifier(IDDDResistanceModifier mod, boolean shouldReallocate) {
+		private PooledResistanceModifier(IDDDResistanceModifier mod, boolean shouldReallocate) {
 			super(DDDResistancesModifierRegistry.this.defaultVal, null, shouldReallocate, mod.getAdaptabilityMod());
 			this.setAdaptability(mod.toggleAdaptability().orElse(null));
 			mod.getImmunitiesToAdd().forEach(this::addImmunity);

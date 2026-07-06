@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import com.oblivioussp.spartanweaponry.api.IWeaponPropertyContainer;
 import com.oblivioussp.spartanweaponry.api.WeaponProperties;
-
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -48,6 +47,7 @@ public final class SpartanWeaponryCompat implements IModIntegration {
 		DistinctDamageDescriptions.debug("Registering projectile pairs for Spartan Weaponry...");
 		Iterators.filter(ForgeRegistries.ITEMS.iterator(), IWeaponPropertyContainer.class).forEachRemaining((props) -> {
 			if(props.hasWeaponProperty(WeaponProperties.THROWABLE)) {
+				//noinspection DataFlowIssue
 				String s = ForgeRegistries.ITEMS.getKey((Item) props).toString();
 				DistinctDamageDescriptions.debug("Registered projectile pair: " + s);
 				DDDConfigurations.projectiles.registerItemProjectilePair(s, s);

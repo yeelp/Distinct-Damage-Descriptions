@@ -10,6 +10,8 @@ import yeelp.distinctdamagedescriptions.api.impl.dists.DDDDaylightDist;
 import yeelp.distinctdamagedescriptions.handlers.DaylightTracker;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 
+import java.util.Objects;
+
 public final class UndeathBurningDistribution extends AbstractSingleTypeDist {
 	
 	public static final class UndeathBurningTracker extends DaylightTracker {
@@ -28,7 +30,7 @@ public final class UndeathBurningDistribution extends AbstractSingleTypeDist {
 	}
 	
 	public UndeathBurningDistribution() {
-		super("wizardry undeath burning", Source.BUILTIN, () -> DDDRegistries.distributions.get(DDDDaylightDist.NAME).enabled());
+		super("wizardry undeath burning", Source.BUILTIN, Objects.requireNonNull(DDDRegistries.distributions.get(DDDDaylightDist.NAME))::enabled);
 	}
 
 	@Override

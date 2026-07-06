@@ -1,17 +1,8 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,6 +38,16 @@ import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.CombatResults
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DDDCombatCalculations.DDDEnchantmentInfo;
 import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation;
+import yeelp.distinctdamagedescriptions.util.lib.damagecalculation.DamageCalculation.CalculationPhase;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public final class DDDCombatTracker implements IDDDCombatTracker {
 
@@ -57,27 +58,26 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 	private CombatResults lastResults = CombatResults.NO_RESULTS;
 	private DamageCalculation lastCalc = null;
 	private int lastCalcTime;
-	private Stack<ArmorValues> armorMods = new Stack<ArmorValues>();
-	private Stack<DamageCalculation> calculations = new Stack<DamageCalculation>();
+	private final Stack<ArmorValues> armorMods = new Stack<>();
+	private final Stack<DamageCalculation> calculations = new Stack<>();
 
 	public DDDCombatTracker(EntityLivingBase fighter) {
 		this.fighter = fighter;
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == cap ? cap.<T>cast(this) : null;
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+		return capability == cap ? cap.cast(this) : null;
 	}
 
 	@Override
 	public NBTTagCompound serializeNBT() {
-		NBTTagCompound tag = new NBTTagCompound();
-		return tag;
+		return new NBTTagCompound();
 	}
 
 	@Override
@@ -128,7 +128,8 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		}
 		DistinctDamageDescriptions.debug("Pushing Armor Mods");
 		this.armorMods.push(delta);
-		this.getCurrentCalculation().get().markArmorModified();
+        //noinspection OptionalGetWithoutIsPresent
+        this.getCurrentCalculation().get().markArmorModified();
 	}
 
 	@Override
@@ -154,15 +155,16 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		}
 	}
 
-	@Override
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Override
 	public void handleAttackStage(LivingAttackEvent evt) {
-		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
+		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource(), CalculationPhase.ATTACK);
 		CombatContext ctx = calc.getContext();
 		if(this.getIncomingDamage().isPresent() && DDDCombatCalculations.doShieldCalcs(ctx)) {
 			DamageMap dmg = calc.getClassifiedDamage();
 			ItemStack shield = ctx.getShield().get();
 			ShieldBlockEvent blockEvt = DDDHooks.fireShieldBlock(ctx.getImmediateAttacker(), ctx.getTrueAttacker(), this.getFighter(), ctx.getSource(), dmg, shield);
-			if(!blockEvt.isCanceled() && Sets.intersection(blockEvt.getShieldDistribution().getCategories(), dmg.keySet()).size() > 0) {
+			if(!blockEvt.isCanceled() && !Sets.intersection(blockEvt.getShieldDistribution().getCategories(), dmg.keySet()).isEmpty()) {
 				// record shield dist, but the distribution must be applied later. It won't work
 				// otherwise.
 				calc.setShieldDist(blockEvt.getShieldDistribution());
@@ -174,9 +176,11 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		}
 	}
 
-	@Override
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Override
 	public void handleHurtStage(LivingHurtEvent evt) {
-		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
+		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource(), CalculationPhase.HURT);
+		AtomicBoolean endEarly = new AtomicBoolean();
 		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
 			CombatContext ctx = calc.getContext();
 			calc.getShieldDist().ifPresent((shield) -> {
@@ -186,24 +190,24 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 				ctx.getShield().ifPresent((stack) -> stack.damageItem((int) Math.ceil(startingDamage * (calc.getResultsBuilder().build().getShieldRatio().getAsDouble())), this.getFighter()));
 				if(isDamageZero && ModConfig.compat.endEarlyCalculations) {
 					//mark calculation as complete and end calculation early in hurt callback; it still needs the current calculation!
-					return;
+					endEarly.set(true);
 				}
 			});
+			if(endEarly.get()) {
+				DistinctDamageDescriptions.debug("Ending calculation early and skipping armor classification");
+				return;
+			}
 			if(ModConfig.resist.enableArmorCalcs) {
 				DDDCombatCalculations.classifyArmor(ctx).ifPresent((classified) -> {
 					calc.setArmorClassification(classified);
 					Set<DDDDamageType> damagingTypes = m.keySet().stream().filter((t) -> m.get(t) > 0).collect(Collectors.toSet());
-					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach((type) -> {
-						classified.forEachArmorMap((slot, map) -> map.remove(type));
-					});
+					DDDRegistries.damageTypes.getAll().stream().filter(Predicates.not(damagingTypes::contains)).forEach((type) -> classified.forEachArmorMap((slot, map) -> map.remove(type)));
 					//add missing types to the armor map as zero so values.stream() recognizes missing types as no effectiveness.
-					damagingTypes.forEach((t) -> {
-						classified.forEachArmorMap((slot, map) -> {
-							if(!map.containsKey(t)) {
-								map.put(t, new ArmorValues());
-							}
-						});
-					});
+					damagingTypes.forEach((t) -> classified.forEachArmorMap((slot, map) -> {
+                        if(!map.containsKey(t)) {
+                            map.put(t, new ArmorValues());
+                        }
+                    }));
 					calc.setNewArmorValuesMap();
 					Map<EntityEquipmentSlot, ArmorValues> armorVals = calc.getDeltaArmor().get();
 					classified.forEachArmorMap((slot, map) -> {
@@ -218,7 +222,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 
 	@Override
 	public void handleDamageStage(LivingDamageEvent evt) {
-		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource());
+		DamageCalculation calc = this.updateContextAndDamage(evt.getSource(), evt.getAmount(), evt.getSource().getImmediateSource(), CalculationPhase.DAMAGE);
 		this.getIncomingDamage().filter(Predicates.not(Map::isEmpty)).ifPresent((m) -> {
 			CombatContext ctx = calc.getContext();
 			ResultsBuilder results = calc.getResultsBuilder();
@@ -236,10 +240,10 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 					//to account for null in computeIfPresent
 					Float newDamage;
 					if((newDamage = m.computeIfPresent(k, (type, dmg) -> dmg * Math.max(1 - resist, 0))) != null) {
-						if(resist > 0 && (!(newDamage.floatValue() == 0.0f) || resist >= 1.0f)) {
+						if(resist > 0 && (!(newDamage == 0.0f) || resist >= 1.0f)) {
 							results.hasResistance();
 						}
-						else if(resist < 0 && newDamage.floatValue() > 0) {
+						else if(resist < 0 && newDamage > 0) {
 							results.hasWeakness();
 						}
 					}
@@ -275,7 +279,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 
 	@Override
 	public void cleanUpAfterCalculation() {
-		if(this.calculations.size() == 0) {
+		if(this.calculations.isEmpty()) {
 			return;
 		}
 		DamageCalculation calc = this.calculations.pop();
@@ -292,7 +296,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 				} while(this.armorMods.size() > this.calculations.size());				
 			}
 			else {
-				throw new RuntimeException(String.format("Combat Tracker for %s has extra armor modifiers! This shouldn't happen! Mods: %s", this.getFighter().getName(), this.armorMods.toString()));
+				throw new RuntimeException(String.format("Combat Tracker for %s has extra armor modifiers! This shouldn't happen! Mods: %s", this.getFighter().getName(), this.armorMods));
 			}
 		}
 	}
@@ -304,14 +308,14 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 		this.removeArmorModifiers(true);
 	}
 
-	private DamageCalculation updateContextAndDamage(DamageSource src, float amount, @Nullable Entity attacker) {
+	private DamageCalculation updateContextAndDamage(DamageSource src, float amount, @Nullable Entity attacker, DamageCalculation.CalculationPhase newPhase) {
 		DistinctDamageDescriptions.debug("Updating context and damage...");
 		DamageCalculation calc;
 		if(this.calculations.isEmpty()) {
 			DistinctDamageDescriptions.debug("Setting new context...");
 			calc = this.pushNewDamageCalculation(src, amount, attacker);
 		}
-		else if((calc = this.calculations.peek()).getContext().contextMatches(src, attacker)) {
+		else if((calc = this.calculations.peek()).getContext().contextMatches(src, attacker) && calc.canProgressToPhase(newPhase)) {
 			if(calc.getClassifiedDamage() != null && amount != calc.getDamage()) {
 				float oldDamage = calc.getDamage();
 				DebugLib.doDebug(() -> DebugLib.outputFormattedDebug("Adjusting damage... Current: %f, New %f", oldDamage, amount));
@@ -323,6 +327,7 @@ public final class DDDCombatTracker implements IDDDCombatTracker {
 			DistinctDamageDescriptions.debug("Creating new nested damage calculation");
 			calc = this.pushNewDamageCalculation(src, amount, attacker);
 		}
+		calc.progressToPhase(newPhase);
 		return calc;
 	}
 

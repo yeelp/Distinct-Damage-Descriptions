@@ -1,12 +1,13 @@
 package yeelp.distinctdamagedescriptions.capability.distributors;
 
-import java.util.function.Supplier;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
+
+import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 public abstract class AbstractCapabilityDistributorGeneratable<T, U, C extends DDDCapabilityBase<? extends NBTBase>> extends AbstractCapabilityDistributor<T, U, C> {
 
@@ -15,7 +16,7 @@ public abstract class AbstractCapabilityDistributorGeneratable<T, U, C extends D
 	}
 
 	@Override
-	protected final C getCapability(T t, String key) {
+	protected final C getCapability(@Nonnull T t, @Nonnull String key) {
 		IDDDConfiguration<U> config = this.getConfig();
 		if(config.configured(key)) {
 			return this.createCapability(config.get(key));

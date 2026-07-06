@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -18,13 +15,17 @@ import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.Set;
+
 public class ArmorDistribution extends Distribution implements IArmorDistribution {
 
 	@CapabilityInject(IArmorDistribution.class)
 	public static Capability<IArmorDistribution> cap;
 
 	public ArmorDistribution() {
-		this(new NonNullMap<DDDDamageType, Float>(() -> 0.0f));
+		this(new NonNullMap<>(() -> 0.0f));
 	}
 
 	@SafeVarargs
@@ -47,13 +48,13 @@ public class ArmorDistribution extends Distribution implements IArmorDistributio
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return capability == cap ? cap.<T>cast(this) : null;
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+		return capability == cap ? cap.cast(this) : null;
 	}
 
 	@Override

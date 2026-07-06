@@ -18,11 +18,11 @@ public final class EnderSkillsSyphonDistribution extends EnderSkillsPredefinedDi
 	@Override
 	protected boolean isApplicable(DamageSource src, EntityLivingBase target) {
 		Entity attacker = src.getTrueSource();
-		if(attacker == null || !(attacker instanceof EntityLivingBase)) {
+		if(!(attacker instanceof EntityLivingBase)) {
 			return false;
 		}
 		EntityLivingBase owner = (EntityLivingBase) attacker;
-		//negate isPresent check for if a skill was used this tick; Syphon doesn't fire SkillDamageEvent. This is a catch all at the end.
+		//negate isPresent check for if a skill was used this tick; Syphon doesn't fire SkillDamageEvent. This is a catch-all at the end.
 		return src instanceof SkillDamageSource && src.damageType.equals(BaseAbility.DAMAGE_HIT_TYPE) && !EnderSkillsHandler.getLastKnownSkillUsed(src, owner).filter((sur) -> sur.didOwnerUseThisTick(owner)).isPresent();
 	}
 	

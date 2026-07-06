@@ -5,13 +5,14 @@ import net.minecraftforge.common.config.Config.Name;
 import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import yeelp.distinctdamagedescriptions.config.DefaultValues;
 
+@SuppressWarnings("CanBeFinal")
 public final class TinkersCategory {
 	@Name("Tool Bias")
 	@Comment({
 			"Control a tool's bias. Tool bias is a tinker's tool's ability to stick to its base distribution.",
 			"Base distributions are defined in items.",
 			"Entries are of the form id;bias",
-			"   id is the namespaced id of the item (e.g. tconstruct:rapier). The mod name can be excluded ONLY if it's from tconstruct. Tinker tools added from other mods need the full namepaced id.",
+			"   id is the namespaced id of the item (e.g. tconstruct:rapier). The mod name can be excluded ONLY if it's from tconstruct. Tinker tools added from other mods need the full namespaced id.",
 			"   bias is the tool's bias. A non negative decimal value. Negatives will be treated as 0. This value represents a percentage, so values under 1 are recommended, but you can use values over 1 for tool's whose distributions will never ever change."})
 	@RequiresMcRestart
 	public String[] toolBias = DefaultValues.TOOL_BIAS;

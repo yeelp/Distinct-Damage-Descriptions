@@ -1,28 +1,27 @@
 package yeelp.distinctdamagedescriptions.integration.capability;
 
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.INBTSerializable;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
-import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A Damage Distribution that is linked to another one. While it can't update
  * the distribution it is linked to, it forwards all calls for retrieving
  * weights and distributing damage to the linked one and returns the results.
- * 
+ * <p>
  * While the LinkedDamageDistribution does implement {@link INBTSerializable},
  * as this class extends {@link DamageDistribution}, calls to
- * {@link #serializeNBT()} and {@link #deserializeNBT(NBTTagList)} throw
+ * {@link #serializeNBT()} and {@link #deserializeNBT(NBTBase)} throw
  * {@link UnsupportedOperationException}s as this capability is merely a
  * reference to another one, and is not saved to disk. Calls to update weights
  * also throw the same exception. No storage or factory methods exist and this
@@ -71,7 +70,7 @@ public abstract class LinkedDamageDistribution extends DamageDistribution {
 	 * @throws UnsupportedOperationException This operation isn't supported.
 	 */
 	@Override
-	public void setNewWeights(Map<DDDDamageType, Float> map) throws InvariantViolationException {
+	public void setNewWeights(Map<DDDDamageType, Float> map) {
 		throw new UnsupportedOperationException("LinkedDamageDistribution has no meaningful weights to set!");
 	}
 

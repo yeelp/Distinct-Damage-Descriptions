@@ -1,11 +1,12 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.lang.reflect.Constructor;
-
 import net.minecraft.util.Tuple;
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigMalformedException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.Constructor;
 
 public abstract class DDDMapParsingConfigReader<T> extends DDDMultiEntryConfigReader<T> {
 
@@ -13,6 +14,7 @@ public abstract class DDDMapParsingConfigReader<T> extends DDDMultiEntryConfigRe
 		super(name, configList, config, constructor);
 	}
 
+	@Nonnull
 	@Override
 	protected final Tuple<String, T> readEntry(String s) throws DDDConfigReaderException {
 		if(s.endsWith(";")) {
@@ -24,8 +26,9 @@ public abstract class DDDMapParsingConfigReader<T> extends DDDMultiEntryConfigRe
 		}
 		String[] additionalInfo = new String[args.length - 2];
 		System.arraycopy(args, 2, additionalInfo, 0, additionalInfo.length);
-		return new Tuple<String, T>(args[0], this.parseMapping(s, args[0], args[1], additionalInfo));
+		return new Tuple<>(args[0], this.parseMapping(s, args[0], args[1], additionalInfo));
 	}
 
+	@Nonnull
 	protected abstract T parseMapping(final String entry, final String key, String map, String[] additionalInfo) throws DDDConfigReaderException;
 }

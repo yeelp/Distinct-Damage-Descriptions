@@ -1,16 +1,16 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.DDDPredefinedDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A skeletal implementation of {@link DDDPredefinedDistribution}, which makes
@@ -32,7 +32,7 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 public abstract class AbstractSingleTypeDist extends DDDAbstractPredefinedDistribution {
 	private final Supplier<Boolean> config;
 
-	protected AbstractSingleTypeDist(String name, Source src, Supplier<Boolean> config) {
+	protected AbstractSingleTypeDist(String name, @SuppressWarnings("SameParameterValue") Source src, Supplier<Boolean> config) {
 		super(name, src);
 		this.config = config;
 	}
@@ -60,7 +60,7 @@ public abstract class AbstractSingleTypeDist extends DDDAbstractPredefinedDistri
 	protected abstract boolean useType(DamageSource source, EntityLivingBase target);
 
 	@Override
-	public final Set<DDDDamageType> getTypes(DamageSource source, EntityLivingBase target) {
+	public final Set<DDDDamageType> getTypes(@Nonnull DamageSource source, @Nonnull EntityLivingBase target) {
 		if(this.useType(source, target)) {
 			return ImmutableSet.of(this.getType());
 		}
@@ -68,7 +68,7 @@ public abstract class AbstractSingleTypeDist extends DDDAbstractPredefinedDistri
 	}
 
 	@Override
-	public final Optional<IDamageDistribution> getDamageDistribution(DamageSource source, EntityLivingBase target) {
+	public final Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource source, @Nonnull EntityLivingBase target) {
 		return this.getTypes(source, target).isEmpty() ? Optional.empty() : Optional.of(this.getType().getBaseDistribution());
 	}
 }

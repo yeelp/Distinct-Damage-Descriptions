@@ -23,7 +23,7 @@ public interface ISyncableCapability {
 	/**
 	 * Sync capability to this player.
 	 * 
-	 * @param player
+	 * @param player player to sync capability to.
 	 */
 	default void sync(EntityPlayer player) {
 		if(!player.world.isRemote) {

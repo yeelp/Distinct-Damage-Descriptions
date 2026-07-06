@@ -23,7 +23,7 @@ public interface IModCompatTooltipFormatter<T> extends TooltipFormatter<T>, Comp
 	/**
 	 * Get the icon aggregator for this formatter.
 	 * 
-	 * @returnThe aggregator
+	 * @return The aggregator
 	 */
 	IconAggregator getIconAggregator();
 

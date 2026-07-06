@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 /**
  * A simple Set that doesn't permit null values.
@@ -22,9 +22,17 @@ public class NonNullSet<E> extends HashSet<E> implements Set<E> {
 	 * @return The constructed NonNullSet.
 	 */
 	public static <T> NonNullSet<T> newNonNullSetRemoveNulls(Iterable<T> elements) {
-		NonNullSet<T> set = new NonNullSet<T>();
+		NonNullSet<T> set = new NonNullSet<>();
 		elements.forEach(set::addIfNonNull);
 		return set;
+	}
+
+	public static <T> NonNullSet<T> newNonNullSet() {
+		return new NonNullSet<>();
+	}
+
+	public static <T> NonNullSet<T> newNonNullSet(Iterable<T> elements) {
+		return new NonNullSet<>(elements);
 	}
 	
 	/**
@@ -59,7 +67,7 @@ public class NonNullSet<E> extends HashSet<E> implements Set<E> {
 	 */
 	@Override
 	public boolean add(E e) {
-		checkIfNull(e);
+		this.checkIfNull(e);
 		return super.add(e);
 	}
 
@@ -74,7 +82,7 @@ public class NonNullSet<E> extends HashSet<E> implements Set<E> {
 	 *                                       collection is null.
 	 */
 	@Override
-	public boolean addAll(Collection<? extends E> c) {
+	public boolean addAll(@Nonnull Collection<? extends E> c) {
 		return super.addAll(c);
 	}
 
@@ -88,6 +96,7 @@ public class NonNullSet<E> extends HashSet<E> implements Set<E> {
 	 *         unchanged (which may have been the result of the argument being
 	 *         null).
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	public boolean addIfNonNull(@Nullable E e) {
 		if(e != null) {
 			return super.add(e);

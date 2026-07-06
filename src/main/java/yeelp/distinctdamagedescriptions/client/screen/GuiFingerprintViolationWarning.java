@@ -1,16 +1,5 @@
 package yeelp.distinctdamagedescriptions.client.screen;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Optional;
-
-import com.google.common.base.Functions;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,6 +12,15 @@ import yeelp.distinctdamagedescriptions.proxy.ClientProxy;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
+
+import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Optional;
 
 @SideOnly(Side.CLIENT)
 public final class GuiFingerprintViolationWarning extends GuiScreen {
@@ -58,7 +56,7 @@ public final class GuiFingerprintViolationWarning extends GuiScreen {
 		
 		private final String translationKey;
 		
-		private ButtonId(String key) {
+		ButtonId(String key) {
 			this.translationKey = key;
 		}
 		
@@ -127,9 +125,11 @@ public final class GuiFingerprintViolationWarning extends GuiScreen {
 				FileHelper.copyFile(getFingerprintIgnoreText(), new File(configDirectory, ClientProxy.FINGERPRINT_FILE), true);
 				break;
 			case 1: //Go to CurseForge page
-				this.url = ButtonId.CURSEFORGE.getURL().get();
+                //noinspection OptionalGetWithoutIsPresent
+                this.url = ButtonId.CURSEFORGE.getURL().get();
 				break;
 			case 2: //Go to Modrinth page
+				//noinspection OptionalGetWithoutIsPresent
 				this.url = ButtonId.MODRINTH.getURL().get();
 				break;
 			case 3: //Close game
@@ -150,13 +150,13 @@ public final class GuiFingerprintViolationWarning extends GuiScreen {
 				}
 			}
 			catch(URISyntaxException e) {
-				Arrays.stream(e.getStackTrace()).map(Functions.toStringFunction()).forEach(DistinctDamageDescriptions::err);
+				DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::err);
 			}
 			this.mc.displayGuiScreen(this);
 		}
 	}
 	
-	private static final void openLink(URI uri) {
+	private static void openLink(URI uri) {
 		try {
 			Class<?> desktop = Class.forName("java.awt.Desktop");
 			Object desktopObj = desktop.getMethod("getDesktop").invoke(null);
@@ -182,7 +182,7 @@ public final class GuiFingerprintViolationWarning extends GuiScreen {
 		}
 		
 		@Override
-		protected void actionPerformed(GuiButton button) throws IOException {
+		protected void actionPerformed(@Nonnull GuiButton button) throws IOException {
 			super.actionPerformed(button);
 			if(button.id == 1) {
 				this.returnToParent();
@@ -190,7 +190,7 @@ public final class GuiFingerprintViolationWarning extends GuiScreen {
 		}
 		
 		@Override
-		protected void keyTyped(char typedChar, int keyCode) throws IOException {
+		protected void keyTyped(char typedChar, int keyCode) {
 			//Esc
 			if(keyCode == 1) {
 				this.returnToParent();

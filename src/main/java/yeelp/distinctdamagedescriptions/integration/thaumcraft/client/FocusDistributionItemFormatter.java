@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.thaumcraft.client;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import thaumcraft.api.casters.FocusEffect;
@@ -13,19 +9,19 @@ import thaumcraft.common.items.casters.ItemFocus;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.integration.client.IModCompatTooltipFormatter;
 import yeelp.distinctdamagedescriptions.integration.thaumcraft.dist.ThaumcraftFocusDistribution;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ItemDistributionFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.*;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.IconAggregator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.iconaggregation.ItemDamageDistributionIconAggregator;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class FocusDistributionItemFormatter extends ItemDistributionFormatter implements IModCompatTooltipFormatter<ItemStack> {
 
 	private static FocusDistributionItemFormatter instance;
 	
-	protected FocusDistributionItemFormatter() {
+	private FocusDistributionItemFormatter() {
 		super(KeyTooltip.CTRL, DDDDamageFormatter.COLOURED, FocusDistributionItemFormatter::getDist, "thaumcraft.focusdistribution");
 	}
 
@@ -49,13 +45,8 @@ public final class FocusDistributionItemFormatter extends ItemDistributionFormat
 	public ObjectFormatter<Float> getNumberFormattingStrategy() {
 		return DDDNumberFormatter.PERCENT;
 	}
-	
-	@Override
-	protected boolean shouldShowDist(ItemStack stack) {
-		return true;
-	}
-	
-	private static boolean hasFocusEffects(ItemStack stack) {
+
+    private static boolean hasFocusEffects(ItemStack stack) {
 		FocusPackage pack = getPackage(stack);
 		if(pack != null) {
 			return pack.getFocusEffects().length > 0;
@@ -80,7 +71,7 @@ public final class FocusDistributionItemFormatter extends ItemDistributionFormat
 
 		private static FocusDistributionIconAggregator instance;
 		
-		protected FocusDistributionIconAggregator() {
+		private FocusDistributionIconAggregator() {
 			super(FocusDistributionItemFormatter.getInstance(), FocusDistributionItemFormatter::getDist);
 		}
 		

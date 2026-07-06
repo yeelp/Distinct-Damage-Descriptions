@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.baubles;
 
-import java.util.Collection;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
-
 import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -14,14 +10,13 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigInvalidE
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigMalformedException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.ConfigParsingException;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
-import yeelp.distinctdamagedescriptions.integration.baubles.modifier.AbstractBaubleModifier;
-import yeelp.distinctdamagedescriptions.integration.baubles.modifier.BaubleBruteForceModifier;
-import yeelp.distinctdamagedescriptions.integration.baubles.modifier.BaubleDamageModifier;
-import yeelp.distinctdamagedescriptions.integration.baubles.modifier.BaubleImmunityModifier;
-import yeelp.distinctdamagedescriptions.integration.baubles.modifier.BaubleResistanceModifier;
-import yeelp.distinctdamagedescriptions.integration.baubles.modifier.BaubleSlyStrikeModifier;
+import yeelp.distinctdamagedescriptions.integration.baubles.modifier.*;
 import yeelp.distinctdamagedescriptions.integration.baubles.util.BaubleModifierType;
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Map;
 
 public class BaublesConfigReader implements DDDConfigReader {
 
@@ -75,7 +70,7 @@ public class BaublesConfigReader implements DDDConfigReader {
 						if(mod != null) {
 							mod.putAll(map);
 							if(BaublesConfigurations.baubleModifiers.put(args[0], mod)) {
-								DistinctDamageDescriptions.warn(String.format("%s overwrites existing bauble modifier of the same type!", mod.toString()));
+								DistinctDamageDescriptions.warn(String.format("%s overwrites existing bauble modifier of the same type!", mod));
 							}
 							continue;
 						}
@@ -87,7 +82,8 @@ public class BaublesConfigReader implements DDDConfigReader {
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String getName() {
 		return "DDD Baubles Modifiers";
 	}
@@ -102,6 +98,7 @@ public class BaublesConfigReader implements DDDConfigReader {
 		return true;
 	}
 
+	@Nonnull
 	@Override
 	public Collection<DDDConfigReaderException> getSelfReportedErrors() {
 		return ERRORS;

@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.Set;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
+
+import java.util.Set;
 
 public interface IMobCreatureType extends DDDCapabilityBase<NBTTagCompound> {
 	/**
@@ -27,7 +27,8 @@ public interface IMobCreatureType extends DDDCapabilityBase<NBTTagCompound> {
 	 * 
 	 * @return true if flammable, false if not. A mob that is not flammable does not necessarily make them immune to fire damage. They just won't be set on fire.
 	 */
-	boolean isFlammable();
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    boolean isFlammable();
 
 	/**
 	 * Is this creature type immune to critical hits?
@@ -39,30 +40,33 @@ public interface IMobCreatureType extends DDDCapabilityBase<NBTTagCompound> {
 	/**
 	 * Check if this ICreatureType is a certain type.
 	 * 
-	 * @param name
-	 * @return
+	 * @param name name of creature type to check.
+	 * @return true if this ICreatureType is this type.
 	 */
 	default boolean isCreatureType(String name) {
-		return getCreatureTypeNames().contains(name);
+		return this.getCreatureTypeNames().contains(name);
 	}
 
 	/**
 	 * Get how many types this ICreatureType has.
 	 * 
-	 * @return
+	 * @return The count of types in this ICreatureType.
 	 */
 	default int getTypeCount() {
-		return getCreatureTypeNames().size();
+		return this.getCreatureTypeNames().size();
 	}
 
 	/**
 	 * Convenience method for checking if an ICreatureType is single typed, may have
 	 * applications in certain situations...
+	 * <p>
+	 * Syntactic sugar for {@code this.getTypeCount() == 1}
 	 * 
-	 * @return
+	 * @return true if this ICreatureType has only ony type.
 	 */
+	@SuppressWarnings("unused")
 	default boolean isSingleTyped() {
-		return getTypeCount() == 1;
+		return this.getTypeCount() == 1;
 	}
 
 	static void register() {

@@ -1,14 +1,12 @@
 package yeelp.distinctdamagedescriptions.mixin;
 
-import java.util.Map;
-
+import com.llamalad7.mixinextras.MixinExtrasBootstrap;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
-
-import com.llamalad7.mixinextras.MixinExtrasBootstrap;
-
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import yeelp.distinctdamagedescriptions.integration.OptionalMixinKernel;
+
+import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.Name("DistinctDamageDescriptions-MixinLoader")
@@ -50,7 +48,7 @@ public final class DDDMixinLoader implements IFMLLoadingPlugin {
 
 	@Override
 	public void injectData(Map<String, Object> data) {
-		return;
+		//nothing
 	}
 
 	@Override

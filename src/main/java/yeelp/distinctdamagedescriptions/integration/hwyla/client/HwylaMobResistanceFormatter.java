@@ -1,17 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.hwyla.client;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,21 +20,16 @@ import yeelp.distinctdamagedescriptions.integration.hwyla.Hwyla.HwylaConsts;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.LayeredTranslator;
-import yeelp.distinctdamagedescriptions.util.lib.ArmorValues;
-import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
-import yeelp.distinctdamagedescriptions.util.lib.DDDMaps;
+import yeelp.distinctdamagedescriptions.util.lib.*;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ArmorMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
-import yeelp.distinctdamagedescriptions.util.lib.YArmor;
-import yeelp.distinctdamagedescriptions.util.lib.YLib;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.AbstractCapabilityTooltipFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDDamageFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
+import yeelp.distinctdamagedescriptions.util.tooltipsystem.*;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.IDDDTooltipInjector.IArmorTooltipInjector;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.KeyTooltip;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
-import yeelp.distinctdamagedescriptions.util.tooltipsystem.TooltipTypeFormatter;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResistances> {
 
@@ -87,37 +72,40 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 	}
 
 	@Override
-	protected Optional<List<String>> formatCapabilityFor(EntityLivingBase t, IMobResistances cap) {
+	protected Optional<List<String>> formatCapabilityFor(@Nullable EntityLivingBase t, @Nullable IMobResistances cap) {
 		if(t == null || cap == null) {
 			return Optional.empty();
 		}
 		IMobResistances updatedCap = this.nbtFromServer == null ? cap : this.getResistances();
-		List<String> result = new LinkedList<String>();
+		List<String> result = new LinkedList<>();
 		Set<DDDDamageType> immunities = Sets.newHashSet();
 		Set<DDDDamageType> armorTypesToFormat = Sets.newHashSet();
 		ArmorMap aMap = DDDMaps.newArmorMap();
 		ArmorValues runningTotal = new ArmorValues();
-		ModConsts.ARMOR_SLOTS_ITERABLE.forEach((slot) -> {
-			ItemStack stack = t.getItemStackFromSlot(slot);
-			if(stack.isEmpty()) {
-				return;
-			}
-			DDDAPI.accessor.getArmorResistances(stack).ifPresent((armorDist) -> {
-				ArmorValues av = YArmor.getArmorFromStack(stack, slot);
-				Iterator<IArmorTooltipInjector> it = ARMOR_TOOLTIP_INJECTORS.stream().filter((injector) -> injector.applies(stack)).iterator();
-				while(it.hasNext()) {
-					av = it.next().alterArmorValues(stack, av.getArmor(), av.getToughness());
+		float naturalArmor = 0.0f;
+		if(ModConfig.compat.hwyla.showMobArmor) {
+			ModConsts.ARMOR_SLOTS_ITERABLE.forEach((slot) -> {
+				ItemStack stack = t.getItemStackFromSlot(slot);
+				if(stack.isEmpty()) {
+					return;
 				}
-				runningTotal.add(av);
-				determineArmorToFormat(armorTypesToFormat, armorDist);
-				armorDist.distributeArmor(av.getArmor(), av.getToughness()).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
+				DDDAPI.accessor.getArmorResistances(stack).ifPresent((armorDist) -> {
+					ArmorValues av = YArmor.getArmorFromStack(stack, slot);
+					Iterator<IArmorTooltipInjector> it = ARMOR_TOOLTIP_INJECTORS.stream().filter((injector) -> injector.applies(stack)).iterator();
+					while(it.hasNext()) {
+						av = it.next().alterArmorValues(stack, av.getArmor(), av.getToughness());
+					}
+					runningTotal.add(av);
+					determineArmorToFormat(armorTypesToFormat, armorDist);
+					armorDist.distributeArmor(av.getArmor(), av.getToughness()).forEach((type, armorValues) -> aMap.compute(type, (k, v) -> ArmorValues.merge(v, armorValues)));
+				});
 			});
-		});
+			naturalArmor = Math.max((float) t.getAttributeMap().getAttributeInstance(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getAttribute()).getAttributeValue() - runningTotal.getArmor(), 0);
+		}
 		ResistMap rMap = updatedCap.getAllResistancesCopy();
 		boolean shouldAddAllOtherTypesLine = false;
 		ArmorValues armorValue = ArmorValues.ZERO;
-		float naturalArmor = Math.max((float) t.getAttributeMap().getAttributeInstance(DDDAttributeModifierCollections.ArmorModifiers.ARMOR.getAttribute()).getAttributeValue() - runningTotal.getArmor(), 0);
-		for(Iterator<DDDDamageType> it = DDDRegistries.damageTypes.getAll().stream().sorted(Comparator.<DDDDamageType>comparingDouble((d) -> rMap.get(d)).thenComparing(Comparator.naturalOrder())).filter(SHOULD_TYPE_APPEAR).iterator(); it.hasNext();) {
+		for(Iterator<DDDDamageType> it = DDDRegistries.damageTypes.getAll().stream().sorted(Comparator.<DDDDamageType>comparingDouble(rMap::get).thenComparing(Comparator.naturalOrder())).filter(SHOULD_TYPE_APPEAR).iterator(); it.hasNext();) {
 			DDDDamageType type = it.next();
 			if(updatedCap.hasImmunity(type)) {
 				immunities.add(type);
@@ -150,8 +138,8 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 			comp = Optional.of(this.allOtherTypes);
 		}
 		float armor = armorValue.getArmor();
-		comp.map(ITextComponent::getFormattedText).ifPresent((c) -> result.add(String.format("   %s %s0%%%s %s, %s", c, this.getColourScheme().getFormattingBasedOnValue(0, 0), TextFormatting.RESET.toString(), this.resistanceSuffix.getFormattedText(), this.formatWithArmor(0, armor))));
-		makeImmunityString(immunities).ifPresent(result::add);
+		comp.map(ITextComponent::getFormattedText).ifPresent((c) -> result.add(String.format("   %s %s0%%%s %s, %s", c, this.getColourScheme().getFormattingBasedOnValue(0, 0), TextFormatting.RESET, this.resistanceSuffix.getFormattedText(), this.formatWithArmor(0, armor))));
+        this.makeImmunityString(immunities).ifPresent(result::add);
 		if(updatedCap.hasAdaptiveResistance()) {
 			result.add(String.format("   %s %s", this.adaptabilityAmountPrefix.getFormattedText(), this.getNumberFormattingStrategy().format(updatedCap.getAdaptiveAmount())));
 			Set<DDDDamageType> adaptedTypes = DDDRegistries.damageTypes.getAll().stream().filter(updatedCap::isAdaptiveTo).collect(Collectors.toSet());
@@ -216,5 +204,10 @@ public class HwylaMobResistanceFormatter extends HwylaTooltipFormatter<IMobResis
 	
 	static void registerArmorTooltipInjector(IArmorTooltipInjector injector) {
 		ARMOR_TOOLTIP_INJECTORS.add(injector);
+	}
+
+	@Override
+	boolean enabled() {
+		return ModConfig.compat.hwyla.showMobResists;
 	}
 }

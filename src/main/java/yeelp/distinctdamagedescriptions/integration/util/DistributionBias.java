@@ -1,15 +1,15 @@
 package yeelp.distinctdamagedescriptions.integration.util;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import net.minecraft.util.math.MathHelper;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.impl.DamageDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.InvariantViolationException;
 import yeelp.distinctdamagedescriptions.util.lib.NonNullMap;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public final class DistributionBias {
 

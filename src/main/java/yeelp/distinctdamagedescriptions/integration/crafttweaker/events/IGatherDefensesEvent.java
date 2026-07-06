@@ -31,7 +31,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * {@code amount}
 	 * 
 	 * @param type type name.
-	 * @param amount
+	 * @param amount amount of resistance to set
 	 */
 	@ZenMethod("setResistance")
 	void setResistance(ICTDDDDamageType type, float amount);
@@ -80,7 +80,7 @@ public interface IGatherDefensesEvent extends IDDDClassificationEvent {
 	 * Temporarily revoke this entity's immunity to the given type. If the entity
 	 * doesn't have immunity to this type, nothing happens.
 	 * 
-	 * @param type
+	 * @param type type to revoke immunity for
 	 */
 	@ZenMethod("revokeImmunity")
 	void revokeImmunity(ICTDDDDamageType type);

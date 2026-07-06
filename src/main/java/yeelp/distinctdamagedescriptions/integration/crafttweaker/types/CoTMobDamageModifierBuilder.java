@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.function.Predicate;
-
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntityLivingBase;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,6 +9,8 @@ import stanhebben.zenscript.annotations.ZenProperty;
 import yeelp.distinctdamagedescriptions.api.IDDDCapModifier;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.modifiers.CTEntityLivingBaseModifier;
+
+import java.util.function.Predicate;
 
 @ZenClass(CTConsts.CTClasses.COTMOBDAMAGEMODIFIERBUILDER)
 @ZenRegister

@@ -1,13 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntity;
 import crafttweaker.api.entity.IEntityLivingBase;
@@ -26,11 +20,16 @@ import yeelp.distinctdamagedescriptions.registries.IDDDModifierRegistries;
 import yeelp.distinctdamagedescriptions.registries.IDDDModifierRegistries.IDDDModifierRegistry;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 @ZenClass(CTConsts.CTClasses.COTMODIFIERBUILDER)
 @ZenRegister
 public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 	
-	protected enum ModifierType {
+	public enum ModifierType {
 		ITEM_DAMAGE(AppliesTo.ITEM_DAMAGE) {
 			@Override
 			IDDDModifierRegistry<?, ?, ? extends IDDDCapModifier<?>> getRegistry() {
@@ -91,7 +90,7 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 			BUILDERS.put(type, Lists.newArrayList());
 		}	
 	}
-	private final DDDBaseMap<Float> map = new DDDBaseMap<Float>(() -> 0.0f);
+	private final DDDBaseMap<Float> map = new DDDBaseMap<>(() -> 0.0f);
 	private final Map<String, Float> stringMap = Maps.newHashMap();
 	protected final ModifierType type;
 	private boolean wasBuilt = false;
@@ -175,7 +174,7 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 		this.wasBuilt = true;
 	}
 	
-	private final CoTDDDModifierBuilder<T, U> copy() {
+	private CoTDDDModifierBuilder<T, U> copy() {
 		CoTDDDModifierBuilder<T, U> builder = this.copySpecific();
 		builder.map.putAll(this.map);
 		builder.stringMap.putAll(this.stringMap);
@@ -184,7 +183,7 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 		return builder;
 	}
 	
-	private final IDDDCapModifier<U> makeModifier() {
+	private IDDDCapModifier<U> makeModifier() {
 		IDDDCapModifier<U> mod = this.makeModifierSpecific();
 		mod.putAll(this.map);
 		return mod;
@@ -198,23 +197,22 @@ public abstract class CoTDDDModifierBuilder<T, U extends ICapabilityProvider> {
 	protected abstract Predicate<T> getPredicate();
 	
 	public static void registerMods() {
-		BUILDERS.forEach((type, mods) -> {
-			mods.forEach((b) -> {
-				if(type.getRegistry().get(b.name) != null) {
-					throw new ZenRuntimeException(String.format("%s is a modifier name already in use! Original registration source: %s", b.name, type.getRegistry().get(b.name).getCreationSourceString()));
-				}
-				//@formatter:off
-				Optional<RuntimeException> e = b.stringMap.keySet().stream()
-						.filter(IS_NOT_REGISTERED)
-						.reduce((s1, s2) -> s1.concat("\n").concat(s2))
-						.map((s) -> new RuntimeException(String.format("Unregistered damage type(s) used for %s: %s", b.name, s)));
-				//@formatter:on
-				if(e.isPresent()) {
-					throw e.get();
-				}
-				b.stringMap.forEach((s, f) -> b.map.put(DDDRegistries.damageTypes.get(DDDDamageType.addDDDPrefixIfNeeded(s)),  f));
-				DDDRegistries.modifiers.register(b.makeModifier());
-			});
-		});
+		BUILDERS.forEach((type, mods) -> mods.forEach((b) -> {
+            if(type.getRegistry().get(b.name) != null) {
+				//noinspection DataFlowIssue
+				throw new ZenRuntimeException(String.format("%s is a modifier name already in use! Original registration source: %s", b.name, type.getRegistry().get(b.name).getCreationSourceString()));
+            }
+            //@formatter:off
+            Optional<RuntimeException> e = b.stringMap.keySet().stream()
+                    .filter(IS_NOT_REGISTERED)
+                    .reduce((s1, s2) -> s1.concat("\n").concat(s2))
+                    .map((s) -> new RuntimeException(String.format("Unregistered damage type(s) used for %s: %s", b.name, s)));
+            //@formatter:on
+            if(e.isPresent()) {
+                throw e.get();
+            }
+            b.stringMap.forEach((s, f) -> b.map.put(DDDRegistries.damageTypes.get(DDDDamageType.addDDDPrefixIfNeeded(s)),  f));
+            DDDRegistries.modifiers.register(b.makeModifier());
+        }));
 	}
 }

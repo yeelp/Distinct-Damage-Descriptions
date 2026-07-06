@@ -1,9 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.dists;
 
-import java.util.Optional;
-
 import com.lycanitesmobs.ObjectManager;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
@@ -12,9 +9,12 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.dists.AbstractSingleTypeDist;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
+import java.util.Optional;
+
 public class SmitedDistribution extends AbstractSingleTypeDist {
 
-	private static final Optional<Potion> SMITED_POTION;
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private static final Optional<Potion> SMITED_POTION;
 
 	static {
 		SMITED_POTION = Optional.ofNullable(ObjectManager.getEffect("smited"));

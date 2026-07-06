@@ -1,10 +1,9 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
 
 /**
  * A Simple map that doesn't allow null Values.
@@ -17,11 +16,11 @@ import javax.annotation.Nullable;
 public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<Key, Value> {
 
 	private static final long serialVersionUID = -7597325545229879253L;
-	private Supplier<Value> defaultVal;
+	private final Supplier<Value> defaultVal;
 
 	@SuppressWarnings("unused")
 	private NonNullMap() {
-		throw new UnsupportedOperationException("A default value must be specifed for the NonNullMap");
+		throw new UnsupportedOperationException("A default value must be specified for the NonNullMap");
 	}
 
 	/**
@@ -107,6 +106,7 @@ public class NonNullMap<Key, Value> extends HashMap<Key, Value> implements Map<K
 	 *         and only if, this map never contained the specified key.
 	 */
 	@Nullable
+	@SuppressWarnings("UnusedReturnValue")
 	public Value setDefault(Key key) {
 		return super.put(key, this.defaultVal.get());
 	}

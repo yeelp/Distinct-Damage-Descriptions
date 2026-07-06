@@ -1,20 +1,7 @@
 package yeelp.distinctdamagedescriptions.command;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.collect.Lists;
-
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -29,6 +16,15 @@ import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractDDDCommand extends CommandTreeBase {
 
@@ -45,7 +41,7 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 		return 2;
 	}
 	
-	static final Iterable<EntityLivingBase> getTargetSelection(MinecraftServer server, ICommandSender sender, String selection) throws CommandException {
+	static Iterable<EntityLivingBase> getTargetSelection(MinecraftServer server, ICommandSender sender, String selection) throws CommandException {
 		List<EntityLivingBase> targets;
 		if(selection.startsWith("@")) {
 			targets =  SelectorHandlerManager.matchEntities(sender, selection, EntityLivingBase.class);			
@@ -53,14 +49,15 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 		else {
 			targets = server.getPlayerList().getPlayers().stream().filter((player) -> player.getName().equals(selection)).collect(Collectors.toList());			
 		}
-		if(targets.size() == 0) {
+		if(targets.isEmpty()) {
 			sendErrorMessage(sender, NO_TARGETS_ERROR_KEY, selection);
 		}
 		return targets;
 	}
 	
 	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+	@Nonnull
+	public List<String> getTabCompletions(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args, BlockPos pos) {
 		int index = args.length - 1;
 		if(!this.hasCompletionsAvailable(index)) {
 			return Collections.emptyList();
@@ -95,7 +92,7 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 	
 	protected abstract boolean hasCompletionsAvailable(int index);
 	
-	static final Optional<DDDDamageType> parseDamageTypeArgument(ICommandSender sender, String type) {
+	static Optional<DDDDamageType> parseDamageTypeArgument(ICommandSender sender, String type) {
 		Optional<DDDDamageType> oType = Optional.ofNullable(DDDRegistries.damageTypes.get(type));
 		if(!oType.isPresent() || oType.get() == DDDBuiltInDamageType.UNKNOWN) {
 			sendErrorMessage(sender, INVALID_TYPE_ERROR_KEY, type);
@@ -103,7 +100,8 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 		return oType;
 	}
 	
-	static boolean isNumerical(String s) {
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    static boolean isNumerical(String s) {
 		return NUM_REGEX.matcher(s).matches();
 	}
 	
@@ -121,7 +119,7 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 			this.usage = Translations.INSTANCE.getLayeredTranslator(CommandConsts.COMMANDS_ROOT, this.name).getKey(CommandConsts.USAGE);
 		}
 		
-		protected DDDCommandSubTreeBase(String root, String... subRoots) {
+		protected DDDCommandSubTreeBase(@SuppressWarnings("SameParameterValue") String root, String... subRoots) {
 			this.name = subRoots[subRoots.length - 1];
 			String[] args = new String[subRoots.length + 1];
 			args[0] = root;
@@ -129,18 +127,20 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 			this.usage = Translations.INSTANCE.getLayeredTranslator(CommandConsts.COMMANDS_ROOT, args).getKey(CommandConsts.USAGE);
 		}
 
+		@Nonnull
 		@Override
 		public String getName() {
 			return this.name;
 		}
 
+		@Nonnull
 		@Override
-		public String getUsage(ICommandSender sender) {
+		public String getUsage(@Nonnull ICommandSender sender) {
 			return this.usage;
 		}
 		
 		@Override
-		public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 			if(args.length == 0) {
 				throw new WrongUsageException(this.getUsage(sender));
 			}
@@ -166,13 +166,15 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 				this.usage = Translations.INSTANCE.getLayeredTranslator(CommandConsts.COMMANDS_ROOT, args).getKey(CommandConsts.USAGE);
 			}
 
+			@Nonnull
 			@Override
 			public String getName() {
 				return this.name;
 			}
 
+			@Nonnull
 			@Override
-			public String getUsage(ICommandSender sender) {
+			public String getUsage(@Nonnull ICommandSender sender) {
 				return this.usage;
 			}
 			
@@ -182,7 +184,7 @@ public abstract class AbstractDDDCommand extends CommandTreeBase {
 		}
 	}
 	
-	enum Operation {
+	protected enum Operation {
 		GIVE,
 		TAKE,
 		TOGGLE,

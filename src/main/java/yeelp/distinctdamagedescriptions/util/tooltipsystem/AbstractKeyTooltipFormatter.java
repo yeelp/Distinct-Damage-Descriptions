@@ -10,7 +10,7 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
  */
 public abstract class AbstractKeyTooltipFormatter<T> extends AbstractTooltipFormatter<T> {
 
-	private KeyTooltip keyTooltip;
+	private final KeyTooltip keyTooltip;
 
 	protected AbstractKeyTooltipFormatter(KeyTooltip keyTooltip, DDDDamageFormatter damageFormatter) {
 		super(damageFormatter);

@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.registries.impl;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Sets;
-
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.IDDDCapModifier;
@@ -14,6 +10,9 @@ import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
 public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D extends IDistribution> extends DDDModifierRegistry<T, D, IDDDCapModifier<T>> {
 
 	public DDDDistributionModifierRegistry(Supplier<Float> defaultVal, String type) {
@@ -22,7 +21,7 @@ public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D ex
 
 	@Override
 	public void applyModifiers(T provider, D cap) {
-		DDDBaseMap<Float> weights = new DDDBaseMap<Float>(this.defaultVal);
+		DDDBaseMap<Float> weights = new DDDBaseMap<>(this.defaultVal);
 		cap.getCategories().forEach((type) -> weights.put(type, cap.getWeight(type)));
 		this.poolApplicableModifiers(provider).forEach((modifier) -> {			
 			if(modifier.shouldReallocate()) {
@@ -32,6 +31,7 @@ public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D ex
 				do {
 					typesToRemove.clear();
 					for(DDDDamageType type : weights.keySet()) {
+						//noinspection DataFlowIssue
 						float lastWeight = weights.put(type, weights.get(type) - initialWeightToSubtract);
 						if(lastWeight <= initialWeightToSubtract) {
 							typesToRemove.add(type);
@@ -40,11 +40,9 @@ public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D ex
 					}
 					typesToRemove.forEach(weights::remove);
 					initialWeightToSubtract = newWeightToSubtract;
-				}while(typesToRemove.size() > 0);
+				}while(!typesToRemove.isEmpty());
 			}
-			modifier.forEach((type, weight) -> {
-				weights.merge(type, weight, Float::sum);
-			});
+			modifier.forEach((type, weight) -> weights.merge(type, weight, Float::sum));
 		});
 		this.scaleWeights(weights);
 		cap.setNewWeights(weights);
@@ -52,7 +50,7 @@ public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D ex
 	
 	@SuppressWarnings("static-method")
 	protected void scaleWeights(@SuppressWarnings("unused") DDDBaseMap<Float> map) {
-		return;
+		//nothing
 	}
 	
 	public static final class DDDDamageDistributionModifierRegistry<T extends ICapabilityProvider> extends DDDDistributionModifierRegistry<T, IDamageDistribution> {
@@ -69,7 +67,7 @@ public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D ex
 	
 	private final class PooledDistributionModifier extends AbstractDDDCapModifier<T> {
 
-		protected PooledDistributionModifier(IDDDCapModifier<T> modifier, boolean shouldReallocate) {
+		private PooledDistributionModifier(IDDDCapModifier<T> modifier, boolean shouldReallocate) {
 			super(DDDDistributionModifierRegistry.this.defaultVal, null, shouldReallocate);
 			this.putAll(modifier);
 		}
@@ -101,7 +99,8 @@ public class DDDDistributionModifierRegistry<T extends ICapabilityProvider, D ex
 	}
 
 	@Override
-	protected IDDDCapModifier<T> combine(IDDDCapModifier<T> m1, IDDDCapModifier<T> m2) {
+    @SuppressWarnings({"unchecked", "RedundantSuppression"})
+    protected IDDDCapModifier<T> combine(IDDDCapModifier<T> m1, IDDDCapModifier<T> m2) {
 		if(m1 instanceof DDDDistributionModifierRegistry.PooledDistributionModifier) {
 			return ((PooledDistributionModifier) m1).combine(m2);
 		}

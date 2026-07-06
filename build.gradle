@@ -116,6 +116,7 @@ task processSources(type: Sync) {
 
 compileJava {
 	source = processSources.outputs
+    options.compilerArgs.addAll(['-Xlint:unchecked', '-Xlint:deprecation'])
 }
 
 java {

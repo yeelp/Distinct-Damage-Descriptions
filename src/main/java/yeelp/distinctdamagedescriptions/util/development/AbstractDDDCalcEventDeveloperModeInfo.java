@@ -1,10 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.development;
 
-import java.util.function.Supplier;
-
 import net.minecraft.world.World;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 import yeelp.distinctdamagedescriptions.event.calculation.DDDCalculationEvent;
+
+import java.util.function.Supplier;
 
 public abstract class AbstractDDDCalcEventDeveloperModeInfo<E extends DDDCalculationEvent> extends AbstractDeveloperModeInfo<E> {
 

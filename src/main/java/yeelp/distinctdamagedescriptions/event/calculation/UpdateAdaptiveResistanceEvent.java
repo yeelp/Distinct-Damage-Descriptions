@@ -1,9 +1,5 @@
 package yeelp.distinctdamagedescriptions.event.calculation;
 
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -13,6 +9,9 @@ import yeelp.distinctdamagedescriptions.api.DDDAPI;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.ResistMap;
+
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * This event fires every calculation to determine if a mob's resistances should
@@ -47,7 +46,8 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	private final Set<DDDDamageType> immunities;
 	private float adaptiveAmount;
 
-	public UpdateAdaptiveResistanceEvent(@Nullable Entity attacker, @Nullable Entity trueAttacker, EntityLivingBase defender, DamageSource src, DamageMap dmg, ResistMap resists, Set<DDDDamageType> immunities) {
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+    public UpdateAdaptiveResistanceEvent(@Nullable Entity attacker, @Nullable Entity trueAttacker, EntityLivingBase defender, DamageSource src, DamageMap dmg, ResistMap resists, Set<DDDDamageType> immunities) {
 		super(attacker, trueAttacker, defender, src, (DamageMap) dmg.clone());
 		this.immunities = immunities;
 		this.resists = resists;
@@ -58,7 +58,7 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	 * Get this entity's current resistance of a certain type. Does not reflect
 	 * their actual resistance, but the resistance value used in calculations.
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return That entity's resistance to that type.
 	 */
 	public float getResistance(DDDDamageType type) {
@@ -69,7 +69,7 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	 * Is this entity currently immune to this type? Does not reflect their regular
 	 * immunities, just immunities used in this calculation.
 	 * 
-	 * @param type
+	 * @param type damage type
 	 * @return true if immune
 	 */
 	public boolean hasImmunity(DDDDamageType type) {
@@ -79,7 +79,7 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	/**
 	 * Prevent this entity from adapting to this type, this time only.
 	 * 
-	 * @param type
+	 * @param type damage type to ignore
 	 */
 	public void ignoreType(DDDDamageType type) {
 		this.dmg.remove(type);
@@ -87,7 +87,7 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 
 	/**
 	 * Get the current map of damage this entity is adapting to. This will be used
-	 * when updating adpative resistance, but <strong>NOT</strong> used as the
+	 * when updating adaptive resistance, but <strong>NOT</strong> used as the
 	 * damage inflicted. In reality, this damage map is a copy; changes to the
 	 * damage values in this map do <strong>NOT</strong> change the amount of damage
 	 * inflicted. It will however, change how adpatability changes with adaptive
@@ -112,7 +112,7 @@ public final class UpdateAdaptiveResistanceEvent extends DDDCalculationEvent {
 	 * Set the adaptive amount for this entity. This amount will only be used for
 	 * this calculation, then set back to whatever the amount was before
 	 * 
-	 * @param amount
+	 * @param amount adaptive amount to set for this calculation
 	 */
 	public void setAdaptiveAmount(float amount) {
 		this.adaptiveAmount = amount;

@@ -1,18 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import slimeknights.mantle.client.book.data.BookData;
@@ -36,6 +25,10 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 public abstract class ContentMaterialInfluence extends ContentMaterial {
 	
@@ -67,11 +60,12 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 		
 		private final byte matchedSchemes;
 		
-		private ColourScheme(DDDTooltipColourScheme... schemes) {
+		ColourScheme(DDDTooltipColourScheme... schemes) {
 			this.matchedSchemes = encodeMatchedSchemes(schemes);
 		}
 		
-		private static byte encodeMatchedSchemes(DDDTooltipColourScheme... schemes) {
+		@SuppressWarnings("OptionalGetWithoutIsPresent")
+        private static byte encodeMatchedSchemes(DDDTooltipColourScheme... schemes) {
 			return (byte) Arrays.stream(schemes).mapToInt(DDDTooltipColourScheme::ordinal).map((i) -> 1 << i).reduce((i1, i2) -> i1 | i2).getAsInt();
 		}
 		
@@ -87,10 +81,14 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 		
 		abstract String formatNumberColoured(float value, ObjectFormatter<Float> formatter);
 	}
-	
+
+	/**
+	 * The ID of the content. Kept as Tinker's content pages have an ID field that may be reference through reflection?
+	 */
+	@SuppressWarnings("unused")
 	public static final String ID = "materialInfluence";
 
-	private transient Material material;
+	private final transient Material material;
 
 	public ContentMaterialInfluence() {
 		super(Material.UNKNOWN);
@@ -120,8 +118,9 @@ public abstract class ContentMaterialInfluence extends ContentMaterial {
 		data.add(TextData.LINEBREAK);
 		ObjectFormatter<Float> formatter = this.getAppropriateFormatter();
 		ColourScheme cs = ColourScheme.getScheme(this.getTooltipScheme());
-		this.getWeights().entrySet().stream().sorted(Comparator.comparing(Entry::getKey)).map((e) -> new TextData(this.getTranslator().translate("materialInfluenceEntry", TiCUtil.getDDDDamageTypeNameColoured(e.getKey()), cs.formatNumberColoured(e.getValue(), formatter)))).forEach((td) -> {
-			data.add(new TextData("\u25CF "));
+		this.getWeights().entrySet().stream().sorted(Entry.comparingByKey()).map((e) -> new TextData(this.getTranslator().translate("materialInfluenceEntry", TiCUtil.getDDDDamageTypeNameColoured(e.getKey()), cs.formatNumberColoured(e.getValue(), formatter)))).forEach((td) -> {
+            //noinspection UnnecessaryUnicodeEscape
+            data.add(new TextData("\u25CF "));
 			data.add(td);
 			data.add(TextData.LINEBREAK);
 		});

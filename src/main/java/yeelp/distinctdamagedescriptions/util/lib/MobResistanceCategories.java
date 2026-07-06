@@ -1,11 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Collection;
-
 import com.google.common.collect.Sets;
-
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
+
+import java.util.Collection;
 
 /**
  * Mob Resistances. Holds general species specific resistance information, but
@@ -17,8 +16,8 @@ import yeelp.distinctdamagedescriptions.capability.IMobResistances;
  * @see IMobResistances
  */
 public class MobResistanceCategories extends ResistanceCategories {
-	private float adaptive;
-	private float adaptiveAmount;
+	private final float adaptive;
+	private final float adaptiveAmount;
 
 	public static final MobResistanceCategories EMPTY = new MobResistanceCategories(DDDMaps.newResistMap(), Sets.newHashSet(), Float.NaN, Float.NaN);
 

@@ -1,17 +1,9 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.capability;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
 import com.lycanitesmobs.core.item.equipment.ItemEquipment;
 import com.lycanitesmobs.core.item.equipment.ItemEquipmentPart;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.ItemStack;
@@ -26,6 +18,11 @@ import yeelp.distinctdamagedescriptions.integration.capability.ModUpdatingDamage
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
+import javax.annotation.Nonnull;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 public final class LycanitesEquipmentDistribution extends ModUpdatingDamageDistribution {
 
 	private static final Set<String> acceptableParts = ImmutableSet.of("blade", "axe", "pike", "jewel");
@@ -36,12 +33,12 @@ public final class LycanitesEquipmentDistribution extends ModUpdatingDamageDistr
 	public static Capability<LycanitesEquipmentDistribution> cap;
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
 		return capability == cap;
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
 		return this.hasCapability(capability, facing) ? cap.cast(this) : null;
 	}
 
@@ -49,8 +46,8 @@ public final class LycanitesEquipmentDistribution extends ModUpdatingDamageDistr
 	public Optional<DDDBaseMap<Float>> getUpdatedWeights(ItemStack owner) {
 		ItemEquipment equipment = (ItemEquipment) owner.getItem();
 		List<ItemEquipmentPart> parts = equipment.getEquipmentPartStacks(owner).stream().map(equipment::getEquipmentPart).filter(filter).collect(Collectors.toList());
-		if(this.cachedUsefulParts == null || !(parts.size() == this.cachedUsefulParts.size() && this.cachedUsefulParts.containsAll(parts))) {
-			DDDBaseMap<Float> map = new DDDBaseMap<Float>(() -> 0.0f);
+		if(this.cachedUsefulParts == null || !(parts.size() == this.cachedUsefulParts.size() && new HashSet<>(this.cachedUsefulParts).containsAll(parts))) {
+			DDDBaseMap<Float> map = new DDDBaseMap<>(() -> 0.0f);
 			List<IDamageDistribution> dists = parts.stream().map(LycanitesEquipmentDistribution::retrieveFromConfig).collect(Collectors.toList());
 			if(!dists.isEmpty()) {
 				dists.forEach((d) -> d.getCategories().forEach((type) -> map.merge(type, d.getWeight(type) / dists.size(), Float::sum)));

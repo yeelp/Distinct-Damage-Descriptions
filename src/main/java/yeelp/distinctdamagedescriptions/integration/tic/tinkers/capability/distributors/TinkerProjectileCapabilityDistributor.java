@@ -8,6 +8,8 @@ import yeelp.distinctdamagedescriptions.capability.distributors.DamageDistributi
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.tic.tinkers.capability.TinkerDamageDistribution;
 
+import javax.annotation.Nonnull;
+
 public class TinkerProjectileCapabilityDistributor extends AbstractCapabilityDistributor<IProjectile, IDamageDistribution, IDamageDistribution> {
 
 	private static TinkerProjectileCapabilityDistributor instance;
@@ -22,7 +24,7 @@ public class TinkerProjectileCapabilityDistributor extends AbstractCapabilityDis
 	}
 
 	@Override
-	protected IDamageDistribution getCapability(IProjectile t, String key) {
+	protected IDamageDistribution getCapability(@Nonnull IProjectile t, @Nonnull String key) {
 		return new TinkerDamageDistribution().update(t);
 	}
 

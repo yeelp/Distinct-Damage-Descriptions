@@ -1,12 +1,5 @@
 package yeelp.distinctdamagedescriptions.util.tooltipsystem;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -14,6 +7,12 @@ import yeelp.distinctdamagedescriptions.ModConsts.TooltipConsts;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.Translations;
 import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
+
+import javax.annotation.Nonnull;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * An abstract capability content formatter for DDD tooltips.
@@ -24,8 +23,8 @@ import yeelp.distinctdamagedescriptions.util.Translations.BasicTranslator;
  */
 public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractKeyTooltipFormatter<T> {
 
-	private Function<T, Optional<C>> capExtractor;
-	private ITextComponent typeText;
+	private final Function<T, Optional<C>> capExtractor;
+	private final ITextComponent typeText;
 	private static final Style GRAY_COLOUR = new Style().setColor(TextFormatting.GRAY);
 	private static final Style WHITE_COLOUR = new Style().setColor(TextFormatting.WHITE);
 	private static final BasicTranslator TRANSLATOR = Translations.INSTANCE.getTranslator(TooltipConsts.TOOLTIPS_ROOT);
@@ -42,7 +41,7 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 	/**
 	 * Format a capability for placement in an ItemStack's tooltip
 	 * 
-	 * @param stack the stack whose tooltip will gain the content
+	 * @param t the stack whose tooltip will gain the content
 	 * @param cap   the capability instance
 	 * @return an Optional containing a List of Strings if any are to be added, or
 	 *         an empty Optional if no Strings are to be added.
@@ -51,14 +50,14 @@ public abstract class AbstractCapabilityTooltipFormatter<C, T> extends AbstractK
 
 	@Override
 	public List<String> format(T t) {
-		List<String> result = new LinkedList<String>();
+		List<String> result = new LinkedList<>();
 		result.add(this.typeText.getFormattedText() + this.getKeyText());
 		if(this.shouldShow() && t != null) {
 			Optional<List<String>> formatCap = this.capExtractor.apply(t).flatMap((c) -> this.formatCapabilityFor(t, c));
 			if(formatCap.isPresent()) {
 				List<String> l = formatCap.get();
 				if(ModConfig.client.useIcons) {
-					l.stream().map((s) -> new StringBuilder(" ").append(s.replaceAll("  ", " ")).toString()).forEach(result::add);
+					l.stream().map((s) -> " " + s.replaceAll(" {2}", " ")).forEach(result::add);
 				}
 				else {
 					result.addAll(l);

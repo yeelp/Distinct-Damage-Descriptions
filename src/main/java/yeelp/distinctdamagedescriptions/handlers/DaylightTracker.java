@@ -1,14 +1,7 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -21,6 +14,12 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.GenericConfigR
 import yeelp.distinctdamagedescriptions.util.ConfigReaderUtilities;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+
 public class DaylightTracker extends AbstractTracker {
 
 	protected static final Set<ResourceLocation> WHITELIST = Sets.newHashSet();
@@ -28,7 +27,7 @@ public class DaylightTracker extends AbstractTracker {
 	protected static final Set<Class<? extends EntityLivingBase>> CLASS_BLACKLIST = Sets.newHashSet();
 
 	private static final class ConfigReader implements DDDConfigReader {
-		private static final Set<DDDConfigReaderException> ERRORS = new HashSet<DDDConfigReaderException>();
+		private static final Set<DDDConfigReaderException> ERRORS = Sets.newHashSet();
 
 		@Override
 		public void read() {
@@ -36,7 +35,8 @@ public class DaylightTracker extends AbstractTracker {
 			Arrays.stream(ModConfig.dmg.extraDamage.daylightWhitelist).filter(Predicates.not(ConfigReaderUtilities::isCommentEntry)).forEach((c) -> this.parse(c).ifPresent(WHITELIST::add));
 		}
 
-		@Override
+		@Nonnull
+        @Override
 		public String getName() {
 			return "Daylight Susceptible Entities";
 		}
@@ -46,7 +46,7 @@ public class DaylightTracker extends AbstractTracker {
 			return false;
 		}
 
-		private final Optional<ResourceLocation> parse(String s) {
+		private Optional<ResourceLocation> parse(String s) {
 			return Optional.ofNullable(s).filter((str) -> {
 				if(str.contains(":")) {
 					return true;
@@ -61,6 +61,7 @@ public class DaylightTracker extends AbstractTracker {
 			return true;
 		}
 		
+		@Nonnull
 		@Override
 		public Collection<DDDConfigReaderException> getSelfReportedErrors() {
 			return ERRORS;
@@ -68,8 +69,7 @@ public class DaylightTracker extends AbstractTracker {
 
 	}
 
-	@SuppressWarnings("synthetic-access")
-	public static final ConfigReader READER = new ConfigReader();
+	public static final DDDConfigReader READER = new ConfigReader();
 
 	@Override
 	public boolean shouldStartTracking(EntityLivingBase entity) {

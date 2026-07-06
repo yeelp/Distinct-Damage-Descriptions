@@ -8,6 +8,8 @@ import yeelp.distinctdamagedescriptions.capability.distributors.ArmorDistributio
 import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.integration.tic.conarm.capability.ConarmArmorDistribution;
 
+import javax.annotation.Nonnull;
+
 public class ConarmArmorDistributor extends AbstractCapabilityDistributor<ItemStack, IArmorDistribution, IArmorDistribution> {
 	private static ConarmArmorDistributor instance;
 
@@ -21,7 +23,7 @@ public class ConarmArmorDistributor extends AbstractCapabilityDistributor<ItemSt
 	}
 
 	@Override
-	protected IArmorDistribution getCapability(ItemStack t, String key) {
+	protected IArmorDistribution getCapability(@Nonnull ItemStack t, @Nonnull String key) {
 		return new ConarmArmorDistribution().update(t);
 	}
 

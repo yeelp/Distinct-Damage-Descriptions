@@ -22,10 +22,11 @@ public interface IMobResistances extends IDamageResistances {
 
 	/**
 	 * Was this mob originally adaptive? Just because a mob was originally adaptive
-	 * does not mean that is is now.
+	 * does not mean that it is now.
 	 * 
 	 * @return true if this mob was originally adaptive, false if not.
 	 */
+	@SuppressWarnings("unused")
 	boolean isOriginallyAdaptive();
 
 	/**
@@ -44,11 +45,12 @@ public interface IMobResistances extends IDamageResistances {
 	float getBaseAdaptiveAmount();
 
 	/**
-	 * Get the adaptive amount when modified by adpative weakness
+	 * Get the adaptive amount when modified by adaptive weakness
 	 * 
-	 * @return the modifed adaptive amount. If adaptive weakness isn't enabled,
+	 * @return the modified adaptive amount. If adaptive weakness isn't enabled,
 	 *         returns the same value as {@link #getAdaptiveAmount()}
 	 */
+	@SuppressWarnings("unused")
 	float getAdaptiveResistanceModified();
 
 	/**
@@ -62,7 +64,7 @@ public interface IMobResistances extends IDamageResistances {
 	/**
 	 * Set the adaptive resistance amount.
 	 * 
-	 * @param amount
+	 * @param amount amount to set.
 	 */
 	void setAdaptiveAmount(float amount);
 
@@ -71,7 +73,7 @@ public interface IMobResistances extends IDamageResistances {
 	 * until the next call to {@link #update(EntityLivingBase)}. To update now, also
 	 * {@link #setAdaptiveAmount(float)}
 	 * 
-	 * @param amount
+	 * @param amount amount to set.
 	 */
 	void setBaseAdaptiveAmount(float amount);
 

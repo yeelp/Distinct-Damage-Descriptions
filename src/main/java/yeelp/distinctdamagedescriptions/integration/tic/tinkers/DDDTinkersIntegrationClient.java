@@ -1,10 +1,9 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import slimeknights.mantle.client.gui.book.GuiBook;

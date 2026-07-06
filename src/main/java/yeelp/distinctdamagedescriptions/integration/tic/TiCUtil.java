@@ -1,14 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.tic;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
-
 import c4.conarm.lib.tinkering.TinkersArmor;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,10 +21,12 @@ import yeelp.distinctdamagedescriptions.config.IDDDConfiguration;
 import yeelp.distinctdamagedescriptions.util.lib.DDDBaseMap;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
 
+import java.util.*;
+
 public final class TiCUtil {
 
 	private TiCUtil() {
-		throw new RuntimeException("Class can't be instatiated!");
+		throw new RuntimeException("Class can't be instantiated!");
 	}
 
 	public static Iterator<PartMaterialType> getParts(ItemStack stack) {
@@ -84,7 +79,7 @@ public final class TiCUtil {
 				return getMap(r, DDDConfigurations.armors);
 			}
 			return null;
-		}).orElse(new DDDBaseMap<Float>(() -> 0.0f));
+		}).orElse(new DDDBaseMap<>(() -> 0.0f));
 	}
 
 	public static String getDDDDamageTypeNameColoured(DDDDamageType type) {

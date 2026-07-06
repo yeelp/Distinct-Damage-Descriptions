@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.util.function.Supplier;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityGuardian;
@@ -12,9 +10,13 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
+import java.util.function.Supplier;
+
 public abstract class DDDBuiltInForce extends AbstractSingleTypeDist {
-	public static final DDDBuiltInForce GUARDIAN_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableGuardianDamage, EntityGuardian.class, "guardian");
-	public static final DDDBuiltInForce EVOKER_FANGS_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableEvokerFangsDamage, EntityEvokerFangs.class, "evokerFangs");
+	@SuppressWarnings("StaticInitializerReferencesSubClass")
+    public static final DDDBuiltInForce GUARDIAN_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableGuardianDamage, EntityGuardian.class, "guardian");
+	@SuppressWarnings("StaticInitializerReferencesSubClass")
+    public static final DDDBuiltInForce EVOKER_FANGS_DIST = new SourceBasedForceDist(() -> ModConfig.dmg.extraDamage.enableEvokerFangsDamage, EntityEvokerFangs.class, "evokerFangs");
 
 	DDDBuiltInForce(String name, Supplier<Boolean> config) {
 		super(name, Source.BUILTIN, config);
@@ -27,7 +29,7 @@ public abstract class DDDBuiltInForce extends AbstractSingleTypeDist {
 
 	@Override
 	protected boolean useType(DamageSource source, EntityLivingBase target) {
-		return source.isMagicDamage() && classifyForce(source, target);
+		return source.isMagicDamage() && this.classifyForce(source, target);
 	}
 
 	protected abstract boolean classifyForce(DamageSource source, EntityLivingBase target);

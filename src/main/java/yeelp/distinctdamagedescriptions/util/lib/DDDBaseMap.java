@@ -1,19 +1,17 @@
 package yeelp.distinctdamagedescriptions.util.lib;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import com.google.common.base.Functions;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class DDDBaseMap<T> extends NonNullMap<DDDDamageType, T> {
 
@@ -26,7 +24,7 @@ public class DDDBaseMap<T> extends NonNullMap<DDDDamageType, T> {
 	}
 
 	public static DDDBaseMap<Float> fromNBT(NBTTagList lst, Supplier<Float> defaultVal) {
-		DDDBaseMap<Float> map = new DDDBaseMap<Float>(defaultVal);
+		DDDBaseMap<Float> map = new DDDBaseMap<>(defaultVal);
 		lst.forEach((nbt) -> {
 			if(nbt instanceof NBTTagCompound) {
 				NBTTagCompound tag = (NBTTagCompound) nbt;
@@ -59,8 +57,8 @@ public class DDDBaseMap<T> extends NonNullMap<DDDDamageType, T> {
 	 * @return The Collector
 	 */
 	public static <U> Collector<DDDDamageType, ?, DDDBaseMap<U>> typesToDDDBaseMap(Supplier<U> defaultVal, Function<DDDDamageType, U> valueMapper) {
-		return Collectors.toMap(Functions.identity(), valueMapper, (BinaryOperator<U>) (u1, u2) -> {
+		return Collectors.toMap(Functions.identity(), valueMapper, (u1, u2) -> {
 			throw new IllegalStateException("Can't collect on duplicate keys");
-		}, () -> new DDDBaseMap<U>(defaultVal));
+		}, () -> new DDDBaseMap<>(defaultVal));
 	}
 }

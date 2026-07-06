@@ -20,7 +20,7 @@ public abstract class AbstractMessageHandler<T extends NBTBase> implements IMess
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IMessage onMessage(AbstractCapabilityMessage<T> msg, MessageContext ctx) {
-		FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(msg, ctx));
+		FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> this.handle(msg, ctx));
 		return null;
 	}
 

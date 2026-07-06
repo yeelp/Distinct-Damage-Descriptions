@@ -7,6 +7,8 @@ import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.config.dev.DevelopmentCategory.DeveloperStatus;
 import yeelp.distinctdamagedescriptions.util.development.IDeveloperModeInfoCallback;
 
+import java.util.Objects;
+
 public enum EnderSkillsDeveloperModeCallbacks implements IDeveloperModeInfoCallback<SkillDamageEvent> {
 	SKILL_NAME {
 		@Override
@@ -21,7 +23,7 @@ public enum EnderSkillsDeveloperModeCallbacks implements IDeveloperModeInfoCallb
 		
 		@Override
 		protected String getInfo(SkillDamageEvent evt) {
-			return evt.getSkill().getRegistryName().toString();
+			return Objects.requireNonNull(evt.getSkill().getRegistryName()).toString();
 		}
 	},
 	SKILL_TYPE {
@@ -53,7 +55,7 @@ public enum EnderSkillsDeveloperModeCallbacks implements IDeveloperModeInfoCallb
 
 	@Override
 	public World getWorld(SkillDamageEvent evt) {
-		return evt.getEntityLiving().getEntityWorld();
+		return Objects.requireNonNull(evt.getEntityLiving()).getEntityWorld();
 	}
 	
 	protected abstract String getName();

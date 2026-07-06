@@ -1,10 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.tic.tinkers.client;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableList;
-
 import slimeknights.mantle.client.book.data.PageData;
 import slimeknights.mantle.client.book.data.element.TextData;
 import slimeknights.tconstruct.library.TinkerRegistry;
@@ -23,9 +19,13 @@ import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDNumberFormatter;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.DDDTooltipColourScheme;
 import yeelp.distinctdamagedescriptions.util.tooltipsystem.ObjectFormatter;
 
+import java.util.Map;
+import java.util.Set;
+
 public final class ContentTinkersMaterialInfluence extends ContentMaterialInfluence {
 
-	public ContentTinkersMaterialInfluence() {
+	@SuppressWarnings("unused")
+    public ContentTinkersMaterialInfluence() {
 		super();
 	}
 
@@ -63,11 +63,11 @@ public final class ContentTinkersMaterialInfluence extends ContentMaterialInflue
 		return map;
 	}
 
-	private static final DistributionBias getBias(Material m) {
+	private static DistributionBias getBias(Material m) {
 		return TiCConfigurations.toolMaterialBias.getOrFallbackToDefault(m.identifier);
 	}
 
-	private static final String getFormattedBias(Material m) {
+	private static String getFormattedBias(Material m) {
 		return DDDNumberFormatter.PERCENT.format(getBias(m).getBias() / 100).replace('%', ' ').trim();
 	}
 

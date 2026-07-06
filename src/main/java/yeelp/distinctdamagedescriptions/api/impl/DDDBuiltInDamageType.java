@@ -1,12 +1,12 @@
 package yeelp.distinctdamagedescriptions.api.impl;
 
-import java.util.Arrays;
-import java.util.function.Predicate;
-
 import yeelp.distinctdamagedescriptions.ModConsts.DamageTypeNames;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.lib.SyntaxException;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
  * Implementation of all built in damage types
@@ -59,7 +59,7 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 		Arrays.sort(INTERNAL_TYPES);
 	}
 	
-	public static final Predicate<DDDDamageType> filterOutHidden(boolean keepUnknown) {
+	public static Predicate<DDDDamageType> filterOutHidden(boolean keepUnknown) {
 		return (t) -> (keepUnknown && DDDDamageType.isUnknownType(t)) || !t.isHidden();
 	}
 
@@ -76,7 +76,7 @@ public final class DDDBuiltInDamageType extends DDDAbstractDamageType {
 		this(name, isPhysical, null, null, hidden);
 	}
 
-	private DDDBuiltInDamageType(String name, boolean isPhysical) {
+	private DDDBuiltInDamageType(@SuppressWarnings("SameParameterValue") String name, @SuppressWarnings("SameParameterValue") boolean isPhysical) {
 		this(name, isPhysical, false);
 	}
 	

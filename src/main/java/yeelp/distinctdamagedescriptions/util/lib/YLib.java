@@ -68,7 +68,7 @@ public final class YLib {
 	/**
 	 * Capitalize the first character in a String
 	 * 
-	 * @param s
+	 * @param s string to capitalize
 	 * @return a new String with the first character capitalized.
 	 */
 	public static String capitalize(String s) {

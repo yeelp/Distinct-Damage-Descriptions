@@ -6,6 +6,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.math.MathHelper;
 import yeelp.distinctdamagedescriptions.init.DDDEnchantments;
 
+import javax.annotation.Nonnull;
+
 /**
  * The Brute Force enchantment. Reduces resistances by 10% per level
  * 
@@ -47,7 +49,7 @@ public class EnchantmentBruteForce extends AbstractDDDEnchantment {
 	}
 
 	@Override
-	public boolean canApplyTogether(Enchantment ench) {
+	public boolean canApplyTogether(@Nonnull Enchantment ench) {
 		return super.canApplyTogether(ench) && ench != DDDEnchantments.slyStrike;
 	}
 	

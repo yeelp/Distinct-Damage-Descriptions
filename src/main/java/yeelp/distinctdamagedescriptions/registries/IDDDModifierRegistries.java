@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.registries;
 
-import java.util.Set;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -13,6 +11,8 @@ import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
 import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
+
+import java.util.Set;
 
 public interface IDDDModifierRegistries {
 
@@ -31,7 +31,7 @@ public interface IDDDModifierRegistries {
 	@SuppressWarnings("unchecked")
 	default <T extends ICapabilityProvider, M extends IDDDCapModifier<T>> void register(M modifier) {
 		if(!modifier.validate()) {
-			throw new IllegalArgumentException(String.format("Modifier %s from %s could not be validated! Has weights: %s", modifier.getName(), modifier.getCreationSourceString(), modifier.entrySet().toString()));
+			throw new IllegalArgumentException(String.format("Modifier %s from %s could not be validated! Has weights: %s", modifier.getName(), modifier.getCreationSourceString(), modifier.entrySet()));
 		}
 		switch(modifier.getAppliesToEnum()) {
 			case ARMOR:

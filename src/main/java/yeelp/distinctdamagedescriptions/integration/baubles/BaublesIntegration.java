@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.baubles;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationIds;
 import yeelp.distinctdamagedescriptions.ModConsts.IntegrationTitles;

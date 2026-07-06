@@ -2,7 +2,6 @@ package yeelp.distinctdamagedescriptions.integration.tic;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
@@ -22,9 +21,11 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 
 	protected abstract void registerCapabilities();
 
-	protected abstract boolean doSpecificPreInit(FMLPreInitializationEvent evt);
+	@SuppressWarnings("SameReturnValue")
+    protected abstract boolean doSpecificPreInit(FMLPreInitializationEvent evt);
 
-	protected abstract boolean doSpecificInit(FMLInitializationEvent evt);
+	@SuppressWarnings("SameReturnValue")
+    protected abstract boolean doSpecificInit(FMLInitializationEvent evt);
 
 	@Override
 	public final boolean preInit(FMLPreInitializationEvent evt) {
@@ -40,10 +41,5 @@ public abstract class DDDTiCIntegration implements IModIntegration {
 		this.registerCapabilities();
 		this.getFormatters().forEach(TooltipDistributor::registerModCompat);
 		return this.doSpecificInit(evt);
-	}
-
-	@Override
-	public boolean postInit(FMLPostInitializationEvent evt) {
-		return true;
 	}
 }

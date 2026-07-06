@@ -1,14 +1,14 @@
 package yeelp.distinctdamagedescriptions.capability;
 
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySerializable<T> {
 	
@@ -17,7 +17,7 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 	 * @param nbt old nbt data
 	 */
 	default void deserializeOldNBT(NBTBase nbt) {
-		return;
+		//default behaviour is nothing
 	}
 	
 	/**
@@ -75,12 +75,12 @@ public interface DDDCapabilityBase<T extends NBTBase> extends ICapabilitySeriali
 		}
 
 		@Override
-		public Cap call() throws Exception {
+		public Cap call() {
 			return this.sup.get();
 		}
 	}
 
 	static <NBT extends NBTBase, C extends DDDCapabilityBase<NBT>> void register(Class<C> capClass, Class<NBT> nbtClass, Supplier<C> factorySup) {
-		CapabilityManager.INSTANCE.register(capClass, new DDDCapStorage<NBT, C>(nbtClass), new DDDCapFactory<NBT, C>(factorySup));
+		CapabilityManager.INSTANCE.register(capClass, new DDDCapStorage<>(nbtClass), new DDDCapFactory<>(factorySup));
 	}
 }

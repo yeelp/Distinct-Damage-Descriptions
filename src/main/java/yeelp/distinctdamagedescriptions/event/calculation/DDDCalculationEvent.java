@@ -1,10 +1,5 @@
 package yeelp.distinctdamagedescriptions.event.calculation;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -14,6 +9,10 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.event.classification.DetermineDamageEvent;
 import yeelp.distinctdamagedescriptions.util.lib.DDDMaps.DamageMap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * Fired when DDD does combat calculations. <br>
@@ -53,8 +52,7 @@ public abstract class DDDCalculationEvent extends Event {
 	 * Get the immediate attacking entity. The arrow, not the shooter.
 	 * 
 	 * @return the direct attacker. May not exist. Just because this doesn't exist,
-	 *         doesn't mean {@link DDDCalculationEvent#getTrueAttacker()} is non
-	 *         null.
+	 *         doesn't mean {@link DDDCalculationEvent#getTrueAttacker()} is non-null.
 	 */
 	@Nullable
 	public final Entity getImmediateAttacker() {

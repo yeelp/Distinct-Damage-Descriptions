@@ -32,7 +32,7 @@ public interface IDamageDistribution extends IDistribution {
 	/**
 	 * Update this capability with respect to its owner
 	 * 
-	 * @param owner
+	 * @param owner entity that owns this damage distribution
 	 * @return the mutated capability
 	 */
 	IDamageDistribution update(EntityLivingBase owner);
@@ -40,7 +40,7 @@ public interface IDamageDistribution extends IDistribution {
 	/**
 	 * Update this capability with respect to its owner
 	 * 
-	 * @param owner
+	 * @param owner projectile that owns this distribution
 	 * @return the mutated capability
 	 */
 	IDamageDistribution update(IProjectile owner);

@@ -1,12 +1,11 @@
 package yeelp.distinctdamagedescriptions.capability.impl;
 
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import net.minecraft.nbt.NBTBase;
 import yeelp.distinctdamagedescriptions.capability.DDDUpdatableCapabilityBase;
 import yeelp.distinctdamagedescriptions.util.lib.YMath;
+
+import java.util.Set;
 
 public abstract class AbstractUpdatableCapability<NBT extends NBTBase> implements DDDUpdatableCapabilityBase<NBT> {
 	

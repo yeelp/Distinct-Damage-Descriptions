@@ -1,12 +1,12 @@
 package yeelp.distinctdamagedescriptions.config.readers;
 
-import java.util.Collection;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
-
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReaderException;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 /**
  * A basic config reader
@@ -17,10 +17,12 @@ import yeelp.distinctdamagedescriptions.config.readers.exceptions.DDDConfigReade
 public interface DDDConfigReader extends Runnable {
 	void read();
 
+	@Nonnull
 	String getName();
 
 	boolean shouldTime();
 
+	@Nonnull
 	default Thread toThread() {
 		return new Thread(this, this.getName());
 	}
@@ -32,7 +34,7 @@ public interface DDDConfigReader extends Runnable {
 			Stopwatch timer = Stopwatch.createStarted();
 			this.read();
 			timer.stop();
-			msg = String.format("%s finished loading from config in %s", this.getName(), timer.toString());
+			msg = String.format("%s finished loading from config in %s", this.getName(), timer);
 		}
 		else {
 			this.read();
@@ -44,7 +46,8 @@ public interface DDDConfigReader extends Runnable {
 	default boolean doesSelfReportErrors() {
 		return false;
 	}
-	
+
+	@Nonnull
 	default Collection<DDDConfigReaderException> getSelfReportedErrors() {
 		return ImmutableList.of();
 	}

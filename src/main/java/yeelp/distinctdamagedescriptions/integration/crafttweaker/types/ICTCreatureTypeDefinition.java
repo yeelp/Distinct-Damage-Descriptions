@@ -1,8 +1,5 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntityDefinition;
 import crafttweaker.api.potions.IPotion;
@@ -12,6 +9,9 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.CTConsts;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl.CTCreatureTypeDefinition;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ZenClass(CTConsts.CTClasses.CTCREATURETYPEDEF)
 @ZenRegister

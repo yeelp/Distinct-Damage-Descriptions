@@ -1,7 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.events;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import yeelp.distinctdamagedescriptions.ModConsts;
@@ -34,7 +33,7 @@ public final class CTEventHandler extends Handler implements IModIntegration {
 
 	@SuppressWarnings("static-method")
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onUpdateAdpativeResistances(UpdateAdaptiveResistanceEvent evt) {
+	public void onUpdateAdaptiveResistances(UpdateAdaptiveResistanceEvent evt) {
 		CTDDDEventManager.UPDATE_ADAPTIVE.publish(new CTUpdateAdaptiveResistancesEvent(evt));
 	}
 
@@ -45,7 +44,7 @@ public final class CTEventHandler extends Handler implements IModIntegration {
 
 	@Override
 	public String getModTitle() {
-		return ModConsts.IntegrationTitles.CRAFTWEAKER_TITLE;
+		return ModConsts.IntegrationTitles.CRAFTTWEAKER_TITLE;
 	}
 
 	@Override

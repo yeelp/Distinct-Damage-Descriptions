@@ -1,10 +1,5 @@
 package yeelp.distinctdamagedescriptions.proxy;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -16,6 +11,11 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.init.DDDItems;
 import yeelp.distinctdamagedescriptions.integration.ModIntegrationKernelClient;
 import yeelp.distinctdamagedescriptions.integration.fermiumbooter.client.screen.GuiFermiumBooterNotFound;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class ClientProxy extends Proxy {
 
@@ -42,7 +42,7 @@ public class ClientProxy extends Proxy {
 				}
 			}
 			catch (IOException e) {
-				e.printStackTrace();
+				DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::err);
 			}
 		}
 		new Handler() {

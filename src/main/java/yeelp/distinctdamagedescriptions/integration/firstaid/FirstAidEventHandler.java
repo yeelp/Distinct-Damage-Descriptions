@@ -1,11 +1,6 @@
 package yeelp.distinctdamagedescriptions.integration.firstaid;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
 import com.google.common.collect.Sets;
-
 import ichttt.mods.firstaid.api.event.FirstAidLivingDamageEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,6 +15,10 @@ import yeelp.distinctdamagedescriptions.handlers.Handler;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections;
 import yeelp.distinctdamagedescriptions.util.lib.DDDAttributeModifierCollections.DDDAttributeModifier;
 import yeelp.distinctdamagedescriptions.util.lib.DebugLib;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public class FirstAidEventHandler extends Handler {
 	

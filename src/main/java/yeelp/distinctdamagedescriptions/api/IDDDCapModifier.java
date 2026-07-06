@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.api;
 
-import java.util.Map;
-
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.IArmorDistribution;
@@ -9,6 +7,8 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.capability.IMobResistances;
 import yeelp.distinctdamagedescriptions.capability.impl.ShieldDistribution;
 import yeelp.distinctdamagedescriptions.util.IPriority;
+
+import java.util.Map;
 
 /**
  * A modifier that gets applied to a Distribution dynamically during gameplay.
@@ -64,7 +64,7 @@ public interface IDDDCapModifier<T extends ICapabilityProvider> extends IHasCrea
 	 * @author Yeelp
 	 *
 	 */
-	public enum AppliesTo {
+	enum AppliesTo {
 		ITEM_DAMAGE(IDamageDistribution.class),
 		MOB_DAMAGE(IDamageDistribution.class),
 		PROJECTILE(IDamageDistribution.class),
@@ -76,10 +76,6 @@ public interface IDDDCapModifier<T extends ICapabilityProvider> extends IHasCrea
 
 		AppliesTo(Class<? extends DDDCapabilityBase<?>> clazz) {
 			this.clazz = clazz;
-		}
-
-		public <T extends DDDCapabilityBase<?>> boolean appliesTo(T t) {
-			return this.clazz.isInstance(t);
 		}
 		
 		public boolean allowsNegativeWeights() {
@@ -105,9 +101,6 @@ public interface IDDDCapModifier<T extends ICapabilityProvider> extends IHasCrea
 	 * @return True if valid
 	 */
 	default boolean validate() {
-		if(!this.getAppliesToEnum().allowsNegativeWeights() && this.values().stream().anyMatch((f) -> f < 0.0f)) {			
-			return false;
-		}
-		return true;
-	}
+        return this.getAppliesToEnum().allowsNegativeWeights() || this.values().stream().noneMatch((f) -> f < 0.0f);
+    }
 }

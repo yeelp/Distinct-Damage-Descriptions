@@ -1,12 +1,7 @@
 package yeelp.distinctdamagedescriptions.integration.lycanites.dists;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.base.Functions;
 import com.lycanitesmobs.core.entity.damagesources.MinionEntityDamageSource;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -15,6 +10,11 @@ import yeelp.distinctdamagedescriptions.capability.IDamageDistribution;
 import yeelp.distinctdamagedescriptions.config.DDDConfigurations;
 import yeelp.distinctdamagedescriptions.integration.lycanites.LycanitesConfigurations;
 import yeelp.distinctdamagedescriptions.util.lib.YResources;
+
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 public class LycanitesMinionDistribution extends DDDAbstractPredefinedDistribution {
 
@@ -28,16 +28,16 @@ public class LycanitesMinionDistribution extends DDDAbstractPredefinedDistributi
 	}
 
 	@Override
-	public Set<DDDDamageType> getTypes(DamageSource src, EntityLivingBase target) {
+	public Set<DDDDamageType> getTypes(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return getDamageDistribution(src).map(IDamageDistribution::getCategories).orElse(Collections.emptySet());
 	}
 
 	@Override
-	public Optional<IDamageDistribution> getDamageDistribution(DamageSource src, EntityLivingBase target) {
+	public Optional<IDamageDistribution> getDamageDistribution(@Nonnull DamageSource src, @Nonnull EntityLivingBase target) {
 		return getDamageDistribution(src);
 	}
 
-	private static final Optional<IDamageDistribution> getDamageDistribution(DamageSource src) {
+	private static Optional<IDamageDistribution> getDamageDistribution(DamageSource src) {
 		if(src instanceof MinionEntityDamageSource) {
 			return YResources.getEntityIDString(src.getImmediateSource()).flatMap(Functions.compose((o) -> o.flatMap(DDDConfigurations.projectiles::getSafe), LycanitesConfigurations.creatureProjectiles::getSafe));
 		}

@@ -1,14 +1,14 @@
 package yeelp.distinctdamagedescriptions.init;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import yeelp.distinctdamagedescriptions.ModConsts;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import yeelp.distinctdamagedescriptions.ModConsts;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Marks a class as being part of DDD's key loading cycle. There should also be
@@ -42,7 +42,7 @@ public @interface DDDLoader {
 	/**
 	 * A list of required Loaders, by their name.
 	 * 
-	 * @return A list of required loaders. These ones must run before this one
+	 * @return A list of required loaders. These must run before this one
 	 */
 	String[] requiredLoaders() default {};
 
@@ -55,7 +55,7 @@ public @interface DDDLoader {
 	@Documented
 	@Retention(RUNTIME)
 	@Target(METHOD)
-	public @interface Initializer {
+	@interface Initializer {
 		/**
 		 * Should this initializer be timed? Useful for benchmarks
 		 * 

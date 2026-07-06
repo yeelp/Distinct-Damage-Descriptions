@@ -1,11 +1,11 @@
 package yeelp.distinctdamagedescriptions.integration.crafttweaker.types.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import yeelp.distinctdamagedescriptions.capability.IDistribution;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDDDDamageType;
 import yeelp.distinctdamagedescriptions.integration.crafttweaker.types.ICTDistribution;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CTDistribution implements ICTDistribution {
 

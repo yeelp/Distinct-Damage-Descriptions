@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.handlers;
 
-import java.util.Map;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
@@ -17,6 +15,8 @@ import yeelp.distinctdamagedescriptions.capability.DDDCapabilityBase;
 import yeelp.distinctdamagedescriptions.capability.distributors.DDDCapabilityDistributors;
 import yeelp.distinctdamagedescriptions.capability.impl.MobCreatureType;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
+
+import java.util.Map;
 
 public class CapabilityHandler extends Handler {
 

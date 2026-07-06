@@ -1,24 +1,10 @@
 package yeelp.distinctdamagedescriptions.util.json;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import org.apache.commons.io.FilenameUtils;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-
 import net.minecraft.util.Tuple;
+import org.apache.commons.io.FilenameUtils;
 import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.ModConsts;
 import yeelp.distinctdamagedescriptions.api.DDDDamageType;
@@ -27,6 +13,12 @@ import yeelp.distinctdamagedescriptions.api.impl.dists.DDDCustomDistributions;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.registries.DDDRegistries;
 import yeelp.distinctdamagedescriptions.util.lib.FileHelper;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Handles all of DDD's JSON IO
@@ -67,7 +59,7 @@ public final class DDDJsonIO {
 			File dest = new File(parentDirectory, filename);
 			try {
 				boolean shouldOverwrite = shouldOverwriteExampleJSON(dest);
-				boolean result = false;
+				boolean result;
 				if(DistinctDamageDescriptions.srcFile != null && DistinctDamageDescriptions.srcFile.isDirectory()) {
 					File source = new File(DistinctDamageDescriptions.srcFile, relativePath);
 					return FileHelper.copyFile(source, dest, shouldOverwrite);
@@ -78,7 +70,7 @@ public final class DDDJsonIO {
 				return result;
 			}
 			catch(IOException e) {
-				e.printStackTrace();
+				DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::err);
 				return false;
 			}
 		}
@@ -86,9 +78,11 @@ public final class DDDJsonIO {
 	}
 
 	private static boolean shouldOverwriteExampleJSON(File json) {
+		//will always have a parent directory
+		//noinspection DataFlowIssue
 		boolean b = json.getParentFile().listFiles().length >= 1;
 		boolean j = json.exists();
-		try(FileInputStream inStream = new FileInputStream(json); BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, "UTF8"))) {
+		try(FileInputStream inStream = new FileInputStream(json); BufferedReader reader = new BufferedReader(new InputStreamReader(inStream, StandardCharsets.UTF_8))) {
 			String firstLine = reader.readLine();
 			return ((j && !("// Mod Version: " + ModConsts.VERSION).equals(firstLine)) || (!j && !b));
 		}
@@ -138,7 +132,7 @@ public final class DDDJsonIO {
 		}
 		catch(IOException e) {
 			DistinctDamageDescriptions.fatal("An issue occurred when reading from file: " + f.getName());
-			e.printStackTrace();
+			DistinctDamageDescriptions.logStackTrace(e, DistinctDamageDescriptions::fatal);
 			throw new RuntimeException(e);
 		}
 	}

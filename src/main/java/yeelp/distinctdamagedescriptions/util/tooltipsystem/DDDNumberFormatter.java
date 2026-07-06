@@ -35,20 +35,20 @@ public enum DDDNumberFormatter implements ObjectFormatter<Float> {
 	RELATIVE(new DecimalFormat("##.##%")) {
 		@Override
 		public String format(Float t) {
-			return new StringBuilder(t < 1 ? "-" : "+").append(this.formatSignless(t - 1.0f)).toString();
+			return (t < 1 ? "-" : "+") + this.formatSignless(t - 1.0f);
 		}
 	},
 	
 	RELATIVE_TO_ZERO(new DecimalFormat("##.##%")) {
 		@Override
 		public String format(Float t) {
-			return new StringBuilder(t < 0 ? "-" : "+").append(this.formatSignless(t)).toString();
+			return (t < 0 ? "-" : "+") + this.formatSignless(t);
 		}
 	};
 
 	private final DecimalFormat formatter;
 
-	private DDDNumberFormatter(DecimalFormat decimalFormat) {
+	DDDNumberFormatter(DecimalFormat decimalFormat) {
 		this.formatter = decimalFormat;
 	}
 	

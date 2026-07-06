@@ -1,7 +1,5 @@
 package yeelp.distinctdamagedescriptions.network;
 
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +14,8 @@ import yeelp.distinctdamagedescriptions.DistinctDamageDescriptions;
 import yeelp.distinctdamagedescriptions.client.render.particle.DDDParticle;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 import yeelp.distinctdamagedescriptions.util.DDDEffects.ParticleInfo;
+
+import java.util.List;
 
 public final class ParticleMessage implements IMessage {
 	private ParticleInfo[] infos = new ParticleInfo[0];

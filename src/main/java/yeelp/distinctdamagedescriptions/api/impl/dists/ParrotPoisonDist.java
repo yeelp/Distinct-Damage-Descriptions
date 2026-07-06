@@ -1,8 +1,6 @@
 package yeelp.distinctdamagedescriptions.api.impl.dists;
 
-import java.util.HashSet;
-import java.util.UUID;
-
+import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.init.MobEffects;
@@ -18,10 +16,13 @@ import yeelp.distinctdamagedescriptions.api.DDDDamageType;
 import yeelp.distinctdamagedescriptions.api.impl.DDDBuiltInDamageType;
 import yeelp.distinctdamagedescriptions.config.ModConfig;
 
+import java.util.Set;
+import java.util.UUID;
+
 @Mod.EventBusSubscriber(modid = ModConsts.MODID)
 public class ParrotPoisonDist extends AbstractSingleTypeDist {
 
-	private static final HashSet<UUID> poisoned = new HashSet<UUID>();
+	private static final Set<UUID> poisoned = Sets.newHashSet();
 
 	public ParrotPoisonDist() {
 		super("parrotPoison", Source.BUILTIN, () -> ModConfig.dmg.extraDamage.enableParrotPoisonDamage);
