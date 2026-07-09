@@ -32,7 +32,8 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 	}
 
 	public ArmorValues(float armor, float toughness) {
-        this.setValues(armor, toughness);
+        this.armor = armor;
+		this.toughness = toughness;
 	}
 
 	public ArmorValues(Tuple<Float, Float> t) {
@@ -181,10 +182,10 @@ public class ArmorValues implements Iterable<Float>, Comparable<ArmorValues> {
 		private ArmorValuesZero() {
 			super();
 		}
-		
+
 		@Override
 		public ArmorValues setValues(float armor, float toughness) {
-			throw new UnsupportedOperationException("Altering ArmorValues.ZERO not allowed!");
+			throw new UnsupportedOperationException("Altering ArmorValues.zero() not allowed!");
 		}
 	}
 }

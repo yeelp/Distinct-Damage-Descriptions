@@ -31,36 +31,29 @@ public class LycanitesFireDistribution extends LycanitesPredefinedDistribution {
 		public static final LycanitesFireDistribution FROSTFIRE = new LycanitesColdFireDistribution(LycanitesConsts.FROSTFIRE, () -> ModConfig.compat.lycanites.enableFrostFireDistribution, () -> ModConfig.compat.lycanites.frostFireDistribution, () -> DefaultValues.FROSTFIRE_DIST);
 		public static final LycanitesFireDistribution ICEFIRE = new LycanitesColdFireDistribution(LycanitesConsts.ICEFIRE, () -> ModConfig.compat.lycanites.enableIceFireDistribution, () -> ModConfig.compat.lycanites.iceFireDistribution, () -> DefaultValues.ICEFIRE_DIST);
 
-		private static final boolean FOUND_COLD_FIRE;
 		private static final Predicate<DamageSource> IS_COLD_FIRE = (src) -> src.damageType.equals(LycanitesConsts.COLD_FIRE);
 		private static final Predicate<DamageSource> IS_MAGIC = (src) -> src == DamageSource.MAGIC;
-		private final Predicate<DamageSource> dmgSourceMatchPredicate;
+		private static final Predicate<DamageSource> SELECTED_DAMAGE_SOURCE_PREDICATE;
 		static {
-			boolean b;
+			Predicate<DamageSource> p;
 			try {
 				BlockFireBase.class.getDeclaredField(LycanitesConsts.COLD_FIRE.toUpperCase());
-				b = true;
+				p = IS_COLD_FIRE;
 			}
 			catch (NoSuchFieldException | SecurityException e) {
 				DistinctDamageDescriptions.warn("Could not find cold_fire DamageSource! Using magic for DamageSource for Icefire and Frostfire distributions!");
-				b = false;
+				p = IS_MAGIC;
 			}
-			FOUND_COLD_FIRE = b;
+			SELECTED_DAMAGE_SOURCE_PREDICATE = p;
 		}
 		
 		LycanitesColdFireDistribution(String key, Supplier<Boolean> config, Supplier<String> configEntry, Supplier<String> fallback) {
 			super(key, config, configEntry, fallback);
-			if(FOUND_COLD_FIRE) {
-				this.dmgSourceMatchPredicate = IS_COLD_FIRE;
-			}
-			else {
-				this.dmgSourceMatchPredicate = IS_MAGIC;
-			}
 		}
 
 		@Override
 		protected boolean doesDamageSourceMatch(DamageSource src) {
-			return this.dmgSourceMatchPredicate.test(src);
+			return SELECTED_DAMAGE_SOURCE_PREDICATE.test(src);
 		}
 	}
 

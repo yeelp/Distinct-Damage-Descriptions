@@ -152,7 +152,7 @@ def signJar(path) {
 	def keyStore = project.property("$keyStore")
 	def storePass = project.property("$storePass")
 	def exec_line = "$jarsigner" + " -keystore " + "$keyStore" + " -storepass " + "$storePass" + " " + path + " " + "$alias"
-    print exec_line
+    //print exec_line
     exec_line.execute()
 }
 
