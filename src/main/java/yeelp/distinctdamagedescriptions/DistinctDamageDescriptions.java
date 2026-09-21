@@ -69,6 +69,7 @@ public class DistinctDamageDescriptions {
 		}
 		DDDJsonIO.init();
 		DDDInitialization.runLoaders(event);
+		DDDEnchantments.init();
 		DebugLib.updateStatus();
 		DeveloperModeKernel.initialize();
 		proxy.preInit();
@@ -90,7 +91,6 @@ public class DistinctDamageDescriptions {
 		ShieldDistribution.register();
 		PacketHandler.init();
 		DDDSounds.init();
-		DDDEnchantments.init();
 		ModIntegrationKernel.doInit(event);
 		new Handler() {
 			@SubscribeEvent
